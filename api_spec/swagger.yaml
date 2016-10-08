@@ -1,0 +1,106 @@
+swagger: '2.0'
+info:
+    title: Hedgehog Deployment API
+    description: Program management and deployment API of the Hedgehog controller
+    version: '1.0.0'
+    contact:
+        name: 'Markus Klein'
+        url: 'http://pria.at'
+        email: 'klein@pria.at'
+produces:
+    - application/vnd.api+json
+paths:
+#    /estimates/price:
+#        get:
+#            summary: Price Estimates
+#            responses:
+#                200:
+#                    description: An array of price estimates by product
+    /programs:
+        get:
+        post:
+    /programs/{program_id}:
+        get:
+        post:
+        patch:
+        delete:
+
+    /blobs/{program_id}:
+        get:
+    /blobs/{program_id}/{blob_id}:
+        get:
+
+    /trees/{program_id}:
+        get:
+    /trees/{program_id}/{tree_id}:
+        get:
+
+    /versions/{program_id}:
+        get:
+        post:
+        patch:
+    /versions/{program_id}/{version_id}:
+        get:
+
+    /workingtrees:
+        get:
+    /workingtrees/{program_id}:
+        get:
+        patch:
+    /workingtrees/{program_id}/directories:
+        get:
+        post:
+    /workingtrees/{program_id}/directories/{directory_id}:
+        get:
+        patch:
+        delete:
+    /workingtrees/{program_id}/files:
+        get:
+        post:
+    /workingtrees/{program_id}/files/{file_id}:
+        get:
+        patch:
+        delete:
+
+    /sensors:
+        get:
+    /sensors/{sensor_id}:
+        get:
+        patch:
+
+    /servos:
+        get:
+    /servos/{servo_id}:
+        get:
+        patch:
+
+    /motors:
+        get:
+    /motors/{motor_id}:
+        get:
+        patch:
+
+    /run:
+        get:
+        post:
+        delete:
+    /run/stdout:
+        get:
+    /run/stdin:
+        get:
+        patch:
+
+#definitions:
+#    JsonApiWrapper:
+#        type: object
+#        properties:
+#            data:
+#                $ref: '#/definitions/JsonApiDataWrapper'
+#            errors:
+#                $ref: '#/definitions/Error'
+#                description: 'an array of error objects'
+#            meta:
+#                type: object
+#                description: 'a meta object that contains non-standard meta-information'
+#    Error:
+#        type: object
