@@ -9,6 +9,8 @@ info:
         email: 'klein@pria.at'
 produces:
     - application/vnd.api+json
+consumes:
+    - application/vnd.api+json
 paths:
 #    /estimates/price:
 #        get:
@@ -18,77 +20,162 @@ paths:
 #                    description: An array of price estimates by product
     /programs:
         get:
-        post:
-    /programs/{program_id}:
-        get:
-        post:
-        patch:
-        delete:
+            summary: 'Get a list of all programs stored on the controller.'
+            responses:
+                200:
+                    description: 'Returns a list for programs'
+                    schema:
+                        type: object
+                        properties:
+                            data:
+                                type: array
+                                items:
+                                    $ref: '#/definitions/Program'
 
-    /blobs/{program_id}:
-        get:
-    /blobs/{program_id}/{blob_id}:
-        get:
+    #     post:
+    # /programs/{program_id}:
+    #     get:
+    #     post:
+    #     patch:
+    #     delete:
+    #
+    # /blobs/{program_id}:
+    #     get:
+    # /blobs/{program_id}/{blob_id}:
+    #     get:
+    #
+    # /trees/{program_id}:
+    #     get:
+    # /trees/{program_id}/{tree_id}:
+    #     get:
+    #
+    # /versions/{program_id}:
+    #     get:
+    #     post:
+    #     patch:
+    # /versions/{program_id}/{version_id}:
+    #     get:
+    #
+    # /workingtrees:
+    #     get:
+    # /workingtrees/{program_id}:
+    #     get:
+    #     patch:
+    # /workingtrees/{program_id}/directories:
+    #     get:
+    #     post:
+    # /workingtrees/{program_id}/directories/{directory_id}:
+    #     get:
+    #     patch:
+    #     delete:
+    # /workingtrees/{program_id}/files:
+    #     get:
+    #     post:
+    # /workingtrees/{program_id}/files/{file_id}:
+    #     get:
+    #     patch:
+    #     delete:
+    #
+    # /sensors:
+    #     get:
+    # /sensors/{sensor_id}:
+    #     get:
+    #     patch:
+    #
+    # /servos:
+    #     get:
+    # /servos/{servo_id}:
+    #     get:
+    #     patch:
+    #
+    # /motors:
+    #     get:
+    # /motors/{motor_id}:
+    #     get:
+    #     patch:
+    #
+    # /run:
+    #     get:
+    #     post:
+    #     delete:
+    # /run/stdout:
+    #     get:
+    # /run/stdin:
+    #     get:
+    #     patch:
 
-    /trees/{program_id}:
-        get:
-    /trees/{program_id}/{tree_id}:
-        get:
+definitions:
+    Program:
+        type: object
+        required:
+        - id
+        - type
+        properties:
+            id:
+                type: string
+            type:
+                type: string
+                enum:
+                - program
+            attributes:
+                type: object
+                required:
+                - name
+                - creationDate
+                properties:
+                    name:
+                        type: string
+                    creationDate:
+                        type: string
+                        format: dateTime
+            relationships:
+                type: object
+                properties:
+                    versions:
+                        $ref: '#/definitions/JsonApiManyLink'
+                    workingtree:
+                        $ref: '#/definitions/JsonApiOneLink'
 
-    /versions/{program_id}:
-        get:
-        post:
-        patch:
-    /versions/{program_id}/{version_id}:
-        get:
-
-    /workingtrees:
-        get:
-    /workingtrees/{program_id}:
-        get:
-        patch:
-    /workingtrees/{program_id}/directories:
-        get:
-        post:
-    /workingtrees/{program_id}/directories/{directory_id}:
-        get:
-        patch:
-        delete:
-    /workingtrees/{program_id}/files:
-        get:
-        post:
-    /workingtrees/{program_id}/files/{file_id}:
-        get:
-        patch:
-        delete:
-
-    /sensors:
-        get:
-    /sensors/{sensor_id}:
-        get:
-        patch:
-
-    /servos:
-        get:
-    /servos/{servo_id}:
-        get:
-        patch:
-
-    /motors:
-        get:
-    /motors/{motor_id}:
-        get:
-        patch:
-
-    /run:
-        get:
-        post:
-        delete:
-    /run/stdout:
-        get:
-    /run/stdin:
-        get:
-        patch:
+    JsonApiOneLink:
+        type: object
+        properties:
+            links:
+                type: object
+                properties:
+                    self:
+                        type: string
+                        format: uri
+                    related:
+                        type: string
+                        format: uri
+                    data:
+                        $ref: '#/definitions/JsonApiResourceIdentifier'
+    JsonApiManyLink:
+        type: object
+        properties:
+            links:
+                type: object
+                properties:
+                    self:
+                        type: string
+                        format: uri
+                    related:
+                        type: string
+                        format: uri
+                    data:
+                        type: array
+                        items:
+                            $ref: '#/definitions/JsonApiResourceIdentifier'
+    JsonApiResourceIdentifier:
+        type: object
+        required:
+        - id
+        - type
+        properties:
+            id:
+                type: string
+            type:
+                type: string
 
 #definitions:
 #    JsonApiWrapper:
