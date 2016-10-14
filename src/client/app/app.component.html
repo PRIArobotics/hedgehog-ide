@@ -22,32 +22,34 @@
     <div class="col s10">
 
 
-        <div class="col s12">
-            <a class="hedgehog-green-dark waves-effect btn-floating">
+        <div class="col s12" >
+            <a class="waves-effect btn-floating waves-light">
                 <i class="material-icons">play_arrow</i>
             </a>
-            <a class="waves-effect btn-floating waves-light hedgehog-green-dark">
+            <a class="waves-effect btn-floating waves-light">
                 <i class="material-icons">save</i>
             </a>
-            <a class="waves-effect btn-floating  waves-light hedgehog-green-dark">
+            <a class="waves-effect btn-floating  waves-light">
                 <i class="material-icons">insert_drive_file</i>
             </a>
+
         </div>
 
-        <div class="row">
-            <div class="col s12" >
+        <div class="row" style="margin-bottom: 0px;">
+            <div class="col s12" style="z-index:1" >
                 <ul class="tabs" materialize="tabs" id="sortable-tabs">
-                    <li *ngFor="let file of files" class="tab col s3" draggable id="fileTab{{ file.id }}"> <a class="green-text lighten-3" href="#file{{ file.id }}" > {{ file.name }} </a></li>
+                    <li *ngFor="let file of files" class="tab" draggable (click)="onTabSelect( file.content, file.id )" > <a class="green-text lighten-3" > {{ file.name }} </a></li>
                 </ul>
             </div>
 
-            <div *ngFor="let file of files" id="file{{ file.id }}" class="col s12">
+            <div class="col s12">
                 <div ace-editor
-                     text="{{ file.content }}"
+                     text="{{ editorContent }}"
+                     (textChanged)="changeEditorContent($event)"
                      [mode]="'python'"
                      [theme]="'chrome'"
                      [readOnly]="false"
-                     style="display:block; height: 80vh; width:100%"> </div>
+                     style="display:block; height: 100%; width:100%"> </div>
 
 
             </div>
