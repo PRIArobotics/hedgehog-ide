@@ -31,8 +31,9 @@ paths:
                                 type: array
                                 items:
                                     $ref: '#/definitions/Program'
-
-    #     post:
+        post:
+            summary: 'Create a new program.'
+            
     # /programs/{program_id}:
     #     get:
     #     post:
