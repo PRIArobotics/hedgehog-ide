@@ -29,8 +29,11 @@
     "angular-in-memory-web-api": "~0.1.5",
     "angular2-materialize": "^5.2.0",
     "brace": "^0.8.0",
+    "buffer": "^5.0.0",
     "core-js": "^2.4.1",
     "hapi": "^15.1.1",
+    "inert": "^4.0.2",
+    "jquery-ui-dist": "^1.12.1",
     "materialize-css": "^0.97.7",
     "reflect-metadata": "^0.1.8",
     "rxjs": "5.0.0-beta.12",
@@ -40,6 +43,8 @@
   "devDependencies": {
     "grunt": "^1.0.1",
     "grunt-contrib-clean": "^1.0.0",
+    "grunt-contrib-copy": "^1.0.0",
+    "grunt-contrib-symlink": "^1.0.0",
     "grunt-ts": "^6.0.0-beta.3",
     "typescript": "^2.0.3",
     "typings": "^1.4.0"
