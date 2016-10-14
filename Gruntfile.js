@@ -4,14 +4,20 @@ module.exports = function(grunt) {
         ts: {
             client: {
                 src: ['src/**/*.ts'],
-                dest: 'build',
+                outDir: 'build',
+                options: {
+                    rootDir: 'src'
+                },
                 tsconfig: true
             }
-        }
+        },
+        clean: [
+            'build'
+        ]
     });
 
     grunt.loadNpmTasks('grunt-ts');
+    grunt.loadNpmTasks('grunt-contrib-clean');
 
     grunt.registerTask('default', ['ts']);
-
 };
