@@ -1,15 +1,17 @@
 /**
  * Created by markus on 14/10/16.
  */
-const Hapi = require('hapi');
-const Path = require('path');
+import Hapi from 'hapi';
+import path from 'path';
+
+import inert from 'inert';
 
 // Create a server with a host and port
 const server = new Hapi.Server({
     connections: {
         routes: {
             files: {
-                relativeTo: Path.join(__dirname, '../client')
+                relativeTo: path.join(__dirname, '../client')
             }
         }
     }
@@ -19,7 +21,7 @@ server.connection({
     port: 8000
 });
 
-server.register(require('inert'), () => {});
+server.register(inert);
 
 server.route({
     method: 'GET',
@@ -36,8 +38,8 @@ server.route({
 // Start the server
 server.start((err) => {
 
-    if (err) {
+    if (err)
         throw err;
-    }
+
     console.log('Server running at:', server.info.uri);
 });
