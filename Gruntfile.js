@@ -31,10 +31,22 @@ module.exports = function(grunt) {
                 src: 'node_modules',
                 dest: 'build/client/node_modules'
             }
+        },
+        tslint: {
+            options: {
+                configuration: "tslint.json",
+            },
+            server: {
+                src: ['src/server/**/*.ts']
+            },
+            client: {
+                src: ['src/client/**/*.ts']
+            }
         }
     });
 
     grunt.loadNpmTasks('grunt-ts');
+    grunt.loadNpmTasks("grunt-tslint");
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-symlink');
