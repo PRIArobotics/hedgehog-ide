@@ -1,5 +1,5 @@
 
-import {Directive, HostBinding, HostListener, Input, Output, EventEmitter} from "@angular/core";
+import { Directive, HostBinding, HostListener } from "@angular/core";
 
 @Directive({
     selector: '[collapse-on-click]'

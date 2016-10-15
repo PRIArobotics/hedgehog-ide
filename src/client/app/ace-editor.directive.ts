@@ -1,38 +1,42 @@
 import { Directive, ElementRef, EventEmitter, Input, Output } from '@angular/core';
 
 import 'brace';
-import 'brace/theme/tomorrow_night';
-import 'brace/theme/chrome';
 import 'brace/mode/python';
+import 'brace/theme/chrome';
+import 'brace/theme/tomorrow_night';
 declare var ace: any;
 
 @Directive({
   selector: '[ace-editor]'
 })
 export class AceEditorDirective {
-  _readOnly: any;
-  _theme: any;
-  _mode: any;
+  public editor: any;
+  public oldVal: any;
 
-  editor: any;
-  oldVal: any;
 
+  @Output() public textChanged = new EventEmitter();
+  @Output() public editorRef = new EventEmitter();
+
+
+  private readOnly: any;
+  private theme: any;
+  private mode: any;
   @Input() set options(value) {
     this.editor.setOptions(value || {});
   }
 
   @Input() set readOnly(value) {
-    this._readOnly = value;
+    this.readOnly = value;
     this.editor.setReadOnly(value);
   }
 
   @Input() set theme(value) {
-    this._theme = value;
+    this.theme = value;
     this.editor.setTheme(`ace/theme/${value}`);
   }
 
   @Input() set mode(value) {
-    this._mode = value;
+    this.mode = value;
     this.editor.getSession().setMode(`ace/mode/${value}`);
   }
 
@@ -42,9 +46,6 @@ export class AceEditorDirective {
     this.editor.clearSelection();
     this.editor.focus();
   }
-
-  @Output() textChanged = new EventEmitter();
-  @Output() editorRef = new EventEmitter();
 
   constructor(private elementRef: ElementRef) {
     const el = elementRef.nativeElement;

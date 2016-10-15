@@ -1,4 +1,4 @@
-import { Directive, ElementRef, Renderer } from '@angular/core';
+import { Directive} from '@angular/core';
 
 
 @Directive({
@@ -6,8 +6,7 @@ import { Directive, ElementRef, Renderer } from '@angular/core';
 })
 
 export class LoadTabs {
-    constructor(private el: ElementRef, private renderer: Renderer) {
-        console.log(this.el.nativeElement);
+    constructor() {
         (<any>$("ul.tabs")).tabs();
     }
 }
