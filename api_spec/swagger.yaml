@@ -186,7 +186,6 @@ definitions:
     Program:
         type: object
         required:
-        - id
         - type
         properties:
             id:
@@ -221,6 +220,8 @@ definitions:
 
     Blob:
         type: object
+        required:
+        - type
         properties:
             id:
                 type: string
@@ -242,6 +243,8 @@ definitions:
 
     Tree:
         type: object
+        required:
+        - type
         properties:
             id:
                 type: string
@@ -256,6 +259,8 @@ definitions:
                         $ref: '#/definitions/JsonApiManyLink'
     TreeItem:
         type: object
+        required:
+        - type
         properties:
             id:
                 type: string
