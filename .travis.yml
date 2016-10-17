@@ -4,6 +4,7 @@ before_script:
 - typings install
 script:
 - grunt tslint
+- grunt swagger-validate
 notifications:
   slack:
     rooms:
