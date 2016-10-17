@@ -97,15 +97,36 @@ paths:
               required: true
             responses:
                 200:
-                    description: 'Returns the blob requested blob'
+                    description: 'Returns the requested blob'
                     schema:
                         $ref: '#/definitions/Blob'
 
-    # /trees/{program_id}:
-    #     get:
-    # /trees/{program_id}/{tree_id}:
-    #     get:
-    #
+    /trees/{program_id}/{tree_id}:
+        get:
+            summary: 'Get a tree object of a program'
+            parameters:
+            - name: program_id
+              in: path
+              type: string
+              required: true
+            - name: tree_id
+              in: path
+              type: string
+              required: true
+            responses:
+                200:
+                    description: 'Returns a requested tree'
+                    schema:
+                        type: object
+                        properties:
+                            data:
+                                $ref: '#/definitions/Tree'
+                            included:
+                                type: array
+                                items:
+                                    $ref: '#/definitions/TreeItem'
+
+
     # /versions/{program_id}:
     #     get:
     #     post:
@@ -214,8 +235,44 @@ definitions:
                         type: string
                     encoding:
                         type: string
+                    mode:
+                        type: string
                     size:
                         type: integer
+
+    Tree:
+        type: object
+        properties:
+            id:
+                type: string
+            type:
+                type: string
+                enum:
+                - tree
+            relationships:
+                type: object
+                properties:
+                    items:
+                        $ref: '#/definitions/JsonApiManyLink'
+    TreeItem:
+        type: object
+        properties:
+            id:
+                type: string
+            type:
+                type: string
+                enum:
+                - tree-item
+            attributes:
+                type: object
+                properties:
+                    path:
+                        type: string
+            relationships:
+                type: object
+                properties:
+                    child:
+                        $ref: '#/definitions/JsonApiOneLink'
 
     JsonApiOneLink:
         type: object
