@@ -83,12 +83,24 @@ paths:
             responses:
                 200:
                     description: 'The resource has been deleted accordingly'
-    #
-    # /blobs/{program_id}:
-    #     get:
-    # /blobs/{program_id}/{blob_id}:
-    #     get:
-    #
+
+    /blobs/{program_id}/{blob_id}:
+        get:
+            parameters:
+            - name: program_id
+              in: path
+              type: string
+              required: true
+            - name: blob_id
+              in: path
+              type: string
+              required: true
+            responses:
+                200:
+                    description: 'Returns the blob requested blob'
+                    schema:
+                        $ref: '#/definitions/Blob'
+
     # /trees/{program_id}:
     #     get:
     # /trees/{program_id}/{tree_id}:
@@ -185,6 +197,25 @@ definitions:
         properties:
             data:
                 $ref: '#/definitions/Program'
+
+    Blob:
+        type: object
+        properties:
+            id:
+                type: string
+            type:
+                type: string
+                enum:
+                - blob
+            attributes:
+                type: object
+                properties:
+                    content:
+                        type: string
+                    encoding:
+                        type: string
+                    size:
+                        type: integer
 
     JsonApiOneLink:
         type: object
