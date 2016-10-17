@@ -12,15 +12,9 @@ produces:
 consumes:
     - application/vnd.api+json
 paths:
-#    /estimates/price:
-#        get:
-#            summary: Price Estimates
-#            responses:
-#                200:
-#                    description: An array of price estimates by product
     /programs:
         get:
-            summary: 'Get a list of all programs stored on the controller.'
+            summary: 'Get a list of all programs stored on the controller'
             responses:
                 200:
                     description: 'Returns a list for programs'
@@ -32,13 +26,63 @@ paths:
                                 items:
                                     $ref: '#/definitions/Program'
         post:
-            summary: 'Create a new program.'
-            
-    # /programs/{program_id}:
-    #     get:
-    #     post:
-    #     patch:
-    #     delete:
+            summary: 'Create a new program'
+            parameters:
+            - name: program
+              in: body
+              schema:
+                  type: object
+                  properties:
+                      data:
+                          $ref: '#/definitions/Program'
+            responses:
+                201:
+                    description: 'Returns the newly created program'
+                    schema:
+                        $ref: '#/definitions/ProgramWrapped'
+    /programs/{program_id}:
+        get:
+            summary: 'Get a single program'
+            parameters:
+            - name: program_id
+              in: path
+              type: string
+              required: true
+            responses:
+                200:
+                    description: 'Returns the program'
+                    schema:
+                        $ref: '#/definitions/ProgramWrapped'
+        patch:
+            summary: 'Partially update a program'
+            parameters:
+            - name: program_id
+              in: path
+              type: string
+              required: true
+            - name: program
+              in: body
+              schema:
+                  type: object
+                  properties:
+                      data:
+                          $ref: '#/definitions/Program'
+            responses:
+                200:
+                    description: 'Returns a representation of the updated program'
+                    schema:
+                        $ref: '#/definitions/ProgramWrapped'
+
+        delete:
+            summary: 'Delete a program and all its related resources'
+            parameters:
+            - name: program_id
+              in: path
+              type: string
+              required: true
+            responses:
+                200:
+                    description: 'The resource has been deleted accordingly'
     #
     # /blobs/{program_id}:
     #     get:
@@ -136,6 +180,11 @@ definitions:
                         $ref: '#/definitions/JsonApiManyLink'
                     workingtree:
                         $ref: '#/definitions/JsonApiOneLink'
+    ProgramWrapped:
+        type: object
+        properties:
+            data:
+                $ref: '#/definitions/Program'
 
     JsonApiOneLink:
         type: object
