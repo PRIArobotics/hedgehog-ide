@@ -1,12 +1,11 @@
 import {Component, AfterContentInit} from '@angular/core';
-import {isUndefined} from "util";
 declare var $:JQueryStatic;
 
 
 export class File {
-    id: number;
-    name: string;
-    content: string;
+    public id: number;
+    public name: string;
+    public content: string;
 }
 
 
@@ -15,8 +14,8 @@ export class File {
     templateUrl: 'app/app.component.html'
 })
 
-export class AppComponent implements AfterContentInit{
-    files: File[] = [
+export class AppComponent implements AfterContentInit {
+    private files: File[] = [
         {
             id: 0,
             name: 'main.py',
@@ -30,8 +29,8 @@ export class AppComponent implements AfterContentInit{
     ];
 
 
-    lastId:number = 0;
-    editorContent:string = this.files[this.lastId].content;
+    public lastId:number = 0;
+    public editorContent:string = this.files[this.lastId].content;
 
     onTabSelect(fileContent:string, id:number): void {
 

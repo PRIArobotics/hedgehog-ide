@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "grunt",
-    "server": "node build/server/server.js"
+    "server": "concurrently \"tsc -w\" \"node build/server/server.js\""
   },
   "repository": {
     "type": "git",

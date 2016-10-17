@@ -6,7 +6,8 @@
     "object-literal-sort-keys": false,
     "no-console": false,
     "curly": false,
-    "no-consecutive-blank-lines": false
+    "no-consecutive-blank-lines": false,
+    "whitespace": [false, "check-branch"]
   },
   "rulesDirectory": [
     "node_modules/codelyzer"
