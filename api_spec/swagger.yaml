@@ -221,24 +221,167 @@ paths:
     #     patch:
     #     delete:
     #
-    # /sensors:
-    #     get:
-    # /sensors/{sensor_id}:
-    #     get:
-    #     patch:
-    #
-    # /servos:
-    #     get:
-    # /servos/{servo_id}:
-    #     get:
-    #     patch:
-    #
-    # /motors:
-    #     get:
-    # /motors/{motor_id}:
-    #     get:
-    #     patch:
-    #
+    /sensors:
+        get:
+            summary: 'Get a list of all sensors with its current values'
+            responses:
+                200:
+                    description: 'Returns all sensors'
+                    schema:
+                        type: object
+                        properties:
+                            data:
+                                type: array
+                                items:
+                                    $ref: '#/definitions/Sensor'
+    /sensors/{sensor_id}:
+        get:
+            summary: 'Get a single sensor'
+            parameters:
+             - name: sensor_id
+               in: path
+               type: string
+               required: true
+            responses:
+                200:
+                    description: 'Returns the requested sensor'
+                    schema:
+                        type: object
+                        properties:
+                            data:
+                                $ref: '#/definitions/Sensor'
+        patch:
+            summary: Set a sensor's pullup
+            parameters:
+            - name: sensor_id
+              in: path
+              type: string
+              required: true
+            - name: sensor
+              in: body
+              required: true
+              # TODO: specify which arguments are allowed
+              schema:
+                  type: object
+                  properties:
+                      data:
+                          $ref: '#/definitions/Sensor'
+            responses:
+                200:
+                    description: 'Returns the sensor with the updated pullup resistor'
+                    schema:
+                        type: object
+                        properties:
+                            data:
+                                $ref: '#/definitions/Sensor'
+    /servos:
+        get:
+            summary: 'Get a list of all servos'
+            responses:
+                200:
+                    description: 'Returns all sensors'
+                    schema:
+                        type: object
+                        properties:
+                            data:
+                                type: array
+                                items:
+                                    $ref: '#/definitions/Servo'
+    /servos/{servo_id}:
+        get:
+            summary: 'Get a single servo'
+            parameters:
+            - name: servo_id
+              in: path
+              type: string
+              required: true
+            responses:
+                200:
+                    description: 'Returns the requested servo'
+                    schema:
+                        type: object
+                        properties:
+                            data:
+                                $ref: '#/definitions/Servo'
+        patch:
+            summary: 'Enable a servo or set its position'
+            parameters:
+            - name: servo_id
+              in: path
+              type: string
+              required: true
+            - name: servo
+              in: body
+              required: true
+              # TODO: specify which arguments are allowed
+              schema:
+                  type: object
+                  properties:
+                      data:
+                          $ref: '#/definitions/Servo'
+            responses:
+                200:
+                    description: 'Returns the updated servo data'
+                    schema:
+                        type: object
+                        properties:
+                            data:
+                                $ref: '#/definitions/Servo'
+
+    /motors:
+        get:
+            summary: 'Get a list of all motors'
+            responses:
+                200:
+                    description: 'Returns an array containing motor'
+                    schema:
+                        type: object
+                        properties:
+                            data:
+                                type: array
+                                items:
+                                    $ref: '#/definitions/Motor'
+    /motors/{motor_id}:
+        get:
+            summary: 'Get information about a single motor'
+            parameters:
+            - name: motor_id
+              in: path
+              type: string
+              required: true
+            responses:
+                200:
+                    description: 'Returns the requested motor'
+                    schema:
+                        type: object
+                        properties:
+                            data:
+                                $ref: '#/definitions/Motor'
+        patch:
+            summary: 'Control a motor'
+            parameters:
+            - name: motor_id
+              in: path
+              type: string
+              required: true
+            - name: motor
+              in: body
+              required: true
+              # TODO: specify which arguments are allowed
+              schema:
+                  type: object
+                  properties:
+                      data:
+                          $ref: '#/definitions/Motor'
+            responses:
+                200:
+                    description: 'Returns the updated motor data'
+                    schema:
+                        type: object
+                        properties:
+                            data:
+                                $ref: '#/definitions/Motor'
+
     # /run:
     #     get:
     #     post:
@@ -367,6 +510,61 @@ definitions:
                     parents:
                         $ref: '#/definitions/JsonApiManyLink'
 
+    Sensor:
+        type: object
+        properties:
+            id:
+                type: string
+            type:
+                type: string
+                enum:
+                - sensor
+            attributes:
+                type: object
+                properties:
+                    type:
+                        type: string
+                        enum:
+                        - analog
+                        - digital
+                    value:
+                        type: integer
+                    pullup:
+                        type: boolean
+
+    Servo:
+        type: object
+        properties:
+            id:
+                type: string
+            type:
+                type: string
+                enum:
+                - servo
+            attributes:
+                type: object
+                properties:
+                    enabled:
+                        type: boolean
+                    position:
+                        type: integer
+
+    Motor:
+        type: object
+        properties:
+            id:
+                type: string
+            type:
+                type: string
+                enum:
+                - motor
+            attributes:
+                type: object
+                properties:
+                    power:
+                        type: integer
+                    velocity:
+                        type: integer
 
     JsonApiOneLink:
         type: object
