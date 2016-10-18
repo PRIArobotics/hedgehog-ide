@@ -7,7 +7,7 @@ import { Directive, HostBinding, HostListener } from "@angular/core";
 
 export class CollapseOnClick {
 
-    isCollapsed = false;
+    public isCollapsed = false;
 
     @HostBinding("class.collapsed")
     get collapsed(){
@@ -15,7 +15,7 @@ export class CollapseOnClick {
     }
 
     @HostListener('click')
-    toggle() {
+    public toggle() {
         this.isCollapsed = !this.isCollapsed;
     }
 }

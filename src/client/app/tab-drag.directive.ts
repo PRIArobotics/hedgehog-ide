@@ -1,6 +1,5 @@
 import { Directive } from '@angular/core';
 
-
 @Directive({
     selector: '[draggable]'
 })
@@ -8,14 +7,11 @@ import { Directive } from '@angular/core';
 export class DragDirective {
 
     constructor() {
-        $(function() {
-            var tabs = (<any>$("#sortable-tabs"));
+        $(() => {
+            const tabs = (<any>$("#sortable-tabs"));
             tabs.sortable({
-                "items": "li",
-                "axis": "x",
-                "start": function (event, ui) {
-                    ui.item.startPos = ui.item.index();
-                }
+                items: "li",
+                axis: "x"
             });
             tabs.disableSelection();
         });
