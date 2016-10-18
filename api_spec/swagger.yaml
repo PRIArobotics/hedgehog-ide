@@ -30,6 +30,7 @@ paths:
             parameters:
             - name: program
               in: body
+              required: true
               schema:
                   type: object
                   properties:
@@ -39,7 +40,10 @@ paths:
                 201:
                     description: 'Returns the newly created program'
                     schema:
-                        $ref: '#/definitions/ProgramWrapped'
+                        type: object
+                        properties:
+                            data:
+                                $ref: '#/definitions/Program'
     /programs/{program_id}:
         get:
             summary: 'Get a single program'
@@ -52,7 +56,10 @@ paths:
                 200:
                     description: 'Returns the program'
                     schema:
-                        $ref: '#/definitions/ProgramWrapped'
+                        type: object
+                        properties:
+                            data:
+                                $ref: '#/definitions/Program'
         patch:
             summary: 'Partially update a program'
             parameters:
@@ -62,6 +69,7 @@ paths:
               required: true
             - name: program
               in: body
+              required: true
               schema:
                   type: object
                   properties:
@@ -71,7 +79,10 @@ paths:
                 200:
                     description: 'Returns a representation of the updated program'
                     schema:
-                        $ref: '#/definitions/ProgramWrapped'
+                        type: object
+                        properties:
+                            data:
+                                $ref: '#/definitions/Program'
 
         delete:
             summary: 'Delete a program and all its related resources'
@@ -127,13 +138,69 @@ paths:
                                     $ref: '#/definitions/TreeItem'
 
 
-    # /versions/{program_id}:
-    #     get:
-    #     post:
-    #     patch:
-    # /versions/{program_id}/{version_id}:
-    #     get:
-    #
+    /versions/{program_id}:
+         get:
+             summary: 'Get a list of versions of a program'
+             parameters:
+             - name: program_id
+               in: path
+               type: string
+               required: true
+             responses:
+                 200:
+                     description: 'Returns a list of versions'
+                     schema:
+                         type: object
+                         properties:
+                             data:
+                                 type: array
+                                 items:
+                                     $ref: '#/definitions/Version'
+         post:
+             summary: 'Create a new version from the program in the working tree'
+             parameters:
+             - name: program_id
+               in: path
+               type: string
+               required: true
+             - name: version
+               in: body
+               schema:
+                   type: object
+                   properties:
+                       data:
+                           $ref: '#/definitions/Version'
+             responses:
+                 201:
+                     description: 'Returns the newly created version'
+                     schema:
+                         type: object
+                         properties:
+                             data:
+                                 $ref: '#/definitions/Version'
+
+    /versions/{program_id}/{version_id}:
+         get:
+             summary: 'Get a single version'
+             parameters:
+              - name: program_id
+                in: path
+                type: string
+                required: true
+              - name: version_id
+                in: path
+                type: string
+                required: true
+             responses:
+                 200:
+                     description: 'Returns information about the requested version'
+                     schema:
+                         type: object
+                         properties:
+                             data:
+                                 $ref: '#/definitions/Version'
+
+
     # /workingtrees:
     #     get:
     # /workingtrees/{program_id}:
@@ -212,11 +279,6 @@ definitions:
                         $ref: '#/definitions/JsonApiManyLink'
                     workingtree:
                         $ref: '#/definitions/JsonApiOneLink'
-    ProgramWrapped:
-        type: object
-        properties:
-            data:
-                $ref: '#/definitions/Program'
 
     Blob:
         type: object
@@ -278,6 +340,33 @@ definitions:
                 properties:
                     child:
                         $ref: '#/definitions/JsonApiOneLink'
+
+    Version:
+        type: object
+        properties:
+            id:
+                type: string
+            type:
+                type: string
+                enum:
+                - version
+            attributes:
+                type: object
+                properties:
+                    tag:
+                        type: string
+                    message:
+                        type: string
+            relationships:
+                type: object
+                properties:
+                    tree:
+                        $ref: '#/definitions/JsonApiOneLink'
+                    program:
+                        $ref: '#/definitions/JsonApiOneLink'
+                    parents:
+                        $ref: '#/definitions/JsonApiManyLink'
+
 
     JsonApiOneLink:
         type: object
