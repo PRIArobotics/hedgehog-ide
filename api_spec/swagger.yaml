@@ -200,27 +200,222 @@ paths:
                              data:
                                  $ref: '#/definitions/Version'
 
+    /workingtrees/{program_id}:
+        get:
+            summary: 'Get the workingtree of a project'
+            parameters:
+             - name: program_id
+               in: path
+               type: string
+               required: true
+            responses:
+                200:
+                    description: 'Returns the workingtree of a program'
+                    schema:
+                        type: object
+                        properties:
+                            data:
+                                $ref: '#/definitions/WorkingTree'
+        patch:
+            summary: 'Checkout a previous version reset the hedgehog branch to this version'
+            parameters:
+            - name: program_id
+              in: path
+              type: string
+              required: true
+            - name: workingtree
+              in: body
+              required: true
+              # TODO: specify which arguments are allowed
+              schema:
+                  type: object
+                  properties:
+                      data:
+                          $ref: '#/definitions/WorkingTree'
+            responses:
+                200:
+                    description: 'Returns the updated workingtree'
+                    schema:
+                        type: object
+                        properties:
+                            data:
+                                $ref: '#/definitions/WorkingTree'
+    /workingtrees/{program_id}/directories:
+        post:
+            summary: 'Create a new directory in the workingtree'
+            parameters:
+            - name: program_id
+              in: path
+              type: string
+              required: true
+            - name: directory
+              in: body
+              required: true
+              # TODO: specify which arguments are allowed
+              schema:
+                  type: object
+                  properties:
+                      data:
+                          $ref: '#/definitions/Directory'
+            responses:
+                200:
+                    description: 'Returns the newly created directory'
+                    schema:
+                        type: object
+                        properties:
+                            data:
+                                $ref: '#/definitions/Directory'
+    /workingtrees/{program_id}/directories/{directory_id}:
+        get:
+            summary: 'Get a directory in the workingtree'
+            parameters:
+            - name: program_id
+              in: path
+              type: string
+              required: true
+            - name: directory_id
+              in: path
+              type: string
+              required: true
+            responses:
+                200:
+                    description: 'Returns the requested directory'
+                    schema:
+                        type: object
+                        properties:
+                            data:
+                                $ref: '#/definitions/Directory'
+        patch:
+            summary: 'Update a directory (rename or chmod)'
+            parameters:
+            - name: program_id
+              in: path
+              type: string
+              required: true
+            - name: directory_id
+              in: path
+              type: string
+              required: true
+            - name: directory
+              in: body
+              required: true
+              # TODO: specify which arguments are allowed
+              schema:
+                  type: object
+                  properties:
+                      data:
+                          $ref: '#/definitions/Directory'
+            responses:
+                200:
+                    description: 'Returns the updated directory'
+                    schema:
+                         type: object
+                         properties:
+                             data:
+                                 $ref: '#/definitions/Directory'
+        delete:
+            summary: 'Delete a directory and all included files and subdirectories (use with caution!)'
+            parameters:
+            - name: program_id
+              in: path
+              type: string
+              required: true
+            - name: directory_id
+              in: path
+              type: string
+              required: true
+            responses:
+                200:
+                    description: 'The resource has been deleted accordingly'
 
-    # /workingtrees:
-    #     get:
-    # /workingtrees/{program_id}:
-    #     get:
-    #     patch:
-    # /workingtrees/{program_id}/directories:
-    #     get:
-    #     post:
-    # /workingtrees/{program_id}/directories/{directory_id}:
-    #     get:
-    #     patch:
-    #     delete:
-    # /workingtrees/{program_id}/files:
-    #     get:
-    #     post:
-    # /workingtrees/{program_id}/files/{file_id}:
-    #     get:
-    #     patch:
-    #     delete:
-    #
+    /workingtrees/{program_id}/files:
+        post:
+            summary: 'Create a new file within a program'
+            parameters:
+            - name: program_id
+              in: path
+              type: string
+              required: true
+            - name: file
+              in: body
+              required: true
+              # TODO: specify which arguments are allowed
+              schema:
+                  type: object
+                  properties:
+                      data:
+                          $ref: '#/definitions/File'
+            responses:
+                200:
+                    description: 'Returns the newly created file'
+                    schema:
+                         type: object
+                         properties:
+                             data:
+                                 $ref: '#/definitions/File'
+    /workingtrees/{program_id}/files/{file_id}:
+        get:
+            summary: 'Get a file'
+            parameters:
+            - name: program_id
+              in: path
+              type: string
+              required: true
+            - name: file_id
+              in: path
+              type: string
+              required: true
+            responses:
+                200:
+                    description: 'Returns the requested file'
+                    schema:
+                         type: object
+                         properties:
+                             data:
+                                 $ref: '#/definitions/File'
+        patch:
+            summary: 'Update a file'
+            parameters:
+            - name: program_id
+              in: path
+              type: string
+              required: true
+            - name: file_id
+              in: path
+              type: string
+              required: true
+            - name: file
+              in: body
+              required: true
+              # TODO: specify which arguments are allowed
+              schema:
+                  type: object
+                  properties:
+                      data:
+                          $ref: '#/definitions/File'
+            responses:
+                200:
+                    description: 'Returns the updated version of the file'
+                    schema:
+                         type: object
+                         properties:
+                             data:
+                                 $ref: '#/definitions/File'
+        delete:
+            summary: 'Delete a file from a project'
+            parameters:
+            - name: program_id
+              in: path
+              type: string
+              required: true
+            - name: file_id
+              in: path
+              type: string
+              required: true
+            responses:
+                200:
+                    description: 'The resource has been deleted accordingly'
+
     /sensors:
         get:
             summary: 'Get a list of all sensors with its current values'
@@ -441,8 +636,6 @@ definitions:
                         type: string
                     encoding:
                         type: string
-                    mode:
-                        type: string
                     size:
                         type: integer
 
@@ -478,9 +671,15 @@ definitions:
                 properties:
                     path:
                         type: string
+                    mode:
+                        type: string
+                    type:
+                        type: string
             relationships:
                 type: object
                 properties:
+                    tree:
+                        $ref: '#/definitions/JsonApiOneLink'
                     child:
                         $ref: '#/definitions/JsonApiOneLink'
 
@@ -509,6 +708,111 @@ definitions:
                         $ref: '#/definitions/JsonApiOneLink'
                     parents:
                         $ref: '#/definitions/JsonApiManyLink'
+
+    WorkingTree:
+        type: object
+        required:
+        - type
+        properties:
+            id:
+                type: string
+            type:
+                type: string
+                enum:
+                - workingtree
+            attributes:
+                type: object
+                properties:
+                    clean:
+                        type: boolean
+            relationships:
+                type: object
+                properties:
+                    rootDirectory:
+                        $ref: '#/definitions/JsonApiOneLink'
+                    version:
+                        $ref: '#/definitions/JsonApiOneLink'
+    Directory:
+        type: object
+        required:
+        - type
+        properties:
+            id:
+                type: string
+            type:
+                type: string
+                enum:
+                - directory
+            attributes:
+                type: object
+                properties:
+                    mode:
+                        type: string
+                    path:
+                        type: string
+            relationships:
+                type: object
+                properties:
+                    parent:
+                        $ref: '#/definitions/JsonApiOneLink'
+                    items:
+                        $ref: '#/definitions/JsonApiManyLink'
+    DirectoryItem:
+        type: object
+        required:
+        - type
+        properties:
+            id:
+                type: string
+            type:
+                type: string
+                enum:
+                - directory-item
+            attributes:
+                type: object
+                properties:
+                    path:
+                        type: string
+                    mode:
+                        type: string
+                    type:
+                        type: string
+            relationships:
+                type: object
+                properties:
+                    directory:
+                        $ref: '#/definitions/JsonApiOneLink'
+                    child:
+                        $ref: '#/definitions/JsonApiOneLink'
+    File:
+        type: object
+        required:
+        - type
+        properties:
+            id:
+                type: string
+            type:
+                type: string
+                enum:
+                - file
+            attributes:
+                type: object
+                properties:
+                    path:
+                        type: string
+                    mode:
+                        type: string
+                    content:
+                        type: string
+                    encoding:
+                        type: string
+                    size:
+                        type: integer
+            relationships:
+                type: object
+                properties:
+                    directory:
+                        $ref: '#/definitions/JsonApiOneLink'
 
     Sensor:
         type: object
