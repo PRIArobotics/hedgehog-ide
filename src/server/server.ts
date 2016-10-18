@@ -1,10 +1,8 @@
 /**
  * Created by markus on 14/10/16.
  */
-import Hapi from 'hapi';
-import path from 'path';
-
-import inert from 'inert';
+import Hapi = require('hapi');
+import path = require('path');
 
 // Create a server with a host and port
 const server = new Hapi.Server({
@@ -21,7 +19,8 @@ server.connection({
     port: 8000
 });
 
-server.register(inert);
+// tslint:disable-next-line
+server.register(require('inert'));
 
 server.route({
     method: 'GET',
