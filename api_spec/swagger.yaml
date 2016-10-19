@@ -577,16 +577,80 @@ paths:
                             data:
                                 $ref: '#/definitions/Motor'
 
-    # /run:
-    #     get:
-    #     post:
-    #     delete:
-    # /run/stdout:
-    #     get:
-    # /run/stdin:
-    #     get:
-    #     patch:
+    /run:
+        get:
+            summary: 'Get information about the current program execution'
+            responses:
+                200:
+                    description: 'Returns information of the current program execution'
+                    schema:
+                        $ref: '#/definitions/ProgramRun'
+        post:
+            summary: 'Run a program'
+            parameters:
+            - name: program
+              in: body
+              required: true
+              # TODO: specify which arguments are allowed
+              schema:
+                  type: object
+                  properties:
+                      data:
+                          type: object
+                          required:
+                          - type
+                          properties:
+                              id:
+                                  type: string
+                              type:
+                                  type: string
+                                  enum:
+                                  - run
+                              relationships:
+                                  type: object
+                                  properties:
+                                      program:
+                                          $ref: '#/definitions/JsonApiOneLink'
+            responses:
+                201:
+                    description: 'Returns information about the program spawned program'
+                    schema:
+                        $ref: '#/definitions/Program'
+        delete:
+            summary: 'Stop the current program execution'
+            responses:
+                204:
+                    description: 'The program execution has been stopped properly'
+    /run/stdout:
+        get:
+            summary: 'Get the standard output of the program execution'
+            responses:
+                200:
+                    description: 'Returns a list of output strings produced during the program execution'
+                    schema:
+                        $ref: '#/definitions/ProgramIO'
+    /run/stdin:
+        get:
+            summary: 'Get text which has been sent to the program so far'
+            responses:
+                200:
+                    description: 'Returns a list of input text sent to the program'
+                    schema:
+                        $ref: '#/definitions/ProgramIO'
 
+        patch:
+            summary: 'Send text to the running program'
+            parameters:
+            - name: program-io
+              in: body
+              required: true
+              schema:
+                  $ref: '#/definitions/ProgramIO'
+            responses:
+                200:
+                    description: 'Returns the updated program input'
+                    schema:
+                        $ref: '#/definitions/ProgramIO'
 definitions:
     Program:
         type: object
@@ -870,6 +934,58 @@ definitions:
                     velocity:
                         type: integer
 
+    ProgramRun:
+        type: object
+        properties:
+            data:
+                type: object
+                required:
+                - type
+                properties:
+                    id:
+                        type: string
+                    type:
+                        type: string
+                        enum:
+                        - run
+                    attributes:
+                        type: object
+                        properties:
+                            startTime:
+                                type: string
+                                format: dateTime
+                    relationships:
+                        type: object
+                        properties:
+                            program:
+                                $ref: '#/definitions/JsonApiOneLink'
+                            input:
+                                $ref: '#/definitions/JsonApiOneLink'
+                            output:
+                                $ref: '#/definitions/JsonApiOneLink'
+
+    ProgramIO:
+        type: object
+        properties:
+            data:
+                type: object
+                required:
+                - type
+                properties:
+                    id:
+                        type: string
+                    type:
+                        type: string
+                        enum:
+                        - program-io
+                    attributes:
+                        type: object
+                        properties:
+                            io:
+                                type: array
+                                items:
+                                    type: string
+
     JsonApiOneLink:
         type: object
         properties:
@@ -910,18 +1026,3 @@ definitions:
                 type: string
             type:
                 type: string
-
-#definitions:
-#    JsonApiWrapper:
-#        type: object
-#        properties:
-#            data:
-#                $ref: '#/definitions/JsonApiDataWrapper'
-#            errors:
-#                $ref: '#/definitions/Error'
-#                description: 'an array of error objects'
-#            meta:
-#                type: object
-#                description: 'a meta object that contains non-standard meta-information'
-#    Error:
-#        type: object
