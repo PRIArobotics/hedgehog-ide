@@ -18,26 +18,26 @@ export class AceEditorDirective {
     @Output() public editorRef = new EventEmitter();
 
 
-    private readOnly: any;
-    private theme: any;
-    private mode: any;
+    public _readOnly: any;
+    public _theme: any;
+    public _mode: any;
 
     @Input() set options(value) {
         this.editor.setOptions(value || {});
     }
 
     @Input() set readOnly(value) {
-        this.readOnly = value;
+        this._readOnly = value;
         this.editor.setReadOnly(value);
     }
 
     @Input() set theme(value) {
-        this.theme = value;
+        this._theme = value;
         this.editor.setTheme(`ace/theme/${value}`);
     }
 
     @Input() set mode(value) {
-        this.mode = value;
+        this._mode = value;
         this.editor.getSession().setMode(`ace/mode/${value}`);
     }
 

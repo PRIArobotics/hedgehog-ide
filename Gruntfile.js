@@ -7,7 +7,7 @@ module.exports = function(grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
         ts: {
-            client: {
+            all: {
                 src: ['src/**/*.ts'],
                 outDir: 'build',
                 options: {
@@ -39,13 +39,35 @@ module.exports = function(grunt) {
         },
         tslint: {
             options: {
-                configuration: "tslint.json",
+                configuration: "tslint.json"
             },
             server: {
                 src: ['src/server/**/*.ts']
             },
             client: {
                 src: ['src/client/**/*.ts']
+            }
+        },
+        concurrent: {
+            run: ['watch:compile', 'watch:copy', 'run-server'],
+            options: {
+                logConcurrentOutput: true
+            }
+        },
+        watch: {
+            copy: {
+                files: 'src/**/*.html',
+                tasks: ['copy'],
+                options: {
+                    interrupt: true
+                }
+            },
+            compile: {
+                files: 'src/**/*.ts',
+                tasks: ['ts:all'],
+                options: {
+                    interrupt: true
+                }
             }
         }
     });
@@ -55,8 +77,10 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-symlink');
+    grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-concurrent');
 
-    grunt.registerTask('default', ['clean', 'ts', 'copy', 'symlink']);
+    grunt.registerTask('build', ['clean', 'ts:all', 'copy', 'symlink']);
 
     grunt.registerTask('swagger-validate', function() {
         var done = this.async();
@@ -94,5 +118,23 @@ module.exports = function(grunt) {
             grunt.log.ok('API specification is valid.');
             done();
         });
-    })
+    });
+
+    grunt.registerTask('run-server', function() {
+        var options = {
+            cmd: 'node',
+            args: ['build/server/server.js']
+        };
+
+        var done = this.async();
+
+        var nodetask = grunt.util.spawn(options, function doneFunction(error, result, code) {
+            done()
+        });
+
+        nodetask.stdout.pipe(process.stdout);
+        nodetask.stderr.pipe(process.stderr);
+    });
+
+    grunt.registerTask('default', ['concurrent:run'] );
 };
