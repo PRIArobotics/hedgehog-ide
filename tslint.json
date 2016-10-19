@@ -8,7 +8,8 @@
     "curly": false,
     "no-consecutive-blank-lines": false,
     "whitespace": [false, "check-branch"],
-    "ordered-imports": false
+    "ordered-imports": false,
+    "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore"]
   },
   "rulesDirectory": [
     "node_modules/codelyzer"

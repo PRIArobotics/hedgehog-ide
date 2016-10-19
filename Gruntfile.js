@@ -49,7 +49,7 @@ module.exports = function(grunt) {
             }
         },
         concurrent: {
-            run: ['watch:compile', 'watch:copy', 'run-server'],
+            run: [['build', 'run-server'], 'watch:compile', 'watch:copy'],
             options: {
                 logConcurrentOutput: true
             }
@@ -63,7 +63,7 @@ module.exports = function(grunt) {
                 }
             },
             compile: {
-                files: 'src/**/*.ts',
+                files: 'src/**/*.c',
                 tasks: ['ts:all'],
                 options: {
                     interrupt: true
