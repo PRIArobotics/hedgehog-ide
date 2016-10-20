@@ -599,6 +599,7 @@ paths:
                           type: object
                           required:
                           - type
+                          - relationships
                           properties:
                               id:
                                   type: string
@@ -610,7 +611,7 @@ paths:
                                   type: object
                                   properties:
                                       program:
-                                          $ref: '#/definitions/JsonApiOneLink'
+                                          $ref: '#/definitions/JsonApiRelatedLink'
             responses:
                 201:
                     description: 'Returns information about the program spawned program'
@@ -678,9 +679,9 @@ definitions:
                 type: object
                 properties:
                     versions:
-                        $ref: '#/definitions/JsonApiManyLink'
+                        $ref: '#/definitions/JsonApiRelatedLink'
                     workingtree:
-                        $ref: '#/definitions/JsonApiOneLink'
+                        $ref: '#/definitions/JsonApiRelatedLink'
 
     Blob:
         type: object
@@ -718,7 +719,7 @@ definitions:
                 type: object
                 properties:
                     items:
-                        $ref: '#/definitions/JsonApiManyLink'
+                        $ref: '#/definitions/JsonApiRelationshipIncludedMany'
     TreeItem:
         type: object
         required:
@@ -743,9 +744,9 @@ definitions:
                 type: object
                 properties:
                     tree:
-                        $ref: '#/definitions/JsonApiOneLink'
+                        $ref: '#/definitions/JsonApiRelatedLink'
                     child:
-                        $ref: '#/definitions/JsonApiOneLink'
+                        $ref: '#/definitions/JsonApiRelationshipIncludedOne'
 
     Version:
         type: object
@@ -767,11 +768,11 @@ definitions:
                 type: object
                 properties:
                     tree:
-                        $ref: '#/definitions/JsonApiOneLink'
+                        $ref: '#/definitions/JsonApiRelatedLink'
                     program:
-                        $ref: '#/definitions/JsonApiOneLink'
+                        $ref: '#/definitions/JsonApiRelatedLink'
                     parents:
-                        $ref: '#/definitions/JsonApiManyLink'
+                        $ref: '#/definitions/JsonApiRelationshipIncludedMany'
 
     WorkingTree:
         type: object
@@ -793,9 +794,9 @@ definitions:
                 type: object
                 properties:
                     rootDirectory:
-                        $ref: '#/definitions/JsonApiOneLink'
+                        $ref: '#/definitions/JsonApiRelationshipIncludedOne'
                     version:
-                        $ref: '#/definitions/JsonApiOneLink'
+                        $ref: '#/definitions/JsonApiRelatedLink'
     Directory:
         type: object
         required:
@@ -818,9 +819,9 @@ definitions:
                 type: object
                 properties:
                     parent:
-                        $ref: '#/definitions/JsonApiOneLink'
+                        $ref: '#/definitions/JsonApiRelatedLink'
                     items:
-                        $ref: '#/definitions/JsonApiManyLink'
+                        $ref: '#/definitions/JsonApiRelationshipIncludedMany'
     DirectoryItem:
         type: object
         required:
@@ -845,9 +846,9 @@ definitions:
                 type: object
                 properties:
                     directory:
-                        $ref: '#/definitions/JsonApiOneLink'
+                        $ref: '#/definitions/JsonApiRelatedLink'
                     child:
-                        $ref: '#/definitions/JsonApiOneLink'
+                        $ref: '#/definitions/JsonApiRelationshipIncludedOne'
     File:
         type: object
         required:
@@ -876,7 +877,7 @@ definitions:
                 type: object
                 properties:
                     directory:
-                        $ref: '#/definitions/JsonApiOneLink'
+                        $ref: '#/definitions/JsonApiRelatedLink'
 
     Sensor:
         type: object
@@ -958,11 +959,29 @@ definitions:
                         type: object
                         properties:
                             program:
-                                $ref: '#/definitions/JsonApiOneLink'
+                                $ref: '#/definitions/JsonApiRelatedLink'
                             input:
-                                $ref: '#/definitions/JsonApiOneLink'
+                                type: object
+                                properties:
+                                    links:
+                                        type: object
+                                        properties:
+                                            related:
+                                                type: string
+                                                format: uri
+                                    data:
+                                        $ref: '#/definitions/JsonApiResourceIdentifier'
                             output:
-                                $ref: '#/definitions/JsonApiOneLink'
+                                type: object
+                                properties:
+                                    links:
+                                        type: object
+                                        properties:
+                                            related:
+                                                type: string
+                                                format: uri
+                                    data:
+                                        $ref: '#/definitions/JsonApiResourceIdentifier'
 
     ProgramIO:
         type: object
@@ -986,36 +1005,27 @@ definitions:
                                 items:
                                     type: string
 
-    JsonApiOneLink:
+    JsonApiRelatedLink:
         type: object
         properties:
             links:
                 type: object
                 properties:
-                    self:
-                        type: string
-                        format: uri
                     related:
                         type: string
                         format: uri
-                    data:
-                        $ref: '#/definitions/JsonApiResourceIdentifier'
-    JsonApiManyLink:
+    JsonApiRelationshipIncludedOne:
         type: object
         properties:
-            links:
-                type: object
-                properties:
-                    self:
-                        type: string
-                        format: uri
-                    related:
-                        type: string
-                        format: uri
-                    data:
-                        type: array
-                        items:
-                            $ref: '#/definitions/JsonApiResourceIdentifier'
+            data:
+                $ref: '#/definitions/JsonApiResourceIdentifier'
+    JsonApiRelationshipIncludedMany:
+        type: object
+        properties:
+            data:
+                type: array
+                items:
+                    $ref: '#/definitions/JsonApiResourceIdentifier'
     JsonApiResourceIdentifier:
         type: object
         required:
