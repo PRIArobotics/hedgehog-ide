@@ -92,7 +92,7 @@ paths:
               type: string
               required: true
             responses:
-                200:
+                204:
                     description: 'The resource has been deleted accordingly'
 
     /blobs/{program_id}/{blob_id}:
@@ -325,7 +325,7 @@ paths:
               type: string
               required: true
             responses:
-                200:
+                204:
                     description: 'The resource has been deleted accordingly'
 
     /workingtrees/{program_id}/files:
@@ -413,7 +413,7 @@ paths:
               type: string
               required: true
             responses:
-                200:
+                204:
                     description: 'The resource has been deleted accordingly'
 
     /sensors:
