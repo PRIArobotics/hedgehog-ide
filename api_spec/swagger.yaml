@@ -1,1065 +1,1065 @@
 swagger: '2.0'
 info:
-    title: Hedgehog Deployment API
-    description: Program management and deployment API of the Hedgehog controller
-    version: '1.0.0'
-    contact:
-        name: 'Markus Klein'
-        url: 'http://pria.at'
-        email: 'klein@pria.at'
+  title: Hedgehog Deployment API
+  description: Program management and deployment API of the Hedgehog controller
+  version: '1.0.0'
+  contact:
+    name: 'Markus Klein'
+    url: 'http://pria.at'
+    email: 'klein@pria.at'
 produces:
-    - application/vnd.api+json
+- application/vnd.api+json
 consumes:
-    - application/vnd.api+json
+- application/vnd.api+json
 paths:
-    /programs:
-        get:
-            summary: 'Get a list of all programs stored on the controller'
-            responses:
-                200:
-                    description: 'Returns a list for programs'
-                    schema:
-                        type: object
-                        properties:
-                            data:
-                                type: array
-                                items:
-                                    $ref: '#/definitions/Program'
-        post:
-            summary: 'Create a new program'
-            parameters:
-            - name: program
-              in: body
-              required: true
-              schema:
-                  type: object
-                  properties:
-                      data:
-                          $ref: '#/definitions/Program'
-            responses:
-                201:
-                    description: 'Returns the newly created program'
-                    schema:
-                        type: object
-                        properties:
-                            data:
-                                $ref: '#/definitions/Program'
-    /programs/{program_id}:
-        get:
-            summary: 'Get a single program'
-            parameters:
-            - name: program_id
-              in: path
-              type: string
-              required: true
-            responses:
-                200:
-                    description: 'Returns the program'
-                    schema:
-                        type: object
-                        properties:
-                            data:
-                                $ref: '#/definitions/Program'
-        patch:
-            summary: 'Partially update a program'
-            parameters:
-            - name: program_id
-              in: path
-              type: string
-              required: true
-            - name: program
-              in: body
-              required: true
-              schema:
-                  type: object
-                  properties:
-                      data:
-                          $ref: '#/definitions/Program'
-            responses:
-                200:
-                    description: 'Returns a representation of the updated program'
-                    schema:
-                        type: object
-                        properties:
-                            data:
-                                $ref: '#/definitions/Program'
-
-        delete:
-            summary: 'Delete a program and all its related resources'
-            parameters:
-            - name: program_id
-              in: path
-              type: string
-              required: true
-            responses:
-                204:
-                    description: 'The resource has been deleted accordingly'
-
-    /blobs/{program_id}/{blob_id}:
-        get:
-            parameters:
-            - name: program_id
-              in: path
-              type: string
-              required: true
-            - name: blob_id
-              in: path
-              type: string
-              required: true
-            responses:
-                200:
-                    description: 'Returns the requested blob'
-                    schema:
-                        $ref: '#/definitions/Blob'
-
-    /trees/{program_id}/{tree_id}:
-        get:
-            summary: 'Get a tree object of a program'
-            parameters:
-            - name: program_id
-              in: path
-              type: string
-              required: true
-            - name: tree_id
-              in: path
-              type: string
-              required: true
-            responses:
-                200:
-                    description: 'Returns a requested tree'
-                    schema:
-                        type: object
-                        properties:
-                            data:
-                                $ref: '#/definitions/Tree'
-                            included:
-                                type: array
-                                items:
-                                    $ref: '#/definitions/TreeItem'
-
-
-    /versions/{program_id}:
-         get:
-             summary: 'Get a list of versions of a program'
-             parameters:
-             - name: program_id
-               in: path
-               type: string
-               required: true
-             responses:
-                 200:
-                     description: 'Returns a list of versions'
-                     schema:
-                         type: object
-                         properties:
-                             data:
-                                 type: array
-                                 items:
-                                     $ref: '#/definitions/Version'
-         post:
-             summary: 'Create a new version from the program in the working tree'
-             parameters:
-             - name: program_id
-               in: path
-               type: string
-               required: true
-             - name: version
-               in: body
-               schema:
-                   type: object
-                   properties:
-                       data:
-                           $ref: '#/definitions/Version'
-             responses:
-                 201:
-                     description: 'Returns the newly created version'
-                     schema:
-                         type: object
-                         properties:
-                             data:
-                                 $ref: '#/definitions/Version'
-
-    /versions/{program_id}/{version_id}:
-         get:
-             summary: 'Get a single version'
-             parameters:
-              - name: program_id
-                in: path
-                type: string
-                required: true
-              - name: version_id
-                in: path
-                type: string
-                required: true
-             responses:
-                 200:
-                     description: 'Returns information about the requested version'
-                     schema:
-                         type: object
-                         properties:
-                             data:
-                                 $ref: '#/definitions/Version'
-    /versions/{program_id}/{version_id}/parents:
-        get:
-            summary: 'Get a list of parents for this version'
-            parameters:
-            - name: program_id
-              in: path
-              type: string
-              required: true
-            - name: version_id
-              in: path
-              type: string
-              required: true
-            responses:
-                200:
-                    description: 'Returns parents for a version'
-                    schema:
-                        type: object
-                        properties:
-                            data:
-                                type: array
-                                items:
-                                    $ref: '#/definitions/Version'
-
-    /workingtrees/{program_id}:
-        get:
-            summary: 'Get the workingtree of a project'
-            parameters:
-             - name: program_id
-               in: path
-               type: string
-               required: true
-            responses:
-                200:
-                    description: 'Returns the workingtree of a program'
-                    schema:
-                        type: object
-                        properties:
-                            data:
-                                $ref: '#/definitions/WorkingTree'
-                            included:
-                                type: array
-                                items:
-                                    type: object
-        patch:
-            summary: 'Checkout a previous version reset the hedgehog branch to this version'
-            parameters:
-            - name: program_id
-              in: path
-              type: string
-              required: true
-            - name: workingtree
-              in: body
-              required: true
-              # TODO: specify which arguments are allowed
-              schema:
-                  type: object
-                  properties:
-                      data:
-                          $ref: '#/definitions/WorkingTree'
-            responses:
-                200:
-                    description: 'Returns the updated workingtree'
-                    schema:
-                        type: object
-                        properties:
-                            data:
-                                $ref: '#/definitions/WorkingTree'
-    /workingtrees/{program_id}/directories:
-        post:
-            summary: 'Create a new directory in the workingtree'
-            parameters:
-            - name: program_id
-              in: path
-              type: string
-              required: true
-            - name: directory
-              in: body
-              required: true
-              # TODO: specify which arguments are allowed
-              schema:
-                  type: object
-                  properties:
-                      data:
-                          $ref: '#/definitions/Directory'
-            responses:
-                200:
-                    description: 'Returns the newly created directory'
-                    schema:
-                        type: object
-                        properties:
-                            data:
-                                $ref: '#/definitions/Directory'
-    /workingtrees/{program_id}/directories/{directory_id}:
-        get:
-            summary: 'Get a directory in the workingtree'
-            parameters:
-            - name: program_id
-              in: path
-              type: string
-              required: true
-            - name: directory_id
-              in: path
-              type: string
-              required: true
-            responses:
-                200:
-                    description: 'Returns the requested directory'
-                    schema:
-                        type: object
-                        properties:
-                            data:
-                                $ref: '#/definitions/Directory'
-                            included:
-                                type: array
-                                items:
-                                    type: object
-        patch:
-            summary: 'Update a directory (rename or chmod)'
-            parameters:
-            - name: program_id
-              in: path
-              type: string
-              required: true
-            - name: directory_id
-              in: path
-              type: string
-              required: true
-            - name: directory
-              in: body
-              required: true
-              # TODO: specify which arguments are allowed
-              schema:
-                  type: object
-                  properties:
-                      data:
-                          $ref: '#/definitions/Directory'
-            responses:
-                200:
-                    description: 'Returns the updated directory'
-                    schema:
-                         type: object
-                         properties:
-                             data:
-                                 $ref: '#/definitions/Directory'
-        delete:
-            summary: 'Delete a directory and all included files and subdirectories (use with caution!)'
-            parameters:
-            - name: program_id
-              in: path
-              type: string
-              required: true
-            - name: directory_id
-              in: path
-              type: string
-              required: true
-            responses:
-                204:
-                    description: 'The resource has been deleted accordingly'
-
-    /workingtrees/{program_id}/files:
-        post:
-            summary: 'Create a new file within a program'
-            parameters:
-            - name: program_id
-              in: path
-              type: string
-              required: true
-            - name: file
-              in: body
-              required: true
-              # TODO: specify which arguments are allowed
-              schema:
-                  type: object
-                  properties:
-                      data:
-                          $ref: '#/definitions/File'
-            responses:
-                200:
-                    description: 'Returns the newly created file'
-                    schema:
-                         type: object
-                         properties:
-                             data:
-                                 $ref: '#/definitions/File'
-    /workingtrees/{program_id}/files/{file_id}:
-        get:
-            summary: 'Get a file'
-            parameters:
-            - name: program_id
-              in: path
-              type: string
-              required: true
-            - name: file_id
-              in: path
-              type: string
-              required: true
-            responses:
-                200:
-                    description: 'Returns the requested file'
-                    schema:
-                         type: object
-                         properties:
-                             data:
-                                 $ref: '#/definitions/File'
-        patch:
-            summary: 'Update a file'
-            parameters:
-            - name: program_id
-              in: path
-              type: string
-              required: true
-            - name: file_id
-              in: path
-              type: string
-              required: true
-            - name: file
-              in: body
-              required: true
-              # TODO: specify which arguments are allowed
-              schema:
-                  type: object
-                  properties:
-                      data:
-                          $ref: '#/definitions/File'
-            responses:
-                200:
-                    description: 'Returns the updated version of the file'
-                    schema:
-                         type: object
-                         properties:
-                             data:
-                                 $ref: '#/definitions/File'
-        delete:
-            summary: 'Delete a file from a project'
-            parameters:
-            - name: program_id
-              in: path
-              type: string
-              required: true
-            - name: file_id
-              in: path
-              type: string
-              required: true
-            responses:
-                204:
-                    description: 'The resource has been deleted accordingly'
-
-    /sensors:
-        get:
-            summary: 'Get a list of all sensors with its current values'
-            responses:
-                200:
-                    description: 'Returns all sensors'
-                    schema:
-                        type: object
-                        properties:
-                            data:
-                                type: array
-                                items:
-                                    $ref: '#/definitions/Sensor'
-    /sensors/{sensor_id}:
-        get:
-            summary: 'Get a single sensor'
-            parameters:
-             - name: sensor_id
-               in: path
-               type: string
-               required: true
-            responses:
-                200:
-                    description: 'Returns the requested sensor'
-                    schema:
-                        type: object
-                        properties:
-                            data:
-                                $ref: '#/definitions/Sensor'
-        patch:
-            summary: Set a sensor's pullup
-            parameters:
-            - name: sensor_id
-              in: path
-              type: string
-              required: true
-            - name: sensor
-              in: body
-              required: true
-              # TODO: specify which arguments are allowed
-              schema:
-                  type: object
-                  properties:
-                      data:
-                          $ref: '#/definitions/Sensor'
-            responses:
-                200:
-                    description: 'Returns the sensor with the updated pullup resistor'
-                    schema:
-                        type: object
-                        properties:
-                            data:
-                                $ref: '#/definitions/Sensor'
-    /servos:
-        get:
-            summary: 'Get a list of all servos'
-            responses:
-                200:
-                    description: 'Returns all sensors'
-                    schema:
-                        type: object
-                        properties:
-                            data:
-                                type: array
-                                items:
-                                    $ref: '#/definitions/Servo'
-    /servos/{servo_id}:
-        get:
-            summary: 'Get a single servo'
-            parameters:
-            - name: servo_id
-              in: path
-              type: string
-              required: true
-            responses:
-                200:
-                    description: 'Returns the requested servo'
-                    schema:
-                        type: object
-                        properties:
-                            data:
-                                $ref: '#/definitions/Servo'
-        patch:
-            summary: 'Enable a servo or set its position'
-            parameters:
-            - name: servo_id
-              in: path
-              type: string
-              required: true
-            - name: servo
-              in: body
-              required: true
-              # TODO: specify which arguments are allowed
-              schema:
-                  type: object
-                  properties:
-                      data:
-                          $ref: '#/definitions/Servo'
-            responses:
-                200:
-                    description: 'Returns the updated servo data'
-                    schema:
-                        type: object
-                        properties:
-                            data:
-                                $ref: '#/definitions/Servo'
-
-    /motors:
-        get:
-            summary: 'Get a list of all motors'
-            responses:
-                200:
-                    description: 'Returns an array containing motor'
-                    schema:
-                        type: object
-                        properties:
-                            data:
-                                type: array
-                                items:
-                                    $ref: '#/definitions/Motor'
-    /motors/{motor_id}:
-        get:
-            summary: 'Get information about a single motor'
-            parameters:
-            - name: motor_id
-              in: path
-              type: string
-              required: true
-            responses:
-                200:
-                    description: 'Returns the requested motor'
-                    schema:
-                        type: object
-                        properties:
-                            data:
-                                $ref: '#/definitions/Motor'
-        patch:
-            summary: 'Control a motor'
-            parameters:
-            - name: motor_id
-              in: path
-              type: string
-              required: true
-            - name: motor
-              in: body
-              required: true
-              # TODO: specify which arguments are allowed
-              schema:
-                  type: object
-                  properties:
-                      data:
-                          $ref: '#/definitions/Motor'
-            responses:
-                200:
-                    description: 'Returns the updated motor data'
-                    schema:
-                        type: object
-                        properties:
-                            data:
-                                $ref: '#/definitions/Motor'
-
-    /run:
-        get:
-            summary: 'Get information about the current program execution'
-            responses:
-                200:
-                    description: 'Returns information of the current program execution'
-                    schema:
-                        $ref: '#/definitions/ProgramRun'
-        post:
-            summary: 'Run a program'
-            parameters:
-            - name: program
-              in: body
-              required: true
-              schema:
-                  type: object
-                  properties:
-                      data:
-                          type: object
-                          required:
-                          - type
-                          - relationships
-                          properties:
-                              type:
-                                  type: string
-                                  enum:
-                                  - run
-                              relationships:
-                                  type: object
-                                  properties:
-                                      program:
-                                          $ref: '#/definitions/JsonApiRelatedLink'
-            responses:
-                201:
-                    description: 'Returns information about the program spawned program'
-                    schema:
-                        $ref: '#/definitions/Program'
-        delete:
-            summary: 'Stop the current program execution'
-            responses:
-                204:
-                    description: 'The program execution has been stopped properly'
-    /run/stdout:
-        get:
-            summary: 'Get the standard output of the program execution'
-            responses:
-                200:
-                    description: 'Returns a list of output strings produced during the program execution'
-                    schema:
-                        $ref: '#/definitions/ProgramIO'
-    /run/stdin:
-        get:
-            summary: 'Get text which has been sent to the program so far'
-            responses:
-                200:
-                    description: 'Returns a list of input text sent to the program'
-                    schema:
-                        $ref: '#/definitions/ProgramIO'
-
-        patch:
-            summary: 'Send text to the running program'
-            parameters:
-            - name: program-io
-              in: body
-              required: true
-              schema:
-                  $ref: '#/definitions/ProgramIO'
-            responses:
-                200:
-                    description: 'Returns the updated program input'
-                    schema:
-                        $ref: '#/definitions/ProgramIO'
-definitions:
-    Program:
-        type: object
-        required:
-        - type
-        properties:
-            id:
-                type: string
-            type:
-                type: string
-                enum:
-                - program
-            attributes:
-                type: object
-                required:
-                - name
-                - creationDate
-                properties:
-                    name:
-                        type: string
-                    creationDate:
-                        type: string
-                        format: dateTime
-            relationships:
-                type: object
-                properties:
-                    versions:
-                        $ref: '#/definitions/JsonApiRelatedLink'
-                    workingtree:
-                        $ref: '#/definitions/JsonApiRelatedLink'
-
-    Blob:
-        type: object
-        required:
-        - type
-        properties:
-            id:
-                type: string
-            type:
-                type: string
-                enum:
-                - blob
-            attributes:
-                type: object
-                properties:
-                    content:
-                        type: string
-                    encoding:
-                        type: string
-                    size:
-                        type: integer
-
-    Tree:
-        type: object
-        required:
-        - type
-        properties:
-            id:
-                type: string
-            type:
-                type: string
-                enum:
-                - tree
-            relationships:
-                type: object
-                properties:
-                    items:
-                        $ref: '#/definitions/JsonApiRelationshipIncludedMany'
-    TreeItem:
-        type: object
-        required:
-        - type
-        properties:
-            id:
-                type: string
-            type:
-                type: string
-                enum:
-                - tree-item
-            attributes:
-                type: object
-                properties:
-                    path:
-                        type: string
-                    mode:
-                        type: string
-                    type:
-                        type: string
-            relationships:
-                type: object
-                properties:
-                    tree:
-                        $ref: '#/definitions/JsonApiRelatedLink'
-                    child:
-                        $ref: '#/definitions/JsonApiRelatedLink'
-
-    Version:
-        type: object
-        properties:
-            id:
-                type: string
-            type:
-                type: string
-                enum:
-                - version
-            attributes:
-                type: object
-                properties:
-                    tag:
-                        type: string
-                    message:
-                        type: string
-            relationships:
-                type: object
-                properties:
-                    tree:
-                        $ref: '#/definitions/JsonApiRelatedLink'
-                    program:
-                        $ref: '#/definitions/JsonApiRelatedLink'
-                    parents:
-                        $ref: '#/definitions/JsonApiRelatedLink'
-
-    WorkingTree:
-        type: object
-        required:
-        - type
-        properties:
-            id:
-                type: string
-            type:
-                type: string
-                enum:
-                - workingtree
-            attributes:
-                type: object
-                properties:
-                    clean:
-                        type: boolean
-            relationships:
-                type: object
-                properties:
-                    rootDirectory:
-                        $ref: '#/definitions/JsonApiRelationshipIncludedOne'
-                    version:
-                        $ref: '#/definitions/JsonApiRelatedLink'
-    Directory:
-        type: object
-        required:
-        - type
-        properties:
-            id:
-                type: string
-            type:
-                type: string
-                enum:
-                - directory
-            attributes:
-                type: object
-                properties:
-                    mode:
-                        type: string
-                    path:
-                        type: string
-            relationships:
-                type: object
-                properties:
-                    parent:
-                        $ref: '#/definitions/JsonApiRelatedLink'
-                    items:
-                        $ref: '#/definitions/JsonApiRelationshipIncludedMany'
-    DirectoryItem:
-        type: object
-        required:
-        - type
-        properties:
-            id:
-                type: string
-            type:
-                type: string
-                enum:
-                - directory-item
-            attributes:
-                type: object
-                properties:
-                    path:
-                        type: string
-                    mode:
-                        type: string
-                    type:
-                        type: string
-            relationships:
-                type: object
-                properties:
-                    directory:
-                        $ref: '#/definitions/JsonApiRelatedLink'
-                    child:
-                        $ref: '#/definitions/JsonApiRelatedLink'
-    File:
-        type: object
-        required:
-        - type
-        properties:
-            id:
-                type: string
-            type:
-                type: string
-                enum:
-                - file
-            attributes:
-                type: object
-                properties:
-                    path:
-                        type: string
-                    mode:
-                        type: string
-                    content:
-                        type: string
-                    encoding:
-                        type: string
-                    size:
-                        type: integer
-            relationships:
-                type: object
-                properties:
-                    directory:
-                        $ref: '#/definitions/JsonApiRelatedLink'
-
-    Sensor:
-        type: object
-        properties:
-            id:
-                type: string
-            type:
-                type: string
-                enum:
-                - sensor
-            attributes:
-                type: object
-                properties:
-                    type:
-                        type: string
-                        enum:
-                        - analog
-                        - digital
-                    value:
-                        type: integer
-                    pullup:
-                        type: boolean
-
-    Servo:
-        type: object
-        properties:
-            id:
-                type: string
-            type:
-                type: string
-                enum:
-                - servo
-            attributes:
-                type: object
-                properties:
-                    enabled:
-                        type: boolean
-                    position:
-                        type: integer
-
-    Motor:
-        type: object
-        properties:
-            id:
-                type: string
-            type:
-                type: string
-                enum:
-                - motor
-            attributes:
-                type: object
-                properties:
-                    power:
-                        type: integer
-                    velocity:
-                        type: integer
-
-    ProgramRun:
-        type: object
-        properties:
-            data:
-                type: object
-                required:
-                - type
-                properties:
-                    id:
-                        type: string
-                    type:
-                        type: string
-                        enum:
-                        - run
-                    attributes:
-                        type: object
-                        properties:
-                            startTime:
-                                type: string
-                                format: dateTime
-                    relationships:
-                        type: object
-                        properties:
-                            program:
-                                $ref: '#/definitions/JsonApiRelatedLink'
-                            input:
-                                type: object
-                                properties:
-                                    links:
-                                        type: object
-                                        properties:
-                                            related:
-                                                type: string
-                                                format: uri
-                                    data:
-                                        $ref: '#/definitions/JsonApiResourceIdentifier'
-                            output:
-                                type: object
-                                properties:
-                                    links:
-                                        type: object
-                                        properties:
-                                            related:
-                                                type: string
-                                                format: uri
-                                    data:
-                                        $ref: '#/definitions/JsonApiResourceIdentifier'
-
-    ProgramIO:
-        type: object
-        properties:
-            data:
-                type: object
-                required:
-                - type
-                properties:
-                    id:
-                        type: string
-                    type:
-                        type: string
-                        enum:
-                        - program-io
-                    attributes:
-                        type: object
-                        properties:
-                            io:
-                                type: array
-                                items:
-                                    type: string
-
-    JsonApiRelatedLink:
-        type: object
-        properties:
-            links:
-                type: object
-                properties:
-                    related:
-                        type: string
-                        format: uri
-    JsonApiRelationshipIncludedOne:
-        type: object
-        properties:
-            data:
-                $ref: '#/definitions/JsonApiResourceIdentifier'
-    JsonApiRelationshipIncludedMany:
-        type: object
-        properties:
-            data:
+  /programs:
+    get:
+      summary: 'Get a list of all programs stored on the controller'
+      responses:
+        200:
+          description: 'Returns a list for programs'
+          schema:
+            type: object
+            properties:
+              data:
                 type: array
                 items:
-                    $ref: '#/definitions/JsonApiResourceIdentifier'
-    JsonApiResourceIdentifier:
+                  $ref: '#/definitions/Program'
+    post:
+      summary: 'Create a new program'
+      parameters:
+      - name: program
+        in: body
+        required: true
+        schema:
+          type: object
+          properties:
+            data:
+              $ref: '#/definitions/Program'
+      responses:
+        201:
+          description: 'Returns the newly created program'
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '#/definitions/Program'
+  /programs/{program_id}:
+    get:
+      summary: 'Get a single program'
+      parameters:
+      - name: program_id
+        in: path
+        type: string
+        required: true
+      responses:
+        200:
+          description: 'Returns the program'
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '#/definitions/Program'
+    patch:
+      summary: 'Partially update a program'
+      parameters:
+      - name: program_id
+        in: path
+        type: string
+        required: true
+      - name: program
+        in: body
+        required: true
+        schema:
+          type: object
+          properties:
+            data:
+              $ref: '#/definitions/Program'
+      responses:
+        200:
+          description: 'Returns a representation of the updated program'
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '#/definitions/Program'
+
+    delete:
+      summary: 'Delete a program and all its related resources'
+      parameters:
+      - name: program_id
+        in: path
+        type: string
+        required: true
+      responses:
+        204:
+          description: 'The resource has been deleted accordingly'
+
+  /blobs/{program_id}/{blob_id}:
+    get:
+      parameters:
+      - name: program_id
+        in: path
+        type: string
+        required: true
+      - name: blob_id
+        in: path
+        type: string
+        required: true
+      responses:
+        200:
+          description: 'Returns the requested blob'
+          schema:
+            $ref: '#/definitions/Blob'
+
+  /trees/{program_id}/{tree_id}:
+    get:
+      summary: 'Get a tree object of a program'
+      parameters:
+      - name: program_id
+        in: path
+        type: string
+        required: true
+      - name: tree_id
+        in: path
+        type: string
+        required: true
+      responses:
+        200:
+          description: 'Returns a requested tree'
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '#/definitions/Tree'
+              included:
+                type: array
+                items:
+                  $ref: '#/definitions/TreeItem'
+
+
+  /versions/{program_id}:
+    get:
+      summary: 'Get a list of versions of a program'
+      parameters:
+      - name: program_id
+        in: path
+        type: string
+        required: true
+      responses:
+        200:
+          description: 'Returns a list of versions'
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/definitions/Version'
+    post:
+      summary: 'Create a new version from the program in the working tree'
+      parameters:
+      - name: program_id
+        in: path
+        type: string
+        required: true
+      - name: version
+        in: body
+        schema:
+          type: object
+          properties:
+            data:
+              $ref: '#/definitions/Version'
+      responses:
+        201:
+          description: 'Returns the newly created version'
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '#/definitions/Version'
+
+  /versions/{program_id}/{version_id}:
+    get:
+      summary: 'Get a single version'
+      parameters:
+      - name: program_id
+        in: path
+        type: string
+        required: true
+      - name: version_id
+        in: path
+        type: string
+        required: true
+      responses:
+        200:
+          description: 'Returns information about the requested version'
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '#/definitions/Version'
+  /versions/{program_id}/{version_id}/parents:
+    get:
+      summary: 'Get a list of parents for this version'
+      parameters:
+      - name: program_id
+        in: path
+        type: string
+        required: true
+      - name: version_id
+        in: path
+        type: string
+        required: true
+      responses:
+        200:
+          description: 'Returns parents for a version'
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/definitions/Version'
+
+  /workingtrees/{program_id}:
+    get:
+      summary: 'Get the workingtree of a project'
+      parameters:
+       - name: program_id
+         in: path
+         type: string
+         required: true
+      responses:
+        200:
+          description: 'Returns the workingtree of a program'
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '#/definitions/WorkingTree'
+              included:
+                type: array
+                items:
+                  type: object
+    patch:
+      summary: 'Checkout a previous version reset the hedgehog branch to this version'
+      parameters:
+      - name: program_id
+        in: path
+        type: string
+        required: true
+      - name: workingtree
+        in: body
+        required: true
+        # TODO: specify which arguments are allowed
+        schema:
+          type: object
+          properties:
+            data:
+              $ref: '#/definitions/WorkingTree'
+      responses:
+        200:
+          description: 'Returns the updated workingtree'
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '#/definitions/WorkingTree'
+  /workingtrees/{program_id}/directories:
+    post:
+      summary: 'Create a new directory in the workingtree'
+      parameters:
+      - name: program_id
+        in: path
+        type: string
+        required: true
+      - name: directory
+        in: body
+        required: true
+        # TODO: specify which arguments are allowed
+        schema:
+          type: object
+          properties:
+            data:
+              $ref: '#/definitions/Directory'
+      responses:
+        200:
+          description: 'Returns the newly created directory'
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '#/definitions/Directory'
+  /workingtrees/{program_id}/directories/{directory_id}:
+    get:
+      summary: 'Get a directory in the workingtree'
+      parameters:
+      - name: program_id
+        in: path
+        type: string
+        required: true
+      - name: directory_id
+        in: path
+        type: string
+        required: true
+      responses:
+        200:
+          description: 'Returns the requested directory'
+          schema:
+            type: object
+            properties:
+              data:
+                  $ref: '#/definitions/Directory'
+              included:
+                type: array
+                items:
+                  type: object
+    patch:
+      summary: 'Update a directory (rename or chmod)'
+      parameters:
+      - name: program_id
+        in: path
+        type: string
+        required: true
+      - name: directory_id
+        in: path
+        type: string
+        required: true
+      - name: directory
+        in: body
+        required: true
+        # TODO: specify which arguments are allowed
+        schema:
+          type: object
+          properties:
+            data:
+              $ref: '#/definitions/Directory'
+      responses:
+        200:
+          description: 'Returns the updated directory'
+          schema:
+             type: object
+             properties:
+               data:
+                 $ref: '#/definitions/Directory'
+    delete:
+      summary: 'Delete a directory and all included files and subdirectories (use with caution!)'
+      parameters:
+      - name: program_id
+        in: path
+        type: string
+        required: true
+      - name: directory_id
+        in: path
+        type: string
+        required: true
+      responses:
+        204:
+          description: 'The resource has been deleted accordingly'
+
+  /workingtrees/{program_id}/files:
+    post:
+      summary: 'Create a new file within a program'
+      parameters:
+      - name: program_id
+        in: path
+        type: string
+        required: true
+      - name: file
+        in: body
+        required: true
+        # TODO: specify which arguments are allowed
+        schema:
+          type: object
+          properties:
+            data:
+              $ref: '#/definitions/File'
+      responses:
+        200:
+          description: 'Returns the newly created file'
+          schema:
+             type: object
+             properties:
+               data:
+                 $ref: '#/definitions/File'
+  /workingtrees/{program_id}/files/{file_id}:
+    get:
+      summary: 'Get a file'
+      parameters:
+      - name: program_id
+        in: path
+        type: string
+        required: true
+      - name: file_id
+        in: path
+        type: string
+        required: true
+      responses:
+        200:
+          description: 'Returns the requested file'
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '#/definitions/File'
+    patch:
+      summary: 'Update a file'
+      parameters:
+      - name: program_id
+        in: path
+        type: string
+        required: true
+      - name: file_id
+        in: path
+        type: string
+        required: true
+      - name: file
+        in: body
+        required: true
+        # TODO: specify which arguments are allowed
+        schema:
+          type: object
+          properties:
+            data:
+              $ref: '#/definitions/File'
+      responses:
+        200:
+          description: 'Returns the updated version of the file'
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '#/definitions/File'
+    delete:
+      summary: 'Delete a file from a project'
+      parameters:
+      - name: program_id
+        in: path
+        type: string
+        required: true
+      - name: file_id
+        in: path
+        type: string
+        required: true
+      responses:
+        204:
+          description: 'The resource has been deleted accordingly'
+
+  /sensors:
+    get:
+      summary: 'Get a list of all sensors with its current values'
+      responses:
+        200:
+          description: 'Returns all sensors'
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/definitions/Sensor'
+  /sensors/{sensor_id}:
+    get:
+      summary: 'Get a single sensor'
+      parameters:
+      - name: sensor_id
+        in: path
+        type: string
+        required: true
+      responses:
+        200:
+          description: 'Returns the requested sensor'
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '#/definitions/Sensor'
+    patch:
+      summary: Set a sensor's pullup
+      parameters:
+      - name: sensor_id
+        in: path
+        type: string
+        required: true
+      - name: sensor
+        in: body
+        required: true
+        # TODO: specify which arguments are allowed
+        schema:
+          type: object
+          properties:
+            data:
+              $ref: '#/definitions/Sensor'
+      responses:
+        200:
+          description: 'Returns the sensor with the updated pullup resistor'
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '#/definitions/Sensor'
+  /servos:
+    get:
+      summary: 'Get a list of all servos'
+      responses:
+        200:
+          description: 'Returns all sensors'
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/definitions/Servo'
+  /servos/{servo_id}:
+    get:
+      summary: 'Get a single servo'
+      parameters:
+      - name: servo_id
+        in: path
+        type: string
+        required: true
+      responses:
+        200:
+          description: 'Returns the requested servo'
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '#/definitions/Servo'
+    patch:
+      summary: 'Enable a servo or set its position'
+      parameters:
+      - name: servo_id
+        in: path
+        type: string
+        required: true
+      - name: servo
+        in: body
+        required: true
+        # TODO: specify which arguments are allowed
+        schema:
+          type: object
+          properties:
+            data:
+              $ref: '#/definitions/Servo'
+      responses:
+        200:
+          description: 'Returns the updated servo data'
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '#/definitions/Servo'
+
+  /motors:
+    get:
+      summary: 'Get a list of all motors'
+      responses:
+        200:
+          description: 'Returns an array containing motor'
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/definitions/Motor'
+  /motors/{motor_id}:
+    get:
+      summary: 'Get information about a single motor'
+      parameters:
+      - name: motor_id
+        in: path
+        type: string
+        required: true
+      responses:
+        200:
+          description: 'Returns the requested motor'
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '#/definitions/Motor'
+    patch:
+      summary: 'Control a motor'
+      parameters:
+      - name: motor_id
+        in: path
+        type: string
+        required: true
+      - name: motor
+        in: body
+        required: true
+        # TODO: specify which arguments are allowed
+        schema:
+          type: object
+          properties:
+            data:
+              $ref: '#/definitions/Motor'
+      responses:
+        200:
+          description: 'Returns the updated motor data'
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '#/definitions/Motor'
+
+  /run:
+    get:
+      summary: 'Get information about the current program execution'
+      responses:
+        200:
+          description: 'Returns information of the current program execution'
+          schema:
+            $ref: '#/definitions/ProgramRun'
+    post:
+      summary: 'Run a program'
+      parameters:
+      - name: program
+        in: body
+        required: true
+        schema:
+          type: object
+          properties:
+            data:
+              type: object
+              required:
+              - type
+              - relationships
+              properties:
+                type:
+                  type: string
+                  enum:
+                  - run
+                relationships:
+                  type: object
+                  properties:
+                    program:
+                      $ref: '#/definitions/JsonApiRelatedLink'
+      responses:
+        201:
+          description: 'Returns information about the program spawned program'
+          schema:
+            $ref: '#/definitions/Program'
+    delete:
+      summary: 'Stop the current program execution'
+      responses:
+        204:
+          description: 'The program execution has been stopped properly'
+  /run/stdout:
+    get:
+      summary: 'Get the standard output of the program execution'
+      responses:
+        200:
+          description: 'Returns a list of output strings produced during the program execution'
+          schema:
+            $ref: '#/definitions/ProgramIO'
+  /run/stdin:
+    get:
+      summary: 'Get text which has been sent to the program so far'
+      responses:
+        200:
+          description: 'Returns a list of input text sent to the program'
+          schema:
+            $ref: '#/definitions/ProgramIO'
+    patch:
+      summary: 'Send text to the running program'
+      parameters:
+      - name: program-io
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/ProgramIO'
+      responses:
+        200:
+          description: 'Returns the updated program input'
+          schema:
+            $ref: '#/definitions/ProgramIO'
+
+definitions:
+  Program:
+    type: object
+    required:
+    - type
+    properties:
+      id:
+        type: string
+      type:
+        type: string
+        enum:
+        - program
+      attributes:
         type: object
         required:
-        - id
+        - name
+        - creationDate
+        properties:
+          name:
+            type: string
+          creationDate:
+            type: string
+            format: dateTime
+      relationships:
+        type: object
+        properties:
+          versions:
+            $ref: '#/definitions/JsonApiRelatedLink'
+          workingtree:
+            $ref: '#/definitions/JsonApiRelatedLink'
+
+  Blob:
+    type: object
+    required:
+    - type
+    properties:
+      id:
+        type: string
+      type:
+        type: string
+        enum:
+        - blob
+      attributes:
+        type: object
+        properties:
+          content:
+            type: string
+          encoding:
+            type: string
+          size:
+            type: integer
+
+  Tree:
+    type: object
+    required:
+    - type
+    properties:
+      id:
+        type: string
+      type:
+        type: string
+        enum:
+        - tree
+      relationships:
+        type: object
+        properties:
+          items:
+            $ref: '#/definitions/JsonApiRelationshipIncludedMany'
+  TreeItem:
+    type: object
+    required:
+    - type
+    properties:
+      id:
+        type: string
+      type:
+        type: string
+        enum:
+        - tree-item
+      attributes:
+        type: object
+        properties:
+          path:
+            type: string
+          mode:
+            type: string
+          type:
+            type: string
+      relationships:
+        type: object
+        properties:
+          tree:
+            $ref: '#/definitions/JsonApiRelatedLink'
+          child:
+            $ref: '#/definitions/JsonApiRelatedLink'
+
+  Version:
+    type: object
+    properties:
+      id:
+        type: string
+      type:
+        type: string
+        enum:
+        - version
+      attributes:
+        type: object
+        properties:
+          tag:
+            type: string
+          message:
+            type: string
+      relationships:
+        type: object
+        properties:
+          tree:
+            $ref: '#/definitions/JsonApiRelatedLink'
+          program:
+            $ref: '#/definitions/JsonApiRelatedLink'
+          parents:
+            $ref: '#/definitions/JsonApiRelatedLink'
+
+  WorkingTree:
+    type: object
+    required:
+    - type
+    properties:
+      id:
+        type: string
+      type:
+        type: string
+        enum:
+        - workingtree
+      attributes:
+        type: object
+        properties:
+          clean:
+            type: boolean
+      relationships:
+        type: object
+        properties:
+          rootDirectory:
+            $ref: '#/definitions/JsonApiRelationshipIncludedOne'
+          version:
+            $ref: '#/definitions/JsonApiRelatedLink'
+  Directory:
+    type: object
+    required:
+    - type
+    properties:
+      id:
+        type: string
+      type:
+        type: string
+        enum:
+        - directory
+      attributes:
+        type: object
+        properties:
+          mode:
+            type: string
+          path:
+            type: string
+      relationships:
+        type: object
+        properties:
+          parent:
+            $ref: '#/definitions/JsonApiRelatedLink'
+          items:
+            $ref: '#/definitions/JsonApiRelationshipIncludedMany'
+  DirectoryItem:
+    type: object
+    required:
+    - type
+    properties:
+      id:
+        type: string
+      type:
+        type: string
+        enum:
+        - directory-item
+      attributes:
+        type: object
+        properties:
+          path:
+            type: string
+          mode:
+            type: string
+          type:
+            type: string
+      relationships:
+        type: object
+        properties:
+          directory:
+            $ref: '#/definitions/JsonApiRelatedLink'
+          child:
+            $ref: '#/definitions/JsonApiRelatedLink'
+  File:
+    type: object
+    required:
+    - type
+    properties:
+      id:
+          type: string
+      type:
+        type: string
+        enum:
+        - file
+      attributes:
+        type: object
+        properties:
+          path:
+            type: string
+          mode:
+            type: string
+          content:
+            type: string
+          encoding:
+            type: string
+          size:
+            type: integer
+      relationships:
+        type: object
+        properties:
+          directory:
+            $ref: '#/definitions/JsonApiRelatedLink'
+
+  Sensor:
+    type: object
+    properties:
+      id:
+        type: string
+      type:
+        type: string
+        enum:
+        - sensor
+      attributes:
+        type: object
+        properties:
+          type:
+            type: string
+            enum:
+            - analog
+            - digital
+          value:
+            type: integer
+          pullup:
+            type: boolean
+
+  Servo:
+    type: object
+    properties:
+      id:
+        type: string
+      type:
+        type: string
+        enum:
+        - servo
+      attributes:
+        type: object
+        properties:
+          enabled:
+            type: boolean
+          position:
+            type: integer
+
+  Motor:
+    type: object
+    properties:
+      id:
+        type: string
+      type:
+        type: string
+        enum:
+        - motor
+      attributes:
+        type: object
+        properties:
+          power:
+            type: integer
+          velocity:
+            type: integer
+
+  ProgramRun:
+    type: object
+    properties:
+      data:
+        type: object
+        required:
         - type
         properties:
-            id:
+          id:
+            type: string
+          type:
+            type: string
+            enum:
+            - run
+          attributes:
+            type: object
+            properties:
+              startTime:
                 type: string
-            type:
-                type: string
+                format: dateTime
+          relationships:
+            type: object
+            properties:
+              program:
+                $ref: '#/definitions/JsonApiRelatedLink'
+              input:
+                type: object
+                properties:
+                  links:
+                    type: object
+                    properties:
+                      related:
+                        type: string
+                        format: uri
+                  data:
+                    $ref: '#/definitions/JsonApiResourceIdentifier'
+              output:
+                type: object
+                properties:
+                  links:
+                    type: object
+                    properties:
+                      related:
+                        type: string
+                        format: uri
+                  data:
+                    $ref: '#/definitions/JsonApiResourceIdentifier'
+
+  ProgramIO:
+    type: object
+    properties:
+      data:
+        type: object
+        required:
+        - type
+        properties:
+          id:
+            type: string
+          type:
+            type: string
+            enum:
+            - program-io
+          attributes:
+            type: object
+            properties:
+              io:
+                type: array
+                items:
+                  type: string
+
+  JsonApiRelatedLink:
+    type: object
+    properties:
+      links:
+        type: object
+        properties:
+          related:
+            type: string
+            format: uri
+  JsonApiRelationshipIncludedOne:
+    type: object
+    properties:
+      data:
+        $ref: '#/definitions/JsonApiResourceIdentifier'
+  JsonApiRelationshipIncludedMany:
+    type: object
+    properties:
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/JsonApiResourceIdentifier'
+  JsonApiResourceIdentifier:
+    type: object
+    required:
+    - id
+    - type
+    properties:
+      id:
+        type: string
+      type:
+        type: string
