@@ -199,6 +199,28 @@ paths:
                          properties:
                              data:
                                  $ref: '#/definitions/Version'
+    /versions/{program_id}/{version_id}/parents:
+        get:
+            summary: 'Get a list of parents for this version'
+            parameters:
+            - name: program_id
+              in: path
+              type: string
+              required: true
+            - name: version_id
+              in: path
+              type: string
+              required: true
+            responses:
+                200:
+                    description: 'Returns parents for a version'
+                    schema:
+                        type: object
+                        properties:
+                            data:
+                                type: array
+                                items:
+                                    $ref: '#/definitions/Version'
 
     /workingtrees/{program_id}:
         get:
@@ -216,6 +238,10 @@ paths:
                         properties:
                             data:
                                 $ref: '#/definitions/WorkingTree'
+                            included:
+                                type: array
+                                items:
+                                    type: object
         patch:
             summary: 'Checkout a previous version reset the hedgehog branch to this version'
             parameters:
@@ -285,6 +311,10 @@ paths:
                         properties:
                             data:
                                 $ref: '#/definitions/Directory'
+                            included:
+                                type: array
+                                items:
+                                    type: object
         patch:
             summary: 'Update a directory (rename or chmod)'
             parameters:
@@ -591,7 +621,6 @@ paths:
             - name: program
               in: body
               required: true
-              # TODO: specify which arguments are allowed
               schema:
                   type: object
                   properties:
@@ -601,8 +630,6 @@ paths:
                           - type
                           - relationships
                           properties:
-                              id:
-                                  type: string
                               type:
                                   type: string
                                   enum:
@@ -746,7 +773,7 @@ definitions:
                     tree:
                         $ref: '#/definitions/JsonApiRelatedLink'
                     child:
-                        $ref: '#/definitions/JsonApiRelationshipIncludedOne'
+                        $ref: '#/definitions/JsonApiRelatedLink'
 
     Version:
         type: object
@@ -772,7 +799,7 @@ definitions:
                     program:
                         $ref: '#/definitions/JsonApiRelatedLink'
                     parents:
-                        $ref: '#/definitions/JsonApiRelationshipIncludedMany'
+                        $ref: '#/definitions/JsonApiRelatedLink'
 
     WorkingTree:
         type: object
@@ -848,7 +875,7 @@ definitions:
                     directory:
                         $ref: '#/definitions/JsonApiRelatedLink'
                     child:
-                        $ref: '#/definitions/JsonApiRelationshipIncludedOne'
+                        $ref: '#/definitions/JsonApiRelatedLink'
     File:
         type: object
         required:
