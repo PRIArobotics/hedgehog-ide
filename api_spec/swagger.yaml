@@ -35,7 +35,22 @@ paths:
           type: object
           properties:
             data:
-              $ref: '#/definitions/Program'
+              type: object
+              required:
+              - type
+              - attributes
+              properties:
+                type:
+                  type: string
+                  enum:
+                  - program
+                attributes:
+                  type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      type: string
       responses:
         201:
           description: 'Returns the newly created program'
@@ -61,7 +76,7 @@ paths:
               data:
                 $ref: '#/definitions/Program'
     patch:
-      summary: 'Partially update a program'
+      summary: 'Rename a program'
       parameters:
       - name: program_id
         in: path
@@ -74,7 +89,24 @@ paths:
           type: object
           properties:
             data:
-              $ref: '#/definitions/Program'
+              type: object
+              required:
+              - id
+              - type
+              properties:
+                id:
+                  type: string
+                type:
+                  type: string
+                  enum:
+                  - program
+                attributes:
+                  type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      type: string
       responses:
         200:
           description: 'Returns a representation of the updated program'
@@ -169,7 +201,24 @@ paths:
           type: object
           properties:
             data:
-              $ref: '#/definitions/Version'
+              type: object
+              required:
+              - id
+              - type
+              properties:
+                id:
+                  type: string
+                type:
+                  type: string
+                  enum:
+                  - version
+                attributes:
+                  type: object
+                  properties:
+                    tag:
+                      type: string
+                    message:
+                      type: string
       responses:
         201:
           description: 'Returns the newly created version'
@@ -252,12 +301,28 @@ paths:
       - name: workingtree
         in: body
         required: true
-        # TODO: specify which arguments are allowed
         schema:
           type: object
           properties:
             data:
-              $ref: '#/definitions/WorkingTree'
+              type: object
+              required:
+              - id
+              - type
+              properties:
+                id:
+                  type: string
+                type:
+                  type: string
+                  enum:
+                  - workingtree
+                relationships:
+                  type: object
+                  required:
+                  - version
+                  properties:
+                    version:
+                      $ref: '#/definitions/JsonApiRelatedLink'
       responses:
         200:
           description: 'Returns the updated workingtree'
@@ -277,12 +342,28 @@ paths:
       - name: directory
         in: body
         required: true
-        # TODO: specify which arguments are allowed
         schema:
           type: object
           properties:
             data:
-              $ref: '#/definitions/Directory'
+              type: object
+              required:
+              - id
+              - type
+              properties:
+                id:
+                  type: string
+                type:
+                  type: string
+                  enum:
+                  - directory
+                attributes:
+                  type: object
+                  properties:
+                    mode:
+                      type: string
+                    path:
+                      type: string
       responses:
         200:
           description: 'Returns the newly created directory'
@@ -329,12 +410,28 @@ paths:
       - name: directory
         in: body
         required: true
-        # TODO: specify which arguments are allowed
         schema:
           type: object
           properties:
             data:
-              $ref: '#/definitions/Directory'
+              type: object
+              required:
+              - id
+              - type
+              properties:
+                id:
+                  type: string
+                type:
+                  type: string
+                  enum:
+                  - directory
+                attributes:
+                  type: object
+                  properties:
+                    mode:
+                      type: string
+                    path:
+                      type: string
       responses:
         200:
           description: 'Returns the updated directory'
@@ -369,12 +466,35 @@ paths:
       - name: file
         in: body
         required: true
-        # TODO: specify which arguments are allowed
         schema:
           type: object
           properties:
             data:
-              $ref: '#/definitions/File'
+              type: object
+              required:
+              - id
+              - type
+              - attributes
+              properties:
+                id:
+                    type: string
+                type:
+                  type: string
+                  enum:
+                  - file
+                attributes:
+                  type: object
+                  required:
+                  - path
+                  properties:
+                    path:
+                      type: string
+                    mode:
+                      type: string
+                    content:
+                      type: string
+                    encoding:
+                      type: string
       responses:
         200:
           description: 'Returns the newly created file'
@@ -417,12 +537,35 @@ paths:
       - name: file
         in: body
         required: true
-        # TODO: specify which arguments are allowed
         schema:
           type: object
           properties:
             data:
-              $ref: '#/definitions/File'
+              type: object
+              properties:
+                data:
+                  type: object
+                  required:
+                  - id
+                  - type
+                  properties:
+                    id:
+                        type: string
+                    type:
+                      type: string
+                      enum:
+                      - file
+                    attributes:
+                      type: object
+                      properties:
+                        path:
+                          type: string
+                        mode:
+                          type: string
+                        content:
+                          type: string
+                        encoding:
+                          type: string
       responses:
         200:
           description: 'Returns the updated version of the file'
@@ -485,12 +628,29 @@ paths:
       - name: sensor
         in: body
         required: true
-        # TODO: specify which arguments are allowed
         schema:
           type: object
           properties:
             data:
-              $ref: '#/definitions/Sensor'
+              type: object
+              required:
+              - id
+              - type
+              - attributes
+              properties:
+                id:
+                  type: string
+                type:
+                  type: string
+                  enum:
+                  - sensor
+                attributes:
+                  type: object
+                  required:
+                  - pullup
+                  properties:
+                    pullup:
+                      type: boolean
       responses:
         200:
           description: 'Returns the sensor with the updated pullup resistor'
@@ -538,7 +698,6 @@ paths:
       - name: servo
         in: body
         required: true
-        # TODO: specify which arguments are allowed
         schema:
           type: object
           properties:
@@ -592,7 +751,6 @@ paths:
       - name: motor
         in: body
         required: true
-        # TODO: specify which arguments are allowed
         schema:
           type: object
           properties:
