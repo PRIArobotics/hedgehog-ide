@@ -55,10 +55,12 @@ paths:
         201:
           description: 'Returns the newly created program'
           schema:
-            type: object
-            properties:
-              data:
-                $ref: '#/definitions/Program'
+            allOf:
+            - type: object
+              properties:
+                data:
+                    $ref: '#/definitions/Program'
+            - $ref: '#/definitions/JsonApiTopLevelLink'
   /programs/{program_id}:
     get:
       summary: 'Get a single program'
@@ -71,10 +73,12 @@ paths:
         200:
           description: 'Returns the program'
           schema:
-            type: object
-            properties:
-              data:
-                $ref: '#/definitions/Program'
+            allOf:
+            - type: object
+              properties:
+                data:
+                  $ref: '#/definitions/Program'
+            - $ref: '#/definitions/JsonApiTopLevelLink'
     patch:
       summary: 'Rename a program'
       parameters:
@@ -111,10 +115,12 @@ paths:
         200:
           description: 'Returns a representation of the updated program'
           schema:
-            type: object
-            properties:
-              data:
-                $ref: '#/definitions/Program'
+            allOf:
+            - type: object
+              properties:
+                data:
+                  $ref: '#/definitions/Program'
+            - $ref: '#/definitions/JsonApiTopLevelLink'
 
     delete:
       summary: 'Delete a program and all its related resources'
@@ -142,7 +148,12 @@ paths:
         200:
           description: 'Returns the requested blob'
           schema:
-            $ref: '#/definitions/Blob'
+            allOf:
+            - type: object
+              properties:
+                data:
+                  $ref: '#/definitions/Blob'
+            - $ref: '#/definitions/JsonApiTopLevelLink'
 
   /trees/{program_id}/{tree_id}:
     get:
@@ -160,14 +171,16 @@ paths:
         200:
           description: 'Returns a requested tree'
           schema:
-            type: object
-            properties:
-              data:
-                $ref: '#/definitions/Tree'
-              included:
-                type: array
-                items:
-                  $ref: '#/definitions/TreeItem'
+            allOf:
+            - type: object
+              properties:
+                data:
+                  $ref: '#/definitions/Tree'
+                included:
+                  type: array
+                  items:
+                    $ref: '#/definitions/TreeItem'
+            - $ref: '#/definitions/JsonApiTopLevelLink'
 
 
   /versions/{program_id}:
@@ -182,12 +195,14 @@ paths:
         200:
           description: 'Returns a list of versions'
           schema:
-            type: object
-            properties:
-              data:
-                type: array
-                items:
-                  $ref: '#/definitions/Version'
+            allOf:
+            - type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    $ref: '#/definitions/Version'
+            - $ref: '#/definitions/JsonApiTopLevelLink'
     post:
       summary: 'Create a new version from the program in the working tree'
       parameters:
@@ -223,10 +238,12 @@ paths:
         201:
           description: 'Returns the newly created version'
           schema:
-            type: object
-            properties:
-              data:
-                $ref: '#/definitions/Version'
+            allOf:
+            - type: object
+              properties:
+                data:
+                  $ref: '#/definitions/Version'
+            - $ref: '#/definitions/JsonApiTopLevelLink'
 
   /versions/{program_id}/{version_id}:
     get:
@@ -244,10 +261,12 @@ paths:
         200:
           description: 'Returns information about the requested version'
           schema:
-            type: object
-            properties:
-              data:
-                $ref: '#/definitions/Version'
+            allOf:
+            - type: object
+              properties:
+                data:
+                  $ref: '#/definitions/Version'
+            - $ref: '#/definitions/JsonApiTopLevelLink'
   /versions/{program_id}/{version_id}/parents:
     get:
       summary: 'Get a list of parents for this version'
@@ -264,12 +283,14 @@ paths:
         200:
           description: 'Returns parents for a version'
           schema:
-            type: object
-            properties:
-              data:
-                type: array
-                items:
-                  $ref: '#/definitions/Version'
+            allOf:
+            - type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    $ref: '#/definitions/Version'
+            - $ref: '#/definitions/JsonApiTopLevelLink'
 
   /workingtrees/{program_id}:
     get:
@@ -283,14 +304,16 @@ paths:
         200:
           description: 'Returns the workingtree of a program'
           schema:
-            type: object
-            properties:
-              data:
-                $ref: '#/definitions/WorkingTree'
-              included:
-                type: array
-                items:
-                  type: object
+            allOf:
+            - type: object
+              properties:
+                data:
+                  $ref: '#/definitions/WorkingTree'
+                included:
+                  type: array
+                  items:
+                    type: object
+            - $ref: '#/definitions/JsonApiTopLevelLink'
     patch:
       summary: 'Checkout a previous version reset the hedgehog branch to this version'
       parameters:
@@ -327,10 +350,12 @@ paths:
         200:
           description: 'Returns the updated workingtree'
           schema:
-            type: object
-            properties:
-              data:
-                $ref: '#/definitions/WorkingTree'
+            allOf:
+            - type: object
+              properties:
+                data:
+                  $ref: '#/definitions/WorkingTree'
+            - $ref: '#/definitions/JsonApiTopLevelLink'
   /workingtrees/{program_id}/directories:
     post:
       summary: 'Create a new directory in the workingtree'
@@ -368,10 +393,12 @@ paths:
         200:
           description: 'Returns the newly created directory'
           schema:
-            type: object
-            properties:
-              data:
-                $ref: '#/definitions/Directory'
+            allOf:
+            - type: object
+              properties:
+                data:
+                  $ref: '#/definitions/Directory'
+            - $ref: '#/definitions/JsonApiTopLevelLink'
   /workingtrees/{program_id}/directories/{directory_id}:
     get:
       summary: 'Get a directory in the workingtree'
@@ -388,14 +415,16 @@ paths:
         200:
           description: 'Returns the requested directory'
           schema:
-            type: object
-            properties:
-              data:
-                  $ref: '#/definitions/Directory'
-              included:
-                type: array
-                items:
-                  type: object
+            allOf:
+            - type: object
+              properties:
+                data:
+                    $ref: '#/definitions/Directory'
+                included:
+                  type: array
+                  items:
+                    type: object
+            - $ref: '#/definitions/JsonApiTopLevelLink'
     patch:
       summary: 'Update a directory (rename or chmod)'
       parameters:
@@ -436,10 +465,12 @@ paths:
         200:
           description: 'Returns the updated directory'
           schema:
-             type: object
-             properties:
-               data:
-                 $ref: '#/definitions/Directory'
+            allOf:
+            - type: object
+              properties:
+                data:
+                  $ref: '#/definitions/Directory'
+            - $ref: '#/definitions/JsonApiTopLevelLink'
     delete:
       summary: 'Delete a directory and all included files and subdirectories (use with caution!)'
       parameters:
@@ -499,10 +530,12 @@ paths:
         200:
           description: 'Returns the newly created file'
           schema:
-             type: object
-             properties:
-               data:
-                 $ref: '#/definitions/File'
+            allOf:
+            - type: object
+              properties:
+                data:
+                  $ref: '#/definitions/File'
+            - $ref: '#/definitions/JsonApiTopLevelLink'
   /workingtrees/{program_id}/files/{file_id}:
     get:
       summary: 'Get a file'
@@ -519,10 +552,12 @@ paths:
         200:
           description: 'Returns the requested file'
           schema:
-            type: object
-            properties:
-              data:
-                $ref: '#/definitions/File'
+            allOf:
+            - type: object
+              properties:
+                data:
+                  $ref: '#/definitions/File'
+            - $ref: '#/definitions/JsonApiTopLevelLink'
     patch:
       summary: 'Update a file'
       parameters:
@@ -570,10 +605,12 @@ paths:
         200:
           description: 'Returns the updated version of the file'
           schema:
-            type: object
-            properties:
-              data:
-                $ref: '#/definitions/File'
+            allOf:
+            - type: object
+              properties:
+                data:
+                  $ref: '#/definitions/File'
+            - $ref: '#/definitions/JsonApiTopLevelLink'
     delete:
       summary: 'Delete a file from a project'
       parameters:
@@ -596,12 +633,14 @@ paths:
         200:
           description: 'Returns all sensors'
           schema:
-            type: object
-            properties:
-              data:
-                type: array
-                items:
-                  $ref: '#/definitions/Sensor'
+            allOf:
+            - type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    $ref: '#/definitions/Sensor'
+            - $ref: '#/definitions/JsonApiTopLevelLink'
   /sensors/{sensor_id}:
     get:
       summary: 'Get a single sensor'
@@ -614,10 +653,12 @@ paths:
         200:
           description: 'Returns the requested sensor'
           schema:
-            type: object
-            properties:
-              data:
-                $ref: '#/definitions/Sensor'
+            allOf:
+            - type: object
+              properties:
+                data:
+                  $ref: '#/definitions/Sensor'
+            - $ref: '#/definitions/JsonApiTopLevelLink'
     patch:
       summary: Set a sensor's pullup
       parameters:
@@ -655,10 +696,12 @@ paths:
         200:
           description: 'Returns the sensor with the updated pullup resistor'
           schema:
-            type: object
-            properties:
-              data:
-                $ref: '#/definitions/Sensor'
+            allOf:
+            - type: object
+              properties:
+                data:
+                  $ref: '#/definitions/Sensor'
+            - $ref: '#/definitions/JsonApiTopLevelLink'
   /servos:
     get:
       summary: 'Get a list of all servos'
@@ -666,12 +709,14 @@ paths:
         200:
           description: 'Returns all sensors'
           schema:
-            type: object
-            properties:
-              data:
-                type: array
-                items:
-                  $ref: '#/definitions/Servo'
+            allOf:
+            - type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    $ref: '#/definitions/Servo'
+            - $ref: '#/definitions/JsonApiTopLevelLink'
   /servos/{servo_id}:
     get:
       summary: 'Get a single servo'
@@ -684,10 +729,12 @@ paths:
         200:
           description: 'Returns the requested servo'
           schema:
-            type: object
-            properties:
-              data:
-                $ref: '#/definitions/Servo'
+            allOf:
+            - type: object
+              properties:
+                data:
+                  $ref: '#/definitions/Servo'
+            - $ref: '#/definitions/JsonApiTopLevelLink'
     patch:
       summary: 'Enable a servo or set its position'
       parameters:
@@ -707,10 +754,12 @@ paths:
         200:
           description: 'Returns the updated servo data'
           schema:
-            type: object
-            properties:
-              data:
-                $ref: '#/definitions/Servo'
+            allOf:
+            - type: object
+              properties:
+                data:
+                  $ref: '#/definitions/Servo'
+            - $ref: '#/definitions/JsonApiTopLevelLink'
 
   /motors:
     get:
@@ -719,12 +768,14 @@ paths:
         200:
           description: 'Returns an array containing motor'
           schema:
-            type: object
-            properties:
-              data:
-                type: array
-                items:
-                  $ref: '#/definitions/Motor'
+            allOf:
+            - type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    $ref: '#/definitions/Motor'
+            - $ref: '#/definitions/JsonApiTopLevelLink'
   /motors/{motor_id}:
     get:
       summary: 'Get information about a single motor'
@@ -737,10 +788,12 @@ paths:
         200:
           description: 'Returns the requested motor'
           schema:
-            type: object
-            properties:
-              data:
-                $ref: '#/definitions/Motor'
+            allOf:
+            - type: object
+              properties:
+                data:
+                  $ref: '#/definitions/Motor'
+            - $ref: '#/definitions/JsonApiTopLevelLink'
     patch:
       summary: 'Control a motor'
       parameters:
@@ -760,10 +813,12 @@ paths:
         200:
           description: 'Returns the updated motor data'
           schema:
-            type: object
-            properties:
-              data:
-                $ref: '#/definitions/Motor'
+            allOf:
+            - type: object
+              properties:
+                data:
+                  $ref: '#/definitions/Motor'
+            - $ref: '#/definitions/JsonApiTopLevelLink'
 
   /run:
     get:
@@ -799,9 +854,11 @@ paths:
                       $ref: '#/definitions/JsonApiRelatedLink'
       responses:
         201:
-          description: 'Returns information about the program spawned program'
+          description: 'Returns information about the spawned program'
           schema:
-            $ref: '#/definitions/Program'
+            allOf:
+            - $ref: '#/definitions/ProgramRun'
+            - $ref: '#/definitions/JsonApiTopLevelLink'
     delete:
       summary: 'Stop the current program execution'
       responses:
@@ -814,7 +871,9 @@ paths:
         200:
           description: 'Returns a list of output strings produced during the program execution'
           schema:
-            $ref: '#/definitions/ProgramIO'
+            allOf:
+            - $ref: '#/definitions/ProgramIO'
+            - $ref: '#/definitions/JsonApiTopLevelLink'
   /run/stdin:
     get:
       summary: 'Get text which has been sent to the program so far'
@@ -822,7 +881,9 @@ paths:
         200:
           description: 'Returns a list of input text sent to the program'
           schema:
-            $ref: '#/definitions/ProgramIO'
+            allOf:
+            - $ref: '#/definitions/ProgramIO'
+            - $ref: '#/definitions/JsonApiTopLevelLink'
     patch:
       summary: 'Send text to the running program'
       parameters:
@@ -835,7 +896,9 @@ paths:
         200:
           description: 'Returns the updated program input'
           schema:
-            $ref: '#/definitions/ProgramIO'
+            allOf:
+            - $ref: '#/definitions/ProgramIO'
+            - $ref: '#/definitions/JsonApiTopLevelLink'
 
 definitions:
   Program:
@@ -1211,6 +1274,18 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/JsonApiResourceIdentifier'
+  JsonApiTopLevelLink:
+    type: object
+    properties:
+        links:
+            type: object
+            properties:
+                self:
+                    type: string
+                    format: uri
+                related:
+                    type: string
+                    format: uri
   JsonApiResourceIdentifier:
     type: object
     required:
