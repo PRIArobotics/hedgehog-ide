@@ -7,7 +7,7 @@
     "hapi": "registry:dt/hapi#13.0.0+20160928135445",
     "jquery": "registry:dt/jquery#1.10.0+20160929162922",
     "node": "registry:dt/node#6.0.0+20161010101523",
-    "nodegit": "file:/tmp/nodegit-typescript-definition/nodegit.d.ts"
+    "nodegit": "github:FlorianKoerner/nodegit-typescript-definition/nodegit.d.ts"
   },
   "globalDevDependencies": {
     "mocha": "registry:dt/mocha#2.2.5+20160720003353"
