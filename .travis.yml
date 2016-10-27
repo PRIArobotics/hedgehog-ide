@@ -4,6 +4,14 @@ node_js:
 - 6
 - 5
 - 4
+env:
+  - CXX=g++-4.8
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - g++-4.8
 before_script:
 - npm install
 - typings install
@@ -18,4 +26,3 @@ notifications:
       secure: P3CFtBNw4v+vOpUKo3d40RtCfBo92mF7ez/7aFVdFUpVXFCkr0SWgsYmx8LJjtXYMTnjrh33zBzqvKsUBsD8nZKP09M/N5StkPnrYKw7rTtJ7kzHF2DPZBLZjs4cPR+tSQRjQIICP0HkkoFQSlJQiOq4Y4I5npKuRevtrXM/UNrokViIhKhSFBanZ2lR3uZr4qvc3g1WjonpXEtL8yz1uw3wubpXk2wn86NC3I4nH0ve7XVOM33Bgzdsm+u2IT3mqYR1MKtostkOo77X8RyjkYm4eVxF9rgWCXnk58GLYprAPfYTlROFeIlBiQ6mW0SexenhEKf40MDtYFflwzqwtuMuL2Zfvc15vN4jSOp3isOs/oPj+8U0SyupzbR5eknwzTIh0LWvmxzxqhjVEfgMobSafZsLDF4LjSevUVRzNdPOKXoPyrs9XBu63YxIQLYQPu8m9Kk08BWBkveZNcz1gN0zJA6HyoW7KeSSTi3y8kBnVs28xrbrxXcuhI2hltUxqWFxrdoxE1ixDwSWnZihU9oHJFY1a8SmlZQdlCI4hThG7VDkzb2HcFUiB+pFVDzo/Hwcr1ZKRYOIsXV5k7MF21e2Z5mbEW5cztz2syJKYoUNBJVspgLMb8ad9QzqgvjF/9Z0HKwAQu+ZPwmF+2J+LNRoP98JCKwQSdaRcUyfBPk=
     on_success: change
     on_failure: always
-
