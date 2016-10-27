@@ -1,10 +1,17 @@
 language: node_js
+node_js:
+- node
+- 6
+- 5
+- 4
 before_script:
 - npm install
 - typings install
 script:
 - grunt tslint
 - grunt swagger-validate
+- grunt build
+- npm test
 notifications:
   slack:
     rooms:

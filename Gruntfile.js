@@ -7,17 +7,28 @@ module.exports = function(grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
         ts: {
+            options: {
+                target: 'es5',
+                module: 'commonjs',
+                moduleResolution: 'node',
+                sourceMap: true,
+                emitDecoratorMetadata: true,
+                experimentalDecorators: true,
+                removeComments: false,
+                noImplicitAny: false
+            },
             all: {
-                src: ['src/**/*.ts'],
-                outDir: 'build',
-                options: {
-                    rootDir: 'src'
-                },
-                tsconfig: true
+                src: ['src/**/*.ts', 'typings/index.d.ts'],
+                outDir: 'build/src'
+            },
+            test: {
+                src: ['test/**/*.ts', 'typings/index.d.ts'],
+                outDir: 'build'
             }
         },
         clean: [
-            'build'
+            'build',
+            'tmp'
         ],
         copy: {
             client: {
@@ -26,7 +37,7 @@ module.exports = function(grunt) {
                         expand: true,
                         cwd: 'src/',
                         src: ['**/*.html', 'client/systemjs.config.js'],
-                        dest: 'build'
+                        dest: 'build/src'
                     }
                 ]
             }
@@ -34,19 +45,16 @@ module.exports = function(grunt) {
         symlink: {
             client: {
                 src: 'node_modules',
-                dest: 'build/client/node_modules'
+                dest: 'build/src/client/node_modules'
             }
         },
         tslint: {
             options: {
                 configuration: "tslint.json"
             },
-            server: {
-                src: ['src/server/**/*.ts']
-            },
-            client: {
-                src: ['src/client/**/*.ts']
-            }
+            server: 'src/server/**/*.ts',
+            client: 'src/client/**/*.ts',
+            test: 'test/**/*.ts'
         },
         concurrent: {
             run: [['build', 'run-server'], 'watch:compile', 'watch:copy'],
@@ -79,8 +87,6 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-symlink');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-concurrent');
-
-    grunt.registerTask('build', ['clean', 'ts:all', 'copy', 'symlink']);
 
     grunt.registerTask('swagger-validate', function() {
         var done = this.async();
@@ -136,5 +142,6 @@ module.exports = function(grunt) {
         nodetask.stderr.pipe(process.stderr);
     });
 
+    grunt.registerTask('build', ['clean', 'ts', 'copy', 'symlink']);
     grunt.registerTask('default', ['concurrent:run'] );
 };
