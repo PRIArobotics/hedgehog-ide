@@ -4,13 +4,13 @@ node_js:
 - 5
 - 4
 env:
-  - CXX=g++-4.8
+- CXX=g++-4.8
 addons:
   apt:
     sources:
-      - ubuntu-toolchain-r-test
+    - ubuntu-toolchain-r-test
     packages:
-      - g++-4.8
+    - g++-4.8
 before_script:
 - npm install
 - typings install
@@ -22,6 +22,6 @@ script:
 notifications:
   slack:
     rooms:
-      secure: P3CFtBNw4v+vOpUKo3d40RtCfBo92mF7ez/7aFVdFUpVXFCkr0SWgsYmx8LJjtXYMTnjrh33zBzqvKsUBsD8nZKP09M/N5StkPnrYKw7rTtJ7kzHF2DPZBLZjs4cPR+tSQRjQIICP0HkkoFQSlJQiOq4Y4I5npKuRevtrXM/UNrokViIhKhSFBanZ2lR3uZr4qvc3g1WjonpXEtL8yz1uw3wubpXk2wn86NC3I4nH0ve7XVOM33Bgzdsm+u2IT3mqYR1MKtostkOo77X8RyjkYm4eVxF9rgWCXnk58GLYprAPfYTlROFeIlBiQ6mW0SexenhEKf40MDtYFflwzqwtuMuL2Zfvc15vN4jSOp3isOs/oPj+8U0SyupzbR5eknwzTIh0LWvmxzxqhjVEfgMobSafZsLDF4LjSevUVRzNdPOKXoPyrs9XBu63YxIQLYQPu8m9Kk08BWBkveZNcz1gN0zJA6HyoW7KeSSTi3y8kBnVs28xrbrxXcuhI2hltUxqWFxrdoxE1ixDwSWnZihU9oHJFY1a8SmlZQdlCI4hThG7VDkzb2HcFUiB+pFVDzo/Hwcr1ZKRYOIsXV5k7MF21e2Z5mbEW5cztz2syJKYoUNBJVspgLMb8ad9QzqgvjF/9Z0HKwAQu+ZPwmF+2J+LNRoP98JCKwQSdaRcUyfBPk=
+      secure: nEnh7ifKc34lZkpvon7e6xyLUlvQN3XaOQoRRTB8H9fXeA1+qVT5UD9770calMQ2TJZ1D6oyjuqIdpmHsrSfS6la/cGDkU6ql4kwRCw/y/k9OQM3RaAj0z3pVRDdwc/8zQ0F9q4S1wdVjtHE/u6Z1W5MYjafzhvpVu6QlEJU13PZs/Jpp7lAdzZVr6aCNo/nAJQrSmHbal4VqGQL/H9w0N+UqMPazgYpy94wpDQlWUmciT7tmZaWYA1W6/pIcQWkJLET5Zs8YL6wEuDraeoJe9WKM05C2e6N1lfqgoAi60bxnJl0r544Z0GVoPxTn3DUUN/pU7ipazhPNMuNOfrZPOCBpbMwylCrZzdysgxHXFNTj9sOZhZ1hJ2gaDEjrnMiz4p5QP6k3D/2Hgn1uweTARXM9idFCL8UDB8izyfdCblQxydhmFKDguxlWXI2appQYU3YcGmOgCKGXgr9pCrLVAoidZcyRusUh+cLNWq32suDd3n23cbN2HEPJxmQrBrhkap8ZS3BHqCqneOe/UtelmInQMVNZfgaDYMIEw07Tg9YzAyAMT1NflWctGWAAu90x5pLUGgpIHZI6EmNXOwanfl1Tgo+BQqsZnyqPAB8KSRaMWkUdp7ZzHJGGDAgIGm7Gftu8pVqjGVV0AODxi/A5hnW5EVpLuB2YYeb//hT6N8=
     on_success: change
     on_failure: always
