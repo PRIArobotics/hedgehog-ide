@@ -1,12 +1,9 @@
 import NodeGit = require('nodegit');
 
-export class Program {
+export default class Program {
     public name: string;
 
-    private repository: NodeGit.Repository;
-
-    constructor(name, repository) {
+    constructor(name) {
         this.name = name;
-        this.repository = repository;
     }
 }

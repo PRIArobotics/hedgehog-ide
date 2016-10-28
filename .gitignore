@@ -56,3 +56,5 @@ build
 # Typings
 typings
 
+# Temporary files
+tmp
