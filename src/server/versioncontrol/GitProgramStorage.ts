@@ -16,10 +16,11 @@ export default class GitProgramStorage {
     public createProgram(name: string): Promise<Program> {
         return NodeGit.Repository.init(this.getProgramPath(name), 0)
             .then((repository: NodeGit.Repository) => {
+                let signature = NodeGit.Signature.now('Hedgehog', 'info@hedgehog.pria.at');
                 return repository.createCommitOnHead(
                     [],
-                    NodeGit.Signature.default(repository),
-                    NodeGit.Signature.default(repository),
+                    signature,
+                    signature,
                     'initial commit');
             })
             .then(() => {
