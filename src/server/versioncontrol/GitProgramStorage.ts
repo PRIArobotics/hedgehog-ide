@@ -5,8 +5,9 @@ import NodeGit = require('nodegit');
 
 import Program from './Program';
 import {wrapCallbackAsPromise} from "../../utils";
+import IProgramStorage from "../../versioncontrol/ProgramStorage";
 
-export default class GitProgramStorage {
+export default class GitProgramStorage implements IProgramStorage {
     public storagePath: string;
 
     constructor(storagePath: string) {
@@ -33,6 +34,14 @@ export default class GitProgramStorage {
             .then(() => {
                 return wrapCallbackAsPromise(rimraf, this.getProgramPath(program.name));
             });
+    }
+
+    public getProgramNames(): Promise<string[]> {
+        return wrapCallbackAsPromise(fs.readdir, this.storagePath);
+    }
+
+    public getProgram(name: string): Promise<Program> {
+        return null;
     }
 
     private getProgramPath(name: string) {

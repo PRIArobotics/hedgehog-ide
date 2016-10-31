@@ -5,28 +5,37 @@ import NodeGit = require('nodegit');
 import GitProgramStorage from "../../../src/server/versioncontrol/GitProgramStorage";
 import Program from "../../../src/server/versioncontrol/Program";
 import {wrapCallbackAsPromise} from '../../../src/utils';
+import rimraf = require("rimraf");
 
 describe('GitProgramStorage', () => {
     let programStorage: GitProgramStorage;
     let programCounter = 0;
-    let currentProgramName;
 
-    before(() => {
-        programStorage = new GitProgramStorage('./tmp');
-    });
+    function getProgramName() {
+        let name = `test-program-${programCounter}`;
+        programCounter++;
+        return name;
+    }
 
     beforeEach(() => {
-        currentProgramName = `test-program-${programCounter}`;
-        programCounter++;
+        programStorage = new GitProgramStorage('./tmp');
+        programCounter = 0;
+        return wrapCallbackAsPromise(fs.mkdir, './tmp');
+    });
+
+    afterEach(() => {
+        return wrapCallbackAsPromise(rimraf, './tmp');
     });
 
     describe('createProgram', () => {
         it('should create a new program', () => {
-            return programStorage.createProgram(currentProgramName)
-                .then((program: Program) => {
-                    assert.equal(program.name, currentProgramName);
+            let programName = getProgramName();
 
-                    return NodeGit.Repository.open(`tmp/${currentProgramName}`);
+            return programStorage.createProgram(programName)
+                .then((program: Program) => {
+                    assert.equal(program.name, programName);
+
+                    return NodeGit.Repository.open(`tmp/${programName}`);
                 })
                 .then((repository: NodeGit.Repository) => {
                     assert.equal(repository.isEmpty(), 0);
@@ -41,12 +50,14 @@ describe('GitProgramStorage', () => {
 
     describe('deleteProgram', () => {
         it('should delete an existing program', () => {
-            return NodeGit.Repository.init(`tmp/${currentProgramName}`, 0)
+            let programName = getProgramName();
+
+            return NodeGit.Repository.init(`tmp/${programName}`, 0)
                 .then(() => {
-                    return programStorage.deleteProgram(new Program(currentProgramName));
+                    return programStorage.deleteProgram(new Program(programName));
                 })
                 .then(() => {
-                    return wrapCallbackAsPromise(fs.stat, `tmp/${currentProgramName}`);
+                    return wrapCallbackAsPromise(fs.stat, `tmp/${programName}`);
                 })
                 .then(() => {
                     throw Error('Program was not deleted.');
@@ -57,7 +68,7 @@ describe('GitProgramStorage', () => {
         });
 
         it('should throw an error if the program does not exist', () => {
-            return programStorage.deleteProgram(new Program(currentProgramName))
+            return programStorage.deleteProgram(new Program(getProgramName()))
                 .then(() => {
                     throw Error('Operation failed silently.');
                 })
@@ -67,15 +78,33 @@ describe('GitProgramStorage', () => {
         });
 
         it('should throw an error if the program directory is actually a file', () => {
-            return wrapCallbackAsPromise(fs.writeFile, `tmp/${currentProgramName}`, '')
+            let programName = getProgramName();
+
+            return wrapCallbackAsPromise(fs.writeFile, `tmp/${programName}`, '')
                 .then(() => {
-                    return programStorage.deleteProgram(new Program(currentProgramName));
+                    return programStorage.deleteProgram(new Program(programName));
                 })
                 .then(() => {
                     throw Error('Operation failed silently.');
                 })
                 .catch((err) => {
                     assert.equal(err.code, 'ENOTDIR');
+                });
+        });
+    });
+
+    describe('getProgramNames', () => {
+        it('should list programs names', () => {
+            let programNames = [getProgramName(), getProgramName()];
+            return NodeGit.Repository.init(`tmp/${programNames[0]}`, 0)
+                .then(() => {
+                    return NodeGit.Repository.init(`tmp/${programNames[1]}`, 0);
+                })
+                .then(() => {
+                    return programStorage.getProgramNames();
+                })
+                .then((names) => {
+                    assert.deepEqual(names, programNames);
                 });
         });
     });
