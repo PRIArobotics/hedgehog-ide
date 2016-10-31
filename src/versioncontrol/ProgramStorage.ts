@@ -27,7 +27,7 @@ interface IProgramStorage {
      *
      * @param program Program which should be deleted
      */
-    deleteProgram(program: Program): Promise<void>;
+    deleteProgram(name: string): Promise<void>;
 
     /**
      * Returns an array of all programs stored in the ProgramStorage
@@ -118,6 +118,7 @@ interface IProgramStorage {
      */
     getWorkingTreeFile(programName: string, path: string);
 
+    // TODO: change parameters to file/directory objects
     /**
      * Create a new directory in the workingtree of a program
      * @param programName
