@@ -41,7 +41,10 @@ export default class GitProgramStorage implements IProgramStorage {
     }
 
     public getProgram(name: string): Promise<Program> {
-        return null;
+        return NodeGit.Repository.open(this.getProgramPath(name))
+            .then(() => {
+                return new Program(name);
+            });
     }
 
     private getProgramPath(name: string) {

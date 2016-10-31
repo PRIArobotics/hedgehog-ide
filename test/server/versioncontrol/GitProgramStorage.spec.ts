@@ -96,6 +96,7 @@ describe('GitProgramStorage', () => {
     describe('getProgramNames', () => {
         it('should list programs names', () => {
             let programNames = [getProgramName(), getProgramName()];
+
             return NodeGit.Repository.init(`tmp/${programNames[0]}`, 0)
                 .then(() => {
                     return NodeGit.Repository.init(`tmp/${programNames[1]}`, 0);
@@ -105,6 +106,21 @@ describe('GitProgramStorage', () => {
                 })
                 .then((names) => {
                     assert.deepEqual(names, programNames);
+                });
+        });
+    });
+
+    describe('getProgram', () => {
+        it('should load an existing program', () => {
+            let programName = getProgramName();
+
+            return NodeGit.Repository.init(`tmp/${programName}`, 0)
+                .then(() => {
+                    return programStorage.getProgram(programName);
+                })
+                .then((program: Program) => {
+                    assert.ok(program instanceof Program);
+                    assert.equal(program.name, programName);
                 });
         });
     });
