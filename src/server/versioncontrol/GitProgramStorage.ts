@@ -29,7 +29,7 @@ export default class GitProgramStorage implements IProgramStorage {
             });
     }
 
-    public deleteProgram(program: Program): Promise<Error> {
+    public deleteProgram(program: Program): Promise<void> {
         return wrapCallbackAsPromise(fs.readdir, this.getProgramPath(program.name))
             .then(() => {
                 return wrapCallbackAsPromise(rimraf, this.getProgramPath(program.name));
@@ -47,6 +47,47 @@ export default class GitProgramStorage implements IProgramStorage {
             });
     }
 
+    /* tslint:disable */
+    public renameProgram(oldName: string, newName: string) {
+    }
+
+    public resetProgram(programName: string, versionId: string) {
+    }
+
+    public getBlob(programName: string, blogId: string) {
+    }
+
+    public getTree(programName: string, treeId: string) {
+    }
+
+    public getVersionIds(programName: string) {
+    }
+
+    public getVersion(programName: string, versionId: string) {
+    }
+
+    public createVersionFromWorkingTree(programName: string) {
+    }
+
+    public getWorkingTree(programName: string) {
+    }
+
+    public getWorkingTreeDirectory(programName: string, path: string) {
+    }
+
+    public getWorkingTreeFile(programName: string, path: string) {
+    }
+
+    public createWorkingTreeDirectory(programName: string, path: string, mode?: string) {
+    }
+
+    public createWorkingTreeFile(programName: string, path: string, content?: string, mode?: string) {
+    }
+
+    private resetWorkingTree(programName: string) {
+    }
+
+    /* tslint:enable */
     private getProgramPath(name: string) {
         return path.join(this.storagePath, name);
     }
