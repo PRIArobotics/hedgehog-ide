@@ -29,10 +29,10 @@ export default class GitProgramStorage implements IProgramStorage {
             });
     }
 
-    public deleteProgram(program: Program): Promise<void> {
-        return wrapCallbackAsPromise(fs.readdir, this.getProgramPath(program.name))
+    public deleteProgram(name: string): Promise<void> {
+        return wrapCallbackAsPromise(fs.readdir, this.getProgramPath(name))
             .then(() => {
-                return wrapCallbackAsPromise(rimraf, this.getProgramPath(program.name));
+                return wrapCallbackAsPromise(rimraf, this.getProgramPath(name));
             });
     }
 
@@ -48,10 +48,12 @@ export default class GitProgramStorage implements IProgramStorage {
     }
 
     /* tslint:disable */
-    public renameProgram(oldName: string, newName: string) {
+    public renameProgram(oldName: string, newName: string): Promise<void> {
+        return undefined;
     }
 
-    public resetProgram(programName: string, versionId: string) {
+    public resetProgram(programName: string, versionId: string): Promise<void> {
+        return undefined;
     }
 
     public getBlob(programName: string, blogId: string) {
@@ -60,7 +62,8 @@ export default class GitProgramStorage implements IProgramStorage {
     public getTree(programName: string, treeId: string) {
     }
 
-    public getVersionIds(programName: string) {
+    public getVersionIds(programName: string): Promise<string[]> {
+        return undefined;
     }
 
     public getVersion(programName: string, versionId: string) {
@@ -84,7 +87,7 @@ export default class GitProgramStorage implements IProgramStorage {
     public createWorkingTreeFile(programName: string, path: string, content?: string, mode?: string) {
     }
 
-    private resetWorkingTree(programName: string) {
+    public resetWorkingTree(programName: string) {
     }
 
     /* tslint:enable */

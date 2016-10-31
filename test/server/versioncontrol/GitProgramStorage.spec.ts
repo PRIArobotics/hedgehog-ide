@@ -54,7 +54,7 @@ describe('GitProgramStorage', () => {
 
             return NodeGit.Repository.init(`tmp/${programName}`, 0)
                 .then(() => {
-                    return programStorage.deleteProgram(new Program(programName));
+                    return programStorage.deleteProgram(programName);
                 })
                 .then(() => {
                     return wrapCallbackAsPromise(fs.stat, `tmp/${programName}`);
@@ -68,7 +68,7 @@ describe('GitProgramStorage', () => {
         });
 
         it('should throw an error if the program does not exist', () => {
-            return programStorage.deleteProgram(new Program(getProgramName()))
+            return programStorage.deleteProgram(getProgramName())
                 .then(() => {
                     throw Error('Operation failed silently.');
                 })
@@ -82,7 +82,7 @@ describe('GitProgramStorage', () => {
 
             return wrapCallbackAsPromise(fs.writeFile, `tmp/${programName}`, '')
                 .then(() => {
-                    return programStorage.deleteProgram(new Program(programName));
+                    return programStorage.deleteProgram(programName);
                 })
                 .then(() => {
                     throw Error('Operation failed silently.');
