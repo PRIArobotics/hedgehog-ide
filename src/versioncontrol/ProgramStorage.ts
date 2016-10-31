@@ -4,14 +4,9 @@ export default IProgramStorage;
 // TODO: add missing return values and documentation of those
 /**
  * A program storage handles low level program management.
- * Only the following methods should be called directly, all others are internal
- * methods for the wrapper objects (like {@link Program):
- * - {@link IProgramStorage.createProgram}
- * - {@link IProgramStorage.deleteProgram}
- * - {@link IProgramStorage.getProgramNames}
- * - {@link IProgramStorage.getProgram}
- * - {@link IProgramStorage.renameProgram}
- * - {@link IProgramStorage.resetProgram}
+ * Programs can be either managed and manipulated directly with
+ * a program store or in a more object oriented manner through
+ * wrapper objects.
  */
 interface IProgramStorage {
 
