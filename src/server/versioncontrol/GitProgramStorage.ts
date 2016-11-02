@@ -3,9 +3,9 @@ import path = require('path');
 import rimraf = require('rimraf');
 import NodeGit = require('nodegit');
 
-import Program from './Program';
 import {wrapCallbackAsPromise} from "../../utils";
 import IProgramStorage from "../../versioncontrol/ProgramStorage";
+import Program from "../../versioncontrol/Program";
 
 export default class GitProgramStorage implements IProgramStorage {
     public storagePath: string;

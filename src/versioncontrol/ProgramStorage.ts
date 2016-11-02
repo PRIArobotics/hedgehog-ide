@@ -1,4 +1,4 @@
-import Program from "../server/versioncontrol/Program";
+import Program from "Program";
 
 export default IProgramStorage;
 // TODO: add missing return values and documentation of those

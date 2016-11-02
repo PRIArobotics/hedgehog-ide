@@ -3,7 +3,7 @@ import fs = require('fs');
 import NodeGit = require('nodegit');
 
 import GitProgramStorage from "../../../src/server/versioncontrol/GitProgramStorage";
-import Program from "../../../src/server/versioncontrol/Program";
+import Program from "../../../src/versioncontrol/Program";
 import {wrapCallbackAsPromise} from '../../../src/utils';
 import rimraf = require("rimraf");
 
