@@ -2,24 +2,27 @@ import Version from "./Version";
 import Tree from "./Tree";
 import WorkingTreeFile from "./WorkingTreeFile";
 import WorkingTreeDirectory from "./WorkingTreeDirectory";
+import WorkingTree from "./WorkingTree";
+
 export default class Program {
     public name: string;
     public latestVersionId: string;
 
-    constructor(name) {
+    constructor(name, latestVersionId) {
         this.name = name;
+        this.latestVersionId = latestVersionId;
     }
 
-    public rename(newName: string) {
-
+    public rename(newName: string): void {
+        return undefined;
     }
 
-    public getWorkingTree() {
-
+    public getWorkingTree(): WorkingTree {
+        return undefined;
     }
 
-    public getVersions() {
-
+    public getVersions(): Version[] {
+        return undefined;
     }
 
     public getVersion(versionId: string): Version {

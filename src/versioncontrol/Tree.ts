@@ -1,7 +1,16 @@
 import Blob from "./Blob";
+
 export default class Tree {
     public id: string;
     public items: {[key: string]: TreeItem};
+
+    private programName: string;
+
+    public constructor(programName, id, items) {
+        this.programName = programName;
+        this.id = id;
+        this.items = items;
+    }
 
     public getTree(item: TreeItem): Tree {
         return undefined;
@@ -11,8 +20,8 @@ export default class Tree {
         return undefined;
     }
 
-    public getItem(item: TreeItem) {
-
+    public getItem(item: TreeItem): any {
+        return undefined;
     }
 }
 
@@ -22,7 +31,13 @@ export enum TreeItemType {
 }
 
 export class TreeItem {
-    type: TreeItemType;
-    id: string;
-    mode: string;
+    public type: TreeItemType;
+    public id: string;
+    public mode: string;
+
+    constructor(type, id, mode) {
+        this.type = type;
+        this.id = id;
+        this.mode = mode;
+    }
 }

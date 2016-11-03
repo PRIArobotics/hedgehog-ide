@@ -1,12 +1,24 @@
 import Tree from "./Tree";
 export default class Version {
-    id: string;
-    tag: string;
-    message: string;
-    creationDate: Date;
+    public id: string;
+    public tag: string;
+    public message: string;
+    public creationDate: Date;
 
-    parentIds: string[];
-    treeIde: string;
+    public parentIds: string[];
+    public treeId: string;
+
+    private programName: string;
+
+    public constructor(programName, id, tag, message, creationDate, parentIds, treeId) {
+        this.programName = programName;
+        this.id = id;
+        this.tag = tag;
+        this.message = message;
+        this.creationDate = creationDate;
+        this.parentIds = parentIds;
+        this.treeId = treeId;
+    }
 
     public getTree(): Tree {
         return undefined;

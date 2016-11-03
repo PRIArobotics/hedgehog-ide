@@ -5,6 +5,15 @@ export default class WorkingTreeDirectory {
 
     public items: {[key: string]: DirectoryItem};
 
+    private programName: string;
+
+    public constructor(programName, path, mode, items) {
+        this.programName = programName;
+        this.path = path;
+        this.mode = mode;
+        this.items = items;
+    }
+
     public getName(): string {
         return undefined;
     }
@@ -17,28 +26,28 @@ export default class WorkingTreeDirectory {
         return undefined;
     }
 
-    public getItem(item: DirectoryItem) {
-
+    public getItem(item: DirectoryItem): any {
+        return undefined;
     };
 
     public addFile(name: string, content: string, encoding?: string, mode?: string): WorkingTreeFile {
         return undefined;
     }
 
-    public deleteFile(name: string) {
-
+    public deleteFile(name: string): void {
+        return undefined;
     }
 
     public addDirectory(name: string): WorkingTreeDirectory {
         return undefined;
     }
 
-    public deleteDirectory(name: string) {
-
+    public deleteDirectory(name: string): void {
+        return undefined;
     }
 
-    public reload() {
-
+    public reload(): void {
+        return undefined;
     }
 }
 
