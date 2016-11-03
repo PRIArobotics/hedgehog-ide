@@ -25,7 +25,7 @@ export default class GitProgramStorage implements IProgramStorage {
                     'initial commit');
             })
             .then(() => {
-                return new Program(name);
+                return new Program(name, null);
             });
     }
 
@@ -43,7 +43,7 @@ export default class GitProgramStorage implements IProgramStorage {
     public getProgram(name: string): Promise<Program> {
         return NodeGit.Repository.open(this.getProgramPath(name))
             .then(() => {
-                return new Program(name);
+                return new Program(name, null);
             });
     }
 
