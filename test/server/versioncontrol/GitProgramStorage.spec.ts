@@ -6,7 +6,6 @@ import GitProgramStorage from "../../../src/server/versioncontrol/GitProgramStor
 import Program from "../../../src/versioncontrol/Program";
 import {wrapCallbackAsPromise} from '../../../src/utils';
 import rimraf = require("rimraf");
-import {buffer} from "rxjs/operator/buffer";
 
 describe('GitProgramStorage', () => {
     let programStorage: GitProgramStorage;
