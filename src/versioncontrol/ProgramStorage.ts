@@ -1,4 +1,5 @@
 import Program from "./Program";
+import Blob from "./Blob";
 
 export default IProgramStorage;
 // TODO: add missing return values and documentation of those
@@ -60,9 +61,9 @@ interface IProgramStorage {
     /**
      * Get a blob object of a program (aka a file)
      * @param programName
-     * @param blogId SHA of the blob
+     * @param blobId SHA of the blob
      */
-    getBlob(programName: string, blogId: string);
+    getBlob(programName: string, blobId: string): Promise<Blob>;
 
     /**
      * Get a tree object of a program (aka a directory)

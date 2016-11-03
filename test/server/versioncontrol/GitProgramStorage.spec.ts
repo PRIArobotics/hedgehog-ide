@@ -6,6 +6,7 @@ import GitProgramStorage from "../../../src/server/versioncontrol/GitProgramStor
 import Program from "../../../src/versioncontrol/Program";
 import {wrapCallbackAsPromise} from '../../../src/utils';
 import rimraf = require("rimraf");
+import {buffer} from "rxjs/operator/buffer";
 
 describe('GitProgramStorage', () => {
     let programStorage: GitProgramStorage;
@@ -122,6 +123,64 @@ describe('GitProgramStorage', () => {
                     assert.ok(program instanceof Program);
                     assert.equal(program.name, programName);
                 });
+        });
+    });
+
+    describe('renameProgram', () => {
+        it('should rename an existing program', () => {
+            let oldName = getProgramName();
+            let newName = getProgramName();
+
+            return NodeGit.Repository.init(`tmp/${oldName}`, 0)
+                .then(() => {
+                    return programStorage.renameProgram(oldName, newName);
+                })
+                .then(() => {
+                    return wrapCallbackAsPromise(fs.stat, `tmp/${oldName}`);
+                })
+                .then(() => {
+                    throw Error('Old program still exists.');
+                })
+                .catch((err) => {
+                    assert.equal(err.code, 'ENOENT');
+                    return wrapCallbackAsPromise(fs.stat, `tmp/${newName}`);
+                })
+                .then((stats: fs.Stats) => {
+                    assert.ok(stats.isDirectory());
+                });
+        });
+
+        it('should return an error if a program with the new name already exists', () => {
+            let oldName = getProgramName();
+            let newName = getProgramName();
+
+            return NodeGit.Repository.init(`tmp/${oldName}`, 0)
+                .then(() => {
+                    return NodeGit.Repository.init(`tmp/${newName}`, 0);
+                })
+                .then(() => {
+                    return programStorage.renameProgram(oldName, newName);
+                })
+                .then(() => {
+                    throw Error('Program with new name overwritten.');
+                })
+                .catch((err) => {
+                    assert.equal(err.message, `Program "${newName}" already exists.`);
+                });
+        });
+    });
+
+    describe('getBlob', () => {
+        it('should read an existing blob', async () => {
+            const programName = getProgramName();
+            let odb = await (await NodeGit.Repository.init(`tmp/${programName}`, 0)).odb();
+
+            const data = 'hello';
+            let oid = await odb.write(<any>data, data.length, NodeGit.Object.TYPE.BLOB);
+            let blob = await programStorage.getBlob(programName, oid.tostrS());
+
+            assert.equal(blob.id, oid.tostrS());
+            assert.equal(blob.size, data.length);
         });
     });
 });

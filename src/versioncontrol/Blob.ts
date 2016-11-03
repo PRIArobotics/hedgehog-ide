@@ -1,14 +1,12 @@
 export default class Blob {
     public id: string;
-    public encoding: string;
     public size: number;
 
     private programName: string;
 
-    public constructor(programName, id, encoding, size) {
+    public constructor(programName, id, size) {
         this.programName = programName;
         this.id = id;
-        this.encoding = encoding;
         this.size = size;
     }
 

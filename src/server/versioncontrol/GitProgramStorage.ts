@@ -6,6 +6,8 @@ import NodeGit = require('nodegit');
 import {wrapCallbackAsPromise} from "../../utils";
 import IProgramStorage from "../../versioncontrol/ProgramStorage";
 import Program from "../../versioncontrol/Program";
+import * as GitVersionControlFactory from './GitVersionControlFactory';
+import Blob from "../../versioncontrol/Blob";
 
 export default class GitProgramStorage implements IProgramStorage {
     public storagePath: string;
@@ -47,18 +49,35 @@ export default class GitProgramStorage implements IProgramStorage {
             });
     }
 
-    /* tslint:disable */
     public renameProgram(oldName: string, newName: string): Promise<void> {
-        return undefined;
+        return wrapCallbackAsPromise(fs.stat, this.getProgramPath(newName))
+            .then(() => {
+                throw Error(`Program "${newName}" already exists.`);
+            })
+            .catch((err) => {
+                if(err.code !== 'ENOENT') {
+                    throw err;
+                } else {
+                    return wrapCallbackAsPromise(fs.rename, this.getProgramPath(oldName), this.getProgramPath(newName));
+                }
+            });
     }
 
     public resetProgram(programName: string, versionId: string): Promise<void> {
         return undefined;
     }
 
-    public getBlob(programName: string, blogId: string) {
+    public getBlob(programName: string, blobId: string): Promise<Blob> {
+        return NodeGit.Repository.open(this.getProgramPath(programName))
+            .then((repository) => {
+                return repository.getBlob(blobId);
+            })
+            .then((blob) => {
+                return GitVersionControlFactory.createBlob(programName, blob);
+            });
     }
 
+    /* tslint:disable */
     public getTree(programName: string, treeId: string) {
     }
 
