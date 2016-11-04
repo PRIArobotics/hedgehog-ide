@@ -1,3 +1,4 @@
+import "babel-polyfill";
 import assert = require('assert');
 import fs = require('fs');
 import NodeGit = require('nodegit');

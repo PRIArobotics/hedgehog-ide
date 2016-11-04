@@ -26,6 +26,19 @@ module.exports = function(grunt) {
                 outDir: 'build'
             }
         },
+        babel: {
+            options: {
+                presets: ['es2015']
+            },
+            all: {
+                files: [{
+                    expand: true,
+                    cwd: 'build',
+                    src: ['**/*.js', '!src/client/node_modules/*'],
+                    dest: 'build'
+                }]
+            }
+        },
         clean: [
             'build',
             'tmp'
@@ -88,6 +101,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-symlink');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-concurrent');
+    grunt.loadNpmTasks('grunt-babel');
 
     grunt.registerTask('swagger-validate', function() {
         var done = this.async();
@@ -143,6 +157,7 @@ module.exports = function(grunt) {
         nodetask.stderr.pipe(process.stderr);
     });
 
-    grunt.registerTask('build', ['clean', 'ts', 'copy', 'symlink']);
+    grunt.registerTask('compile', ['ts', 'babel']);
+    grunt.registerTask('build', ['clean', 'compile', 'copy', 'symlink']);
     grunt.registerTask('default', ['concurrent:run'] );
 };
