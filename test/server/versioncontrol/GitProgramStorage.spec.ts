@@ -127,46 +127,38 @@ describe('GitProgramStorage', () => {
     });
 
     describe('renameProgram', () => {
-        it('should rename an existing program', () => {
+        it('should rename an existing program', async () => {
             let oldName = getProgramName();
             let newName = getProgramName();
 
-            return NodeGit.Repository.init(`tmp/${oldName}`, 0)
-                .then(() => {
-                    return programStorage.renameProgram(oldName, newName);
-                })
-                .then(() => {
-                    return wrapCallbackAsPromise(fs.stat, `tmp/${oldName}`);
-                })
-                .then(() => {
-                    throw Error('Old program still exists.');
-                })
-                .catch((err) => {
-                    assert.equal(err.code, 'ENOENT');
-                    return wrapCallbackAsPromise(fs.stat, `tmp/${newName}`);
-                })
-                .then((stats: fs.Stats) => {
-                    assert.ok(stats.isDirectory());
-                });
+            await NodeGit.Repository.init(`tmp/${oldName}`, 0);
+            await programStorage.renameProgram(oldName, newName);
+
+            try {
+                await wrapCallbackAsPromise(fs.stat, `tmp/${oldName}`);
+                throw Error('Old program still exists.');
+            } catch(err) {
+                assert.equal(err.code, 'ENOENT');
+                let stats = await wrapCallbackAsPromise(fs.stat, `tmp/${newName}`);
+                assert.ok(stats.isDirectory());
+            }
         });
 
-        it('should return an error if a program with the new name already exists', () => {
+        it('should return an error if a program with the new name already exists', async () => {
             let oldName = getProgramName();
             let newName = getProgramName();
 
-            return NodeGit.Repository.init(`tmp/${oldName}`, 0)
-                .then(() => {
-                    return NodeGit.Repository.init(`tmp/${newName}`, 0);
-                })
-                .then(() => {
-                    return programStorage.renameProgram(oldName, newName);
-                })
-                .then(() => {
-                    throw Error('Program with new name overwritten.');
-                })
-                .catch((err) => {
-                    assert.equal(err.message, `Program "${newName}" already exists.`);
-                });
+            await Promise.all([
+                NodeGit.Repository.init(`tmp/${oldName}`, 0),
+                NodeGit.Repository.init(`tmp/${newName}`, 0)
+            ]);
+
+            try {
+                await programStorage.renameProgram(oldName, newName);
+                throw Error('Program with new name overwritten.');
+            } catch(err) {
+                assert.equal(err.message, `Program "${newName}" already exists.`);
+            }
         });
     });
 
