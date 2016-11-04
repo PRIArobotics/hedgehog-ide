@@ -16,65 +16,54 @@ export default class GitProgramStorage implements IProgramStorage {
         this.storagePath = storagePath;
     }
 
-    public createProgram(name: string): Promise<Program> {
-        return NodeGit.Repository.init(this.getProgramPath(name), 0)
-            .then((repository: NodeGit.Repository) => {
-                let signature = NodeGit.Signature.now('Hedgehog', 'info@hedgehog.pria.at');
-                return repository.createCommitOnHead(
-                    [],
-                    signature,
-                    signature,
-                    'initial commit');
-            })
-            .then(() => {
-                return new Program(name, null);
-            });
+    public async createProgram(name: string): Promise<Program> {
+        const signature = NodeGit.Signature.now('Hedgehog', 'info@hedgehog.pria.at');
+
+        let repository = await NodeGit.Repository.init(this.getProgramPath(name), 0);
+
+        await repository.createCommitOnHead(
+            [],
+            signature,
+            signature,
+            'initial commit'
+        );
+        return new Program(name, null);
     }
 
-    public deleteProgram(name: string): Promise<void> {
-        return wrapCallbackAsPromise(fs.readdir, this.getProgramPath(name))
-            .then(() => {
-                return wrapCallbackAsPromise(rimraf, this.getProgramPath(name));
-            });
+    public async deleteProgram(name: string): Promise<void> {
+        await wrapCallbackAsPromise(fs.readdir, this.getProgramPath(name));
+        await wrapCallbackAsPromise(rimraf, this.getProgramPath(name));
     }
 
-    public getProgramNames(): Promise<string[]> {
-        return wrapCallbackAsPromise(fs.readdir, this.storagePath);
+    public async getProgramNames(): Promise<string[]> {
+        await wrapCallbackAsPromise(fs.readdir, this.storagePath);
     }
 
-    public getProgram(name: string): Promise<Program> {
-        return NodeGit.Repository.open(this.getProgramPath(name))
-            .then(() => {
-                return new Program(name, null);
-            });
+    public async getProgram(name: string): Promise<Program> {
+        await NodeGit.Repository.open(this.getProgramPath(name));
+        return new Program(name, null);
     }
 
-    public renameProgram(oldName: string, newName: string): Promise<void> {
-        return wrapCallbackAsPromise(fs.stat, this.getProgramPath(newName))
-            .then(() => {
-                throw Error(`Program "${newName}" already exists.`);
-            })
-            .catch((err) => {
-                if(err.code !== 'ENOENT') {
-                    throw err;
-                } else {
-                    return wrapCallbackAsPromise(fs.rename, this.getProgramPath(oldName), this.getProgramPath(newName));
-                }
-            });
+    public async renameProgram(oldName: string, newName: string): Promise<void> {
+        try {
+            wrapCallbackAsPromise(fs.stat, this.getProgramPath(newName));
+            throw Error(`Program "${newName}" already exists.`);
+        } catch(err) {
+            if(err.code !== 'ENOENT') {
+                throw err;
+            } else {
+                await wrapCallbackAsPromise(fs.rename, this.getProgramPath(oldName), this.getProgramPath(newName));
+            }
+        }
     }
 
     public resetProgram(programName: string, versionId: string): Promise<void> {
         return undefined;
     }
 
-    public getBlob(programName: string, blobId: string): Promise<Blob> {
-        return NodeGit.Repository.open(this.getProgramPath(programName))
-            .then((repository) => {
-                return repository.getBlob(blobId);
-            })
-            .then((blob) => {
-                return GitVersionControlFactory.createBlob(programName, blob);
-            });
+    public async getBlob(programName: string, blobId: string): Promise<Blob> {
+        let repository = await NodeGit.Repository.open(this.getProgramPath(programName));
+        return GitVersionControlFactory.createBlob(programName, await repository.getBlob(blobId));
     }
 
     /* tslint:disable */
