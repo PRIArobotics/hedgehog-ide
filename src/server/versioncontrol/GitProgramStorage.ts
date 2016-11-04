@@ -35,8 +35,8 @@ export default class GitProgramStorage implements IProgramStorage {
         await wrapCallbackAsPromise(rimraf, this.getProgramPath(name));
     }
 
-    public async getProgramNames(): Promise<string[]> {
-        await wrapCallbackAsPromise(fs.readdir, this.storagePath);
+    public getProgramNames(): Promise<string[]> {
+        return wrapCallbackAsPromise(fs.readdir, this.storagePath);
     }
 
     public async getProgram(name: string): Promise<Program> {
@@ -46,7 +46,7 @@ export default class GitProgramStorage implements IProgramStorage {
 
     public async renameProgram(oldName: string, newName: string): Promise<void> {
         try {
-            wrapCallbackAsPromise(fs.stat, this.getProgramPath(newName));
+            await wrapCallbackAsPromise(fs.stat, this.getProgramPath(newName));
             throw Error(`Program "${newName}" already exists.`);
         } catch(err) {
             if(err.code !== 'ENOENT') {
