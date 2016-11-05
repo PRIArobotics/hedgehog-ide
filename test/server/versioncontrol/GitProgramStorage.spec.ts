@@ -37,7 +37,7 @@ describe('GitProgramStorage', () => {
             assert.equal(program.name, programName);
         });
 
-        it('should create an initial commit and the hedgehog', async () => {
+        it('should create an initial commit', async () => {
             let programName = getProgramName();
             await programStorage.createProgram(programName);
             let repository = await NodeGit.Repository.open(`tmp/${programName}`);
@@ -45,8 +45,6 @@ describe('GitProgramStorage', () => {
 
             let commit = await repository.getHeadCommit();
             assert.equal(commit.message(), 'initial commit');
-
-            assert.equal((await repository.getBranchCommit('hedgehog')).id().tostrS(), commit.id().tostrS());
         });
     });
 
@@ -276,6 +274,57 @@ describe('GitProgramStorage', () => {
 
             let version = await programStorage.getVersion(programName, commits[1].tostrS());
             assert.deepEqual(version.parentIds, [commits[0].tostrS()]);
+        });
+    });
+
+    describe('createVersionFromWorkingTree', () => {
+        it('should save the version by creating a commit', async () => {
+            const signature = NodeGit.Signature.now('Hedgehog', 'info@hedgehog.pria.at');
+            const programName = getProgramName();
+            let repository = await NodeGit.Repository.init(`tmp/${programName}`, 0);
+            let firstCommitId = await repository.createCommitOnHead(
+                [],
+                signature,
+                signature,
+                'initial commit'
+            );
+
+            let versionId = await programStorage.createVersionFromWorkingTree(programName, 'test', 'v1.0');
+            let commit = await repository.getCommit(versionId);
+            assert.equal(commit.message(), 'test');
+            assert.deepEqual(commit.parentId(0), firstCommitId);
+        });
+
+        it('should save the working tree correctly', async () => {
+            const signature = NodeGit.Signature.now('Hedgehog', 'info@hedgehog.pria.at');
+            const programName = getProgramName();
+            let repository = await NodeGit.Repository.init(`tmp/${programName}`, 0);
+            await repository.createCommitOnHead(
+                [],
+                signature,
+                signature,
+                'initial commit'
+            );
+
+            await wrapCallbackAsPromise(fs.writeFile, `tmp/${programName}/test1`, 'hello');
+            await wrapCallbackAsPromise(fs.mkdir, `tmp/${programName}/testdir`);
+            await wrapCallbackAsPromise(fs.writeFile, `tmp/${programName}/testdir/test2`, 'hello2');
+
+            let versionId = await programStorage.createVersionFromWorkingTree(programName, 'test', 'v1.0');
+            let tree = await (await repository.getCommit(versionId)).getTree();
+
+            let test1File = await tree.getEntry('test1');
+            assert.ok(test1File.isBlob());
+            let test1Content = (await test1File.getBlob()).toString();
+            assert.equal(test1Content, 'hello');
+
+            let testDir = await tree.getEntry('testdir');
+            assert.ok(testDir.isTree());
+
+            let test2File = await (await testDir.getTree()).getEntry('test2');
+            assert.ok(test2File.isBlob());
+            let test2Content = (await test2File.getBlob()).toString();
+            assert.equal(test2Content, 'hello2');
         });
     });
 });

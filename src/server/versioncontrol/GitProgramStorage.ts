@@ -23,13 +23,12 @@ export default class GitProgramStorage implements IProgramStorage {
 
         let repository = await NodeGit.Repository.init(this.getProgramPath(name), 0);
 
-        let commit = await repository.createCommitOnHead(
+        await repository.createCommitOnHead(
             [],
             signature,
             signature,
             'initial commit'
         );
-        await repository.createBranch('hedgehog', commit, false, signature, null);
 
         return new Program(name, null);
     }
@@ -76,7 +75,7 @@ export default class GitProgramStorage implements IProgramStorage {
     }
 
     public async getVersionIds(programName: string): Promise<string[]> {
-        let branchCommit = await (await this.getRepository(programName)).getBranchCommit('hedgehog');
+        let branchCommit = await (await this.getRepository(programName)).getHeadCommit();
 
         return new Promise<string[]>((resolve, reject) => {
             let eventEmitter = branchCommit.history();
@@ -108,10 +107,31 @@ export default class GitProgramStorage implements IProgramStorage {
         return GitVersionControlFactory.createVersion(programName, tag, versionCommit);
     }
 
-    /* tslint:disable */
-    public createVersionFromWorkingTree(programName: string) {
+    public async createVersionFromWorkingTree(programName: string, message: string, tag?: string): Promise<string> {
+        const signature = NodeGit.Signature.now('Hedgehog', 'info@hedgehog.pria.at');
+        let repository = await this.getRepository(programName);
+        let index: any = await repository.index();
+        await index.addAll();
+        await index.write();
+        const treeId: NodeGit.Oid = await index.writeTree();
+
+        const parentId = (await repository.getHeadCommit()).id();
+        const commitId = await repository.createCommit(
+            'HEAD',
+            signature,
+            signature,
+            message,
+            treeId,
+            [parentId]
+        );
+
+        if(tag)
+            await repository.createTag(commitId, tag, message);
+
+        return commitId.tostrS();
     }
 
+    /* tslint:disable */
     public getWorkingTree(programName: string) {
     }
 

@@ -1,6 +1,7 @@
 import Program from "./Program";
 import Blob from "./Blob";
 import Tree from "./Tree";
+import Version from "./Version";
 
 export default IProgramStorage;
 // TODO: add missing return values and documentation of those
@@ -92,7 +93,7 @@ interface IProgramStorage {
      * Create a new version from the workingtree contents
      * @param programName
      */
-    createVersionFromWorkingTree(programName: string);
+    createVersionFromWorkingTree(programName: string, message: string, tag?: string): Promise<string>;
 
 
     /**
