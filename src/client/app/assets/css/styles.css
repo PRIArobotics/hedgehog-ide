@@ -1,0 +1,29 @@
+/* Master Styles */
+.collapsed .collapsible-section {
+    display: none;
+}
+
+.hedgehog-green-light {
+    background-color: #38b449;
+}
+
+.hedgehog-green-dark {
+    background-color: #007c3c;
+}
+
+.tabs .indicator {
+    background-color: black;
+    color: black;
+}
+
+.button-margin{
+    margin-top: 2%;
+    margin-right: 20px;
+}
+
+/*
+.md-tab-header {
+    background: #009688;
+    color: #FFF;
+}
+*/

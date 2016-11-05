@@ -1,22 +1,10 @@
 <div class="app-content row">
 
-
-
-
     <div class="col s2">
         <h3> Project 1 </h3>
         <hr>
 
-        <div collapse-on-click >
-            <div>
-                <i class="material-icons">keyboard_arrow_down</i> Root <i class="material-icons">folder</i>
-            </div>
-            <div class="collapsible-section">
-                main.py <br>
-                test.py
-            </div>
-
-        </div>
+        <Tree [nodes]="filetree"></Tree>
     </div>
 
     <div class="col s10">
@@ -43,7 +31,7 @@
         <div class="row" style="margin-bottom: 0px;">
             <div class="col s12" style="z-index:1" >
                 <ul class="tabs" materialize="tabs" id="sortable-tabs">
-                    <li *ngFor="let file of files" class="tab" draggable (click)="onTabSelect( file.content, file.id )" > <a class="green-text lighten-3" > {{ file.name }} </a></li>
+                    <li *ngFor="let file of files" class="tab" draggable (click)="onTabSelect( file.id - 1 )" > <a class="green-text lighten-3" > {{ file.name }} </a></li>
                 </ul>
             </div>
 

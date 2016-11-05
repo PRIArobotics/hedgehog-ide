@@ -39,7 +39,10 @@
             'w3c-blob': 'npm:w3c-blob/index.js',
             'buffer': 'npm:buffer/index.js',
             'base64-js': 'npm:base64-js/index.js',
-            'ieee754': 'npm:ieee754/index.js'
+            'ieee754': 'npm:ieee754/index.js',
+
+            'angular2-tree-component': 'npm:angular2-tree-component',
+            'lodash': 'npm:lodash'
 
         },
         // packages tells the System loader how to load when no filename and/or no extension
@@ -67,6 +70,14 @@
             'angular2-materialize': {
                 main: "dist/index",
                 defaultExtension: "js"
+            },
+            'angular2-tree-component': {
+                main: 'dist/angular2-tree-component.js',
+                defaultExtension: 'js'
+            },
+            'lodash': {
+                main: 'lodash.js',
+                defaultExtension: 'js'
             }
         }
     });

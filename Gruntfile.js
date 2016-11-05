@@ -49,7 +49,7 @@ module.exports = function(grunt) {
                     {
                         expand: true,
                         cwd: 'src/',
-                        src: ['**/*.html', 'client/systemjs.config.js'],
+                        src: ['**/*.html', 'assets/*.css', 'assets/*.js', 'client/systemjs.config.js'],
                         dest: 'build/src'
                     }
                 ]
@@ -78,15 +78,15 @@ module.exports = function(grunt) {
         },
         watch: {
             copy: {
-                files: 'src/**/*.html',
+                files: ['src/**/*.html', 'src/**/*.css'],
                 tasks: ['copy'],
                 options: {
                     interrupt: true
                 }
             },
             compile: {
-                files: 'src/**/*.c',
-                tasks: ['ts:all'],
+                files: 'src/**/*.ts',
+                tasks: ['build'],
                 options: {
                     interrupt: true
                 }
