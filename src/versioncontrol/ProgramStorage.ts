@@ -86,7 +86,7 @@ interface IProgramStorage {
      * @param programName
      * @param versionId SHA of the version
      */
-    getVersion(programName: string, versionId: string);
+    getVersion(programName: string, versionId: string): Promise<Version>;
 
     // TODO: add argument(s) for commit data
     /**

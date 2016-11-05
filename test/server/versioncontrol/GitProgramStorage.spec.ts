@@ -320,5 +320,21 @@ describe('GitProgramStorage', () => {
             let test2Content = (await test2File.getBlob()).toString();
             assert.equal(test2Content, 'hello2');
         });
+
+        it('should create the specified tag', async () => {
+            const programName = getProgramName();
+            let repository = await NodeGit.Repository.init(`tmp/${programName}`, 0);
+            await repository.createCommitOnHead(
+                [],
+                GitProgramStorage.signature,
+                GitProgramStorage.signature,
+                'initial commit'
+            );
+
+            let versionId = await programStorage.createVersionFromWorkingTree(programName, 'test', 'v1.0');
+            let tag = await repository.getTagByName('v1.0');
+            assert.equal(tag.targetId().tostrS(), versionId);
+            assert.equal(tag.message(), 'test');
+        });
     });
 });
