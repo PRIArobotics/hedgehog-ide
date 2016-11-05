@@ -2,7 +2,7 @@ import Blob from "./Blob";
 
 export default class Tree {
     public id: string;
-    public items: {[key: string]: TreeItem};
+    public items: Map<string, TreeItem>;
 
     private programName: string;
 

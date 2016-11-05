@@ -8,6 +8,7 @@ import IProgramStorage from "../../versioncontrol/ProgramStorage";
 import Program from "../../versioncontrol/Program";
 import * as GitVersionControlFactory from './GitVersionControlFactory';
 import Blob from "../../versioncontrol/Blob";
+import Tree from "../../versioncontrol/Tree";
 
 export default class GitProgramStorage implements IProgramStorage {
     public storagePath: string;
@@ -21,12 +22,14 @@ export default class GitProgramStorage implements IProgramStorage {
 
         let repository = await NodeGit.Repository.init(this.getProgramPath(name), 0);
 
-        await repository.createCommitOnHead(
+        let commit = await repository.createCommitOnHead(
             [],
             signature,
             signature,
             'initial commit'
         );
+        await repository.createBranch('hedgehog', commit, false, signature, null);
+
         return new Program(name, null);
     }
 
@@ -66,14 +69,28 @@ export default class GitProgramStorage implements IProgramStorage {
         return GitVersionControlFactory.createBlob(programName, await repository.getBlob(blobId));
     }
 
+    public async getTree(programName: string, treeId: string): Promise<Tree> {
+        let repository = await this.getRepository(programName);
+        return GitVersionControlFactory.createTree(programName, await repository.getTree(treeId));
+    }
+
+    public async getVersionIds(programName: string): Promise<string[]> {
+        let branchCommit = await (await this.getRepository(programName)).getBranchCommit('hedgehog');
+
+        return new Promise<string[]>((resolve, reject) => {
+            let eventEmitter = branchCommit.history();
+
+            eventEmitter.on('end', (commits: NodeGit.Commit[]) => {
+                resolve(commits.map((commit) => {return commit.id().tostrS();}));
+            });
+
+            eventEmitter.on('error', reject);
+
+            eventEmitter.start();
+        });
+    }
+
     /* tslint:disable */
-    public getTree(programName: string, treeId: string) {
-    }
-
-    public getVersionIds(programName: string): Promise<string[]> {
-        return undefined;
-    }
-
     public getVersion(programName: string, versionId: string) {
     }
 
@@ -101,5 +118,9 @@ export default class GitProgramStorage implements IProgramStorage {
     /* tslint:enable */
     private getProgramPath(name: string) {
         return path.join(this.storagePath, name);
+    }
+
+    private getRepository(programName: string) {
+        return NodeGit.Repository.open(this.getProgramPath(programName));
     }
 }

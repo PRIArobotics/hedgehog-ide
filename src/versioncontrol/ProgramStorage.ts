@@ -1,5 +1,6 @@
 import Program from "./Program";
 import Blob from "./Blob";
+import Tree from "./Tree";
 
 export default IProgramStorage;
 // TODO: add missing return values and documentation of those
@@ -70,7 +71,7 @@ interface IProgramStorage {
      * @param programName
      * @param treeId SHA of the tree
      */
-    getTree(programName: string, treeId: string);
+    getTree(programName: string, treeId: string): Promise<Tree>;
 
     /**
      * Get an array of all versions of a program
