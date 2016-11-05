@@ -208,4 +208,74 @@ describe('GitProgramStorage', () => {
             assert.deepEqual(await programStorage.getVersionIds(programName), commits.reverse());
         });
     });
+
+    describe('getVersion', () => {
+        it('should retrieve a version by it\'s commit id', async () => {
+            const programName = getProgramName();
+            const signature = NodeGit.Signature.now('Hedgehog', 'info@hedgehog.pria.at');
+            let repository = await NodeGit.Repository.init(`tmp/${programName}`, 0);
+            let commit = await repository.createCommitOnHead(
+                [],
+                signature,
+                signature,
+                'initial commit'
+            );
+
+            await repository.createTag(commit, 'v1.0', 'foo');
+
+            let version = await programStorage.getVersion(programName, commit.tostrS());
+            assert.ok(version.creationDate instanceof Date);
+            assert.equal(version.id, commit.tostrS());
+            assert.equal(version.message, 'initial commit');
+            assert.equal(version.tag, 'v1.0');
+        });
+
+        it('should retrieve a version by it\'s commit id without a tag', async () => {
+            const programName = getProgramName();
+            const signature = NodeGit.Signature.now('Hedgehog', 'info@hedgehog.pria.at');
+            let repository = await NodeGit.Repository.init(`tmp/${programName}`, 0);
+            let commits = [
+                await repository.createCommitOnHead(
+                    [],
+                    signature,
+                    signature,
+                    'initial commit'
+                ),
+                await repository.createCommitOnHead(
+                    [],
+                    signature,
+                    signature,
+                    'second commit'
+                )
+            ];
+
+            await repository.createTag(commits[1], 'v1.0', 'foo');
+
+            let version = await programStorage.getVersion(programName, commits[0].tostrS());
+            assert.equal(version.tag, null);
+        });
+
+        it('should retrieve a version\'s parent ids', async () => {
+            const programName = getProgramName();
+            const signature = NodeGit.Signature.now('Hedgehog', 'info@hedgehog.pria.at');
+            let repository = await NodeGit.Repository.init(`tmp/${programName}`, 0);
+            let commits = [
+                await repository.createCommitOnHead(
+                    [],
+                    signature,
+                    signature,
+                    'initial commit'
+                ),
+                await repository.createCommitOnHead(
+                    [],
+                    signature,
+                    signature,
+                    'second commit'
+                )
+            ];
+
+            let version = await programStorage.getVersion(programName, commits[1].tostrS());
+            assert.deepEqual(version.parentIds, [commits[0].tostrS()]);
+        });
+    });
 });

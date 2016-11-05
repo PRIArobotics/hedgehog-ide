@@ -9,6 +9,7 @@ import Program from "../../versioncontrol/Program";
 import * as GitVersionControlFactory from './GitVersionControlFactory';
 import Blob from "../../versioncontrol/Blob";
 import Tree from "../../versioncontrol/Tree";
+import Version from "../../versioncontrol/Version";
 
 export default class GitProgramStorage implements IProgramStorage {
     public storagePath: string;
@@ -90,10 +91,24 @@ export default class GitProgramStorage implements IProgramStorage {
         });
     }
 
-    /* tslint:disable */
-    public getVersion(programName: string, versionId: string) {
+    public async getVersion(programName: string, versionId: string): Promise<Version> {
+        let repository = await this.getRepository(programName);
+        let versionCommit = await repository.getCommit(versionId);
+
+        let tag = null;
+        for(let currentTag of await NodeGit.Tag.list(repository)) {
+            currentTag = await repository.getTagByName(currentTag);
+
+            if(currentTag.targetId().equal(versionCommit.id())) {
+                tag = currentTag;
+                break;
+            }
+        }
+
+        return GitVersionControlFactory.createVersion(programName, tag, versionCommit);
     }
 
+    /* tslint:disable */
     public createVersionFromWorkingTree(programName: string) {
     }
 
