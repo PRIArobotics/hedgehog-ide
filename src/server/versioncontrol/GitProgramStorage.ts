@@ -12,6 +12,8 @@ import Tree from "../../versioncontrol/Tree";
 import Version from "../../versioncontrol/Version";
 
 export default class GitProgramStorage implements IProgramStorage {
+    public static readonly signature = NodeGit.Signature.now('Hedgehog', 'info@hedgehog.pria.at');
+
     public storagePath: string;
 
     constructor(storagePath: string) {
@@ -19,14 +21,12 @@ export default class GitProgramStorage implements IProgramStorage {
     }
 
     public async createProgram(name: string): Promise<Program> {
-        const signature = NodeGit.Signature.now('Hedgehog', 'info@hedgehog.pria.at');
-
         let repository = await NodeGit.Repository.init(this.getProgramPath(name), 0);
 
         await repository.createCommitOnHead(
             [],
-            signature,
-            signature,
+            GitProgramStorage.signature,
+            GitProgramStorage.signature,
             'initial commit'
         );
 
@@ -108,7 +108,6 @@ export default class GitProgramStorage implements IProgramStorage {
     }
 
     public async createVersionFromWorkingTree(programName: string, message: string, tag?: string): Promise<string> {
-        const signature = NodeGit.Signature.now('Hedgehog', 'info@hedgehog.pria.at');
         let repository = await this.getRepository(programName);
         let index: any = await repository.index();
         await index.addAll();
@@ -118,8 +117,8 @@ export default class GitProgramStorage implements IProgramStorage {
         const parentId = (await repository.getHeadCommit()).id();
         const commitId = await repository.createCommit(
             'HEAD',
-            signature,
-            signature,
+            GitProgramStorage.signature,
+            GitProgramStorage.signature,
             message,
             treeId,
             [parentId]

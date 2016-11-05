@@ -186,23 +186,22 @@ describe('GitProgramStorage', () => {
     describe('getVersionIds', () => {
         it('should return an array of all version ids', async () => {
             const programName = getProgramName();
-            const signature = NodeGit.Signature.now('Hedgehog', 'info@hedgehog.pria.at');
             let repository = await NodeGit.Repository.init(`tmp/${programName}`, 0);
             let commits = [
                 (await repository.createCommitOnHead(
                     [],
-                    signature,
-                    signature,
+                    GitProgramStorage.signature,
+                    GitProgramStorage.signature,
                     'initial commit'
                 )).tostrS(),
                 (await repository.createCommitOnHead(
                     [],
-                    signature,
-                    signature,
+                    GitProgramStorage.signature,
+                    GitProgramStorage.signature,
                     'second commit'
                 )).tostrS()
             ];
-            await repository.createBranch('hedgehog', commits[1], false, signature, null);
+            await repository.createBranch('hedgehog', commits[1], false, GitProgramStorage.signature, null);
             assert.deepEqual(await programStorage.getVersionIds(programName), commits.reverse());
         });
     });
@@ -210,12 +209,11 @@ describe('GitProgramStorage', () => {
     describe('getVersion', () => {
         it('should retrieve a version by it\'s commit id', async () => {
             const programName = getProgramName();
-            const signature = NodeGit.Signature.now('Hedgehog', 'info@hedgehog.pria.at');
             let repository = await NodeGit.Repository.init(`tmp/${programName}`, 0);
             let commit = await repository.createCommitOnHead(
                 [],
-                signature,
-                signature,
+                GitProgramStorage.signature,
+                GitProgramStorage.signature,
                 'initial commit'
             );
 
@@ -230,19 +228,18 @@ describe('GitProgramStorage', () => {
 
         it('should retrieve a version by it\'s commit id without a tag', async () => {
             const programName = getProgramName();
-            const signature = NodeGit.Signature.now('Hedgehog', 'info@hedgehog.pria.at');
             let repository = await NodeGit.Repository.init(`tmp/${programName}`, 0);
             let commits = [
                 await repository.createCommitOnHead(
                     [],
-                    signature,
-                    signature,
+                    GitProgramStorage.signature,
+                    GitProgramStorage.signature,
                     'initial commit'
                 ),
                 await repository.createCommitOnHead(
                     [],
-                    signature,
-                    signature,
+                    GitProgramStorage.signature,
+                    GitProgramStorage.signature,
                     'second commit'
                 )
             ];
@@ -255,19 +252,18 @@ describe('GitProgramStorage', () => {
 
         it('should retrieve a version\'s parent ids', async () => {
             const programName = getProgramName();
-            const signature = NodeGit.Signature.now('Hedgehog', 'info@hedgehog.pria.at');
             let repository = await NodeGit.Repository.init(`tmp/${programName}`, 0);
             let commits = [
                 await repository.createCommitOnHead(
                     [],
-                    signature,
-                    signature,
+                    GitProgramStorage.signature,
+                    GitProgramStorage.signature,
                     'initial commit'
                 ),
                 await repository.createCommitOnHead(
                     [],
-                    signature,
-                    signature,
+                    GitProgramStorage.signature,
+                    GitProgramStorage.signature,
                     'second commit'
                 )
             ];
@@ -279,13 +275,12 @@ describe('GitProgramStorage', () => {
 
     describe('createVersionFromWorkingTree', () => {
         it('should save the version by creating a commit', async () => {
-            const signature = NodeGit.Signature.now('Hedgehog', 'info@hedgehog.pria.at');
             const programName = getProgramName();
             let repository = await NodeGit.Repository.init(`tmp/${programName}`, 0);
             let firstCommitId = await repository.createCommitOnHead(
                 [],
-                signature,
-                signature,
+                GitProgramStorage.signature,
+                GitProgramStorage.signature,
                 'initial commit'
             );
 
@@ -296,13 +291,12 @@ describe('GitProgramStorage', () => {
         });
 
         it('should save the working tree correctly', async () => {
-            const signature = NodeGit.Signature.now('Hedgehog', 'info@hedgehog.pria.at');
             const programName = getProgramName();
             let repository = await NodeGit.Repository.init(`tmp/${programName}`, 0);
             await repository.createCommitOnHead(
                 [],
-                signature,
-                signature,
+                GitProgramStorage.signature,
+                GitProgramStorage.signature,
                 'initial commit'
             );
 
