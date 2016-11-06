@@ -4,7 +4,11 @@
         <h3> Project 1 </h3>
         <hr>
 
-        <Tree [nodes]="filetree"></Tree>
+        <Tree [nodes]="filetree"
+              [focused]="true"
+              [options]="customTemplateStringOptions"
+              (onActivate)="fileTreeEvent($event)">
+        </Tree>
     </div>
 
     <div class="col s10">

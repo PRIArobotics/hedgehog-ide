@@ -1,4 +1,4 @@
-import { Component, AfterContentInit } from '@angular/core';
+import {Component, AfterContentInit, ElementRef} from '@angular/core';
 
 declare var $: JQueryStatic;
 
@@ -23,7 +23,7 @@ export class AppComponent implements AfterContentInit {
                 { id: 2, name: 'child2' },
                 { name: 'childfolder', children:
                     [
-                        { id: 3, name: 'child3', content: "asdf"},
+                        { id: 3, name: 'child3', content: "asdfasdf"},
                         { id: 4, name: 'child4' },
                     ]
                 }
@@ -38,16 +38,13 @@ export class AppComponent implements AfterContentInit {
     private editorContent: string = '';
 
     public ngAfterContentInit(): void {
-
         this.iterateTree(this.filetree[0]);
-
-        console.log(this.files);
 
         (<any>$("div.tabs")).tabs();
     }
 
     public onTabSelect(id: number): void {
-        this.setContent(this.lastId);
+        this.files[this.lastId].content = this.editorContent;
         this.editorContent = this.files[id].content;
         this.lastId = id;
     }
@@ -56,12 +53,29 @@ export class AppComponent implements AfterContentInit {
         this.editorContent = editorContent;
     }
 
-    private setContent(fileId) {
-        console.log(this.lastId);
+    public fileTreeEvent(event){
+        if(event.node.children == null){
+            var newTab = document.createElement("li");
+            newTab.className = "tab";
+            newTab.setAttribute('draggable', '');
 
-        this.files[fileId].content = this.editorContent;
+
+            var linkToEditor = document.createElement("a");
+            linkToEditor.className =  "green-text lighten-3";
+            linkToEditor.appendChild(document.createTextNode(event.node.data.name));
+
+            newTab.appendChild(linkToEditor);
+
+            var fileId = event.node.data.id - 1;
+
+            newTab.addEventListener('click', (event) => this.onTabSelect(fileId));
+
+
+            document.getElementById('sortable-tabs').appendChild(newTab);
+            (<any>$("div.tabs")).tabs();
+        }
+
     }
-
 
 
     private iterateTree(tree): void {

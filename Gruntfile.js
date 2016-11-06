@@ -49,7 +49,7 @@ module.exports = function(grunt) {
                     {
                         expand: true,
                         cwd: 'src/',
-                        src: ['**/*.html', 'assets/*.css', 'assets/*.js', 'client/systemjs.config.js'],
+                        src: ['**/*.html', '**/*.css', 'client/systemjs.config.js'],
                         dest: 'build/src'
                     }
                 ]
@@ -144,7 +144,7 @@ module.exports = function(grunt) {
     grunt.registerTask('run-server', function() {
         var options = {
             cmd: 'node',
-            args: ['build/server/server.js']
+            args: ['build/src/server/server.js']
         };
 
         var done = this.async();
