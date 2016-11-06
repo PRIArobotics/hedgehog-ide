@@ -1,4 +1,4 @@
-import {Component, AfterContentInit, ElementRef} from '@angular/core';
+import { Component, AfterContentInit } from '@angular/core';
 
 declare var $: JQueryStatic;
 
@@ -53,28 +53,27 @@ export class AppComponent implements AfterContentInit {
         this.editorContent = editorContent;
     }
 
-    public fileTreeEvent(event){
-        if(event.node.children == null){
-            var newTab = document.createElement("li");
+    public fileTreeEvent(event) {
+        if(event.node.children == null) {
+            let newTab = document.createElement("li");
             newTab.className = "tab";
             newTab.setAttribute('draggable', '');
 
 
-            var linkToEditor = document.createElement("a");
+            let linkToEditor = document.createElement("a");
             linkToEditor.className =  "green-text lighten-3";
             linkToEditor.appendChild(document.createTextNode(event.node.data.name));
 
             newTab.appendChild(linkToEditor);
 
-            var fileId = event.node.data.id - 1;
+            let fileId = event.node.data.id - 1;
 
-            newTab.addEventListener('click', (event) => this.onTabSelect(fileId));
+            newTab.addEventListener('click', () => this.onTabSelect(fileId));
 
 
             document.getElementById('sortable-tabs').appendChild(newTab);
             (<any>$("div.tabs")).tabs();
         }
-
     }
 
 
