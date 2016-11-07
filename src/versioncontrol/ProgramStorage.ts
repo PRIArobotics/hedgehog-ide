@@ -2,6 +2,9 @@ import Program from "./Program";
 import Blob from "./Blob";
 import Tree from "./Tree";
 import Version from "./Version";
+import WorkingTree from "./WorkingTree";
+import WorkingTreeDirectory from "./WorkingTreeDirectory";
+import WorkingTreeFile from "./WorkingTreeFile";
 
 export default IProgramStorage;
 // TODO: add missing return values and documentation of those
@@ -100,21 +103,21 @@ interface IProgramStorage {
      * Get the workingtree for a program
      * @param programName
      */
-    getWorkingTree(programName: string);
+    getWorkingTree(programName: string): WorkingTree;
 
     /**
      * Get a directory of a program's working tree
      * @param programName
      * @param path full directory path
      */
-    getWorkingTreeDirectory(programName: string, path: string);
+    getWorkingTreeDirectory(programName: string, path: string): Promise<WorkingTreeDirectory>;
 
     /**
      * Get a file from the workingtree
      * @param programName
      * @param path full file path
      */
-    getWorkingTreeFile(programName: string, path: string);
+    getWorkingTreeFile(programName: string, path: string): Promise<WorkingTreeFile>;
 
     // TODO: change parameters to file/directory objects
     /**

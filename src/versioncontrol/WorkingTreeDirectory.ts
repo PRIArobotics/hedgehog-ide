@@ -1,9 +1,13 @@
 import WorkingTreeFile from "./WorkingTreeFile";
-export default class WorkingTreeDirectory {
-    public path: string;
-    public mode: string;
+import IWorkingTreeObject from "./WorkingTreeObject";
+import {WorkingTreeObjectType} from "./WorkingTreeObject";
 
-    public items: {[key: string]: DirectoryItem};
+export default class WorkingTreeDirectory implements IWorkingTreeObject {
+    public readonly type: WorkingTreeObjectType = WorkingTreeObjectType.Directory;
+
+    public path: string;
+    public mode: number;
+    public items: string[];
 
     private programName: string;
 
@@ -18,23 +22,23 @@ export default class WorkingTreeDirectory {
         return undefined;
     }
 
-    public getDirectory(item: DirectoryItem): WorkingTreeDirectory {
+    public getDirectory(itemPath: string): WorkingTreeDirectory {
         return undefined;
     }
 
-    public getFile(item: DirectoryItem): WorkingTreeFile {
+    public getFile(itemPath: string): WorkingTreeFile {
         return undefined;
     }
 
-    public getItem(item: DirectoryItem): any {
+    public getItem(itemPath: string): IWorkingTreeObject {
         return undefined;
-    };
+    }
 
     public addFile(name: string, content: string, encoding?: string, mode?: string): WorkingTreeFile {
         return undefined;
     }
 
-    public deleteFile(name: string): void {
+    public deleteFile(itemPath: string): void {
         return undefined;
     }
 
@@ -42,22 +46,11 @@ export default class WorkingTreeDirectory {
         return undefined;
     }
 
-    public deleteDirectory(name: string): void {
+    public deleteDirectory(itemPath: string): void {
         return undefined;
     }
 
     public reload(): void {
         return undefined;
     }
-}
-
-export enum DirectoryItemType {
-    File,
-    Directory
-}
-
-export class DirectoryItem {
-    public type: DirectoryItemType;
-    public path: string;
-    public mode: string;
 }

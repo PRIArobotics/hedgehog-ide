@@ -337,4 +337,108 @@ describe('GitProgramStorage', () => {
             assert.equal(tag.message(), 'test');
         });
     });
+
+    describe('getWorkingTreeDirectory', () => {
+        it('should get a directory from the working tree', async () => {
+            const programName = getProgramName();
+            await wrapCallbackAsPromise(fs.mkdir, `tmp/${programName}`);
+
+            let directory = await programStorage.getWorkingTreeDirectory(programName, '.');
+            assert.equal(directory.path, '.');
+            assert.equal(directory.mode, 0o40755);
+        });
+
+        it('should load the directory\'s items correctly', async () => {
+            const programName = getProgramName();
+            await wrapCallbackAsPromise(fs.mkdir, `tmp/${programName}`);
+            await wrapCallbackAsPromise(fs.writeFile, `tmp/${programName}/test1`, 'test1');
+            await wrapCallbackAsPromise(fs.mkdir, `tmp/${programName}/test2`);
+            let directory = await programStorage.getWorkingTreeDirectory(programName, '.');
+            assert.deepEqual(directory.items, ['test1', 'test2']);
+        });
+
+        it('should normalize the directory\'s path', async () => {
+            const programName = getProgramName();
+            await wrapCallbackAsPromise(fs.mkdir, `tmp/${programName}`);
+
+            let directory = await programStorage.getWorkingTreeDirectory(programName, './');
+            assert.equal(directory.path, '.');
+
+            directory = await programStorage.getWorkingTreeDirectory(programName, '');
+            assert.equal(directory.path, '.');
+        });
+
+        it('should throw in error if a directory outside the working tree is targeted', async () => {
+            const programName = getProgramName();
+            const foreignProgramName = getProgramName();
+            await wrapCallbackAsPromise(fs.mkdir, `tmp/${foreignProgramName}`);
+
+            try {
+                await programStorage.getWorkingTreeDirectory(programName, `../${foreignProgramName}`);
+                throw new Error('Directory access outside working tree allowed.');
+            } catch(err) {
+                assert.equal(err.message, `Target '../${foreignProgramName}' is outside of working tree.`);
+            }
+        });
+
+        it('should throw in error if the target is not a directory', async () => {
+            const programName = getProgramName();
+            await wrapCallbackAsPromise(fs.writeFile, `tmp/${programName}`, 'test1');
+
+            try {
+                await programStorage.getWorkingTreeDirectory(programName, `tmp/${programName}`);
+                throw new Error('Directory access fails silently.');
+            } catch(err) {
+                assert.equal(err.code, 'ENOTDIR');
+            }
+        });
+    });
+
+    describe('getWorkingTreeFile', () => {
+        it('should load a file from the working tree', async () => {
+            const programName = getProgramName();
+            await wrapCallbackAsPromise(fs.mkdir, `tmp/${programName}`);
+            await wrapCallbackAsPromise(fs.writeFile, `tmp/${programName}/test1`, 'test1');
+
+            let file = await programStorage.getWorkingTreeFile(programName, 'test1');
+            assert.equal(file.path, 'test1');
+            assert.equal(file.mode, 0o100644);
+            assert.equal(file.size, 5);
+        });
+
+        it('should normalize the file\'s path', async () => {
+            const programName = getProgramName();
+            await wrapCallbackAsPromise(fs.mkdir, `tmp/${programName}`);
+            await wrapCallbackAsPromise(fs.writeFile, `tmp/${programName}/test1`, 'test1');
+
+            let file = await programStorage.getWorkingTreeFile(programName, './test1');
+            assert.equal(file.path, 'test1');
+        });
+
+        it('should throw in error if a directory outside the working tree is targeted', async () => {
+            const programName = getProgramName();
+            const foreignProgramName = getProgramName();
+            await wrapCallbackAsPromise(fs.writeFile, `tmp/${foreignProgramName}`, 'test1');
+
+            try {
+                await programStorage.getWorkingTreeFile(programName, `../${foreignProgramName}`);
+                throw new Error('Directory access outside working tree allowed.');
+            } catch(err) {
+                assert.equal(err.message, `Target '../${foreignProgramName}' is outside of working tree.`);
+            }
+        });
+
+        it('should throw in error if the target is not a file', async () => {
+            const programName = getProgramName();
+            await wrapCallbackAsPromise(fs.mkdir, `tmp/${programName}`);
+            await wrapCallbackAsPromise(fs.mkdir, `tmp/${programName}/test`);
+
+            try {
+                await programStorage.getWorkingTreeFile(programName, 'test');
+                throw new Error('Directory access fails silently.');
+            } catch(err) {
+                assert.equal(err.message, `Target 'test' is not a file.`);
+            }
+        });
+    });
 });

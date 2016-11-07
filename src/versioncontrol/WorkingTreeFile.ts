@@ -1,15 +1,18 @@
-export default class WorkingTreeFile {
+import IWorkingTreeObject from "./WorkingTreeObject";
+import {WorkingTreeObjectType} from "./WorkingTreeObject";
+
+export default class WorkingTreeFile implements IWorkingTreeObject {
+    public readonly type = WorkingTreeObjectType.File;
+
     public path: string;
-    public encoding: string;
-    public mode: string;
+    public mode: number;
     public size: number;
 
     private programName: string;
 
-    public constructor(programName, path, encoding, mode, size) {
+    public constructor(programName, path, mode, size) {
         this.programName = programName;
         this.path = path;
-        this.encoding = encoding;
         this.mode = mode;
         this.size = size;
     }
