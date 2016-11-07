@@ -345,7 +345,6 @@ describe('GitProgramStorage', () => {
 
             let directory = await programStorage.getWorkingTreeDirectory(programName, '.');
             assert.equal(directory.path, '.');
-            assert.equal(directory.mode, 0o40755);
         });
 
         it('should load the directory\'s items correctly', async () => {
@@ -402,7 +401,6 @@ describe('GitProgramStorage', () => {
 
             let file = await programStorage.getWorkingTreeFile(programName, 'test1');
             assert.equal(file.path, 'test1');
-            assert.equal(file.mode, 0o100644);
             assert.equal(file.size, 5);
         });
 
