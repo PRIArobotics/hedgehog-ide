@@ -162,13 +162,13 @@ export default class GitProgramStorage implements IProgramStorage {
         return GitVersionControlFactory.createWorkingTreeFile(programName, filePath, stats);
     }
 
+    /* tslint:disable */
     public createWorkingTreeDirectory(programName: string, path: string, mode?: string) {
     }
 
     public createWorkingTreeFile(programName: string, path: string, content?: string, mode?: string) {
     }
 
-    /* tslint:disable */
     public resetWorkingTree(programName: string) {
     }
 
