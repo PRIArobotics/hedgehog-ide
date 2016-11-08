@@ -126,7 +126,7 @@ interface IProgramStorage {
      * @param path full path for the new directory
      * @param mode Unix file system permissions as octal numbers
      */
-    createWorkingTreeDirectory(programName: string, path: string, mode?: string);
+    createWorkingTreeDirectory(programName: string, path: string, mode?: number);
 
     /**
      * Create a new file in the workingtree of a program
@@ -136,7 +136,7 @@ interface IProgramStorage {
      * @param encoding file encoding (default UTF-8)
      * @param mode Unix file system permissions as octal numbers
      */
-    createWorkingTreeFile(programName: string, path: string, content: string, encoding?: string, mode?: string);
+    createWorkingTreeFile(programName: string, path: string, content: string, mode?: number);
     // TODO: Add methods for file update
     // TODO: Add methods for directory update
 

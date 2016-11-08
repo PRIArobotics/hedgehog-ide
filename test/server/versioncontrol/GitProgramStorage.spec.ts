@@ -439,4 +439,105 @@ describe('GitProgramStorage', () => {
             }
         });
     });
+
+    describe('createWorkingTreeDirectory', () => {
+        it('should create a directory within the working tree', async () => {
+            const programName = getProgramName();
+            await wrapCallbackAsPromise(fs.mkdir, `tmp/${programName}`);
+
+            await programStorage.createWorkingTreeDirectory(programName, 'test');
+
+            let stats = await wrapCallbackAsPromise(fs.stat, `tmp/${programName}/test`);
+            assert.ok(stats.isDirectory());
+        });
+
+        it('should set the mode of the created directory', async () => {
+            const programName = getProgramName();
+            await wrapCallbackAsPromise(fs.mkdir, `tmp/${programName}`);
+
+            await programStorage.createWorkingTreeDirectory(programName, 'test', 0o700);
+
+            let stats = await wrapCallbackAsPromise(fs.stat, `tmp/${programName}/test`);
+            assert.ok(stats.isDirectory());
+            assert.equal(stats.mode, 0o40700);
+        });
+    });
+
+    describe('createWorkingTreeFile', () => {
+        it('should create a file within the working tree', async () => {
+            const programName = getProgramName();
+            await wrapCallbackAsPromise(fs.mkdir, `tmp/${programName}`);
+
+            await programStorage.createWorkingTreeFile(programName, 'test');
+
+            let stats = await wrapCallbackAsPromise(fs.stat, `tmp/${programName}/test`);
+            assert.ok(stats.isFile());
+        });
+
+        it('should write the file content correctly', async () => {
+            const programName = getProgramName();
+            await wrapCallbackAsPromise(fs.mkdir, `tmp/${programName}`);
+
+            await programStorage.createWorkingTreeFile(programName, 'test', 'hello');
+
+            let content = await wrapCallbackAsPromise(fs.readFile, `tmp/${programName}/test`);
+            assert.equal(content, 'hello');
+        });
+
+        it('should set the mode of the created directory', async () => {
+            const programName = getProgramName();
+            await wrapCallbackAsPromise(fs.mkdir, `tmp/${programName}`);
+
+            await programStorage.createWorkingTreeFile(programName, 'test', '', 0o600);
+
+            let stats = await wrapCallbackAsPromise(fs.stat, `tmp/${programName}/test`);
+            assert.equal(stats.mode, 0o100600);
+        });
+    });
+
+    describe('resetWorkingTree', () => {
+        it('should reset index and tracked files', async () => {
+            const programName = getProgramName();
+            let repository = await NodeGit.Repository.init(`tmp/${programName}`, 0);
+
+            await wrapCallbackAsPromise(fs.writeFile, `tmp/${programName}/test`, 'hello');
+            await repository.createCommitOnHead(
+                ['test'],
+                GitProgramStorage.signature,
+                GitProgramStorage.signature,
+                'initial commit'
+            );
+            await wrapCallbackAsPromise(fs.writeFile, `tmp/${programName}/test`, 'test');
+
+            await programStorage.resetWorkingTree(programName);
+
+            let diff = await NodeGit.Diff.treeToWorkdirWithIndex(
+                repository,
+                await (await repository.getHeadCommit()).getTree(),
+                null);
+            assert.equal(diff.numDeltas(), 0);
+        });
+
+        it('should reset untracked files', async () => {
+            const programName = getProgramName();
+            let repository = await NodeGit.Repository.init(`tmp/${programName}`, 0);
+
+            await repository.createCommitOnHead(
+                [],
+                GitProgramStorage.signature,
+                GitProgramStorage.signature,
+                'initial commit'
+            );
+            await wrapCallbackAsPromise(fs.writeFile, `tmp/${programName}/test`, 'hello');
+
+            await programStorage.resetWorkingTree(programName);
+
+            try {
+                console.log(await wrapCallbackAsPromise(fs.stat, `tmp/${programName}/test`));
+                throw new Error('File was not deleted.');
+            } catch(err) {
+                assert.equal(err.code, 'ENOENT');
+            }
+        });
+    });
 });

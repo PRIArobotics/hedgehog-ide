@@ -145,9 +145,9 @@ export default class GitProgramStorage implements IProgramStorage {
 
     public async getWorkingTreeDirectory(programName: string, directoryPath: string): Promise<WorkingTreeDirectory> {
         directoryPath = GitProgramStorage.normalizePath(directoryPath);
-        const fullDirectoryPath = this.getWorkingTreePath(programName, directoryPath);
-        const items = await wrapCallbackAsPromise(fs.readdir, fullDirectoryPath);
-        const directoryStats = await wrapCallbackAsPromise(fs.stat, fullDirectoryPath);
+        const absoluteDirectoryPath = this.getWorkingTreePath(programName, directoryPath);
+        const items = await wrapCallbackAsPromise(fs.readdir, absoluteDirectoryPath);
+        const directoryStats = await wrapCallbackAsPromise(fs.stat, absoluteDirectoryPath);
 
         return GitVersionControlFactory.createWorkingTreeDirectory(programName, directoryPath, directoryStats, items);
     }
@@ -162,17 +162,34 @@ export default class GitProgramStorage implements IProgramStorage {
         return GitVersionControlFactory.createWorkingTreeFile(programName, filePath, stats);
     }
 
-    /* tslint:disable */
-    public createWorkingTreeDirectory(programName: string, path: string, mode?: string) {
+    public async createWorkingTreeDirectory(programName: string, directoryPath: string, mode?: number) {
+        const absoluteDirectoryPath = this.getWorkingTreePath(programName, directoryPath);
+        await wrapCallbackAsPromise(fs.mkdir, absoluteDirectoryPath, mode);
     }
 
-    public createWorkingTreeFile(programName: string, path: string, content?: string, mode?: string) {
+    public async createWorkingTreeFile(programName: string, filePath: string, content?: string, mode?: number) {
+        content = content || '';
+
+        const absoluteFilePath = this.getWorkingTreePath(programName, filePath);
+        await wrapCallbackAsPromise(fs.writeFile, absoluteFilePath, content, {mode});
     }
 
-    public resetWorkingTree(programName: string) {
-    }
+    public async resetWorkingTree(programName: string) {
+        let repository = await this.getRepository(programName);
+        let headCommit = await repository.getHeadCommit();
 
-    /* tslint:enable */
+        await NodeGit.Reset.reset(
+            repository,
+            <any>headCommit,
+            NodeGit.Reset.TYPE.HARD,
+            null);
+
+        // basically, this does the same thing as git clean would do
+        for(const file of <any[]> await repository.getStatus(null)) {
+            if(!file.inIndex())
+                await wrapCallbackAsPromise(rimraf, this.getWorkingTreePath(programName, file.path()));
+        }
+    }
     private getProgramPath(name: string) {
         return path.resolve(this.storagePath, name);
     }
