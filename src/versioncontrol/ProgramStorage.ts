@@ -7,7 +7,7 @@ import WorkingTreeDirectory from "./WorkingTreeDirectory";
 import WorkingTreeFile from "./WorkingTreeFile";
 
 export default IProgramStorage;
-// TODO: add missing return values and documentation of those
+
 /**
  * A program storage handles low level program management.
  * Programs can be either managed and manipulated directly with
@@ -57,6 +57,7 @@ interface IProgramStorage {
      *
      * This operation will delete all versions after the specified version.
      * (Internally it will perform a git reset operation which makes all later version inaccessible.)
+     *
      * @param programName
      * @param versionId SHA of the version
      */
@@ -65,6 +66,7 @@ interface IProgramStorage {
 
     /**
      * Get a blob object of a program (aka a file)
+     *
      * @param programName
      * @param blobId SHA of the blob
      */
@@ -72,6 +74,7 @@ interface IProgramStorage {
 
     /**
      * Get a tree object of a program (aka a directory)
+     *
      * @param programName
      * @param treeId SHA of the tree
      */
@@ -79,6 +82,7 @@ interface IProgramStorage {
 
     /**
      * Get an array of all versions of a program
+     *
      * @param programName
      * @returns array of the version's SHA hashes as string
      */
@@ -86,62 +90,73 @@ interface IProgramStorage {
 
     /**
      * Get a single version
+     *
      * @param programName
      * @param versionId SHA of the version
+     * @returns the requested version object
      */
     getVersion(programName: string, versionId: string): Promise<Version>;
 
-    // TODO: add argument(s) for commit data
+
     /**
      * Create a new version from the workingtree contents
+     *
      * @param programName
+     * @returns the newly created version's id
      */
     createVersionFromWorkingTree(programName: string, message: string, tag?: string): Promise<string>;
 
 
     /**
      * Get the workingtree for a program
+     *
      * @param programName
+     * @returns the working tree object
      */
     getWorkingTree(programName: string): WorkingTree;
 
     /**
      * Get a directory of a program's working tree
+     *
      * @param programName
      * @param path full directory path
+     * @returns the requested working tree directory
      */
     getWorkingTreeDirectory(programName: string, path: string): Promise<WorkingTreeDirectory>;
 
     /**
      * Get a file from the workingtree
+     *
      * @param programName
      * @param path full file path
+     * @returns the requested working tree file
      */
     getWorkingTreeFile(programName: string, path: string): Promise<WorkingTreeFile>;
 
-    // TODO: change parameters to file/directory objects
     /**
      * Create a new directory in the workingtree of a program
+     *
      * @param programName
      * @param path full path for the new directory
-     * @param mode Unix file system permissions as octal numbers
+     * @param mode Unix file system permissions as octal number
      */
-    createWorkingTreeDirectory(programName: string, path: string, mode?: number);
+    createWorkingTreeDirectory(programName: string, path: string, mode?: number): void;
 
     /**
      * Create a new file in the workingtree of a program
+     *
      * @param programName
      * @param path full path for the new file
      * @param content file content
      * @param encoding file encoding (default UTF-8)
-     * @param mode Unix file system permissions as octal numbers
+     * @param mode Unix file system permissions as octal number
      */
-    createWorkingTreeFile(programName: string, path: string, content: string, mode?: number);
-    // TODO: Add methods for file update
-    // TODO: Add methods for directory update
+    createWorkingTreeFile(programName: string, path: string, content: string, mode?: number): void;
 
     /**
      * Reset the workingtree to the latest version
+     *
+     * Clears both untracked files and reset the index and tracked files.
      * @param programName
      */
     resetWorkingTree(programName: string);
