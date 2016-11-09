@@ -337,4 +337,207 @@ describe('GitProgramStorage', () => {
             assert.equal(tag.message(), 'test');
         });
     });
+
+    describe('getWorkingTreeDirectory', () => {
+        it('should get a directory from the working tree', async () => {
+            const programName = getProgramName();
+            await wrapCallbackAsPromise(fs.mkdir, `tmp/${programName}`);
+
+            let directory = await programStorage.getWorkingTreeDirectory(programName, '.');
+            assert.equal(directory.path, '.');
+        });
+
+        it('should load the directory\'s items correctly', async () => {
+            const programName = getProgramName();
+            await wrapCallbackAsPromise(fs.mkdir, `tmp/${programName}`);
+            await wrapCallbackAsPromise(fs.writeFile, `tmp/${programName}/test1`, 'test1');
+            await wrapCallbackAsPromise(fs.mkdir, `tmp/${programName}/test2`);
+            let directory = await programStorage.getWorkingTreeDirectory(programName, '.');
+            assert.deepEqual(directory.items, ['test1', 'test2']);
+        });
+
+        it('should normalize the directory\'s path', async () => {
+            const programName = getProgramName();
+            await wrapCallbackAsPromise(fs.mkdir, `tmp/${programName}`);
+
+            let directory = await programStorage.getWorkingTreeDirectory(programName, './');
+            assert.equal(directory.path, '.');
+
+            directory = await programStorage.getWorkingTreeDirectory(programName, '');
+            assert.equal(directory.path, '.');
+        });
+
+        it('should throw in error if a directory outside the working tree is targeted', async () => {
+            const programName = getProgramName();
+            const foreignProgramName = getProgramName();
+            await wrapCallbackAsPromise(fs.mkdir, `tmp/${foreignProgramName}`);
+
+            try {
+                await programStorage.getWorkingTreeDirectory(programName, `../${foreignProgramName}`);
+                throw new Error('Directory access outside working tree allowed.');
+            } catch(err) {
+                assert.equal(err.message, `Target '../${foreignProgramName}' is outside of working tree.`);
+            }
+        });
+
+        it('should throw in error if the target is not a directory', async () => {
+            const programName = getProgramName();
+            await wrapCallbackAsPromise(fs.writeFile, `tmp/${programName}`, 'test1');
+
+            try {
+                await programStorage.getWorkingTreeDirectory(programName, `tmp/${programName}`);
+                throw new Error('Directory access fails silently.');
+            } catch(err) {
+                assert.equal(err.code, 'ENOTDIR');
+            }
+        });
+    });
+
+    describe('getWorkingTreeFile', () => {
+        it('should load a file from the working tree', async () => {
+            const programName = getProgramName();
+            await wrapCallbackAsPromise(fs.mkdir, `tmp/${programName}`);
+            await wrapCallbackAsPromise(fs.writeFile, `tmp/${programName}/test1`, 'test1');
+
+            let file = await programStorage.getWorkingTreeFile(programName, 'test1');
+            assert.equal(file.path, 'test1');
+            assert.equal(file.size, 5);
+        });
+
+        it('should normalize the file\'s path', async () => {
+            const programName = getProgramName();
+            await wrapCallbackAsPromise(fs.mkdir, `tmp/${programName}`);
+            await wrapCallbackAsPromise(fs.writeFile, `tmp/${programName}/test1`, 'test1');
+
+            let file = await programStorage.getWorkingTreeFile(programName, './test1');
+            assert.equal(file.path, 'test1');
+        });
+
+        it('should throw in error if a directory outside the working tree is targeted', async () => {
+            const programName = getProgramName();
+            const foreignProgramName = getProgramName();
+            await wrapCallbackAsPromise(fs.writeFile, `tmp/${foreignProgramName}`, 'test1');
+
+            try {
+                await programStorage.getWorkingTreeFile(programName, `../${foreignProgramName}`);
+                throw new Error('Directory access outside working tree allowed.');
+            } catch(err) {
+                assert.equal(err.message, `Target '../${foreignProgramName}' is outside of working tree.`);
+            }
+        });
+
+        it('should throw in error if the target is not a file', async () => {
+            const programName = getProgramName();
+            await wrapCallbackAsPromise(fs.mkdir, `tmp/${programName}`);
+            await wrapCallbackAsPromise(fs.mkdir, `tmp/${programName}/test`);
+
+            try {
+                await programStorage.getWorkingTreeFile(programName, 'test');
+                throw new Error('Directory access fails silently.');
+            } catch(err) {
+                assert.equal(err.message, `Target 'test' is not a file.`);
+            }
+        });
+    });
+
+    describe('createWorkingTreeDirectory', () => {
+        it('should create a directory within the working tree', async () => {
+            const programName = getProgramName();
+            await wrapCallbackAsPromise(fs.mkdir, `tmp/${programName}`);
+
+            await programStorage.createWorkingTreeDirectory(programName, 'test');
+
+            let stats = await wrapCallbackAsPromise(fs.stat, `tmp/${programName}/test`);
+            assert.ok(stats.isDirectory());
+        });
+
+        it('should set the mode of the created directory', async () => {
+            const programName = getProgramName();
+            await wrapCallbackAsPromise(fs.mkdir, `tmp/${programName}`);
+
+            await programStorage.createWorkingTreeDirectory(programName, 'test', 0o700);
+
+            let stats = await wrapCallbackAsPromise(fs.stat, `tmp/${programName}/test`);
+            assert.ok(stats.isDirectory());
+            assert.equal(stats.mode, 0o40700);
+        });
+    });
+
+    describe('createWorkingTreeFile', () => {
+        it('should create a file within the working tree', async () => {
+            const programName = getProgramName();
+            await wrapCallbackAsPromise(fs.mkdir, `tmp/${programName}`);
+
+            await programStorage.createWorkingTreeFile(programName, 'test');
+
+            let stats = await wrapCallbackAsPromise(fs.stat, `tmp/${programName}/test`);
+            assert.ok(stats.isFile());
+        });
+
+        it('should write the file content correctly', async () => {
+            const programName = getProgramName();
+            await wrapCallbackAsPromise(fs.mkdir, `tmp/${programName}`);
+
+            await programStorage.createWorkingTreeFile(programName, 'test', 'hello');
+
+            let content = await wrapCallbackAsPromise(fs.readFile, `tmp/${programName}/test`);
+            assert.equal(content, 'hello');
+        });
+
+        it('should set the mode of the created directory', async () => {
+            const programName = getProgramName();
+            await wrapCallbackAsPromise(fs.mkdir, `tmp/${programName}`);
+
+            await programStorage.createWorkingTreeFile(programName, 'test', '', 0o600);
+
+            let stats = await wrapCallbackAsPromise(fs.stat, `tmp/${programName}/test`);
+            assert.equal(stats.mode, 0o100600);
+        });
+    });
+
+    describe('resetWorkingTree', () => {
+        it('should reset index and tracked files', async () => {
+            const programName = getProgramName();
+            let repository = await NodeGit.Repository.init(`tmp/${programName}`, 0);
+
+            await wrapCallbackAsPromise(fs.writeFile, `tmp/${programName}/test`, 'hello');
+            await repository.createCommitOnHead(
+                ['test'],
+                GitProgramStorage.signature,
+                GitProgramStorage.signature,
+                'initial commit'
+            );
+            await wrapCallbackAsPromise(fs.writeFile, `tmp/${programName}/test`, 'test');
+
+            await programStorage.resetWorkingTree(programName);
+
+            let diff = await NodeGit.Diff.treeToWorkdirWithIndex(
+                repository,
+                await (await repository.getHeadCommit()).getTree(),
+                null);
+            assert.equal(diff.numDeltas(), 0);
+        });
+
+        it('should reset untracked files', async () => {
+            const programName = getProgramName();
+            let repository = await NodeGit.Repository.init(`tmp/${programName}`, 0);
+
+            await repository.createCommitOnHead(
+                [],
+                GitProgramStorage.signature,
+                GitProgramStorage.signature,
+                'initial commit'
+            );
+            await wrapCallbackAsPromise(fs.writeFile, `tmp/${programName}/test`, 'hello');
+
+            await programStorage.resetWorkingTree(programName);
+
+            try {
+                console.log(await wrapCallbackAsPromise(fs.stat, `tmp/${programName}/test`));
+                throw new Error('File was not deleted.');
+            } catch(err) {
+                assert.equal(err.code, 'ENOENT');
+            }
+        });
+    });
 });

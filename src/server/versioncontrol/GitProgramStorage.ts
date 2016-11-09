@@ -10,9 +10,17 @@ import * as GitVersionControlFactory from './GitVersionControlFactory';
 import Blob from "../../versioncontrol/Blob";
 import Tree from "../../versioncontrol/Tree";
 import Version from "../../versioncontrol/Version";
+import WorkingTree from "../../versioncontrol/WorkingTree";
+import WorkingTreeFile from "../../versioncontrol/WorkingTreeFile";
+import WorkingTreeDirectory from "../../versioncontrol/WorkingTreeDirectory";
 
 export default class GitProgramStorage implements IProgramStorage {
     public static readonly signature = NodeGit.Signature.now('Hedgehog', 'info@hedgehog.pria.at');
+
+    private static normalizePath(pathToNormalize) {
+        pathToNormalize = path.normalize(pathToNormalize);
+        return pathToNormalize.replace(/\/$/, "");
+    }
 
     public storagePath: string;
 
@@ -130,31 +138,74 @@ export default class GitProgramStorage implements IProgramStorage {
         return commitId.tostrS();
     }
 
-    /* tslint:disable */
-    public getWorkingTree(programName: string) {
+
+    public getWorkingTree(programName: string): WorkingTree {
+        return new WorkingTree(programName);
     }
 
-    public getWorkingTreeDirectory(programName: string, path: string) {
+    public async getWorkingTreeDirectory(programName: string, directoryPath: string): Promise<WorkingTreeDirectory> {
+        directoryPath = GitProgramStorage.normalizePath(directoryPath);
+        const absoluteDirectoryPath = this.getWorkingTreePath(programName, directoryPath);
+        const items = await wrapCallbackAsPromise(fs.readdir, absoluteDirectoryPath);
+        const directoryStats = await wrapCallbackAsPromise(fs.stat, absoluteDirectoryPath);
+
+        return GitVersionControlFactory.createWorkingTreeDirectory(programName, directoryPath, directoryStats, items);
     }
 
-    public getWorkingTreeFile(programName: string, path: string) {
+    public async getWorkingTreeFile(programName: string, filePath: string): Promise<WorkingTreeFile> {
+        filePath = GitProgramStorage.normalizePath(filePath);
+        const stats = await wrapCallbackAsPromise(fs.stat, this.getWorkingTreePath(programName, filePath));
+
+        if(!stats.isFile())
+            throw new Error(`Target '${filePath}' is not a file.`);
+
+        return GitVersionControlFactory.createWorkingTreeFile(programName, filePath, stats);
     }
 
-    public createWorkingTreeDirectory(programName: string, path: string, mode?: string) {
+    public async createWorkingTreeDirectory(programName: string, directoryPath: string, mode?: number) {
+        const absoluteDirectoryPath = this.getWorkingTreePath(programName, directoryPath);
+        await wrapCallbackAsPromise(fs.mkdir, absoluteDirectoryPath, mode);
     }
 
-    public createWorkingTreeFile(programName: string, path: string, content?: string, mode?: string) {
+    public async createWorkingTreeFile(programName: string, filePath: string, content?: string, mode?: number) {
+        content = content || '';
+
+        const absoluteFilePath = this.getWorkingTreePath(programName, filePath);
+        await wrapCallbackAsPromise(fs.writeFile, absoluteFilePath, content, {mode});
     }
 
-    public resetWorkingTree(programName: string) {
-    }
+    public async resetWorkingTree(programName: string) {
+        let repository = await this.getRepository(programName);
+        let headCommit = await repository.getHeadCommit();
 
-    /* tslint:enable */
+        await NodeGit.Reset.reset(
+            repository,
+            <any>headCommit,
+            NodeGit.Reset.TYPE.HARD,
+            null);
+
+        // basically, this does the same thing as git clean would do
+        for(const file of <any[]> await repository.getStatus(null)) {
+            if(!file.inIndex())
+                await wrapCallbackAsPromise(rimraf, this.getWorkingTreePath(programName, file.path()));
+        }
+    }
     private getProgramPath(name: string) {
-        return path.join(this.storagePath, name);
+        return path.resolve(this.storagePath, name);
     }
 
     private getRepository(programName: string) {
         return NodeGit.Repository.open(this.getProgramPath(programName));
+    }
+
+    private getWorkingTreePath(programName: string, targetPath: string) {
+        const programPath = this.getProgramPath(programName);
+        let absolutePath = path.resolve(programPath, targetPath);
+
+        // Check whether the target file is outside the working tree
+        if(!absolutePath.startsWith(programPath))
+            throw new Error(`Target '${targetPath}' is outside of working tree.`);
+
+        return absolutePath;
     }
 }

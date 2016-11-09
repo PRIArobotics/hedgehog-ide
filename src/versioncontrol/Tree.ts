@@ -33,7 +33,7 @@ export enum TreeItemType {
 export class TreeItem {
     public type: TreeItemType;
     public id: string;
-    public mode: string;
+    public mode: number;
 
     constructor(type, id, mode) {
         this.type = type;
