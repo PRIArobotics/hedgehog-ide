@@ -52,7 +52,8 @@ export class AppComponent implements AfterContentInit {
     }
 
     public fileTreeEvent(event) {
-        function updateIndicator(element){
+
+        function updateIndicator(element) {
             let indicatorDiv = $('.indicator').first();
             indicatorDiv.css(
                 {
@@ -65,7 +66,6 @@ export class AppComponent implements AfterContentInit {
         if(event.node.children == null) {
 
             this.onTabSelect(event.node.data.id - 1);
-
 
             let tab = $('#tab' + event.node.data.id);
 
