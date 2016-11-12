@@ -34,7 +34,7 @@ export default class WorkingTreeDirectory implements IWorkingTreeObject {
         return undefined;
     }
 
-    public addFile(name: string, content: string, encoding?: string, mode?: string): WorkingTreeFile {
+    public addFile(name: string, content: string, encoding?: string, mode?: string): Promise<string> {
         return undefined;
     }
 
