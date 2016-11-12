@@ -206,6 +206,7 @@ export default class GitProgramStorage implements IProgramStorage {
         }
     }
 
+    /* tslint:disable */
     public updateWorkingTreeObject(programName: string, path: string, mode: number): void {
     }
 
@@ -214,6 +215,7 @@ export default class GitProgramStorage implements IProgramStorage {
 
     public deleteWorkingTreeDirectory(programName: string, path: string): void {
     }
+    /* tslint:enable*/
 
     private getProgramPath(name: string) {
         return path.resolve(this.storagePath, name);
