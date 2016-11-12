@@ -72,6 +72,8 @@ interface IProgramStorage {
      */
     getBlob(programName: string, blobId: string): Promise<Blob>;
 
+    getBlobContent(programName: string, blobId: string, encoding?: string): Promise<string>;
+
     /**
      * Get a tree object of a program (aka a directory)
      *
@@ -133,6 +135,8 @@ interface IProgramStorage {
      */
     getWorkingTreeFile(programName: string, path: string): Promise<WorkingTreeFile>;
 
+    getWorkingTreeFileContent(programName: string, path: string, encoding?: string): Promise<string>;
+
     /**
      * Create a new directory in the workingtree of a program
      *
@@ -152,6 +156,12 @@ interface IProgramStorage {
      * @param mode Unix file system permissions as octal number
      */
     createWorkingTreeFile(programName: string, path: string, content: string, mode?: number): void;
+
+    updateWorkingTreeObject(programName: string, path: string, mode: number): void;
+
+    deleteWorkingTreeFile(programName: string, path: string): void;
+
+    deleteWorkingTreeDirectory(programName: string, path: string): void;
 
     /**
      * Reset the workingtree to the latest version

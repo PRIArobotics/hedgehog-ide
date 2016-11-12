@@ -159,6 +159,18 @@ describe('GitProgramStorage', () => {
         });
     });
 
+    describe('getBlobContent', () => {
+        it('should load the blob\'s content', async () => {
+            const programName = getProgramName();
+            let repository = await NodeGit.Repository.init(`tmp/${programName}`, 0);
+
+            let oid = await NodeGit.Blob.createFromBuffer(repository, Buffer.from('hello'), 5);
+
+            let content = await programStorage.getBlobContent(programName, oid.tostrS());
+            assert.equal(content, 'hello');
+        });
+    });
+
     describe('getTree', () => {
         it('should read a tree', async () => {
             const programName = getProgramName();
@@ -437,6 +449,17 @@ describe('GitProgramStorage', () => {
             } catch(err) {
                 assert.equal(err.message, `Target 'test' is not a file.`);
             }
+        });
+    });
+
+    describe('getWorkingTreeFileContent', () => {
+        it('should load a file\'s content', async () => {
+            const programName = getProgramName();
+            await wrapCallbackAsPromise(fs.mkdir, `tmp/${programName}`);
+            await wrapCallbackAsPromise(fs.writeFile, `tmp/${programName}/test`, 'hello');
+
+            let content = await programStorage.getWorkingTreeFileContent(programName, 'test');
+            assert.equal(content, 'hello');
         });
     });
 

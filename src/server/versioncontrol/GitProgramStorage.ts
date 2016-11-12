@@ -77,6 +77,11 @@ export default class GitProgramStorage implements IProgramStorage {
         return GitVersionControlFactory.createBlob(programName, await repository.getBlob(blobId));
     }
 
+    public async getBlobContent(programName: string, blobId: string, encoding?: string): Promise<string> {
+        let repository = await this.getRepository(programName);
+        return (await repository.getBlob(blobId)).toString();
+    }
+
     public async getTree(programName: string, treeId: string): Promise<Tree> {
         let repository = await this.getRepository(programName);
         return GitVersionControlFactory.createTree(programName, await repository.getTree(treeId));
@@ -162,6 +167,13 @@ export default class GitProgramStorage implements IProgramStorage {
         return GitVersionControlFactory.createWorkingTreeFile(programName, filePath, stats);
     }
 
+    public getWorkingTreeFileContent(programName: string, filePath: string, encoding?: string): Promise<string> {
+        encoding = encoding || 'utf-8';
+
+        const absolutePath = this.getWorkingTreePath(programName, filePath);
+        return wrapCallbackAsPromise(fs.readFile, absolutePath, encoding);
+    }
+
     public async createWorkingTreeDirectory(programName: string, directoryPath: string, mode?: number) {
         const absoluteDirectoryPath = this.getWorkingTreePath(programName, directoryPath);
         await wrapCallbackAsPromise(fs.mkdir, absoluteDirectoryPath, mode);
@@ -190,6 +202,16 @@ export default class GitProgramStorage implements IProgramStorage {
                 await wrapCallbackAsPromise(rimraf, this.getWorkingTreePath(programName, file.path()));
         }
     }
+
+    public updateWorkingTreeObject(programName: string, path: string, mode: number): void {
+    }
+
+    public deleteWorkingTreeFile(programName: string, path: string): void {
+    }
+
+    public deleteWorkingTreeDirectory(programName: string, path: string): void {
+    }
+
     private getProgramPath(name: string) {
         return path.resolve(this.storagePath, name);
     }
