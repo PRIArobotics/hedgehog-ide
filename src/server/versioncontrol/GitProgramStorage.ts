@@ -78,8 +78,11 @@ export default class GitProgramStorage implements IProgramStorage {
     }
 
     public async getBlobContent(programName: string, blobId: string, encoding?: string): Promise<string> {
+        encoding = encoding || 'utf-8';
+
         let repository = await this.getRepository(programName);
-        return (await repository.getBlob(blobId)).toString();
+        let rawContent = (await repository.getBlob(blobId)).content();
+        return rawContent.toString(encoding);
     }
 
     public async getTree(programName: string, treeId: string): Promise<Tree> {

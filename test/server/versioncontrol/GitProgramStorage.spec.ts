@@ -167,7 +167,19 @@ describe('GitProgramStorage', () => {
             let oid = await NodeGit.Blob.createFromBuffer(repository, Buffer.from('hello'), 5);
 
             let content = await programStorage.getBlobContent(programName, oid.tostrS());
+            const util = require('util');
+            console.log(util.inspect(content, { showHidden: true, depth: null }));
             assert.equal(content, 'hello');
+        });
+
+        it('should encode the content as base64', async () => {
+            const programName = getProgramName();
+            let repository = await NodeGit.Repository.init(`tmp/${programName}`, 0);
+
+            let oid = await NodeGit.Blob.createFromBuffer(repository, Buffer.from('hello'), 5);
+
+            let content = await programStorage.getBlobContent(programName, oid.tostrS(), 'base64');
+            assert.equal(content, 'aGVsbG8=');
         });
     });
 
@@ -460,6 +472,15 @@ describe('GitProgramStorage', () => {
 
             let content = await programStorage.getWorkingTreeFileContent(programName, 'test');
             assert.equal(content, 'hello');
+        });
+
+        it('should encode the content as base64', async () => {
+            const programName = getProgramName();
+            await wrapCallbackAsPromise(fs.mkdir, `tmp/${programName}`);
+            await wrapCallbackAsPromise(fs.writeFile, `tmp/${programName}/test`, 'hello');
+
+            let content = await programStorage.getWorkingTreeFileContent(programName, 'test', 'base64');
+            assert.equal(content, 'aGVsbG8=');
         });
     });
 

@@ -72,6 +72,13 @@ interface IProgramStorage {
      */
     getBlob(programName: string, blobId: string): Promise<Blob>;
 
+    /**
+     * Get a blob's content
+     *
+     * @param programName
+     * @param blobId SHA of the blob
+     * @param encoding Encoding of the returned data. Defaults to 'utf-8'
+     */
     getBlobContent(programName: string, blobId: string, encoding?: string): Promise<string>;
 
     /**
@@ -135,6 +142,13 @@ interface IProgramStorage {
      */
     getWorkingTreeFile(programName: string, path: string): Promise<WorkingTreeFile>;
 
+    /**
+     * Get the content of a working tree file
+     *
+     * @param programName
+     * @param blobId SHA of the blob
+     * @param encoding Encoding of the returned data. Defaults to 'utf-8'
+     */
     getWorkingTreeFileContent(programName: string, path: string, encoding?: string): Promise<string>;
 
     /**
