@@ -39,8 +39,6 @@ export class AppComponent implements AfterContentInit {
 
     public ngAfterContentInit(): void {
         this.iterateTree(this.filetree[0]);
-
-        (<any>$("div.tabs")).tabs();
     }
 
     public onTabSelect(id: number): void {
@@ -54,25 +52,49 @@ export class AppComponent implements AfterContentInit {
     }
 
     public fileTreeEvent(event) {
+
+        function updateIndicator(element) {
+            let indicatorDiv = $('.indicator').first();
+            indicatorDiv.css(
+                {
+                    left: $(element).position().left,
+                    right: $(element).parent().width() - ($(element).position().left + $(element).width())
+                }
+            );
+        }
+
         if(event.node.children == null) {
+
+            this.onTabSelect(event.node.data.id - 1);
+
+            let tab = $('#tab' + event.node.data.id);
+
+            if (tab.length > 0) {
+                updateIndicator(tab);
+                return;
+            }
+
             let newTab = document.createElement("li");
             newTab.className = "tab";
+            newTab.id = "tab" + event.node.data.id;
             newTab.setAttribute('draggable', '');
 
-
             let linkToEditor = document.createElement("a");
-            linkToEditor.className =  "green-text lighten-3";
+            linkToEditor.className =  "green-text lighten-3 waves-effect";
             linkToEditor.appendChild(document.createTextNode(event.node.data.name));
 
             newTab.appendChild(linkToEditor);
 
             let fileId = event.node.data.id - 1;
-
             newTab.addEventListener('click', () => this.onTabSelect(fileId));
 
-
             document.getElementById('sortable-tabs').appendChild(newTab);
+
+            updateIndicator(newTab);
+
             (<any>$("div.tabs")).tabs();
+
+
         }
     }
 

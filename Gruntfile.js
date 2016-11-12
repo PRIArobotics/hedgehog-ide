@@ -159,5 +159,5 @@ module.exports = function(grunt) {
 
     grunt.registerTask('compile', ['ts', 'babel']);
     grunt.registerTask('build', ['clean', 'compile', 'copy', 'symlink']);
-    grunt.registerTask('default', ['concurrent:run'] );
+    grunt.registerTask('default', ['concurrent:run']);
 };

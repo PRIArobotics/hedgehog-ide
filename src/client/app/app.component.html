@@ -34,9 +34,7 @@
 
         <div class="row" style="margin-bottom: 0px;">
             <div class="col s12" style="z-index:1" >
-                <ul class="tabs" materialize="tabs" id="sortable-tabs">
-                    <li *ngFor="let file of files" class="tab" draggable (click)="onTabSelect( file.id - 1 )" > <a class="green-text lighten-3" > {{ file.name }} </a></li>
-                </ul>
+                <ul class="tabs" materialize="tabs" id="sortable-tabs"></ul>
             </div>
 
             <div class="col s12">
