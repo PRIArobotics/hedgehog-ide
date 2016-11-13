@@ -24,10 +24,11 @@ export default class Tree {
     }
 
     public getItem(item: TreeItem): Promise<any> {
-        if(item.type === TreeItemType.Blob)
+        if(item.type === TreeItemType.Blob) {
             return this.getBlob(item);
-        else
+        } else {
             return this.getTree(item);
+        }
     }
 }
 
