@@ -158,7 +158,7 @@ interface IProgramStorage {
      * @param path full path for the new directory
      * @param mode Unix file system permissions as octal number
      */
-    createWorkingTreeDirectory(programName: string, path: string, mode?: number): void;
+    createWorkingTreeDirectory(programName: string, path: string, mode?: number): Promise<void>;
 
     /**
      * Create a new file in the workingtree of a program
@@ -169,7 +169,7 @@ interface IProgramStorage {
      * @param encoding file encoding (default UTF-8)
      * @param mode Unix file system permissions as octal number
      */
-    createOrUpdateWorkingTreeFile(programName: string, path: string, content: string, mode?: number): void;
+    createOrUpdateWorkingTreeFile(programName: string, path: string, content: string, mode?: number): Promise<void>;
 
     /**
      * Update a file or directory in the working tree
@@ -182,7 +182,9 @@ interface IProgramStorage {
      * @param options.mode new filemode
      * @param options.new new file path
      */
-    updateWorkingTreeObject(programName: string, currentPath: string, options: {mode?: number, newPath?: string}): void;
+    updateWorkingTreeObject(programName: string,
+                            currentPath: string,
+                            options: {mode?: number, newPath?: string}): Promise<void>;
 
     /**
      * Delete a file or directory from the working tree.
@@ -192,7 +194,7 @@ interface IProgramStorage {
      * @param programName
      * @param objectPath path to the file or directory
      */
-    deleteWorkingTreeObject(programName: string, objectPath: string): void;
+    deleteWorkingTreeObject(programName: string, objectPath: string): Promise<void>;
 
     /**
      * Reset the workingtree to the latest version
@@ -200,5 +202,5 @@ interface IProgramStorage {
      * Clears both untracked files and reset the index and tracked files.
      * @param programName
      */
-    resetWorkingTree(programName: string);
+    resetWorkingTree(programName: string): Promise<void>;
 }

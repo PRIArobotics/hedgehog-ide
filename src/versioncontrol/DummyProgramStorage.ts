@@ -125,29 +125,31 @@ export default class DummyProgramStorage implements IProgramStorage {
         return Promise.resolve(this.workingTreeFileContents.get(programName).get(path));
     }
 
-    public createWorkingTreeDirectory(programName: string, directoryPath: string, mode?: number): void {
+    public createWorkingTreeDirectory(programName: string, directoryPath: string, mode?: number): Promise<void> {
         mode = mode || 0o40755;
         let directory = new WorkingTreeDirectory(this, programName, directoryPath, mode, []);
         this.workingTreeDirectories.get(programName).set(directoryPath, directory);
 
         this.addToParentDirectory(programName, directoryPath);
+        return Promise.resolve();
     }
 
     public createOrUpdateWorkingTreeFile(programName: string,
                                          filePath: string,
                                          content: string,
-                                         mode?: number): void {
+                                         mode?: number): Promise<void> {
         mode = mode || 0o100644;
         let file = new WorkingTreeFile(this, programName, filePath, mode, content.length);
         this.workingTreeFiles.get(programName).set(filePath, file);
         this.workingTreeFileContents.get(programName).set(filePath, content);
 
         this.addToParentDirectory(programName, filePath);
+        return Promise.resolve();
     }
 
     public updateWorkingTreeObject(programName: string,
                                    currentPath: string,
-                                   options: {mode?: number; newPath?: string}): void {
+                                   options: {mode?: number; newPath?: string}): Promise<void> {
         let objectMap;
         if(this.workingTreeFiles.get(programName).has(currentPath)) {
             objectMap = this.workingTreeFiles.get(programName);
@@ -167,9 +169,10 @@ export default class DummyProgramStorage implements IProgramStorage {
             this.removeFromParentDirectory(programName, currentPath);
             this.addToParentDirectory(programName, currentPath);
         }
+        return Promise.resolve();
     }
 
-    public deleteWorkingTreeObject(programName: string, objectPath: string): void {
+    public deleteWorkingTreeObject(programName: string, objectPath: string): Promise<void> {
         if(this.workingTreeFiles.get(programName).has(objectPath)) {
             this.workingTreeFiles.get(programName).delete(objectPath);
         } else {
@@ -179,6 +182,7 @@ export default class DummyProgramStorage implements IProgramStorage {
             }
         }
         this.removeFromParentDirectory(programName, objectPath);
+        return Promise.resolve();
     }
 
     // TODO
