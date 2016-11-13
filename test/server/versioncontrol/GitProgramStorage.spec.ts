@@ -505,12 +505,12 @@ describe('GitProgramStorage', () => {
         });
     });
 
-    describe('createWorkingTreeFile', () => {
+    describe('createOrUpdateWorkingTreeFile', () => {
         it('should create a file within the working tree', async () => {
             const programName = getProgramName();
             await wrapCallbackAsPromise(fs.mkdir, `tmp/${programName}`);
 
-            await programStorage.createWorkingTreeFile(programName, 'test');
+            await programStorage.createOrUpdateWorkingTreeFile(programName, 'test');
 
             let stats = await wrapCallbackAsPromise(fs.stat, `tmp/${programName}/test`);
             assert.ok(stats.isFile());
@@ -520,7 +520,7 @@ describe('GitProgramStorage', () => {
             const programName = getProgramName();
             await wrapCallbackAsPromise(fs.mkdir, `tmp/${programName}`);
 
-            await programStorage.createWorkingTreeFile(programName, 'test', 'hello');
+            await programStorage.createOrUpdateWorkingTreeFile(programName, 'test', 'hello');
 
             let content = await wrapCallbackAsPromise(fs.readFile, `tmp/${programName}/test`);
             assert.equal(content, 'hello');
@@ -530,7 +530,7 @@ describe('GitProgramStorage', () => {
             const programName = getProgramName();
             await wrapCallbackAsPromise(fs.mkdir, `tmp/${programName}`);
 
-            await programStorage.createWorkingTreeFile(programName, 'test', '', 0o600);
+            await programStorage.createOrUpdateWorkingTreeFile(programName, 'test', '', 0o600);
 
             let stats = await wrapCallbackAsPromise(fs.stat, `tmp/${programName}/test`);
             assert.equal(stats.mode, 0o100600);

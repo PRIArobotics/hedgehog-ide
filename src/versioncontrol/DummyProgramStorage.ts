@@ -133,14 +133,16 @@ export default class DummyProgramStorage implements IProgramStorage {
         this.addToParentDirectory(programName, directoryPath);
     }
 
-    public createWorkingTreeFile(programName: string, directoryPath: string, content: string, mode?: number): void {
+    public createOrUpdateWorkingTreeFile(programName: string,
+                                         filePath: string,
+                                         content: string,
+                                         mode?: number): void {
         mode = mode || 0o100644;
-        let file = new WorkingTreeFile(this, programName, directoryPath, mode, content.length);
-        this.workingTreeFiles.get(programName).set(directoryPath, file);
-        this.workingTreeFileContents.get(programName).set(directoryPath, content);
+        let file = new WorkingTreeFile(this, programName, filePath, mode, content.length);
+        this.workingTreeFiles.get(programName).set(filePath, file);
+        this.workingTreeFileContents.get(programName).set(filePath, content);
 
-        let parentDirectory = this.workingTreeDirectories.get(programName).get(path.dirname(directoryPath));
-        parentDirectory.items.push(path.basename(path));
+        this.addToParentDirectory(programName, filePath);
     }
 
     public updateWorkingTreeObject(programName: string,

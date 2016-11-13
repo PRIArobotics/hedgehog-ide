@@ -169,7 +169,7 @@ interface IProgramStorage {
      * @param encoding file encoding (default UTF-8)
      * @param mode Unix file system permissions as octal number
      */
-    createWorkingTreeFile(programName: string, path: string, content: string, mode?: number): void;
+    createOrUpdateWorkingTreeFile(programName: string, path: string, content: string, mode?: number): void;
 
     /**
      * Update a file or directory in the working tree

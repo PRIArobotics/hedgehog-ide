@@ -188,7 +188,7 @@ export default class GitProgramStorage implements IProgramStorage {
         await wrapCallbackAsPromise(fs.mkdir, absoluteDirectoryPath, mode);
     }
 
-    public async createWorkingTreeFile(programName: string, filePath: string, content?: string, mode?: number) {
+    public async createOrUpdateWorkingTreeFile(programName: string, filePath: string, content?: string, mode?: number) {
         content = content || '';
 
         const absoluteFilePath = this.getWorkingTreePath(programName, filePath);
