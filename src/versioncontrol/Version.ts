@@ -14,7 +14,7 @@ export default class Version {
     private storage: IProgramStorage;
 
     public constructor(storage, programName, id, tag, message, creationDate, parentIds, treeId) {
-        this.storage = storage
+        this.storage = storage;
         this.programName = programName;
         this.id = id;
         this.tag = tag;
