@@ -24,11 +24,11 @@ export default class Version {
         this.treeId = treeId;
     }
 
-    public getTree(): Tree {
-        return undefined;
+    public getTree(): Promise<Tree> {
+        return this.storage.getTree(this.programName, this.treeId);
     }
 
-    public getParent(parentId): Version {
-        return undefined;
+    public getParent(parentId): Promise<Version> {
+        return this.storage.getVersion(this.programName, parentId);
     }
 }
