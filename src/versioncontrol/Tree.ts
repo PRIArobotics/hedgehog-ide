@@ -15,16 +15,19 @@ export default class Tree {
         this.items = items;
     }
 
-    public getTree(item: TreeItem): Tree {
-        return undefined;
+    public getTree(item: TreeItem): Promise<Tree> {
+        return this.storage.getTree(this.programName, item.id);
     }
 
-    public getBlob(item: TreeItem): Blob {
-        return undefined;
+    public getBlob(item: TreeItem): Promise<Blob> {
+        return this.storage.getBlob(this.programName, item.id);
     }
 
-    public getItem(item: TreeItem): any {
-        return undefined;
+    public getItem(item: TreeItem): Promise<any> {
+        if(item.type === TreeItemType.Blob)
+            return this.getBlob(item);
+        else
+            return this.getTree(item);
     }
 }
 
