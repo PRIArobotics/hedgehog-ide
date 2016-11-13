@@ -167,8 +167,6 @@ describe('GitProgramStorage', () => {
             let oid = await NodeGit.Blob.createFromBuffer(repository, Buffer.from('hello'), 5);
 
             let content = await programStorage.getBlobContent(programName, oid.tostrS());
-            const util = require('util');
-            console.log(util.inspect(content, { showHidden: true, depth: null }));
             assert.equal(content, 'hello');
         });
 
@@ -579,6 +577,68 @@ describe('GitProgramStorage', () => {
             try {
                 console.log(await wrapCallbackAsPromise(fs.stat, `tmp/${programName}/test`));
                 throw new Error('File was not deleted.');
+            } catch(err) {
+                assert.equal(err.code, 'ENOENT');
+            }
+        });
+    });
+
+    describe('updateWorkingTreeObject', () => {
+        it('should rename a program', async () => {
+            const programName = getProgramName();
+            await wrapCallbackAsPromise(fs.mkdir, `tmp/${programName}`);
+            await wrapCallbackAsPromise(fs.writeFile, `tmp/${programName}/test1`, 'hello');
+
+            await programStorage.updateWorkingTreeObject(programName, 'test1', {newPath: 'test2'});
+
+            let content = await wrapCallbackAsPromise(fs.readFile, `tmp/${programName}/test2`);
+            assert.equal(content, 'hello');
+
+            try {
+                await wrapCallbackAsPromise(fs.stat, `tmp/${programName}/test1`);
+                throw Error('Old file still exists.');
+            } catch(err) {
+                assert.equal(err.code, 'ENOENT');
+            }
+        });
+
+        it('should change the mode of a file', async () => {
+            const programName = getProgramName();
+            await wrapCallbackAsPromise(fs.mkdir, `tmp/${programName}`);
+            await wrapCallbackAsPromise(fs.writeFile, `tmp/${programName}/test1`, 'hello', {mode: 0o600});
+
+            await programStorage.updateWorkingTreeObject(programName, 'test1', {mode: 0o666});
+
+            let stats = await wrapCallbackAsPromise(fs.stat, `tmp/${programName}/test1`);
+            assert.equal(stats.mode, 0o100666);
+        });
+    });
+
+    describe('deleteWorkingTreeObject', () => {
+        it('should delete a file from the working tree', async () => {
+            const programName = getProgramName();
+            await wrapCallbackAsPromise(fs.mkdir, `tmp/${programName}`);
+            await wrapCallbackAsPromise(fs.writeFile, `tmp/${programName}/test1`, 'hello');
+
+            await programStorage.deleteWorkingTreeObject(programName, 'test1');
+            try {
+                await wrapCallbackAsPromise(fs.stat, `tmp/${programName}/test1`);
+                throw Error('File still exists.');
+            } catch(err) {
+                assert.equal(err.code, 'ENOENT');
+            }
+        });
+
+        it('should recursively delete a directory from the working tree', async () => {
+            const programName = getProgramName();
+            await wrapCallbackAsPromise(fs.mkdir, `tmp/${programName}`);
+            await wrapCallbackAsPromise(fs.mkdir, `tmp/${programName}/test`);
+            await wrapCallbackAsPromise(fs.writeFile, `tmp/${programName}/test/test1`, 'hello');
+
+            await programStorage.deleteWorkingTreeObject(programName, 'test');
+            try {
+                await wrapCallbackAsPromise(fs.stat, `tmp/${programName}/test`);
+                throw Error('Directory still exists.');
             } catch(err) {
                 assert.equal(err.code, 'ENOENT');
             }

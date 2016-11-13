@@ -206,16 +206,23 @@ export default class GitProgramStorage implements IProgramStorage {
         }
     }
 
-    /* tslint:disable */
-    public updateWorkingTreeObject(programName: string, path: string, mode: number): void {
+    public async updateWorkingTreeObject(programName: string,
+                                         currentPath: string,
+                                         options: {mode?: number, newPath?: string}): Promise<void> {
+        const absolutePath = this.getWorkingTreePath(programName, currentPath);
+        if(options.mode)
+            await wrapCallbackAsPromise(fs.chmod, absolutePath, options.mode);
+
+        if(options.newPath) {
+            const newAbsolutePath = this.getWorkingTreePath(programName, options.newPath);
+            await wrapCallbackAsPromise(fs.rename, absolutePath, newAbsolutePath);
+        }
     }
 
-    public deleteWorkingTreeFile(programName: string, path: string): void {
+    public async deleteWorkingTreeObject(programName: string, objectPath: string): Promise<void> {
+        const absolutePath = this.getWorkingTreePath(programName, objectPath);
+        await wrapCallbackAsPromise(rimraf, absolutePath);
     }
-
-    public deleteWorkingTreeDirectory(programName: string, path: string): void {
-    }
-    /* tslint:enable*/
 
     private getProgramPath(name: string) {
         return path.resolve(this.storagePath, name);

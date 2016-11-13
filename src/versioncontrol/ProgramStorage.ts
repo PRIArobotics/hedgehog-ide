@@ -171,11 +171,9 @@ interface IProgramStorage {
      */
     createWorkingTreeFile(programName: string, path: string, content: string, mode?: number): void;
 
-    updateWorkingTreeObject(programName: string, path: string, mode: number): void;
+    updateWorkingTreeObject(programName: string, currentPath: string, options: {mode?: number, newPath?: string}): void;
 
-    deleteWorkingTreeFile(programName: string, path: string): void;
-
-    deleteWorkingTreeDirectory(programName: string, path: string): void;
+    deleteWorkingTreeObject(programName: string, objectPath: string): void;
 
     /**
      * Reset the workingtree to the latest version
