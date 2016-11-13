@@ -95,19 +95,19 @@ export default class DummyProgramStorage implements IProgramStorage {
         return new WorkingTree(this, programName);
     }
 
-    // TODO
     public getWorkingTreeDirectory(programName: string, path: string): Promise<WorkingTreeDirectory> {
-        return undefined;
+        return Promise.resolve(this.workingTreeDirectories.get(programName).get(path));
     }
 
-    // TODO
     public getWorkingTreeFile(programName: string, path: string): Promise<WorkingTreeFile> {
-        return undefined;
+        return Promise.resolve(this.workingTreeFiles.get(programName).get(path));
     }
 
-    // TODO
     public getWorkingTreeFileContent(programName: string, path: string, encoding?: string): Promise<string> {
-        return undefined;
+        if(encoding !== 'utf-8')
+            throw new Error('not supported');
+
+        return Promise.resolve(this.workingTreeFileContents.get(programName).get(path));
     }
 
     public createWorkingTreeDirectory(programName: string, path: string, mode?: number): void {
