@@ -38,7 +38,7 @@ export default class GitProgramStorage implements IProgramStorage {
             'initial commit'
         );
 
-        return new Program(name, null);
+        return new Program(this, name, null);
     }
 
     public async deleteProgram(name: string): Promise<void> {
@@ -52,7 +52,7 @@ export default class GitProgramStorage implements IProgramStorage {
 
     public async getProgram(name: string): Promise<Program> {
         await NodeGit.Repository.open(this.getProgramPath(name));
-        return new Program(name, null);
+        return new Program(this, name, null);
     }
 
     public async renameProgram(oldName: string, newName: string): Promise<void> {
@@ -74,7 +74,7 @@ export default class GitProgramStorage implements IProgramStorage {
 
     public async getBlob(programName: string, blobId: string): Promise<Blob> {
         let repository = await NodeGit.Repository.open(this.getProgramPath(programName));
-        return GitVersionControlFactory.createBlob(programName, await repository.getBlob(blobId));
+        return GitVersionControlFactory.createBlob(this, programName, await repository.getBlob(blobId));
     }
 
     public async getBlobContent(programName: string, blobId: string, encoding?: string): Promise<string> {
@@ -87,7 +87,7 @@ export default class GitProgramStorage implements IProgramStorage {
 
     public async getTree(programName: string, treeId: string): Promise<Tree> {
         let repository = await this.getRepository(programName);
-        return GitVersionControlFactory.createTree(programName, await repository.getTree(treeId));
+        return GitVersionControlFactory.createTree(this, programName, await repository.getTree(treeId));
     }
 
     public async getVersionIds(programName: string): Promise<string[]> {
@@ -120,7 +120,7 @@ export default class GitProgramStorage implements IProgramStorage {
             }
         }
 
-        return GitVersionControlFactory.createVersion(programName, tag, versionCommit);
+        return GitVersionControlFactory.createVersion(this, programName, tag, versionCommit);
     }
 
     public async createVersionFromWorkingTree(programName: string, message: string, tag?: string): Promise<string> {
@@ -148,7 +148,7 @@ export default class GitProgramStorage implements IProgramStorage {
 
 
     public getWorkingTree(programName: string): WorkingTree {
-        return new WorkingTree(programName);
+        return new WorkingTree(this, programName);
     }
 
     public async getWorkingTreeDirectory(programName: string, directoryPath: string): Promise<WorkingTreeDirectory> {
@@ -157,7 +157,13 @@ export default class GitProgramStorage implements IProgramStorage {
         const items = await wrapCallbackAsPromise(fs.readdir, absoluteDirectoryPath);
         const directoryStats = await wrapCallbackAsPromise(fs.stat, absoluteDirectoryPath);
 
-        return GitVersionControlFactory.createWorkingTreeDirectory(programName, directoryPath, directoryStats, items);
+        return GitVersionControlFactory.createWorkingTreeDirectory(
+            this,
+            programName,
+            directoryPath,
+            directoryStats,
+            items
+        );
     }
 
     public async getWorkingTreeFile(programName: string, filePath: string): Promise<WorkingTreeFile> {
@@ -167,7 +173,7 @@ export default class GitProgramStorage implements IProgramStorage {
         if(!stats.isFile())
             throw new Error(`Target '${filePath}' is not a file.`);
 
-        return GitVersionControlFactory.createWorkingTreeFile(programName, filePath, stats);
+        return GitVersionControlFactory.createWorkingTreeFile(this, programName, filePath, stats);
     }
 
     public getWorkingTreeFileContent(programName: string, filePath: string, encoding?: string): Promise<string> {

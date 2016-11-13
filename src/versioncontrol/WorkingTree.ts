@@ -1,11 +1,15 @@
 import WorkingTreeDirectory from "./WorkingTreeDirectory";
 import WorkingTreeFile from "./WorkingTreeFile";
 import Version from "./Version";
+import IProgramStorage from "./ProgramStorage";
 
 export default class WorkingTree {
     private programName;
+    private storage: IProgramStorage;
 
-    public constructor(programName: string) {
+
+    public constructor(storage, programName: string) {
+        this.storage = storage;
         this.programName = programName;
     }
 

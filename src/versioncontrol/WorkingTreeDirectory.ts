@@ -1,6 +1,7 @@
 import WorkingTreeFile from "./WorkingTreeFile";
 import IWorkingTreeObject from "./WorkingTreeObject";
 import {WorkingTreeObjectType} from "./WorkingTreeObject";
+import IProgramStorage from "./ProgramStorage";
 
 export default class WorkingTreeDirectory implements IWorkingTreeObject {
     public readonly type: WorkingTreeObjectType = WorkingTreeObjectType.Directory;
@@ -10,8 +11,10 @@ export default class WorkingTreeDirectory implements IWorkingTreeObject {
     public items: string[];
 
     private programName: string;
+    private storage: IProgramStorage;
 
-    public constructor(programName, path, mode, items) {
+    public constructor(storage, programName, path, mode, items) {
+        this.storage = storage;
         this.programName = programName;
         this.path = path;
         this.mode = mode;

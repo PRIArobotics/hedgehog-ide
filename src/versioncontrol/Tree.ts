@@ -1,12 +1,15 @@
 import Blob from "./Blob";
+import IProgramStorage from "./ProgramStorage";
 
 export default class Tree {
     public id: string;
     public items: Map<string, TreeItem>;
 
     private programName: string;
+    private storage: IProgramStorage;
 
-    public constructor(programName, id, items) {
+    public constructor(storage, programName, id, items) {
+        this.storage = storage;
         this.programName = programName;
         this.id = id;
         this.items = items;

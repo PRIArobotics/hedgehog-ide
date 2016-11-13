@@ -3,12 +3,17 @@ import Tree from "./Tree";
 import WorkingTreeFile from "./WorkingTreeFile";
 import WorkingTreeDirectory from "./WorkingTreeDirectory";
 import WorkingTree from "./WorkingTree";
+import IProgramStorage from "./ProgramStorage";
 
 export default class Program {
     public name: string;
     public latestVersionId: string;
 
-    constructor(name, latestVersionId) {
+    private storage: IProgramStorage;
+
+
+    constructor(storage, name, latestVersionId) {
+        this.storage = storage;
         this.name = name;
         this.latestVersionId = latestVersionId;
     }

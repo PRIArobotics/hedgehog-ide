@@ -1,4 +1,6 @@
 import Tree from "./Tree";
+import IProgramStorage from "./ProgramStorage";
+
 export default class Version {
     public id: string;
     public tag: string;
@@ -9,8 +11,10 @@ export default class Version {
     public treeId: string;
 
     private programName: string;
+    private storage: IProgramStorage;
 
-    public constructor(programName, id, tag, message, creationDate, parentIds, treeId) {
+    public constructor(storage, programName, id, tag, message, creationDate, parentIds, treeId) {
+        this.storage = storage
         this.programName = programName;
         this.id = id;
         this.tag = tag;
