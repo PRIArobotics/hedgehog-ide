@@ -18,35 +18,40 @@ export default class Program {
         this.latestVersionId = latestVersionId;
     }
 
-    public rename(newName: string): void {
-        return undefined;
+    public async rename(newName: string): void {
+        await this.storage.renameProgram(this.name, newName);
+        this.name = newName;
     }
 
     public getWorkingTree(): WorkingTree {
-        return undefined;
+        return this.storage.getWorkingTree(this.name);
     }
 
-    public getVersions(): Version[] {
-        return undefined;
+    public async getVersions(): Promise<Version[]> {
+        let versions = [];
+        for(const id of await this.storage.getVersionIds(this.name))
+            versions.push(await this.storage.getVersion(this.name, id));
+
+        return versions;
     }
 
-    public getVersion(versionId: string): Version {
-        return undefined;
+    public getVersion(versionId: string): Promise<Version> {
+        return this.storage.getVersion(this.name, versionId);
     }
 
-    public getTree(treeId: string): Tree {
-        return undefined;
+    public getTree(treeId: string): Promise<Tree> {
+        return this.storage.getTree(this.name, treeId);
     }
 
-    public getBlob(blogId: string): Blob {
-        return undefined;
+    public getBlob(blobId: string): Promise<Blob> {
+        return this.storage.getBlob(this.name, blobId);
     }
 
-    public getWorkingTreeFile(path: string): WorkingTreeFile {
-        return undefined;
+    public getWorkingTreeFile(path: string): Promise<WorkingTreeFile> {
+        return this.storage.getWorkingTreeFile(this.name, path);
     }
 
-    public getWorkingTreeDirectory(path: string): WorkingTreeDirectory {
-        return undefined;
+    public getWorkingTreeDirectory(path: string): Promise<WorkingTreeDirectory> {
+        return this.storage.getWorkingTreeDirectory(this.name, path);
     }
 }

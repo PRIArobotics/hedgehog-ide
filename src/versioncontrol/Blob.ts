@@ -14,7 +14,7 @@ export default class Blob {
         this.size = size;
     }
 
-    public readContent(): string {
-        return undefined;
+    public readContent(): Promise<string> {
+        return this.storage.getBlobContent(this.programName, this.id);
     }
 }
