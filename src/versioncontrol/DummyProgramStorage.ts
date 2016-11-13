@@ -50,12 +50,14 @@ export default class DummyProgramStorage implements IProgramStorage {
         return Promise.resolve(this.programs.get(name));
     }
 
+    // TODO: change name in other maps
     public renameProgram(oldName: string, newName: string): Promise<void> {
         this.programs.set(newName, this.programs.get(oldName));
         this.programs.delete(oldName);
         return Promise.resolve();
     }
 
+    // TODO
     public resetProgram(programName: string, versionId: string): Promise<void> {
         return undefined;
     }
@@ -110,12 +112,14 @@ export default class DummyProgramStorage implements IProgramStorage {
         return Promise.resolve(this.workingTreeFileContents.get(programName).get(path));
     }
 
+    // TODO: add to parent directory
     public createWorkingTreeDirectory(programName: string, path: string, mode?: number): void {
         mode = mode || 0o40755;
         let directory = new WorkingTreeDirectory(this, programName, path, mode, []);
         this.workingTreeDirectories.get(programName).set(path, directory);
     }
 
+    // TODO: add to parent directory
     public createWorkingTreeFile(programName: string, path: string, content: string, mode?: number): void {
         mode = mode || 0o100644;
         let file = new WorkingTreeFile(this, programName, path, mode, content.length);
@@ -123,6 +127,7 @@ export default class DummyProgramStorage implements IProgramStorage {
         this.workingTreeFileContents.get(programName).set(path, content);
     }
 
+    // TODO: update items on rename
     public updateWorkingTreeObject(programName: string,
                                    currentPath: string,
                                    options: {mode?: number; newPath?: string}): void {
@@ -144,6 +149,7 @@ export default class DummyProgramStorage implements IProgramStorage {
         }
     }
 
+    // TODO: remove from parent directory
     public deleteWorkingTreeObject(programName: string, objectPath: string): void {
         if(this.workingTreeFiles.get(programName).has(objectPath)) {
             this.workingTreeFiles.get(programName).delete(objectPath);
@@ -155,6 +161,7 @@ export default class DummyProgramStorage implements IProgramStorage {
         }
     }
 
+    // TODO
     public resetWorkingTree(programName: string) {
         return undefined;
     }
