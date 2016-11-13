@@ -18,7 +18,7 @@ export default class Program {
         this.latestVersionId = latestVersionId;
     }
 
-    public async rename(newName: string): void {
+    public async rename(newName: string): Promise<void> {
         await this.storage.renameProgram(this.name, newName);
         this.name = newName;
     }
