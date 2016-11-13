@@ -1,3 +1,5 @@
+import path = require('path');
+
 import IWorkingTreeObject from "./WorkingTreeObject";
 import {WorkingTreeObjectType} from "./WorkingTreeObject";
 import IProgramStorage from "./ProgramStorage";
@@ -21,18 +23,18 @@ export default class WorkingTreeFile implements IWorkingTreeObject {
     }
 
     public getName(): string {
-        return undefined;
+        return path.basename(this.path);
     }
 
-    public readContent(): string {
-        return undefined;
+    public readContent(): Promise<string> {
+        return this.storage.getWorkingTreeFileContent(this.programName, this.path);
     }
 
-    public writeContent(content: string): void {
-        return undefined;
+    public writeContent(content: string): Promise<void> {
+        return this.storage.createOrUpdateWorkingTreeFile(this.programName, this.path, content);
     }
 
-    public reload(): void {
-        return undefined;
+    public reload(): Promise<WorkingTreeFile> {
+        return this.storage.getWorkingTreeFile(this.programName, this.path);
     }
 }

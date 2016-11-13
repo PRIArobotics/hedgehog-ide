@@ -1,3 +1,5 @@
+import path = require('path');
+
 import WorkingTreeFile from "./WorkingTreeFile";
 import IWorkingTreeObject from "./WorkingTreeObject";
 import {WorkingTreeObjectType} from "./WorkingTreeObject";
@@ -22,38 +24,49 @@ export default class WorkingTreeDirectory implements IWorkingTreeObject {
     }
 
     public getName(): string {
-        return undefined;
+        return path.basename(this.path);
     }
 
-    public getDirectory(itemPath: string): WorkingTreeDirectory {
-        return undefined;
+    public getDirectory(itemName: string): Promise<WorkingTreeDirectory> {
+        return this.storage.getWorkingTreeDirectory(this.programName, this.getItemPath(itemName));
     }
 
-    public getFile(itemPath: string): WorkingTreeFile {
-        return undefined;
+    public getFile(itemName: string): Promise<WorkingTreeFile> {
+        return this.storage.getWorkingTreeFile(this.programName, this.getItemPath(itemName));
     }
 
-    public getItem(itemPath: string): IWorkingTreeObject {
-        return undefined;
+    public async getItem(itemName: string): Promise<IWorkingTreeObject> {
+        try {
+            return await this.getFile(itemName);
+        } catch(err) {
+            return this.getDirectory(itemName);
+        }
     }
 
-    public addFile(name: string, content: string, encoding?: string, mode?: string): Promise<string> {
-        return undefined;
+    public async addFile(name: string, content: string, mode?: number): Promise<void> {
+        await this.storage.createOrUpdateWorkingTreeFile(this.programName, this.getItemPath(name), content, mode);
+        this.items.push(name);
     }
 
-    public deleteFile(itemPath: string): void {
-        return undefined;
+    public async deleteFile(name: string): Promise<void> {
+        await this.storage.deleteWorkingTreeObject(this.programName, this.getItemPath(name));
+        this.items.splice(this.items.indexOf(name));
     }
 
-    public addDirectory(name: string): WorkingTreeDirectory {
-        return undefined;
+    public async addDirectory(name: string, mode?: number): Promise<void> {
+        await this.storage.createWorkingTreeDirectory(this.programName, this.getItemPath(name));
+        this.items.push(name);
     }
 
-    public deleteDirectory(itemPath: string): void {
-        return undefined;
+    public deleteDirectory(name: string): Promise<void> {
+        return this.deleteFile(name);
     }
 
-    public reload(): void {
-        return undefined;
+    public getItemPath(item: string): string {
+        return path.join(this.path, item);
+    }
+
+    public reload(): Promise<WorkingTreeDirectory> {
+        return this.storage.getWorkingTreeDirectory(this.programName, this.path);
     }
 }

@@ -1,6 +1,5 @@
 import WorkingTreeDirectory from "./WorkingTreeDirectory";
 import WorkingTreeFile from "./WorkingTreeFile";
-import Version from "./Version";
 import IProgramStorage from "./ProgramStorage";
 
 export default class WorkingTree {
@@ -13,23 +12,24 @@ export default class WorkingTree {
         this.programName = programName;
     }
 
-    public getRootDriectory(): WorkingTreeDirectory {
-        return undefined;
+    public getRootDriectory(): Promise<WorkingTreeDirectory> {
+        return this.getDirectory('.');
     }
 
-    public getDirectory(path: string): WorkingTreeDirectory {
-        return undefined;
+    public getDirectory(path: string): Promise<WorkingTreeDirectory> {
+        return this.storage.getWorkingTreeDirectory(this.programName, path);
     }
 
-    public getFile(path: string): WorkingTreeFile {
-        return undefined;
+    public getFile(path: string): Promise<WorkingTreeFile> {
+        return this.storage.getWorkingTreeFile(this.programName, path);
     }
 
+    // TODO: check whether this method is needed
     public isClean(): boolean {
         return undefined;
     }
 
-    public saveAsVersion(message: string, tag?: string): Version {
-        return undefined;
+    public saveAsVersion(message: string, tag?: string): Promise<string> {
+        return this.storage.createVersionFromWorkingTree(this.programName, message, tag);
     }
 }

@@ -6,7 +6,7 @@ interface IWorkingTreeObject {
     path: string;
     mode: number;
 
-    reload(): void;
+    reload(): Promise<IWorkingTreeObject>;
 }
 
 export enum WorkingTreeObjectType {
