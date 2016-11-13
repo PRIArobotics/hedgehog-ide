@@ -171,8 +171,27 @@ interface IProgramStorage {
      */
     createWorkingTreeFile(programName: string, path: string, content: string, mode?: number): void;
 
+    /**
+     * Update a file or directory in the working tree
+     *
+     * This method can be used for both setting the filemode and renaming it.
+     *
+     * @param programName
+     * @param currentPath file's current path
+     * @param options nessesary information for the update
+     * @param options.mode new filemode
+     * @param options.new new file path
+     */
     updateWorkingTreeObject(programName: string, currentPath: string, options: {mode?: number, newPath?: string}): void;
 
+    /**
+     * Delete a file or directory from the working tree.
+     *
+     * Directories will be deleted recursively.
+     *
+     * @param programName
+     * @param objectPath path to the file or directory
+     */
     deleteWorkingTreeObject(programName: string, objectPath: string): void;
 
     /**
