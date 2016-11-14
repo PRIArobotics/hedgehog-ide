@@ -1,5 +1,5 @@
 import {Component, AfterViewInit, ViewChild} from '@angular/core';
-import {ContextMenuComponent} from "angular2-contextmenu";
+import {ContextMenuComponent} from 'angular2-contextmenu';
 
 declare var $: JQueryStatic;
 
@@ -16,10 +16,6 @@ export class File {
 
 export class AppComponent implements AfterViewInit {
     @ViewChild(ContextMenuComponent) public basicMenu: ContextMenuComponent;
-
-    constructor() {
-        this.iterateTree(this.filetree[0]);
-    }
 
     private filetree = [
         {
@@ -43,6 +39,10 @@ export class AppComponent implements AfterViewInit {
 
     private editorContent: string = '';
 
+    constructor() {
+        this.iterateTree(this.filetree[0]);
+    }
+
     public ngAfterViewInit(): void {
 
         $('.indicator').first().css(
@@ -50,12 +50,6 @@ export class AppComponent implements AfterViewInit {
                 right: 0
             }
         );
-    }
-
-    public onTabSelect(id: number): void {
-        this.files[this.lastId].content = this.editorContent;
-        this.editorContent = this.files[id].content;
-        this.lastId = id;
     }
 
     public changeEditorContent (editorContent) {
@@ -68,7 +62,8 @@ export class AppComponent implements AfterViewInit {
             indicatorDiv.css(
                 {
                     left: $(tabToIndicate).position().left,
-                    right: $(tabToIndicate).parent().width() - ($(tabToIndicate).position().left + $(tabToIndicate).width())
+                    right: $(tabToIndicate).parent().width() -
+                    ($(tabToIndicate).position().left + $(tabToIndicate).width())
                 }
             );
         }
@@ -108,10 +103,16 @@ export class AppComponent implements AfterViewInit {
         }
     }
 
-    private newFile(file) {
-        console.log(file);
+    public newFile(event) {
+        console.log(event);
     }
-    
+
+    public onTabSelect(id: number): void {
+        this.files[this.lastId].content = this.editorContent;
+        this.editorContent = this.files[id].content;
+        this.lastId = id;
+    }
+
     private iterateTree(tree): void {
         if(tree.children) {
             for(let child of tree.children)
