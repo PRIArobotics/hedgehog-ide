@@ -1,4 +1,5 @@
 <div class="app-content row">
+    <context-menu></context-menu>
 
     <div class="col s2">
         <h3> Project 1 </h3>
@@ -6,14 +7,25 @@
 
         <Tree [nodes]="filetree"
               [focused]="true"
-              [options]="customTemplateStringOptions"
               (onActivate)="fileTreeEvent($event)">
+            <template #treeNodeTemplate let-node>
+                <div [contextMenu]="basicMenu" [contextMenuSubject]="node">
+                    <i *ngIf="node.data.children && !node.isExpanded" class="material-icons"> folder </i>
+                    <i *ngIf="node.isExpanded" class="material-icons"> folder_open </i>
+                    <i *ngIf="!node.data.children" class="material-icons"> insert_drive_file </i>
+                    <span> {{ node.data.name }} </span>
+                </div>
+            </template>
         </Tree>
+
+        <context-menu #basicMenu>
+            <template contextMenuItem let-node (execute)="newFile($event)">
+                New File
+            </template>
+        </context-menu>
     </div>
 
     <div class="col s10">
-
-
         <div class="col s12" style="margin-top: 2vh">
             <div class="col l1">
                 <a class="waves-effect btn-floating waves-light">
@@ -26,15 +38,16 @@
                 </a>
             </div>
             <div class="col l1" >
-                <a class="waves-effect btn-floating  waves-light">
+                <a class="waves-effect btn-floating waves-light">
                     <i class="material-icons">insert_drive_file</i>
                 </a>
             </div>
         </div>
 
-        <div class="row" style="margin-bottom: 0px;">
-            <div class="col s12" style="z-index:1" >
-                <ul class="tabs" materialize="tabs" id="sortable-tabs"></ul>
+        <div class="row">
+            <div class="col s12" >
+                <ul class="tabs" materialize="tabs" id="sortable-tabs">
+                </ul>
             </div>
 
             <div class="col s12">

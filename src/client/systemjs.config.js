@@ -16,7 +16,8 @@
 
             rxjs: 'node_modules/rxjs',
             'materialize-css': 'node_modules/materialize-css',
-            'angular2-materialize': 'node_modules/angular2-materialize'
+            'angular2-materialize': 'node_modules/angular2-materialize',
+            'angular2-contextmenu': 'node_modules/angular2-contextmenu'
         },
         // map tells the System loader where to look for things
         map: {
@@ -73,6 +74,10 @@
             },
             'angular2-tree-component': {
                 main: 'dist/angular2-tree-component.js',
+                defaultExtension: 'js'
+            },
+            'angular2-contextmenu': {
+                main: './angular2-contextmenu.js',
                 defaultExtension: 'js'
             },
             'lodash': {

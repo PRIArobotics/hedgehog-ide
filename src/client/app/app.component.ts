@@ -1,4 +1,5 @@
-import { Component, AfterContentInit } from '@angular/core';
+import {Component, AfterViewInit, ViewChild} from '@angular/core';
+import {ContextMenuComponent} from "angular2-contextmenu";
 
 declare var $: JQueryStatic;
 
@@ -13,7 +14,12 @@ export class File {
     templateUrl: 'app/app.component.html'
 })
 
-export class AppComponent implements AfterContentInit {
+export class AppComponent implements AfterViewInit {
+    @ViewChild(ContextMenuComponent) public basicMenu: ContextMenuComponent;
+
+    constructor() {
+        this.iterateTree(this.filetree[0]);
+    }
 
     private filetree = [
         {
@@ -37,8 +43,13 @@ export class AppComponent implements AfterContentInit {
 
     private editorContent: string = '';
 
-    public ngAfterContentInit(): void {
-        this.iterateTree(this.filetree[0]);
+    public ngAfterViewInit(): void {
+
+        $('.indicator').first().css(
+            {
+                right: 0
+            }
+        );
     }
 
     public onTabSelect(id: number): void {
@@ -52,13 +63,12 @@ export class AppComponent implements AfterContentInit {
     }
 
     public fileTreeEvent(event) {
-
-        function updateIndicator(element) {
+        function updateIndicator(tabToIndicate) {
             let indicatorDiv = $('.indicator').first();
             indicatorDiv.css(
                 {
-                    left: $(element).position().left,
-                    right: $(element).parent().width() - ($(element).position().left + $(element).width())
+                    left: $(tabToIndicate).position().left,
+                    right: $(tabToIndicate).parent().width() - ($(tabToIndicate).position().left + $(tabToIndicate).width())
                 }
             );
         }
@@ -98,7 +108,10 @@ export class AppComponent implements AfterContentInit {
         }
     }
 
-
+    private newFile(file) {
+        console.log(file);
+    }
+    
     private iterateTree(tree): void {
         if(tree.children) {
             for(let child of tree.children)
