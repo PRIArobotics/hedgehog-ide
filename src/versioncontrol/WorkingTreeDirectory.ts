@@ -1,19 +1,13 @@
 import path = require('path');
 
 import WorkingTreeFile from "./WorkingTreeFile";
-import IWorkingTreeObject from "./WorkingTreeObject";
+import WorkingTreeObject from "./WorkingTreeObject";
 import {WorkingTreeObjectType} from "./WorkingTreeObject";
-import IProgramStorage from "./ProgramStorage";
 
-export default class WorkingTreeDirectory implements IWorkingTreeObject {
+export default class WorkingTreeDirectory extends WorkingTreeObject {
     public readonly type: WorkingTreeObjectType = WorkingTreeObjectType.Directory;
 
-    public path: string;
-    public mode: number;
     public items: string[];
-
-    private programName: string;
-    private storage: IProgramStorage;
 
     public constructor(storage, programName, path, mode, items) {
         this.storage = storage;
@@ -21,10 +15,6 @@ export default class WorkingTreeDirectory implements IWorkingTreeObject {
         this.path = path;
         this.mode = mode;
         this.items = items;
-    }
-
-    public getName(): string {
-        return path.basename(this.path);
     }
 
     public getDirectory(itemName: string): Promise<WorkingTreeDirectory> {
@@ -35,7 +25,7 @@ export default class WorkingTreeDirectory implements IWorkingTreeObject {
         return this.storage.getWorkingTreeFile(this.programName, this.getItemPath(itemName));
     }
 
-    public async getItem(itemName: string): Promise<IWorkingTreeObject> {
+    public async getItem(itemName: string): Promise<WorkingTreeObject> {
         try {
             return await this.getFile(itemName);
         } catch(err) {

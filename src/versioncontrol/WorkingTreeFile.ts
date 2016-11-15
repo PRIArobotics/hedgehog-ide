@@ -1,18 +1,10 @@
-import path = require('path');
-
-import IWorkingTreeObject from "./WorkingTreeObject";
+import WorkingTreeObject from "./WorkingTreeObject";
 import {WorkingTreeObjectType} from "./WorkingTreeObject";
-import IProgramStorage from "./ProgramStorage";
 
-export default class WorkingTreeFile implements IWorkingTreeObject {
+export default class WorkingTreeFile extends WorkingTreeObject {
     public readonly type = WorkingTreeObjectType.File;
 
-    public path: string;
-    public mode: number;
     public size: number;
-
-    private programName: string;
-    private storage: IProgramStorage;
 
     public constructor(storage, programName, path, mode, size) {
         this.storage = storage;
@@ -20,10 +12,6 @@ export default class WorkingTreeFile implements IWorkingTreeObject {
         this.path = path;
         this.mode = mode;
         this.size = size;
-    }
-
-    public getName(): string {
-        return path.basename(this.path);
     }
 
     public readContent(): Promise<string> {
