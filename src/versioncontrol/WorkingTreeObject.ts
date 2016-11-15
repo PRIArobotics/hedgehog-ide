@@ -1,8 +1,6 @@
 import path = require('path');
 import IProgramStorage from "./ProgramStorage";
 
-export default WorkingTreeObject;
-
 abstract class WorkingTreeObject {
     public readonly type: WorkingTreeObjectType;
 
@@ -35,6 +33,8 @@ abstract class WorkingTreeObject {
         return this.storage.updateWorkingTreeObject(this.programName, this.path, {mode});
     }
 }
+
+export default WorkingTreeObject;
 
 export enum WorkingTreeObjectType {
     Directory,
