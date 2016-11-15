@@ -12,6 +12,11 @@ abstract class WorkingTreeObject {
     protected programName: string;
     protected storage: IProgramStorage;
 
+    protected constructor(storage, programName) {
+        this.storage = storage;
+        this.programName = programName;
+    }
+
     public abstract reload(): Promise<WorkingTreeObject>;
 
     public getName(): string {
@@ -22,7 +27,7 @@ abstract class WorkingTreeObject {
         return this.storage.updateWorkingTreeObject(
             this.programName,
             this.path,
-            {newName: path.join(this.path, newName)}
+            {newPath: path.join(this.path, newName)}
         );
     }
 

@@ -10,6 +10,7 @@ export default class WorkingTreeDirectory extends WorkingTreeObject {
     public items: string[];
 
     public constructor(storage, programName, path, mode, items) {
+        super(storage, programName);
         this.storage = storage;
         this.programName = programName;
         this.path = path;

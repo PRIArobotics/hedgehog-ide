@@ -7,6 +7,7 @@ export default class WorkingTreeFile extends WorkingTreeObject {
     public size: number;
 
     public constructor(storage, programName, path, mode, size) {
+        super(storage, programName);
         this.storage = storage;
         this.programName = programName;
         this.path = path;
