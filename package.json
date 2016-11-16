@@ -6,7 +6,7 @@
   "scripts": {
     "test": "mocha --reporter spec --check-leaks --recursive build/test/",
     "build": "grunt",
-    "start": "node build/server/server.js"
+    "start": "node build/src/server/server.js"
   },
   "repository": {
     "type": "git",
