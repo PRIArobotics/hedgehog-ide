@@ -1,8 +1,8 @@
 import assert = require('assert');
 
-import { basename } from '../src/utils'
-import { dirname }  from '../src/utils'
-import { join }  from '../src/utils'
+import { basename } from '../src/utils';
+import { dirname }  from '../src/utils';
+import { join }  from '../src/utils';
 
 describe('basename', () => {
     it('should return path without /\'s', () => {
