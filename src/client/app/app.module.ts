@@ -1,19 +1,22 @@
-import { NgModule }             from '@angular/core';
-import { BrowserModule }        from '@angular/platform-browser';
+import {BrowserModule} from "@angular/platform-browser";
+import {Routes, RouterModule} from "@angular/router";
+import {NgModule} from "@angular/core";
 
-import { AppComponent }         from './app.component';
+import {AppComponent} from "./app.component";
+import {TextIdeComponent} from "./text-ide/text-ide.component";
+import {TextIdeModule} from "./text-ide/text-ide.module";
 
-import { MaterializeDirective } from 'angular2-materialize';
-import { TreeModule }           from 'angular2-tree-component';
-import { ContextMenuModule} from 'angular2-contextmenu';
-
-import { AceEditorDirective }   from './ace-editor.directive';
-import { DragDirective }        from './tab-drag.directive';
+const appRoutes: Routes = [
+    { path: 'ide', component: TextIdeComponent }
+];
 
 @NgModule({
-    imports:      [ BrowserModule, TreeModule, ContextMenuModule ],
-    declarations: [ AppComponent, AceEditorDirective, DragDirective, MaterializeDirective ],
-    bootstrap:    [ AppComponent ],
+    imports: [
+        BrowserModule,
+        TextIdeModule,
+        RouterModule.forRoot(appRoutes, {useHash: true})
+    ],
+    declarations: [ AppComponent ],
+    bootstrap: [ AppComponent ]
 })
-
 export class AppModule { }

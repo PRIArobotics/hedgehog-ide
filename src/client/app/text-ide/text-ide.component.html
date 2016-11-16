@@ -1,0 +1,67 @@
+<div class="app-content row">
+    <context-menu></context-menu>
+
+    <div class="col s2">
+        <h3> Project 1 </h3>
+        <hr>
+
+        <Tree [nodes]="filetree"
+              [focused]="true"
+              (onActivate)="fileTreeEvent($event)">
+            <template #treeNodeTemplate let-node>
+                <div [contextMenu]="basicMenu" [contextMenuSubject]="node">
+                    <i *ngIf="node.data.children && !node.isExpanded" class="material-icons"> folder </i>
+                    <i *ngIf="node.isExpanded" class="material-icons"> folder_open </i>
+                    <i *ngIf="!node.data.children" class="material-icons"> insert_drive_file </i>
+                    <span> {{ node.data.name }} </span>
+                </div>
+            </template>
+        </Tree>
+
+        <context-menu #basicMenu>
+            <template contextMenuItem let-node (execute)="newFile($event)">
+                New File
+            </template>
+        </context-menu>
+    </div>
+
+    <div class="col s10">
+        <div class="col s12" style="margin-top: 2vh">
+            <div class="col l1">
+                <a class="waves-effect btn-floating waves-light">
+                    <i class="material-icons">play_arrow</i>
+                </a>
+            </div>
+            <div class="col l1">
+                <a class="waves-effect btn-floating waves-light">
+                    <i class="material-icons">save</i>
+                </a>
+            </div>
+            <div class="col l1" >
+                <a class="waves-effect btn-floating waves-light">
+                    <i class="material-icons">insert_drive_file</i>
+                </a>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col s12" >
+                <ul class="tabs" materialize="tabs" id="sortable-tabs">
+                </ul>
+            </div>
+
+            <div class="col s12">
+                <div ace-editor
+                     text="{{ editorContent }}"
+                     (textChanged)="changeEditorContent($event)"
+                     [mode]="'python'"
+                     [theme]="'chrome'"
+                     [readOnly]="false"
+                     style="display:block; height: 88vh; width:100%"> </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
