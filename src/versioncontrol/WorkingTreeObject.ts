@@ -1,4 +1,6 @@
-import path = require('path');
+
+import { basename } from "../utils";
+import { join } from "../utils";
 import IProgramStorage from "./ProgramStorage";
 
 abstract class WorkingTreeObject {
@@ -18,14 +20,14 @@ abstract class WorkingTreeObject {
     public abstract reload(): Promise<WorkingTreeObject>;
 
     public getName(): string {
-        return path.basename(this.path);
+        return basename(this.path);
     }
 
     public rename(newName: string): Promise<void> {
         return this.storage.updateWorkingTreeObject(
             this.programName,
             this.path,
-            {newPath: path.join(this.path, newName)}
+            {newPath: join(this.path, newName)}
         );
     }
 

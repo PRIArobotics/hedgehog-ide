@@ -1,12 +1,13 @@
-import path = require('path');
+import { basename } from '../utils';
+import { dirname } from '../utils';
 
-import IProgramStorage from "./ProgramStorage";
-import Program from "./Program";
+import IProgramStorage from './ProgramStorage';
+import Program from './Program';
 import Tree = NodeGit.Tree;
-import Version from "./Version";
-import WorkingTree from "./WorkingTree";
-import WorkingTreeDirectory from "./WorkingTreeDirectory";
-import WorkingTreeFile from "./WorkingTreeFile";
+import Version from './Version';
+import WorkingTree from './WorkingTree';
+import WorkingTreeDirectory from './WorkingTreeDirectory';
+import WorkingTreeFile from './WorkingTreeFile';
 
 export default class DummyProgramStorage implements IProgramStorage {
     private programs: Map<string, Program>;
@@ -191,12 +192,12 @@ export default class DummyProgramStorage implements IProgramStorage {
     }
 
     private addToParentDirectory(programName: string, filePath: string): void {
-        let parentDirectory = this.workingTreeDirectories.get(programName).get(path.dirname(filePath));
-        parentDirectory.items.push(path.basename(filePath));
+        let parentDirectory = this.workingTreeDirectories.get(programName).get(dirname(filePath));
+        parentDirectory.items.push(basename(filePath));
     }
 
     private removeFromParentDirectory(programName: string, filePath: string): void {
-        let parentDirectory = this.workingTreeDirectories.get(programName).get(path.dirname(filePath));
-        parentDirectory.items.splice(parentDirectory.items.indexOf(path.basename(filePath)));
+        let parentDirectory = this.workingTreeDirectories.get(programName).get(dirname(filePath));
+        parentDirectory.items.splice(parentDirectory.items.indexOf(basename(filePath)));
     }
 }

@@ -1,8 +1,8 @@
-import path = require('path');
 
 import WorkingTreeFile from "./WorkingTreeFile";
 import WorkingTreeObject from "./WorkingTreeObject";
-import {WorkingTreeObjectType} from "./WorkingTreeObject";
+import { WorkingTreeObjectType } from "./WorkingTreeObject";
+import { join } from "../utils";
 
 export default class WorkingTreeDirectory extends WorkingTreeObject {
     public readonly type: WorkingTreeObjectType = WorkingTreeObjectType.Directory;
@@ -54,7 +54,7 @@ export default class WorkingTreeDirectory extends WorkingTreeObject {
     }
 
     public getItemPath(item: string): string {
-        return path.join(this.path, item);
+        return join(this.path, item);
     }
 
     public reload(): Promise<WorkingTreeDirectory> {
