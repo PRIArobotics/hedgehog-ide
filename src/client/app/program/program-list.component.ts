@@ -1,13 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
     moduleId: module.id,
     selector: 'program-list',
     templateUrl: 'program-list.component.html'
 })
-export class ProgramListComponent implements OnInit {
-    constructor() { }
-
-    ngOnInit() { }
-
-}
+export class ProgramListComponent { }
