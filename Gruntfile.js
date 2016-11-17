@@ -49,7 +49,7 @@ module.exports = function(grunt) {
                     {
                         expand: true,
                         cwd: 'src/',
-                        src: ['**/*.html', '**/*.css', 'client/systemjs.config.js'],
+                        src: ['**/*.html', '**/*.css', '**/*.svg', 'client/systemjs.config.js'],
                         dest: 'build/src'
                     }
                 ]

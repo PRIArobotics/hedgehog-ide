@@ -1,1 +1,20 @@
-<router-outlet></router-outlet>
+<div class="side-bar z-depth-2 hedgehog-green-dark">
+    <div class="side-bar-item">
+        <a href="#"><img src="app/assets/img/logo.svg"/></a>
+    </div>
+</div>
+<div class="wrapper">
+    <nav class="hedgehog-green-light">
+        <div class="nav-wrapper">
+            <a href="#" class="brand-logo">Logo</a>
+            <ul id="nav-mobile" class="right hide-on-med-and-down">
+                <li><a href="sass.html">Sass</a></li>
+                <li><a href="badges.html">Components</a></li>
+                <li><a href="collapsible.html">JavaScript</a></li>
+            </ul>
+        </div>
+    </nav>
+    <div class="row content">
+        <router-outlet></router-outlet>
+    </div>
+</div>

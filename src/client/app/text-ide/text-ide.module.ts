@@ -10,7 +10,7 @@ import {TextIdeComponent} from "./text-ide.component";
 import {CommonModule} from "@angular/common";
 
 @NgModule({
-    imports:      [
+    imports: [
         CommonModule,
         TreeModule,
         ContextMenuModule,

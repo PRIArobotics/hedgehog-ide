@@ -1,0 +1,24 @@
+.side-bar {
+    position: fixed;
+    width: 64px;
+    height: 100%;
+}
+
+.side-bar .side-bar-item {
+    margin: 5px;
+    width: 52px;
+}
+
+.wrapper {
+    position: absolute;
+    right: 0;
+    left: 64px;
+}
+
+.content {
+    position: fixed;
+    top: 64px;
+    bottom: 0px;
+    left: 64px;
+    right: 0;
+}
