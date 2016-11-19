@@ -57,8 +57,19 @@ module.exports = function(grunt) {
         },
         symlink: {
             client: {
-                src: 'node_modules',
-                dest: 'build/src/client/node_modules'
+                files: [
+                    {
+                        src: 'node_modules',
+                        dest: 'build/src/client/node_modules'
+                    },
+                    {
+                        expand: true,
+                        overwrite: false,
+                        cwd: 'build/src',
+                        src: ['*', '!server', '!client'],
+                        dest: 'build/src/client'
+                    }
+                ]
             }
         },
         tslint: {

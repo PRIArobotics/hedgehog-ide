@@ -1,1 +1,21 @@
-
+<nav class="hedgehog-green-light">
+    <div class="nav-wrapper">
+        <a href="#" class="brand-logo">Programs</a>
+        <ul id="nav-mobile" class="right hide-on-med-and-down">
+            <li><a><i class="material-icons">add</i></a></li>
+            <li><a><i class="material-icons">replay</i></a></li>
+        </ul>
+    </div>
+</nav>
+<div class="container">
+    <ul class="collection">
+        <li class="collection-item avatar" *ngFor="let program of programs">
+            <i class="material-icons circle">code</i>
+            <span class="title">{{ program }}</span>
+            <p>First Line <br>
+                Second Line
+            </p>
+            <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
+        </li>
+    </ul>
+</div>

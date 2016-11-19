@@ -1,4 +1,8 @@
 /* Master Styles */
+.brand-logo {
+    margin-left: 15px;
+}
+
 .collapsed .collapsible-section {
     display: none;
 }
