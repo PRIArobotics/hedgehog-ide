@@ -30,13 +30,16 @@ export default class DummyProgramStorage implements IProgramStorage {
         this.workingTreeFileContents = new Map<string, Map<string, string>>();
     }
 
+    // TODO: create other maps
     public createProgram(name: string): Promise<Program> {
         let program = new Program(this, name, null);
         this.programs.set(name, program);
+        this.workingTreeDirectories.set(name, new Map<string, WorkingTreeDirectory>());
         this.createWorkingTreeDirectory(name, '.');
         return Promise.resolve(program);
     }
 
+    // TODO: delete other maps
     public deleteProgram(name: string): Promise<void> {
         this.programs.delete(name);
         return Promise.resolve();
