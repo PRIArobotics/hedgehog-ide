@@ -20,7 +20,9 @@ const appRoutes: Routes = [
         TextIdeModule,
         RouterModule.forRoot(appRoutes, {useHash: true})
     ],
-    declarations: [ AppComponent ],
-    bootstrap: [ AppComponent ]
+    declarations: [
+        AppComponent
+    ],
+    bootstrap: [ AppComponent ],
 })
 export class AppModule { }
