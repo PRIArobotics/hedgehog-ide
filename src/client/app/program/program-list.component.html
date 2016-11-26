@@ -7,14 +7,12 @@
         </ul>
     </div>
 </nav>
-<div class="container">
+
+<div class="container z-depth-1">
     <ul class="collection">
-        <li class="collection-item avatar" *ngFor="let program of programs">
-            <i class="material-icons circle">code</i>
-            <span class="title">{{ program }}</span>
-            <p>First Line <br>
-                Second Line
-            </p>
+        <li class="collection-item avatar valign-wrapper program-item" *ngFor="let program of programs">
+            <i class="material-icons circle valign">code</i>
+            <span class="title valign">{{ program }}</span>
             <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
         </li>
     </ul>

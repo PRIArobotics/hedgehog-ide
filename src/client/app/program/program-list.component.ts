@@ -7,6 +7,7 @@ import {MaterializeAction} from "angular2-materialize";
     moduleId: module.id,
     selector: 'program-list',
     templateUrl: 'program-list.component.html',
+    styleUrls: ['program-list.component.css'],
     providers: [
         DummyProgramService
     ]
