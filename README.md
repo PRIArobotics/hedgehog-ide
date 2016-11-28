@@ -22,7 +22,7 @@ $ typings install # Install TypeScript type definitions
 ### Running tests
 In order to execute all tests, simply execute:
 ```
-$ npm run test
+$ npm test
 ```
 
 ### Coding Styleguide

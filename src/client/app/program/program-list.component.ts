@@ -47,7 +47,6 @@ export class ProgramListComponent implements OnInit {
     }
 
     public async createProgram() {
-        console.log(this.newProgramName);
         await this.storage.createProgram(this.newProgramName);
 
         this.newProgramName = '';
@@ -65,7 +64,6 @@ export class ProgramListComponent implements OnInit {
     }
 
     public async deleteProgram() {
-        console.log(this.deleteProgramName)
         await this.storage.deleteProgram(this.deleteProgramName);
         await this.reloadProgramList();
         this.deleteProgramName = '';
