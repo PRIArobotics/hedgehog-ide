@@ -14,11 +14,13 @@ import {MaterializeAction} from "angular2-materialize";
 })
 export class ProgramListComponent implements OnInit {
     public createModalActions = new EventEmitter<string|MaterializeAction>();
+    public deleteModalActions = new EventEmitter<string|MaterializeAction>();
 
     private storage: IProgramStorage;
     private programs: string[];
 
     private newProgramName: string;
+    private deleteProgramName: string;
 
     public constructor(storageService: DummyProgramService) {
         this.storage = storageService.getStorage();
@@ -37,16 +39,7 @@ export class ProgramListComponent implements OnInit {
 
     public openCreateModal() {
         this.createModalActions.emit({action:"modal", params:['open']});
-
-        // This is extremely hacky but apparently, there is no other solution.
-        // Move modal to right location as it should fill the whole screen otherwise
-        // See https://github.com/Dogfalo/materialize/issues/1532
-        // grab the dark overlay
-        let overlay = $('.modal-overlay');
-        // remove it
-        overlay.detach();
-        // attach it to the thing you want darkened
-        $('router-outlet').after(overlay);
+        this.fixModalOverlay();
     }
 
     public closeCreateModal() {
@@ -60,4 +53,33 @@ export class ProgramListComponent implements OnInit {
         this.newProgramName = '';
         await this.reloadProgramList();
     }
+
+    public openDeleteModal(programName: string) {
+        this.deleteProgramName = programName;
+        this.deleteModalActions.emit({action:"modal", params:['open']});
+        this.fixModalOverlay();
+    }
+
+    public closeDeleteModal() {
+        this.deleteModalActions.emit({action:"modal", params:['close']});
+    }
+
+    public async deleteProgram() {
+        console.log(this.deleteProgramName)
+        await this.storage.deleteProgram(this.deleteProgramName);
+        await this.reloadProgramList();
+        this.deleteProgramName = '';
+    }
+
+    private fixModalOverlay() {
+        // This is extremely hacky but apparently, there is no other solution.
+        // Move modal to right location as it should fill the whole screen otherwise
+        // See https://github.com/Dogfalo/materialize/issues/1532
+        // grab the dark overlay
+        let overlay = $('.modal-overlay');
+        // remove it
+        overlay.detach();
+        // attach it to the thing you want darkened
+        $('router-outlet').after(overlay);
+    };
 }

@@ -5,3 +5,13 @@
 .program-item .title {
     font-size: 1.5em;
 }
+
+.program-item .secondary-content button {
+    margin-top: 7px;
+    margin-bottom: 7px;
+
+}
+
+#create-modal {
+    width: 400px;
+}
