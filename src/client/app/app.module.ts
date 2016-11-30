@@ -9,8 +9,18 @@ import {ProgramListComponent} from "./program/program-list.component";
 import {ProgramModule} from "./program/program.module";
 
 const appRoutes: Routes = [
-    { path: '', component: ProgramListComponent },
-    { path: 'ide/:programName', component: TextIdeComponent }
+    {
+        path: '',
+        component: ProgramListComponent
+    },
+    {
+        path: 'text-ide/:programName',
+        component: TextIdeComponent
+    },
+    {
+        path: '*',
+        redirectTo: '/'
+    }
 ];
 
 @NgModule({
