@@ -10,7 +10,7 @@ import {ProgramModule} from "./program/program.module";
 
 const appRoutes: Routes = [
     { path: '', component: ProgramListComponent },
-    { path: 'ide', component: TextIdeComponent }
+    { path: 'ide/:programName', component: TextIdeComponent }
 ];
 
 @NgModule({

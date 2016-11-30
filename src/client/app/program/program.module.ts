@@ -3,12 +3,14 @@ import {CommonModule} from "@angular/common";
 import {ProgramListComponent} from "./program-list.component";
 import {MaterializeModule} from "angular2-materialize";
 import {FormsModule} from "@angular/forms";
+import {RouterModule} from "@angular/router";
 
 @NgModule({
     imports: [
         MaterializeModule,
         CommonModule,
-        FormsModule
+        FormsModule,
+        RouterModule
     ],
     declarations: [
         ProgramListComponent

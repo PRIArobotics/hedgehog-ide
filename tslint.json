@@ -9,7 +9,8 @@
     "no-consecutive-blank-lines": false,
     "whitespace": [false, "check-branch"],
     "ordered-imports": false,
-    "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore"]
+    "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore"],
+    "no-string-literal": false
   },
   "rulesDirectory": [
     "node_modules/codelyzer"

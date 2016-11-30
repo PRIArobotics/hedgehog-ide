@@ -1,5 +1,6 @@
 import {Component, AfterViewInit, ViewChild} from '@angular/core';
 import {ContextMenuComponent} from 'angular2-contextmenu';
+import {ActivatedRoute} from "@angular/router";
 
 declare var $: JQueryStatic;
 
@@ -13,7 +14,6 @@ export class File {
     selector: 'hedgehog-ide',
     templateUrl: 'app/text-ide/text-ide.component.html'
 })
-
 export class TextIdeComponent implements AfterViewInit {
     @ViewChild(ContextMenuComponent) public basicMenu: ContextMenuComponent;
 
@@ -38,8 +38,10 @@ export class TextIdeComponent implements AfterViewInit {
     private lastId: any = 0;
 
     private editorContent: string = '';
+    private programName: string;
 
-    constructor() {
+    constructor(route: ActivatedRoute) {
+        this.programName = route.snapshot.params['programName'];
         this.iterateTree(this.filetree[0]);
     }
 
