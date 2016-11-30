@@ -34,6 +34,16 @@ server.route({
     }
 });
 
+server.ext('onPreResponse', (request, reply) => {
+    if (request.response.isBoom) {
+        return reply.file(path.join(__dirname, '../client/index.html'));
+    }
+
+    return reply.continue();
+});
+
+
+
 // Start the server
 server.start((err) => {
 

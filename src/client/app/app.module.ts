@@ -28,7 +28,7 @@ const appRoutes: Routes = [
         BrowserModule,
         ProgramModule,
         TextIdeModule,
-        RouterModule.forRoot(appRoutes, {useHash: true})
+        RouterModule.forRoot(appRoutes)
     ],
     declarations: [
         AppComponent
