@@ -1,8 +1,7 @@
-/**
- * Created by markus on 14/10/16.
- */
 import Hapi = require('hapi');
 import path = require('path');
+import Api from "./api/Api";
+import ProgramsResource from "./api/resource/versioncontrol/ProgramsResource";
 
 // Create a server with a host and port
 const server = new Hapi.Server({
@@ -42,7 +41,8 @@ server.ext('onPreResponse', (request, reply) => {
     return reply.continue();
 });
 
-
+let hedgehogApi = new Api(server, '/api');
+hedgehogApi.registerEndpoint(new ProgramsResource('.'));
 
 // Start the server
 server.start((err) => {
