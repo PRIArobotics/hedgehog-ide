@@ -13,6 +13,7 @@ import Version from "../../versioncontrol/Version";
 import WorkingTree from "../../versioncontrol/WorkingTree";
 import WorkingTreeFile from "../../versioncontrol/WorkingTreeFile";
 import WorkingTreeDirectory from "../../versioncontrol/WorkingTreeDirectory";
+import {WorkingTreeObjectType} from "../../versioncontrol/WorkingTreeObject";
 
 export default class GitProgramStorage implements IProgramStorage {
     public static readonly signature = NodeGit.Signature.now('Hedgehog', 'info@hedgehog.pria.at');
@@ -157,12 +158,23 @@ export default class GitProgramStorage implements IProgramStorage {
         const items = await wrapCallbackAsPromise(fs.readdir, absoluteDirectoryPath);
         const directoryStats = await wrapCallbackAsPromise(fs.stat, absoluteDirectoryPath);
 
+        const itemStats = {};
+        for(const itemName of items) {
+            const itemPath = path.join(directoryPath, itemName);
+            if((await wrapCallbackAsPromise(fs.stat, this.getWorkingTreePath(programName, itemPath))).isDirectory()) {
+                itemStats[itemName] = WorkingTreeObjectType.Directory;
+            } else {
+                itemStats[itemName] = WorkingTreeObjectType.File;
+            }
+        }
+
         return GitVersionControlFactory.createWorkingTreeDirectory(
             this,
             programName,
             directoryPath,
             directoryStats,
-            items
+            items,
+            itemStats
         );
     }
 

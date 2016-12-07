@@ -8,6 +8,7 @@ import Version from './Version';
 import WorkingTree from './WorkingTree';
 import WorkingTreeDirectory from './WorkingTreeDirectory';
 import WorkingTreeFile from './WorkingTreeFile';
+import {WorkingTreeObjectType} from "./WorkingTreeObject";
 
 export default class DummyProgramStorage implements IProgramStorage {
     private programs: Map<string, Program>;
@@ -144,10 +145,10 @@ export default class DummyProgramStorage implements IProgramStorage {
 
     public createWorkingTreeDirectory(programName: string, directoryPath: string, mode?: number): Promise<void> {
         mode = mode || 0o40755;
-        let directory = new WorkingTreeDirectory(this, programName, directoryPath, mode, []);
+        let directory = new WorkingTreeDirectory(this, programName, directoryPath, mode, [], {});
         this.workingTreeDirectories.get(programName).set(directoryPath, directory);
 
-        this.addToParentDirectory(programName, directoryPath);
+        this.addToParentDirectory(programName, directoryPath, WorkingTreeObjectType.Directory);
         return Promise.resolve();
     }
 
@@ -160,7 +161,7 @@ export default class DummyProgramStorage implements IProgramStorage {
         this.workingTreeFiles.get(programName).set(filePath, file);
         this.workingTreeFileContents.get(programName).set(filePath, content);
 
-        this.addToParentDirectory(programName, filePath);
+        this.addToParentDirectory(programName, filePath, WorkingTreeObjectType.File);
         return Promise.resolve();
     }
 
@@ -184,7 +185,7 @@ export default class DummyProgramStorage implements IProgramStorage {
             objectMap.set(options.newPath, object);
 
             this.removeFromParentDirectory(programName, currentPath);
-            this.addToParentDirectory(programName, currentPath);
+            this.addToParentDirectory(programName, currentPath, object.type);
         }
         return Promise.resolve();
     }
@@ -207,13 +208,15 @@ export default class DummyProgramStorage implements IProgramStorage {
         return undefined;
     }
 
-    private addToParentDirectory(programName: string, filePath: string): void {
+    private addToParentDirectory(programName: string, filePath: string, type: WorkingTreeObjectType): void {
         let parentDirectory = this.workingTreeDirectories.get(programName).get(dirname(filePath));
         parentDirectory.items.push(basename(filePath));
+        (<any> parentDirectory).types[basename(filePath)] = type;
     }
 
     private removeFromParentDirectory(programName: string, filePath: string): void {
         let parentDirectory = this.workingTreeDirectories.get(programName).get(dirname(filePath));
         parentDirectory.items.splice(parentDirectory.items.indexOf(basename(filePath)));
+        delete (<any> parentDirectory).types[basename(filePath)];
     }
 }

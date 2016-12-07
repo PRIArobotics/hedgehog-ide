@@ -8,6 +8,7 @@ import {TreeItemType} from "../../versioncontrol/Tree";
 import Version from "../../versioncontrol/Version";
 import WorkingTreeDirectory from "../../versioncontrol/WorkingTreeDirectory";
 import WorkingTreeFile from "../../versioncontrol/WorkingTreeFile";
+import {WorkingTreeObjectType} from "../../versioncontrol/WorkingTreeObject";
 
 export function createBlob(storage, programName: string, gitBlob: NodeGit.Blob): Blob {
     return new Blob(storage, programName, gitBlob.id().tostrS(), gitBlob.rawsize());
@@ -43,8 +44,9 @@ export function createWorkingTreeDirectory(storage,
                                            programName: string,
                                            directoryPath: string,
                                            directoryStats: fs.Stats,
-                                           items: string[]): WorkingTreeDirectory {
-    return new WorkingTreeDirectory(storage, programName, directoryPath, directoryStats.mode, items);
+                                           items: string[],
+                                           itemTypes: {[name: string]: WorkingTreeObjectType}): WorkingTreeDirectory {
+    return new WorkingTreeDirectory(storage, programName, directoryPath, directoryStats.mode, items, itemTypes);
 }
 
 export function createWorkingTreeFile(storage, programName: string, path: string, stats: fs.Stats) {

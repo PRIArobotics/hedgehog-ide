@@ -9,13 +9,20 @@ export default class WorkingTreeDirectory extends WorkingTreeObject {
 
     public items: string[];
 
-    public constructor(storage, programName, path, mode, items) {
+    private types: {[name: string]: WorkingTreeObjectType};
+
+    public constructor(storage, programName, path, mode, items, types) {
         super(storage, programName);
         this.storage = storage;
         this.programName = programName;
         this.path = path;
         this.mode = mode;
         this.items = items;
+        this.types = types;
+    }
+
+    public getType(itemName: string) {
+        return this.types[itemName];
     }
 
     public getDirectory(itemName: string): Promise<WorkingTreeDirectory> {
@@ -27,9 +34,9 @@ export default class WorkingTreeDirectory extends WorkingTreeObject {
     }
 
     public async getItem(itemName: string): Promise<WorkingTreeObject> {
-        try {
-            return await this.getFile(itemName);
-        } catch(err) {
+        if(this.getType(itemName) === WorkingTreeObjectType.File) {
+            return this.getFile(itemName);
+        } else {
             return this.getDirectory(itemName);
         }
     }
