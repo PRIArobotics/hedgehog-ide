@@ -62,7 +62,7 @@ export default class JsonApiDocumentBuilder implements IBuilder<JsonApiDocument>
 }
 applyMixins(JsonApiDocumentBuilder, [LinkBuilder]);
 
-class JsonApiResourceBuilder implements IBuilder<JsonApiResource>, LinkBuilder {
+export class JsonApiResourceBuilder implements IBuilder<JsonApiResource>, LinkBuilder {
     public setLinks: (self, related) => void;
 
     public resource: JsonApiResource = new JsonApiResource();
