@@ -12,7 +12,7 @@ export default class WorkingTree {
         this.programName = programName;
     }
 
-    public getRootDriectory(): Promise<WorkingTreeDirectory> {
+    public getRootDirectory(): Promise<WorkingTreeDirectory> {
         return this.getDirectory('.');
     }
 
