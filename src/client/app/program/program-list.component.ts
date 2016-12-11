@@ -1,6 +1,6 @@
 import {Component, OnInit, EventEmitter} from '@angular/core';
 import {DummyProgramService} from "./dummy-program.service";
-import IProgramStorage from "../../../versioncontrol/ProgramStorage";
+import IProgramStorage from "../../../common/versioncontrol/ProgramStorage";
 import {MaterializeAction} from "angular2-materialize";
 
 @Component({

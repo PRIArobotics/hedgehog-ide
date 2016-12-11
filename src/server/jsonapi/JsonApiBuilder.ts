@@ -2,7 +2,7 @@ import {
     JsonApiResource, JsonApiLinks, JsonApiDocument, IJsonApiLinkable,
     JsonApiSingleRelationships, JsonApiManyRelationships
 } from "./JsonApiObjects";
-import {applyMixins} from "../../utils";
+import {applyMixins} from "../../common/utils";
 
 interface IBuilder<T> {
     getProduct(): T;

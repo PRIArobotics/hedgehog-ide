@@ -1,14 +1,14 @@
 import NodeGit = require('nodegit');
 import fs = require('fs');
 
-import Blob from "../../versioncontrol/Blob";
-import Tree from "../../versioncontrol/Tree";
-import {TreeItem} from "../../versioncontrol/Tree";
-import {TreeItemType} from "../../versioncontrol/Tree";
-import Version from "../../versioncontrol/Version";
-import WorkingTreeDirectory from "../../versioncontrol/WorkingTreeDirectory";
-import WorkingTreeFile from "../../versioncontrol/WorkingTreeFile";
-import {WorkingTreeObjectType} from "../../versioncontrol/WorkingTreeObject";
+import Blob from "../../common/versioncontrol/Blob";
+import Tree from "../../common/versioncontrol/Tree";
+import {TreeItem} from "../../common/versioncontrol/Tree";
+import {TreeItemType} from "../../common/versioncontrol/Tree";
+import Version from "../../common/versioncontrol/Version";
+import WorkingTreeDirectory from "../../common/versioncontrol/WorkingTreeDirectory";
+import WorkingTreeFile from "../../common/versioncontrol/WorkingTreeFile";
+import {WorkingTreeObjectType} from "../../common/versioncontrol/WorkingTreeObject";
 
 export function createBlob(storage, programName: string, gitBlob: NodeGit.Blob): Blob {
     return new Blob(storage, programName, gitBlob.id().tostrS(), gitBlob.rawsize());

@@ -4,11 +4,11 @@ import fs = require('fs');
 import NodeGit = require('nodegit');
 
 import GitProgramStorage from "../../../src/server/versioncontrol/GitProgramStorage";
-import Program from "../../../src/versioncontrol/Program";
-import {wrapCallbackAsPromise} from '../../../src/utils';
+import Program from "../../../src/common/versioncontrol/Program";
+import {wrapCallbackAsPromise} from '../../../src/common/utils';
 import rimraf = require("rimraf");
-import {TreeItemType} from "../../../src/versioncontrol/Tree";
-import {WorkingTreeObjectType} from "../../../src/versioncontrol/WorkingTreeObject";
+import {TreeItemType} from "../../../src/common/versioncontrol/Tree";
+import {WorkingTreeObjectType} from "../../../src/common/versioncontrol/WorkingTreeObject";
 
 describe('GitProgramStorage', () => {
     let programStorage: GitProgramStorage;

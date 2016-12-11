@@ -3,17 +3,17 @@ import path = require('path');
 import rimraf = require('rimraf');
 import NodeGit = require('nodegit');
 
-import {wrapCallbackAsPromise} from "../../utils";
-import IProgramStorage from "../../versioncontrol/ProgramStorage";
-import Program from "../../versioncontrol/Program";
+import {wrapCallbackAsPromise} from "../../common/utils";
+import IProgramStorage from "../../common/versioncontrol/ProgramStorage";
+import Program from "../../common/versioncontrol/Program";
 import * as GitVersionControlFactory from './GitVersionControlFactory';
-import Blob from "../../versioncontrol/Blob";
-import Tree from "../../versioncontrol/Tree";
-import Version from "../../versioncontrol/Version";
-import WorkingTree from "../../versioncontrol/WorkingTree";
-import WorkingTreeFile from "../../versioncontrol/WorkingTreeFile";
-import WorkingTreeDirectory from "../../versioncontrol/WorkingTreeDirectory";
-import {WorkingTreeObjectType} from "../../versioncontrol/WorkingTreeObject";
+import Blob from "../../common/versioncontrol/Blob";
+import Tree from "../../common/versioncontrol/Tree";
+import Version from "../../common/versioncontrol/Version";
+import WorkingTree from "../../common/versioncontrol/WorkingTree";
+import WorkingTreeFile from "../../common/versioncontrol/WorkingTreeFile";
+import WorkingTreeDirectory from "../../common/versioncontrol/WorkingTreeDirectory";
+import {WorkingTreeObjectType} from "../../common/versioncontrol/WorkingTreeObject";
 
 export default class GitProgramStorage implements IProgramStorage {
     public static readonly signature = NodeGit.Signature.now('Hedgehog', 'info@hedgehog.pria.at');

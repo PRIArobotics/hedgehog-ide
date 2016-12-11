@@ -8,7 +8,7 @@ const server = new Hapi.Server({
     connections: {
         routes: {
             files: {
-                relativeTo: path.join(__dirname, '../client')
+                relativeTo: path.join(__dirname, '..')
             }
         }
     }
@@ -23,10 +23,32 @@ server.register(require('inert'));
 
 server.route({
     method: 'GET',
+    path: '/node_modules/{param*}',
+    handler: {
+        directory: {
+            path: '../../node_modules',
+            redirectToSlash: true
+        }
+    }
+});
+
+server.route({
+    method: 'GET',
+    path: '/common/{param*}',
+    handler: {
+        directory: {
+            path: 'common',
+            redirectToSlash: true
+        }
+    }
+});
+
+server.route({
+    method: 'GET',
     path: '/{param*}',
     handler: {
         directory: {
-            path: '.',
+            path: 'client',
             redirectToSlash: true,
             index: true
         }

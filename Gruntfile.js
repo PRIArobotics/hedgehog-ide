@@ -55,23 +55,6 @@ module.exports = function(grunt) {
                 ]
             }
         },
-        symlink: {
-            client: {
-                files: [
-                    {
-                        src: 'node_modules',
-                        dest: 'build/src/client/node_modules'
-                    },
-                    {
-                        expand: true,
-                        overwrite: false,
-                        cwd: 'build/src',
-                        src: ['*', '!server', '!client'],
-                        dest: 'build/src/client'
-                    }
-                ]
-            }
-        },
         tslint: {
             options: {
                 configuration: "tslint.json"
@@ -109,7 +92,6 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks("grunt-tslint");
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-copy');
-    grunt.loadNpmTasks('grunt-contrib-symlink');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-concurrent');
     grunt.loadNpmTasks('grunt-babel');
@@ -169,6 +151,6 @@ module.exports = function(grunt) {
     });
 
     grunt.registerTask('compile', ['ts', 'babel']);
-    grunt.registerTask('build', ['clean', 'compile', 'copy', 'symlink']);
+    grunt.registerTask('build', ['clean', 'compile', 'copy']);
     grunt.registerTask('default', ['concurrent:run']);
 };

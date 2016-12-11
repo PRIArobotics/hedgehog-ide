@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import DummyProgramStorage from "../../../versioncontrol/DummyProgramStorage";
+import DummyProgramStorage from "../../../common/versioncontrol/DummyProgramStorage";
 
 @Injectable()
 export class DummyProgramService {
