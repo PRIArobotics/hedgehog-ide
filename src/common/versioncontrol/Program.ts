@@ -1,4 +1,5 @@
 import Version from "./Version";
+import Blob from "./Blob";
 import Tree from "./Tree";
 import WorkingTreeFile from "./WorkingTreeFile";
 import WorkingTreeDirectory from "./WorkingTreeDirectory";

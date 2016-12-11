@@ -3,7 +3,8 @@ import { dirname } from '../utils';
 
 import IProgramStorage from './ProgramStorage';
 import Program from './Program';
-import Tree = NodeGit.Tree;
+import Blob from './Blob';
+import Tree from './Tree';
 import Version from './Version';
 import WorkingTree from './WorkingTree';
 import WorkingTreeDirectory from './WorkingTreeDirectory';
