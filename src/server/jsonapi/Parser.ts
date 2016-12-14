@@ -9,7 +9,7 @@ export class ObjectParser<T> {
             if(object[property.name]) {
                 target[property.name] = property.handler(object[property.name]);
             } else if((typeof(property.required) === 'function' && property.required(object, property.name))
-                      || property.required) {
+                   || (typeof(property.required) === 'boolean' && property.required)) {
                 throw new Error(`Missing property: ${property.name}`);
             }
         }
