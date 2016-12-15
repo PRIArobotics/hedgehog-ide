@@ -5,7 +5,7 @@ export default function ApiEndpoint(method: string, path: string = '') {
         resource.addEndpoint(
             path,
             method,
-            resource[handler].bind(resource)
+            resource[handler]
         );
     };
 }
