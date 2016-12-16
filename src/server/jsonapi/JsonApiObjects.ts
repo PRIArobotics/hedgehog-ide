@@ -1,4 +1,4 @@
-import {ObjectParser, parserHandler, arrayParserHandler, IParserProperty} from "./Parser";
+import {ObjectParser, parserHandler, arrayParserHandler} from "./Parser";
 
 export interface IJsonApiLinkable {
     links: JsonApiLinks;
