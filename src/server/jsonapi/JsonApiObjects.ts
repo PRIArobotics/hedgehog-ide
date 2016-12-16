@@ -124,7 +124,7 @@ export class JsonApiResource extends JsonApiObject implements IJsonApiLinkable {
     public id: string;
     public type: string;
 
-    public attributes: Object;
+    public attributes: any;
     public relationships: {[name: string]: JsonApiSingleRelationships | JsonApiManyRelationships};
     public links: JsonApiLinks;
 
