@@ -1,6 +1,11 @@
-import {Component, AfterViewInit, ViewChild} from '@angular/core';
+import {Component, ViewChild, OnInit} from '@angular/core';
 import {ContextMenuComponent} from 'angular2-contextmenu';
 import {ActivatedRoute} from "@angular/router";
+import {DummyProgramService} from "../program/dummy-program.service";
+import DummyProgramStorage from "../../../common/versioncontrol/DummyProgramStorage";
+import {WorkingTreeObjectType} from "../../../common/versioncontrol/WorkingTreeObject";
+import WorkingTreeDirectory from "../../../common/versioncontrol/WorkingTreeDirectory";
+import {TreeComponent} from "angular2-tree-component";
 
 declare var $: JQueryStatic;
 
@@ -12,46 +17,102 @@ export class File {
 
 @Component({
     selector: 'hedgehog-ide',
-    templateUrl: 'app/text-ide/text-ide.component.html'
+    templateUrl: 'app/text-ide/text-ide.component.html',
+    providers: [
+        DummyProgramService
+    ]
 })
-export class TextIdeComponent implements AfterViewInit {
+export class TextIdeComponent implements OnInit {
     @ViewChild(ContextMenuComponent) public basicMenu: ContextMenuComponent;
 
-    private filetree = [
-        {
-            name: 'root1',
-            children: [
-                { id: 1, name: 'child1' },
-                { id: 2, name: 'child2' },
-                { name: 'childfolder', children:
-                    [
-                        { id: 3, name: 'child3', content: "asdfasdf"},
-                        { id: 4, name: 'child4' },
-                    ]
-                }
-            ]
-        }
-    ];
+
+    @ViewChild(TreeComponent)
+    private tree: TreeComponent;
+
+    private filetree: Object[] = [];
 
     private files = [];
 
     private lastId: any = 0;
+    private nextFileId: number = 1;
 
     private editorContent: string = '';
     private programName: string;
+    private storage: DummyProgramStorage;
 
-    constructor(route: ActivatedRoute) {
+    constructor(route: ActivatedRoute, storageService: DummyProgramService) {
         this.programName = route.snapshot.params['programName'];
-        this.iterateTree(this.filetree[0]);
+
+        this.storage = storageService.getStorage();
+
     }
 
-    public ngAfterViewInit(): void {
+    public async ngOnInit() {
+        this.storage.createProgram('program 1');
+        let program1 = await this.storage.getProgram('program 1');
+        let rootdir = await program1.getWorkingTree().getRootDirectory();
 
-        $('.indicator').first().css(
-            {
-                right: 0
+
+        rootdir.addFile('file1.py', 'testfile1');
+        rootdir.addFile('file2.py', 'testfile2');
+
+        await rootdir.addDirectory('dir');
+        let dir = await rootdir.getDirectory('dir');
+        dir.addFile('file3.py', 'testfile3');
+
+
+
+        let childArray = [];
+        this.filetree[0] = {
+            name: program1.name,
+            children: childArray
+        };
+
+        console.log(program1);
+
+        await this.populateFiletree(rootdir, childArray);
+
+        console.log(rootdir.items);
+
+        console.log(this.filetree);
+        this.iterateTree(this.filetree[0]);
+
+        this.tree.treeModel.update();
+        this.resetIndicator();
+    }
+
+    public async populateFiletree (directory: WorkingTreeDirectory, childArray: Object[]) {
+        for(let itemName of directory.items) {
+
+            let type = directory.getType(itemName);
+
+            if (type === WorkingTreeObjectType.File) {
+                let file = await directory.getFile(itemName);
+                childArray.push(
+                    {
+                        id: this.nextFileId,
+                        name: itemName,
+                        content: await file.readContent()
+                    }
+                );
+
+                this.nextFileId++;
+            } else if (type === WorkingTreeObjectType.Directory) {
+                if (itemName !== '.') {
+                    let newDirectory = await directory.getDirectory(itemName);
+                    let newChildArray = [];
+
+                    childArray.push(
+                        {
+                            name: itemName,
+                            children: newChildArray
+                        }
+                    );
+
+                    await this.populateFiletree(newDirectory, newChildArray);
+                }
             }
-        );
+        }
     }
 
     public changeEditorContent (editorContent) {
@@ -81,15 +142,24 @@ export class TextIdeComponent implements AfterViewInit {
                 return;
             }
 
-            let newTab = document.createElement("li");
-            newTab.className = "tab";
-            newTab.id = "tab" + event.node.data.id;
+            let newTab = document.createElement('li');
+            newTab.className = 'tab';
+            newTab.id = 'tab' + event.node.data.id;
             newTab.setAttribute('draggable', '');
 
-            let linkToEditor = document.createElement("a");
-            linkToEditor.className =  "green-text lighten-3 waves-effect";
-            linkToEditor.appendChild(document.createTextNode(event.node.data.name));
+            let linkToEditor = document.createElement('a');
+            linkToEditor.className =  'green-text lighten-3 waves-effect';
 
+            let closeButton = document.createElement('i');
+            closeButton.className = 'material-icons';
+            closeButton.appendChild(document.createTextNode('close'));
+            closeButton.addEventListener('click', () => {
+                $(newTab).remove();
+                this.resetIndicator();
+            });
+
+            linkToEditor.appendChild(document.createTextNode(event.node.data.name));
+            linkToEditor.appendChild(closeButton);
             newTab.appendChild(linkToEditor);
 
             let fileId = event.node.data.id - 1;
@@ -99,10 +169,18 @@ export class TextIdeComponent implements AfterViewInit {
 
             updateIndicator(newTab);
 
-            (<any>$("div.tabs")).tabs();
-
-
+            (<any>$('div.tabs')).tabs();
         }
+    }
+
+    public resetIndicator () {
+        let indicator = $('.indicator').first();
+        indicator.css(
+            {
+                left: 0,
+                right: indicator.parent().width()
+            }
+        );
     }
 
     public newFile(event) {

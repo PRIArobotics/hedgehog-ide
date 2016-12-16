@@ -5,7 +5,8 @@
         <h3> {{ programName }} </h3>
         <hr>
 
-        <Tree [nodes]="filetree"
+        <Tree #tree
+              [nodes]="filetree"
               [focused]="true"
               (onActivate)="fileTreeEvent($event)">
             <template #treeNodeTemplate let-node>
@@ -47,6 +48,7 @@
         <div class="row">
             <div class="col s12" >
                 <ul class="tabs" materialize="tabs" id="sortable-tabs">
+                    <li class="tab"></li>
                 </ul>
             </div>
 

@@ -51,6 +51,14 @@ module.exports = function(grunt) {
                         cwd: 'src/',
                         src: ['**/*.html', '**/*.css', '**/*.svg', 'client/systemjs.config.js'],
                         dest: 'build/src'
+                    },
+
+                    //google material files
+                    {
+                        expand: true,
+                        cwd: 'src/client/assets/css/google-material',
+                        src: ['**'],
+                        dest: 'build/src/client/assets/css/google-material'
                     }
                 ]
             }
