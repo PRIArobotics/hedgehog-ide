@@ -137,7 +137,7 @@ export default class DummyProgramStorage implements IProgramStorage {
         return Promise.resolve(this.workingTreeFiles.get(programName).get(path));
     }
 
-    public getWorkingTreeFileContent(programName: string, path: string, encoding?: string): Promise<string> {
+    public getWorkingTreeFileContent(programName: string, path: string, encoding: string = 'utf-8'): Promise<string> {
         if(encoding !== 'utf-8')
             throw new Error('not supported');
 

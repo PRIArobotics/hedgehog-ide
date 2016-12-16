@@ -53,6 +53,7 @@ export class AceEditorDirective {
         el.classList.add('editor');
 
         this.editor = ace.edit(el);
+        this.editor.$blockScrolling = Infinity;
 
         setTimeout(() => {
             this.editorRef.next(this.editor);
