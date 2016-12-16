@@ -43,17 +43,26 @@ export default class WorkingTreeDirectory extends WorkingTreeObject {
 
     public async addFile(name: string, content: string, mode?: number): Promise<void> {
         await this.storage.createOrUpdateWorkingTreeFile(this.programName, this.getItemPath(name), content, mode);
-        this.items.push(name);
+
+        // only add the new item if it has not already been done by the program storage
+        if(this.items.indexOf(name) === -1)
+            this.items.push(name);
     }
 
     public async deleteFile(name: string): Promise<void> {
         await this.storage.deleteWorkingTreeObject(this.programName, this.getItemPath(name));
-        this.items.splice(this.items.indexOf(name));
+
+        // only delete the item if it has not already been done by the program storage
+        if(this.items.indexOf(name) !== -1)
+            this.items.splice(this.items.indexOf(name));
     }
 
     public async addDirectory(name: string, mode?: number): Promise<void> {
         await this.storage.createWorkingTreeDirectory(this.programName, this.getItemPath(name));
-        this.items.push(name);
+
+        // only add the new item if it has not already been done by the program storage
+        if(this.items.indexOf(name) === -1)
+            this.items.push(name);
     }
 
     public deleteDirectory(name: string): Promise<void> {
