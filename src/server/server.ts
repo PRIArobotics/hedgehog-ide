@@ -1,7 +1,9 @@
+import "babel-polyfill";
 import Hapi = require('hapi');
 import path = require('path');
 import Api from "./api/Api";
 import ProgramsResource from "./api/resource/versioncontrol/ProgramsResource";
+import GitProgramStorage from "./versioncontrol/GitProgramStorage";
 
 // Create a server with a host and port
 const server = new Hapi.Server({
@@ -17,6 +19,9 @@ server.connection({
     host: 'localhost',
     port: 8000
 });
+
+let hedgehogApi = new Api(server, '/api');
+hedgehogApi.registerEndpoint(new ProgramsResource(new GitProgramStorage('tmp')));
 
 // tslint:disable-next-line
 server.register(require('inert'));
@@ -56,15 +61,12 @@ server.route({
 });
 
 server.ext('onPreResponse', (request, reply) => {
-    if (request.response.isBoom) {
+    if (request.response.isBoom && (request.response.statusCode === 404)) {
         return reply.file(path.join(__dirname, '../client/index.html'));
     }
 
     return reply.continue();
 });
-
-let hedgehogApi = new Api(server, '/api');
-hedgehogApi.registerEndpoint(new ProgramsResource('.'));
 
 // Start the server
 server.start((err) => {
