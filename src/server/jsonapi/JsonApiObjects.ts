@@ -89,7 +89,7 @@ export class JsonApiResource extends JsonApiObject implements IJsonApiLinkable {
         let parser = new ObjectParser(() => new JsonApiResource());
         let subParsers = Object.assign({
             relationships: {
-                many: JsonApiSingleRelationships.getParser(),
+                many: JsonApiManyRelationships.getParser(),
                 single: JsonApiSingleRelationships.getParser()
             },
         }, overwriteSubParser);
