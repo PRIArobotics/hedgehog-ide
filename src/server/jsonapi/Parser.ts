@@ -1,9 +1,14 @@
 export class ObjectParser<T> {
     private properties: Map<string, IParserProperty> = new Map();
 
-    public constructor(public targetFactory: () => T) { };
+    public constructor(public targetFactory: () => T, ...properties: IParserProperty[]) {
+        if(properties)
+            this.addProperties.apply(this, properties);
+    };
 
     public parse(object: Object): T {
+        object = object || { };
+
         let target = this.targetFactory();
         for(const property of this.properties.values()) {
             if(object[property.name]) {
