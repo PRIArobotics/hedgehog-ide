@@ -1,11 +1,11 @@
 export class ObjectParser<T> {
-    private properties: IParserProperty[] = [];
+    private properties: Map<string, IParserProperty> = new Map();
 
     public constructor(public targetFactory: () => T) { };
 
     public parse(object: Object): T {
         let target = this.targetFactory();
-        for(const property of this.properties) {
+        for(const property of this.properties.values()) {
             if(object[property.name]) {
                 target[property.name] = property.handler(object[property.name]);
             } else if((typeof(property.required) === 'function' && property.required(object, property.name))
@@ -29,7 +29,7 @@ export class ObjectParser<T> {
             if(!property.handler)
                 property.handler = identityHandler;
 
-            this.properties.push(property);
+            this.properties.set(property.name, property);
         }
     }
 }
