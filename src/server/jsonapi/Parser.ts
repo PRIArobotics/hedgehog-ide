@@ -24,11 +24,13 @@ export class ObjectParser<T> {
         return parsedObjects;
     }
 
-    public addProperty(property: IParserProperty) {
-        if(!property.handler)
-            property.handler = identityHandler;
+    public addProperties(...properties: IParserProperty[]) {
+        for(const property of properties) {
+            if(!property.handler)
+                property.handler = identityHandler;
 
-        this.properties.push(property);
+            this.properties.push(property);
+        }
     }
 }
 
