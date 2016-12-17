@@ -3,6 +3,8 @@ import ApiEndpoint from "../../ApiEndpoint";
 import IProgramStorage from "../../../../common/versioncontrol/ProgramStorage";
 import {JsonApiDocument, JsonApiResource} from "../../../jsonapi/JsonApiObjects";
 import {ObjectParser, parserHandler} from "../../../jsonapi/Parser";
+import Program from "../../../../common/versioncontrol/Program";
+import JsonApiDocumentBuilder from "../../../jsonapi/JsonApiBuilder";
 
 export default class ProgramsResource extends ApiResource {
     constructor(private programStorage: IProgramStorage) {
@@ -26,8 +28,29 @@ export default class ProgramsResource extends ApiResource {
         }).parse(req.payload);
         console.log(document);
 
-        await this.programStorage.createProgram((<JsonApiResource>document.data).attributes.name);
+        let program: Program;
+        try {
+            program = await this.programStorage.createProgram((<JsonApiResource>document.data).attributes.name);
+        } catch(err) {
+            return reply(err);
+        }
 
-        reply(200);
+        let initialVersion = await program.getVersion(program.latestVersionId);
+
+        let documentBuilder = new JsonApiDocumentBuilder();
+        documentBuilder.setLinks(req.url, null);
+
+        let resourceBuilder = documentBuilder.getResourceBuilder();
+        resourceBuilder.resource.type = 'program';
+        resourceBuilder.resource.id = new Buffer(program.name).toString('base64');
+        resourceBuilder.resource.attributes = {
+            name: program.name,
+            creationDate: initialVersion.creationDate.toISOString()
+        };
+
+        // TODO: add relationships
+
+        return reply(resourceBuilder.getProduct())
+            .code(201);
     }
 }
