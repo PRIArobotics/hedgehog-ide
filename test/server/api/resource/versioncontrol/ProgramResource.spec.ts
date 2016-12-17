@@ -3,7 +3,7 @@ import "babel-polyfill";
 import Hapi = require('hapi');
 import Api from "../../../../../src/server/api/Api";
 import ApiResource from "../../../../../src/server/api/ApiResource";
-import ProgramsResource from "../../../../../src/server/api/resource/versioncontrol/ProgramsResource";
+import ProgramResource from "../../../../../src/server/api/resource/versioncontrol/ProgramResource";
 import GitProgramStorage from "../../../../../src/server/versioncontrol/GitProgramStorage";
 
 function setupApiServer(...resources: ApiResource[]) {
@@ -24,7 +24,7 @@ describe.skip('ProgramResource', () => {
     let server: Hapi.Server;
 
     before(() => {
-        const programResource = new ProgramsResource(new GitProgramStorage('tmp'));
+        const programResource = new ProgramResource(new GitProgramStorage('tmp'));
         server = setupApiServer(programResource);
     });
 
