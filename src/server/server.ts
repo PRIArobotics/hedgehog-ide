@@ -61,7 +61,8 @@ server.route({
 });
 
 server.ext('onPreResponse', (request, reply) => {
-    if (request.response.isBoom && (request.response.statusCode === 404)) {
+    let response = <any> request.response;
+    if (request.response.isBoom && (response.output.statusCode === 404)) {
         return reply.file(path.join(__dirname, '../client/index.html'));
     }
 
