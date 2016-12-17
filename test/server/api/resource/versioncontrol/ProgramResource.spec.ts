@@ -1,5 +1,5 @@
 import "babel-polyfill";
-import assert = require('assert');
+// import assert = require('assert');
 import Hapi = require('hapi');
 import Api from "../../../../../src/server/api/Api";
 import ApiResource from "../../../../../src/server/api/ApiResource";
