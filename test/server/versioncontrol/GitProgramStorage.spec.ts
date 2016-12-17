@@ -47,6 +47,16 @@ describe('GitProgramStorage', () => {
             let commit = await repository.getHeadCommit();
             assert.equal(commit.message(), 'initial commit');
         });
+
+        it('should set the id of the inital version', async () => {
+            let programName = getProgramName();
+            let program = await programStorage.createProgram(programName);
+            let repository = await NodeGit.Repository.open(`tmp/${programName}`);
+            assert.equal(repository.isEmpty(), 0);
+
+            let commit = await repository.getHeadCommit();
+            assert.equal(program.latestVersionId, commit.id().tostrS());
+        });
     });
 
     describe('deleteProgram', () => {

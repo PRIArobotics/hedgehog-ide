@@ -32,14 +32,14 @@ export default class GitProgramStorage implements IProgramStorage {
     public async createProgram(name: string): Promise<Program> {
         let repository = await NodeGit.Repository.init(this.getProgramPath(name), 0);
 
-        await repository.createCommitOnHead(
+        let initialVersion = await repository.createCommitOnHead(
             [],
             GitProgramStorage.signature,
             GitProgramStorage.signature,
             'initial commit'
         );
 
-        return new Program(this, name, null);
+        return new Program(this, name, initialVersion.tostrS());
     }
 
     public async deleteProgram(name: string): Promise<void> {
