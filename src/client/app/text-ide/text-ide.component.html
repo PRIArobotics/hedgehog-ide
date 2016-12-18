@@ -19,11 +19,40 @@
             </template>
         </Tree>
 
-        <context-menu #basicMenu>
-            <template contextMenuItem let-node (execute)="newFile($event)">
+        <context-menu #treeContextMenu>
+            <template contextMenuItem let-node (execute)="openNewFileModal($event)">
                 New File
             </template>
+            <template contextMenuItem let-node (execute)="openDeleteFileModal($event)">
+                Delete File
+            </template>
         </context-menu>
+
+        <div id="create-modal" class="modal" materialize="modal" [materializeParams]="[{dismissible: true}]" [materializeActions]="newFileModalActions">
+            <div class="modal-content">
+                <h4>Create New File</h4>
+                <div class="input-field">
+                    <input id="new-file-name" type="text" class="validate" [(ngModel)]="newFileName"/>
+                    <label for="new-file-name">File Name</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a class="waves-effect waves-green btn-flat" (click)="closeNewFileModal()">Close</a>
+                <a class="modal-action modal-close waves-effect waves-green btn-flat" (click)="newFile($event)">Create</a>
+            </div>
+        </div>
+
+        <div id="delete-modal" class="modal" materialize="modal" [materializeParams]="[{dismissible: true}]" [materializeActions]="deleteFileModalActions">
+            <div class="modal-content">
+                <h4>Delete File</h4>
+                <p>Do you want to delete the File? <br />
+                    This operation cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <a class="waves-effect waves-green btn-flat" (click)="closeDeleteFileModal()">Close</a>
+                <a class="modal-action modal-close waves-effect waves-green btn-flat" (click)="deleteFile()">Delete</a>
+            </div>
+        </div>
     </div>
 
     <div class="col s10">
@@ -55,7 +84,7 @@
             <div class="col s12">
                 <div ace-editor
                      text="{{ editorContent }}"
-                     (textChanged)="changeEditorContent($event)"
+                     (textChanged)="onEditorContentChange($event)"
                      [mode]="'python'"
                      [theme]="'chrome'"
                      [readOnly]="false"

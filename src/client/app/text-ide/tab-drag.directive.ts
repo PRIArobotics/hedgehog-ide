@@ -1,4 +1,4 @@
-import { Directive } from '@angular/core';
+import {Directive} from '@angular/core';
 
 @Directive({
     selector: '[draggable]'
@@ -13,7 +13,7 @@ export class DragDirective {
                 items: "li",
                 axis: "x"
             });
-            tabs.disableSelection();
+            // tabs.disableSelection();
         });
     }
 }

@@ -1,5 +1,4 @@
-import {Component, ViewChild, OnInit, AfterViewInit} from '@angular/core';
-import {ContextMenuComponent} from 'angular2-contextmenu';
+import {Component, ViewChild, OnInit, AfterViewInit, EventEmitter} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {DummyProgramService} from "../program/dummy-program.service";
 import {WorkingTreeObjectType} from "../../../common/versioncontrol/WorkingTreeObject";
@@ -7,11 +6,11 @@ import WorkingTreeDirectory from "../../../common/versioncontrol/WorkingTreeDire
 import {TreeComponent} from "angular2-tree-component";
 import WorkingTreeFile from "../../../common/versioncontrol/WorkingTreeFile";
 import IProgramStorage from "../../../common/versioncontrol/ProgramStorage";
+import {MaterializeAction} from "angular2-materialize";
 
 declare var $: JQueryStatic;
 
 export class File {
-    public id: number;
     public name: string;
     public content: string;
     public storageFile: WorkingTreeFile;
@@ -19,19 +18,26 @@ export class File {
 
 
 @Component({
+    moduleId: module.id,
     selector: 'hedgehog-ide',
-    templateUrl: 'app/text-ide/text-ide.component.html',
+    templateUrl: 'text-ide.component.html',
+    styleUrls: ['text-ide.component.css'],
     providers: [
         DummyProgramService
     ]
 })
 
 export class TextIdeComponent implements OnInit, AfterViewInit {
-    @ViewChild(ContextMenuComponent) public basicMenu: ContextMenuComponent;
-
     // TreeComponent for updating the file tree
     @ViewChild(TreeComponent)
     private tree: TreeComponent;
+
+    // modal action for creating a new file
+    private newFileModalActions = new EventEmitter<string|MaterializeAction>();
+
+
+    // modal action for deleting file
+    private deleteFileModalActions = new EventEmitter<string|MaterializeAction>();
 
     // filetree array containing TreeComponent compatible Objects
     private filetree: Object[] = [];
@@ -40,13 +46,13 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
     private files: File[] = [];
 
     // last id of the file changed used for saving the file
-    private lastId: any = 0;
+    private lastId: number = -1;
 
     // iterator for file objects
-    private nextFileId: number = 1;
+    private nextFileId: number = 0;
 
     // editor content bind
-    private editorContent: string = '';
+    private editorContent: string;
 
     // current file content that is similar to editorContent
     private currentFileContent: string = '';
@@ -57,6 +63,12 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
     // storage object for interacting with a ProgramStorage
     // can be any ProgramStorage depending on what getStorage returns
     private storage: IProgramStorage;
+
+    // new file name
+    private newFileName: string;
+
+    // new file name
+    private deleteFileData: any;
 
     /**
      * Constructor that sets the programName from the router
@@ -103,20 +115,30 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
 
         // populate file tree and give it the root directory and it's childArray
         await this.populateFiletree(rootdir, childArray);
+
+        // update the tree model after file tree has been populated
+        this.tree.treeModel.update();
     }
 
     /**
      * This method is called after the view is initialized so it can access frontend items
      */
     public ngAfterViewInit(): void {
-        // update the visible file tree from the frontend
-        this.tree.treeModel.update();
-
         // reset indicator from the tabs
         this.resetIndicator();
 
-        // remove the tab that creates the indicator error
+        // remove the tab empty tab that prevents the indicator error
         $('.tab').first().remove();
+
+        let tabs = <any>$("#sortable-tabs");
+        tabs.sortable({
+            items: "li",
+            axis: "x",
+            stop: (event, ui) => {
+                this.updateIndicator($(ui.item));
+            }
+        });
+        tabs.disableSelection();
     }
 
     /**
@@ -140,7 +162,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
                 // add file to children of the directory
                 childArray.push(
                     {
-                        id: this.nextFileId,
+                        fileId: this.nextFileId,
                         name: itemName
                     }
                 );
@@ -148,7 +170,6 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
                 // also index the file
                 this.files.push(
                     {
-                        id: this.nextFileId,
                         name: itemName,
                         content: await file.readContent(),
                         storageFile: file
@@ -185,7 +206,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
      *
      * @param editorContent string that is the whole editor content
      */
-    public changeEditorContent (editorContent) {
+    public onEditorContentChange (editorContent) {
         // save editorContent to the local file and currentFileContent
         this.editorContent = editorContent;
         this.currentFileContent = editorContent;
@@ -197,44 +218,24 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
      * @param event data sent from the event that includes the file
      */
     public async fileTreeEvent(event) {
-
-        /**
-         * Update the indicator div to position under a tab
-         *
-         * @param tabToIndicate new tab or existing tab to indicate
-         */
-        function updateIndicator(tabToIndicate) {
-            // get indicator array
-            let indicatorDiv = $('.indicator').first();
-
-            // update css left and right position
-            indicatorDiv.css(
-                {
-                    left: $(tabToIndicate).position().left,
-                    right: $(tabToIndicate).parent().width() -
-                    ($(tabToIndicate).position().left + $(tabToIndicate).width())
-                }
-            );
-        }
-
         // check if the node is a directory and do nothing if it is
-        if(event.node.children == null) {
+        if (event.node.children == null) {
 
             // set file to the data from the event
             let file = event.node.data;
 
             // update the editor content
-            await this.openFile(file.id - 1);
+            await this.openFile(file.fileId);
 
             // search for tab
-            let tab = $('#tab' + file.id);
+            let tab = $('#tab' + file.fileId);
 
             // check if tab was found
             if (tab.length > 0) {
                 // update the indicator to be under the tab
-                updateIndicator(tab);
+                this.updateIndicator(tab);
 
-                // end method there
+                // end method here
                 return;
             }
 
@@ -242,7 +243,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
             // <li class='tab' id='tab{id}' draggable> ... <li>
             let newTab = document.createElement('li');
             newTab.className = 'tab';
-            newTab.id = 'tab' + file.id;
+            newTab.id = 'tab' + file.fileId;
             newTab.setAttribute('draggable', '');
 
             // create new a element that has the filename as
@@ -255,30 +256,63 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
             let closeButton = document.createElement('i');
             closeButton.className = 'material-icons';
             closeButton.addEventListener('click', () => {
+
+                if (this.lastId === file.fileId) {
+                    let prevId = $(newTab).prev().attr('id');
+
+                    if (prevId) {
+                        this.updateIndicator($('#' + prevId));
+                        this.openFile(Number(prevId.substr(3, 4)));
+                    } else if (!prevId) {
+                        let nextId = $(newTab).next().attr('id');
+
+                        if (nextId) {
+                            this.updateIndicator($(newTab));
+                            this.openFile(Number(nextId.substr(3, 4)));
+                        } else {
+                            this.resetIndicator();
+                            this.editorContent = '';
+                            this.lastId = -1;
+                        }
+                    }
+
+                }
+
                 $(newTab).remove();
-                // this.editorContent = '';
-                this.resetIndicator();
+                if (this.lastId !== -1) {
+                    console.log("Yo dud " + this.lastId);
+
+                    this.updateIndicator($('#tab' + this.lastId));
+                }
             });
 
             // add close icon to close button
             closeButton.appendChild(document.createTextNode('close'));
 
+            // create file name text
+            let fileNameElement = document.createTextNode(file.name);
+
             // add filename and close button to the tab content
-            linkToEditor.appendChild(document.createTextNode(file.name));
+            linkToEditor.appendChild(fileNameElement);
             linkToEditor.appendChild(closeButton);
 
             // add tab content to the tab ( <a> into <li>
             newTab.appendChild(linkToEditor);
 
-            // create click event for the tab to open the file with this id
-            let fileId = file.id - 1;
-            newTab.addEventListener('click', async () => await this.openFile(fileId));
+            // create click event for text node to open the file with it's id
+            newTab.addEventListener('click', async (clickEvent) => {
+                // check whether the target was <i> meaning the close button
+                if (!$(clickEvent.target).is('i')) {
+                    // if it wasn't it opens the file
+                    await this.openFile(file.fileId);
+                }
+            });
 
             // add element to the sortable-tabs div
             document.getElementById('sortable-tabs').appendChild(newTab);
 
             // update the indicator to this new tab
-            updateIndicator(newTab);
+            this.updateIndicator(newTab);
 
             // load new li as tab
             (<any>$('div.tabs')).tabs();
@@ -286,12 +320,51 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
     }
 
     /**
-     * Event binding for context menu new file
+     * Event binding for tree context menu "new file"
+     * This opens the new file modal
      *
      * @param event TreeNode object with the file tree object data
      */
+    public openNewFileModal(event) {
+        this.newFileModalActions.emit({action:"modal", params:['open']});
+        this.fixModalOverlay();
+    }
+
+    /**
+     * Close the new file modal
+     */
+    public closeNewFileModal() {
+        this.newFileModalActions.emit({action:"modal", params:['close']});
+    }
+
     public newFile(event) {
+        console.log(this.newFileName);
         console.log(event);
+    }
+
+    /**
+     * Event binding for tree context menu "new file"
+     * This opens the new file modal
+     *
+     * @param event TreeNode object with the file tree object data
+     */
+    public openDeleteFileModal(event) {
+        console.log(event);
+        this.deleteFileData = event.node.data;
+
+        this.deleteFileModalActions.emit({action:"modal", params:['open']});
+        this.fixModalOverlay();
+    }
+
+    /**
+     * Close the new file modal
+     */
+    public closeDeleteFileModal() {
+        this.deleteFileModalActions.emit({action:"modal", params:['close']});
+    }
+
+    public deleteFile() {
+        console.log(this.deleteFileData);
     }
 
     /**
@@ -310,19 +383,57 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
     /**
      * Save the last opened file and set current editorContent file with given id
      *
-     * @param id
+     * @param id of the file in the files array
      */
     private async openFile(id: number) {
-        // save file from the last tab in local content
-        this.files[this.lastId].content = this.currentFileContent;
 
-        // save file in storage
-        let wtFile: WorkingTreeFile = this.files[this.lastId].storageFile;
-        await wtFile.writeContent(this.currentFileContent);
+        try {
+            // save file from the last tab in local content
+            this.files[this.lastId].content = this.currentFileContent;
+            // save file in storage
+            let wtFile: WorkingTreeFile = this.files[this.lastId].storageFile;
+            await wtFile.writeContent(this.currentFileContent);
+        }  catch (e) {
+            // this has to be done since when resetting editorContent it also resets currentFileContent
+            // and therefore the lastId is set to -1 which creates a TypeError
+            if (!(e instanceof TypeError)) {
+                console.log(e.stack);
+            }
+        }
 
         // update editorContent, currentFileContent to current files content and lastId to this id
         this.editorContent = this.files[id].content;
         this.currentFileContent = this.files[id].content;
         this.lastId = id;
+    }
+
+    private fixModalOverlay() {
+        // This is extremely hacky but apparently, there is no other solution.
+        // Move modal to right location as it should fill the whole screen otherwise
+        // See https://github.com/Dogfalo/materialize/issues/1532
+        // grab the dark overlay
+        let overlay = $('.modal-overlay');
+        // remove it
+        overlay.detach();
+        // attach it to the thing you want darkened
+        $('router-outlet').after(overlay);
+    };
+    /**
+     * Update the indicator div to position under a tab
+     *
+     * @param tabToIndicate new tab or existing tab to indicate
+     */
+    private updateIndicator(tabToIndicate) {
+        // get indicator array
+        let indicatorDiv = $('.indicator').first();
+
+        // update css left and right position
+        indicatorDiv.css(
+            {
+                left: $(tabToIndicate).position().left,
+                right: $(tabToIndicate).parent().width() -
+                ($(tabToIndicate).position().left + $(tabToIndicate).width())
+            }
+        );
     }
 }
