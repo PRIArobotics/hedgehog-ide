@@ -72,22 +72,54 @@ export class ObjectParser<T> {
     }
 }
 
+/**
+ * Represent a parser property.
+ *
+ * It contains the following properties:
+ * - `name`: Name of the property. This is defines the name of the origin as well as on the target object.
+ * - `require`: Either a boolean which denoted whether this property is required or a function which gets
+ *              called to dynamically decide whether the property is necessary for the current object.
+ *              The function gets called with the current JSON object and the property name.
+ * - `handler`: optional; Function for parsing the property of the JSON object.
+ *              The property value is supplied as the only function argument.
+ *              Defaults to the {@link identityHandler} function which returns the JSON object without modification.
+ */
 export interface IParserProperty {
     name: string;
     required: boolean | ((object: Object, name: string) => boolean);
     handler?: (value: any) => any;
 }
 
+/**
+ * Handler function which returns the JSON property without any modifications.
+ * This is also the default property handler.
+ *
+ * @param value Property value
+ * @returns {any} Unmodified property value
+ */
 export function identityHandler(value: any) {
     return value;
 }
 
+/**
+ * Handler which parses the property value using the specified {@link ObjectParser}.
+ * This is a higher order function and returns the actual parser function which can be passed to the parser.
+ *
+ * @param parser Parser instance
+ * @returns {(value:Object)=>T} Handler function
+ */
 export function parserHandler<T>(parser: ObjectParser<T>) {
     return (value: Object) => {
         return parser.parse(value);
     };
 }
 
+/**
+ * Same as {@link parserHandler} but for handling an array of objects.
+ *
+ * @param parser Parser instance
+ * @returns {(values:Object[])=>T[]} Handler function
+ */
 export function arrayParserHandler<T>(parser: ObjectParser<T>) {
     return (values: Object[]) => {
         return parser.parseArray(values);

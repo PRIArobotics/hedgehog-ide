@@ -2,7 +2,7 @@ import "babel-polyfill";
 import Hapi = require('hapi');
 import path = require('path');
 import Api from "./api/Api";
-import ProgramsResource from "./api/resource/versioncontrol/ProgramsResource";
+import ProgramResource from "./api/resource/versioncontrol/ProgramResource";
 import GitProgramStorage from "./versioncontrol/GitProgramStorage";
 
 // Create a server with a host and port
@@ -21,7 +21,7 @@ server.connection({
 });
 
 let hedgehogApi = new Api(server, '/api');
-hedgehogApi.registerEndpoint(new ProgramsResource(new GitProgramStorage('tmp')));
+hedgehogApi.registerEndpoint(new ProgramResource(new GitProgramStorage('tmp')));
 
 // tslint:disable-next-line
 server.register(require('inert'));
