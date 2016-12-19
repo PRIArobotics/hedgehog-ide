@@ -14,6 +14,8 @@ export class File {
     public name: string;
     public content: string;
     public storageFile: WorkingTreeFile;
+    public parentArray: Object[];
+    public parentDirectory: WorkingTreeDirectory;
 }
 
 
@@ -46,7 +48,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
     private files: File[] = [];
 
     // last id of the file changed used for saving the file
-    private lastId: number = -1;
+    private openId: number = -1;
 
     // iterator for file objects
     private nextFileId: number = 0;
@@ -135,7 +137,10 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
             items: "li",
             axis: "x",
             stop: (event, ui) => {
-                this.updateIndicator($(ui.item));
+                let tab = $(ui.item);
+
+                this.updateIndicator(tab);
+                this.openFile(+tab.attr('id').substr(3, 4));
             }
         });
         tabs.disableSelection();
@@ -163,7 +168,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
                 childArray.push(
                     {
                         fileId: this.nextFileId,
-                        name: itemName
+                        name: itemName,
                     }
                 );
 
@@ -172,7 +177,9 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
                     {
                         name: itemName,
                         content: await file.readContent(),
-                        storageFile: file
+                        storageFile: file,
+                        parentArray: childArray,
+                        parentDirectory: directory
                     }
                 );
 
@@ -256,33 +263,49 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
             let closeButton = document.createElement('i');
             closeButton.className = 'material-icons';
             closeButton.addEventListener('click', () => {
+                // this method represents the behaviour when you close a tab.
+                // follows the same behaviour as most IDE's.
+                // WebStorm's tab management was taken as the guideline
 
-                if (this.lastId === file.fileId) {
+                // check if the current openId (open tab)
+                if (this.openId === file.fileId) {
+                    // if it is first check what comes before
                     let prevId = $(newTab).prev().attr('id');
 
+                    // check if there is something before
                     if (prevId) {
+                        // if there is, open the file and update the indicator to the previous tab
                         this.updateIndicator($('#' + prevId));
-                        this.openFile(Number(prevId.substr(3, 4)));
+                        this.openFile(+prevId.substr(3, 4));
                     } else if (!prevId) {
+                        // if there is no previous ( the open tab is first or most left ) check what comes after
                         let nextId = $(newTab).next().attr('id');
 
+                        // check if there is something after
                         if (nextId) {
+                            // if there is, open the file and update the indicator to the next tab
                             this.updateIndicator($(newTab));
-                            this.openFile(Number(nextId.substr(3, 4)));
+                            this.openFile(+nextId.substr(3, 4));
                         } else {
+                            // if not reset the indicator and reset editorContent and openId
                             this.resetIndicator();
                             this.editorContent = '';
-                            this.lastId = -1;
+                            this.openId = -1;
                         }
                     }
 
                 }
 
+                // finally remove tab
                 $(newTab).remove();
-                if (this.lastId !== -1) {
-                    console.log("Yo dud " + this.lastId);
 
-                    this.updateIndicator($('#tab' + this.lastId));
+                // get the openId tab
+                let updateTabToIndicate: JQuery = $('#tab' + this.openId);
+                // check if element exists
+                // JQuery Object [0] is the item description which only exists if the element exists
+                if (updateTabToIndicate[0]) {
+                    // update the Indicator if it exists
+                    this.updateIndicator(updateTabToIndicate);
                 }
             });
 
@@ -389,22 +412,22 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
 
         try {
             // save file from the last tab in local content
-            this.files[this.lastId].content = this.currentFileContent;
+            this.files[this.openId].content = this.currentFileContent;
             // save file in storage
-            let wtFile: WorkingTreeFile = this.files[this.lastId].storageFile;
+            let wtFile: WorkingTreeFile = this.files[this.openId].storageFile;
             await wtFile.writeContent(this.currentFileContent);
         }  catch (e) {
             // this has to be done since when resetting editorContent it also resets currentFileContent
-            // and therefore the lastId is set to -1 which creates a TypeError
+            // and therefore the openId is set to -1 which creates a TypeError
             if (!(e instanceof TypeError)) {
                 console.log(e.stack);
             }
         }
 
-        // update editorContent, currentFileContent to current files content and lastId to this id
+        // update editorContent, currentFileContent to current files content and openId to this id
         this.editorContent = this.files[id].content;
         this.currentFileContent = this.files[id].content;
-        this.lastId = id;
+        this.openId = id;
     }
 
     private fixModalOverlay() {
