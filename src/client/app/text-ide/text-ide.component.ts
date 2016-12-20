@@ -9,6 +9,7 @@ import IProgramStorage from "../../../common/versioncontrol/ProgramStorage";
 import {MaterializeAction} from "angular2-materialize";
 
 declare var $: JQueryStatic;
+declare var Materialize: any;
 
 export class File {
     public name: string;
@@ -37,9 +38,8 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
     // modal action for creating a new file
     private newFileModalActions = new EventEmitter<string|MaterializeAction>();
 
-
     // modal action for deleting file
-    private deleteFileModalActions = new EventEmitter<string|MaterializeAction>();
+    private deleteModalActions = new EventEmitter<string|MaterializeAction>();
 
     // filetree array containing TreeComponent compatible Objects
     private filetree: Object[] = [];
@@ -66,11 +66,20 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
     // can be any ProgramStorage depending on what getStorage returns
     private storage: IProgramStorage;
 
-    // new file name
-    private newFileName: string;
 
-    // new file name
-    private deleteFileData: any;
+    // delete file name
+    private newFileData: any = {
+        name: '',
+        arrayToAddFileTo: [],
+        storageDirectory: WorkingTreeDirectory
+    };
+
+    // delete file name
+    private deleteFileData: any= {
+        name: '',
+        parentArray: [],
+        parentDirectory: WorkingTreeDirectory
+    };
 
     /**
      * Constructor that sets the programName from the router
@@ -112,7 +121,8 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
         // set root element of the file tree
         this.filetree[0] = {
             name: program1.name,
-            children: childArray
+            children: childArray,
+            storageDirectory: rootdir
         };
 
         // populate file tree and give it the root directory and it's childArray
@@ -197,7 +207,9 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
                         {
                             name: itemName,
                             children: newChildArray,
-                            storageDirectory: newDirectory
+                            storageDirectory: newDirectory,
+                            parentArray: childArray,
+                            parentDirectory: directory
                         }
                     );
 
@@ -262,52 +274,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
             // <i class='material-icons' onclick="..."> close </i>
             let closeButton = document.createElement('i');
             closeButton.className = 'material-icons';
-            closeButton.addEventListener('click', () => {
-                // this method represents the behaviour when you close a tab.
-                // follows the same behaviour as most IDE's.
-                // WebStorm's tab management was taken as the guideline
-
-                // check if the current openId (open tab)
-                if (this.openId === file.fileId) {
-                    // if it is first check what comes before
-                    let prevId = $(newTab).prev().attr('id');
-
-                    // check if there is something before
-                    if (prevId) {
-                        // if there is, open the file and update the indicator to the previous tab
-                        this.updateIndicator($('#' + prevId));
-                        this.openFile(+prevId.substr(3, 4));
-                    } else if (!prevId) {
-                        // if there is no previous ( the open tab is first or most left ) check what comes after
-                        let nextId = $(newTab).next().attr('id');
-
-                        // check if there is something after
-                        if (nextId) {
-                            // if there is, open the file and update the indicator to the next tab
-                            this.updateIndicator($(newTab));
-                            this.openFile(+nextId.substr(3, 4));
-                        } else {
-                            // if not reset the indicator and reset editorContent and openId
-                            this.resetIndicator();
-                            this.editorContent = '';
-                            this.openId = -1;
-                        }
-                    }
-
-                }
-
-                // finally remove tab
-                $(newTab).remove();
-
-                // get the openId tab
-                let updateTabToIndicate: JQuery = $('#tab' + this.openId);
-                // check if element exists
-                // JQuery Object [0] is the item description which only exists if the element exists
-                if (updateTabToIndicate[0]) {
-                    // update the Indicator if it exists
-                    this.updateIndicator(updateTabToIndicate);
-                }
-            });
+            closeButton.addEventListener('click', () => this.closeTab($(newTab)));
 
             // add close icon to close button
             closeButton.appendChild(document.createTextNode('close'));
@@ -349,6 +316,21 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
      * @param event TreeNode object with the file tree object data
      */
     public openNewFileModal(event) {
+        // save data (either file or directory)
+        let data = event.item.data;
+
+        // check if it is a directory
+        if (data.children) {
+            // if it is add children and storageDirectory to newFileData
+            this.newFileData.arrayToAddFileTo = data.children;
+            this.newFileData.storageDirectory = data.storageDirectory;
+        } else {
+            // if it isn't add the files parent directory and array to newFileData
+            this.newFileData.arrayToAddFileTo = this.files[data.fileId].parentArray;
+            this.newFileData.storageDirectory = this.files[data.fileId].parentDirectory;
+        }
+
+        // open modal
         this.newFileModalActions.emit({action:"modal", params:['open']});
         this.fixModalOverlay();
     }
@@ -360,34 +342,125 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
         this.newFileModalActions.emit({action:"modal", params:['close']});
     }
 
-    public newFile(event) {
-        console.log(this.newFileName);
-        console.log(event);
+    public async newFile() {
+        // save new filename and Working Tree Directory to save it to
+        let fileName: string = this.newFileData.name;
+        let directory: WorkingTreeDirectory = this.newFileData.storageDirectory;
+
+        // add file to parent child array
+        this.newFileData.arrayToAddFileTo.push({
+            fileId: this.nextFileId,
+            name: fileName,
+        });
+
+        this.nextFileId++;
+
+        // add file with no content to the Working Tree Directory
+        await directory.addFile(fileName, '');
+        let newFile: WorkingTreeFile = await directory.getFile(fileName);
+
+        // save file in the indexed files array
+        this.files.push(
+            {
+                name: this.newFileData.name,
+                content: '',
+                storageFile: newFile,
+                parentArray: this.newFileData.arrayToAddFileTo,
+                parentDirectory: directory
+            }
+        );
+
+        // show toast that file was successfully created
+        Materialize.toast('Successfully created file ' + this.newFileData.name, 3000);
+
+        // update the tree model after file has been added
+        this.tree.treeModel.update();
     }
 
     /**
-     * Event binding for tree context menu "new file"
-     * This opens the new file modal
+     * Event binding for tree context menu "delete" (directory or file)
+     * This checks if it is the root directory and if not opens the modal
      *
      * @param event TreeNode object with the file tree object data
      */
-    public openDeleteFileModal(event) {
-        console.log(event);
-        this.deleteFileData = event.node.data;
+    public openDeleteModal(event) {
+        // save data (either file or directory) to deleteFileData
+        this.deleteFileData = event.item.data;
 
-        this.deleteFileModalActions.emit({action:"modal", params:['open']});
+        // check if there is no parentArray and if the type of fileId is undefined
+        // this means it is the root directory and therefore cannot be deleted
+        if (!this.deleteFileData.parentArray && typeof this.deleteFileData.fileId === 'undefined') {
+            Materialize.toast('Cannot delete root directory', 3000);
+            return;
+        }
+
+        // open modal
+        this.deleteModalActions.emit({action:"modal", params:['open']});
         this.fixModalOverlay();
     }
 
     /**
-     * Close the new file modal
+     * Close the delete file modal
      */
-    public closeDeleteFileModal() {
-        this.deleteFileModalActions.emit({action:"modal", params:['close']});
+    public closeDeleteModal() {
+        this.deleteModalActions.emit({action:"modal", params:['close']});
     }
 
-    public deleteFile() {
-        console.log(this.deleteFileData);
+    /**
+     * Delete a file or directory using the data given from the modal
+     */
+    public async deleteAction() {
+        // since both the file and directory use the parentArray
+        // but both have different ways of getting to it, declare it here
+        let parentArray;
+
+        // check if it is a directory or file
+        if (this.deleteFileData.children) {
+            // TODO currently throws error
+            // await this.deleteFileData.storageDirectory.deleteDirectory(this.deleteFileData.name);
+
+            // since it is a file use the parentArray from it
+            parentArray = this.deleteFileData.parentArray;
+        } else {
+            // retrieve file from files using it's fileId
+            let file: File = this.files[this.deleteFileData.fileId];
+
+            // get tab using the it's id
+            let fileTab: JQuery = $('#tab' + this.deleteFileData.fileId);
+            // check if element exists
+            // JQuery Object [0] is the item description which only exists if the element exists
+            if (fileTab[0]) {
+                // close the tab if the element exists
+                this.closeTab(fileTab);
+            }
+
+            // use the parentArray form the file
+            parentArray = file.parentArray;
+
+            // delete the file from the files array
+            delete this.files[this.deleteFileData.fileId];
+
+            // delete file in Working Directory
+            await file.parentDirectory.deleteFile(this.deleteFileData.name);
+        }
+
+        // get index of the directory or file in the file tree
+        let index = parentArray.indexOf(this.deleteFileData);
+
+        if (index > -1) {
+            // remove the element from the file tree
+            parentArray.splice(index, 1);
+        }
+
+        // update the tree model after directory has been deleted
+        this.tree.treeModel.update();
+
+        // show toast that file or directory was successfully deleted
+        if (this.deleteFileData.children) {
+            Materialize.toast('Successfully deleted directory ' + this.deleteFileData.name, 3000);
+        } else {
+            Materialize.toast('Successfully deleted file ' + this.deleteFileData.name, 3000);
+        }
     }
 
     /**
@@ -409,20 +482,18 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
      * @param id of the file in the files array
      */
     private async openFile(id: number) {
+        console.log(this.files);
 
-        try {
+        // if no file has been opened or all have been closed the id is -1
+        // and you cannot save a file that is does not exist
+        if (this.openId > -1) {
             // save file from the last tab in local content
             this.files[this.openId].content = this.currentFileContent;
             // save file in storage
             let wtFile: WorkingTreeFile = this.files[this.openId].storageFile;
             await wtFile.writeContent(this.currentFileContent);
-        }  catch (e) {
-            // this has to be done since when resetting editorContent it also resets currentFileContent
-            // and therefore the openId is set to -1 which creates a TypeError
-            if (!(e instanceof TypeError)) {
-                console.log(e.stack);
-            }
         }
+
 
         // update editorContent, currentFileContent to current files content and openId to this id
         this.editorContent = this.files[id].content;
@@ -458,5 +529,63 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
                 ($(tabToIndicate).position().left + $(tabToIndicate).width())
             }
         );
+    }
+
+    /**
+     * this method represents the behaviour when you close a tab.
+     * follows the same behaviour as most IDE's.
+     * WebStorm's tab management was taken as the guideline
+     *
+     * @param tabToClose the tab to close as a JQuery Object
+     */
+    private closeTab(tabToClose: JQuery) {
+
+
+        let id = +tabToClose.attr('id').substr(3);
+
+        // check if the current openId (open tab)
+        if (this.openId === id) {
+            // if it is first check what comes before
+            let prevId = tabToClose.prev().attr('id');
+
+            // check if there is something before
+            if (prevId) {
+                // if there is, open the file and update the indicator to the previous tab
+                this.updateIndicator($('#' + prevId));
+                // cut "tab"  from the id leaving only a number and converting it into a number using the + operator
+                this.openFile(+prevId.substr(3));
+            } else if (!prevId) {
+                // if there is no previous ( the open tab is first or most left ) check what comes after
+                let nextId = tabToClose.next().attr('id');
+
+                // check if there is something after
+                if (nextId) {
+                    // if there is, open the file and update the indicator to the next tab
+                    this.updateIndicator(tabToClose);
+                    // cut "tab"  from the id leaving only a number and converting it into a number using the + operator
+                    this.openFile(+nextId.substr(3));
+                } else {
+                    // if not reset the indicator and reset editorContent and openId
+                    this.resetIndicator();
+                    this.editorContent = '';
+                    this.openId = -1;
+                }
+            }
+        }
+
+        // save file from the last tab in local content
+        this.files[id].content = this.currentFileContent;
+
+        // finally remove tab
+        tabToClose.remove();
+
+        // get the openId tab
+        let updateTabToIndicate: JQuery = $('#tab' + this.openId);
+        // check if element exists
+        // JQuery Object [0] is the item description which only exists if the element exists
+        if (updateTabToIndicate[0]) {
+            // update the Indicator if it exists
+            this.updateIndicator(updateTabToIndicate);
+        }
     }
 }

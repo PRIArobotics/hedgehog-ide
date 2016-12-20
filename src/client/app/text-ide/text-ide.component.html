@@ -23,7 +23,7 @@
             <template contextMenuItem let-node (execute)="openNewFileModal($event)">
                 New File
             </template>
-            <template contextMenuItem let-node (execute)="openDeleteFileModal($event)">
+            <template contextMenuItem let-node (execute)="openDeleteModal($event)">
                 Delete File
             </template>
         </context-menu>
@@ -32,25 +32,28 @@
             <div class="modal-content">
                 <h4>Create New File</h4>
                 <div class="input-field">
-                    <input id="new-file-name" type="text" class="validate" [(ngModel)]="newFileName"/>
+                    <input id="new-file-name" type="text" class="validate" [(ngModel)]="newFileData.name"/>
                     <label for="new-file-name">File Name</label>
                 </div>
             </div>
             <div class="modal-footer">
                 <a class="waves-effect waves-green btn-flat" (click)="closeNewFileModal()">Close</a>
-                <a class="modal-action modal-close waves-effect waves-green btn-flat" (click)="newFile($event)">Create</a>
+                <a class="modal-action modal-close waves-effect waves-green btn-flat" (click)="newFile()">Create</a>
             </div>
         </div>
 
-        <div id="delete-modal" class="modal" materialize="modal" [materializeParams]="[{dismissible: true}]" [materializeActions]="deleteFileModalActions">
+        <div id="delete-modal" class="modal" materialize="modal" [materializeParams]="[{dismissible: true}]" [materializeActions]="deleteModalActions">
             <div class="modal-content">
                 <h4>Delete File</h4>
-                <p>Do you want to delete the File? <br />
+                <p *ngIf="!deleteFileData.children">Do you want to delete the File {{ deleteFileData.name }} ? <br />
+                    This operation cannot be undone.</p>
+
+                <p *ngIf="deleteFileData.children">Do you want to delete the whole Folder {{ deleteFileData.name }} ? <br />
                     This operation cannot be undone.</p>
             </div>
             <div class="modal-footer">
-                <a class="waves-effect waves-green btn-flat" (click)="closeDeleteFileModal()">Close</a>
-                <a class="modal-action modal-close waves-effect waves-green btn-flat" (click)="deleteFile()">Delete</a>
+                <a class="waves-effect waves-green btn-flat" (click)="closeDeleteModal()">Close</a>
+                <a class="modal-action modal-close waves-effect waves-green btn-flat" (click)="deleteAction()">Delete</a>
             </div>
         </div>
     </div>
