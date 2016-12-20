@@ -36,7 +36,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
     private tree: TreeComponent;
 
     // modal action for creating a new file
-    private newFileModalActions = new EventEmitter<string|MaterializeAction>();
+    private newFileOrDirectoryModalActions = new EventEmitter<string|MaterializeAction>();
 
     // modal action for deleting file
     private deleteModalActions = new EventEmitter<string|MaterializeAction>();
@@ -68,10 +68,11 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
 
 
     // delete file name
-    private newFileData: any = {
+    private newData: any = {
         name: '',
         arrayToAddFileTo: [],
-        storageDirectory: WorkingTreeDirectory
+        storageDirectory: WorkingTreeDirectory,
+        file: true
     };
 
     // delete file name
@@ -309,72 +310,93 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
         }
     }
 
+    public setNewData(data) {
+        // check if it is a directory
+        if (data.children) {
+            // if it is add children and storageDirectory to newData
+            this.newData.arrayToAddFileTo = data.children;
+            this.newData.storageDirectory = data.storageDirectory;
+        } else {
+            // if it isn't add the files parent directory and array to newData
+            this.newData.arrayToAddFileTo = this.files[data.fileId].parentArray;
+            this.newData.storageDirectory = this.files[data.fileId].parentDirectory;
+        }
+    }
+
     /**
      * Event binding for tree context menu "new file"
      * This opens the new file modal
      *
      * @param event TreeNode object with the file tree object data
      */
-    public openNewFileModal(event) {
-        // save data (either file or directory)
-        let data = event.item.data;
-
-        // check if it is a directory
-        if (data.children) {
-            // if it is add children and storageDirectory to newFileData
-            this.newFileData.arrayToAddFileTo = data.children;
-            this.newFileData.storageDirectory = data.storageDirectory;
-        } else {
-            // if it isn't add the files parent directory and array to newFileData
-            this.newFileData.arrayToAddFileTo = this.files[data.fileId].parentArray;
-            this.newFileData.storageDirectory = this.files[data.fileId].parentDirectory;
-        }
+    public openNewFileOrDirectoryModal(event) {
+        // pass data (either file or directory) to the setNewData method
+        this.setNewData(event.item.data);
 
         // open modal
-        this.newFileModalActions.emit({action:"modal", params:['open']});
+        this.newFileOrDirectoryModalActions.emit({action:"modal", params:['open']});
         this.fixModalOverlay();
     }
 
     /**
      * Close the new file modal
      */
-    public closeNewFileModal() {
-        this.newFileModalActions.emit({action:"modal", params:['close']});
+    public closeNewFileOrDirectoryModal() {
+        this.newFileOrDirectoryModalActions.emit({action:"modal", params:['close']});
     }
 
-    public async newFile() {
+    public async newFileOrDirectory() {
         // save new filename and Working Tree Directory to save it to
-        let fileName: string = this.newFileData.name;
-        let directory: WorkingTreeDirectory = this.newFileData.storageDirectory;
+        let name: string = this.newData.name;
+        let directory: WorkingTreeDirectory = this.newData.storageDirectory;
 
-        // add file to parent child array
-        this.newFileData.arrayToAddFileTo.push({
-            fileId: this.nextFileId,
-            name: fileName,
-        });
+        if (this.newData.file) {
+            // add file to parent child array
+            this.newData.arrayToAddFileTo.push({
+                fileId: this.nextFileId,
+                name,
+            });
 
-        this.nextFileId++;
+            this.nextFileId++;
 
-        // add file with no content to the Working Tree Directory
-        await directory.addFile(fileName, '');
-        let newFile: WorkingTreeFile = await directory.getFile(fileName);
+            // add file with no content to the Working Tree Directory
+            await directory.addFile(name, '');
+            let newFile: WorkingTreeFile = await directory.getFile(name);
 
-        // save file in the indexed files array
-        this.files.push(
-            {
-                name: this.newFileData.name,
-                content: '',
-                storageFile: newFile,
-                parentArray: this.newFileData.arrayToAddFileTo,
+            // save file in the indexed files array
+            this.files.push(
+                {
+                    name,
+                    content: '',
+                    storageFile: newFile,
+                    parentArray: this.newData.arrayToAddFileTo,
+                    parentDirectory: directory
+                }
+            );
+        } else {
+            // add directory to the Working Tree Directory
+            await directory.addDirectory(name);
+            let newDirectory: WorkingTreeDirectory = await directory.getDirectory(name);
+
+            // add directory to parent child array
+            this.newData.arrayToAddFileTo.push({
+                name,
+                children: [],
+                storageDirectory: newDirectory,
+                parentArray: this.newData.arrayToAddFileTo,
                 parentDirectory: directory
-            }
-        );
+            });
+        }
+
 
         // show toast that file was successfully created
-        Materialize.toast('Successfully created file ' + this.newFileData.name, 3000);
+        Materialize.toast('<i class="material-icons">done</i> Successfully created file ' + this.newData.name, 3000);
 
         // update the tree model after file has been added
         this.tree.treeModel.update();
+
+        // reset newData
+        this.newData = {};
     }
 
     /**
@@ -390,7 +412,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
         // check if there is no parentArray and if the type of fileId is undefined
         // this means it is the root directory and therefore cannot be deleted
         if (!this.deleteFileData.parentArray && typeof this.deleteFileData.fileId === 'undefined') {
-            Materialize.toast('Cannot delete root directory', 3000);
+            Materialize.toast('<i class="material-icons">close</i>Cannot delete root directory', 3000);
             return;
         }
 
@@ -457,10 +479,15 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
 
         // show toast that file or directory was successfully deleted
         if (this.deleteFileData.children) {
-            Materialize.toast('Successfully deleted directory ' + this.deleteFileData.name, 3000);
+            Materialize.toast(
+                '<i class="material-icons">done</i> Successfully deleted directory ' + this.deleteFileData.name, 3000);
         } else {
-            Materialize.toast('Successfully deleted file ' + this.deleteFileData.name, 3000);
+            Materialize.toast(
+                '<i class="material-icons">done</i> Successfully deleted file ' + this.deleteFileData.name, 3000);
         }
+
+        // reset deleteFileData
+        this.deleteFileData = {};
     }
 
     /**
@@ -482,8 +509,6 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
      * @param id of the file in the files array
      */
     private async openFile(id: number) {
-        console.log(this.files);
-
         // if no file has been opened or all have been closed the id is -1
         // and you cannot save a file that is does not exist
         if (this.openId > -1) {

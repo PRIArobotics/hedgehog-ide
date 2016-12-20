@@ -20,25 +20,30 @@
         </Tree>
 
         <context-menu #treeContextMenu>
-            <template contextMenuItem let-node (execute)="openNewFileModal($event)">
-                New File
+            <template contextMenuItem let-node (execute)="newData.file = true; openNewFileOrDirectoryModal($event)">
+                <i class="material-icons"> insert_drive_file </i> New File
+            </template>
+            <template contextMenuItem let-node (execute)="newData.file = false; openNewFileOrDirectoryModal($event)">
+                <i class="material-icons"> folder </i> New Directory
             </template>
             <template contextMenuItem let-node (execute)="openDeleteModal($event)">
-                Delete File
+                <i class="material-icons"> delete </i> Delete
             </template>
         </context-menu>
 
-        <div id="create-modal" class="modal" materialize="modal" [materializeParams]="[{dismissible: true}]" [materializeActions]="newFileModalActions">
+        <div id="create-modal" class="modal" materialize="modal" [materializeParams]="[{dismissible: true}]" [materializeActions]="newFileOrDirectoryModalActions">
             <div class="modal-content">
-                <h4>Create New File</h4>
+                <h4 *ngIf="newData.file">Create New File</h4>
+                <h4 *ngIf="!newData.file">Create New Directory</h4>
                 <div class="input-field">
-                    <input id="new-file-name" type="text" class="validate" [(ngModel)]="newFileData.name"/>
-                    <label for="new-file-name">File Name</label>
+                    <input id="new-name" type="text" class="validate" [(ngModel)]="newData.name"/>
+                    <label for="new-name" *ngIf="newData.file">File Name</label>
+                    <label for="new-name" *ngIf="!newData.file">Directory Name</label>
                 </div>
             </div>
             <div class="modal-footer">
-                <a class="waves-effect waves-green btn-flat" (click)="closeNewFileModal()">Close</a>
-                <a class="modal-action modal-close waves-effect waves-green btn-flat" (click)="newFile()">Create</a>
+                <a class="waves-effect waves-green btn-flat" (click)="closeNewFileOrDirectoryModal()">Close</a>
+                <a class="modal-action modal-close waves-effect waves-green btn-flat" (click)="newFileOrDirectory()">Create</a>
             </div>
         </div>
 
