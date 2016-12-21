@@ -28,6 +28,10 @@ export default class Program {
         return this.storage.getWorkingTree(this.name);
     }
 
+    public getVersionIds(): Promise<string> {
+        return this.storage.getVersionIds(this.name);
+    }
+
     public async getVersions(): Promise<Version[]> {
         let versions = [];
         for(const id of await this.storage.getVersionIds(this.name))
