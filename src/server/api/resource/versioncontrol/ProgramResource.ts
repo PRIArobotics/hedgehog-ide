@@ -5,6 +5,7 @@ import {JsonApiDocument, JsonApiResource} from "../../../jsonapi/JsonApiObjects"
 import {ObjectParser, parserHandler} from "../../../jsonapi/Parser";
 import Program from "../../../../common/versioncontrol/Program";
 import JsonApiDocumentBuilder from "../../../jsonapi/JsonApiBuilder";
+import {getLinkUrl} from "../../../utils";
 
 export default class ProgramsResource extends ApiResource {
     constructor(private programStorage: IProgramStorage) {
@@ -50,15 +51,25 @@ export default class ProgramsResource extends ApiResource {
 
         let resourceBuilder = documentBuilder.getResourceBuilder();
         resourceBuilder.resource.type = 'program';
-        resourceBuilder.resource.id = new Buffer(program.name).toString('base64');
+        resourceBuilder.resource.id = program.getId();
         resourceBuilder.resource.attributes = {
             name: program.name,
             creationDate: initialVersion.creationDate.toISOString()
         };
 
-        // TODO: add relationships
+        resourceBuilder.addManyRelationship('versions', {
+            related: getLinkUrl(req, `/api/versions/${program.getId()}`)
+        });
+        resourceBuilder.addSingleRelationship('workingtree', {
+            related: getLinkUrl(req, `/api/workingtrees/${program.getId()}`)
+        });
 
         return reply(resourceBuilder.getProduct())
             .code(201);
+    }
+
+    @ApiEndpoint('GET')
+    public async getProgramList(req, reply) {
+        return undefined;
     }
 }

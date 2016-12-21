@@ -65,6 +65,18 @@ describe('ProgramResource', () => {
                     attributes: {
                         name: 'program',
                         creationDate: creationDate.toISOString()
+                    },
+                    relationships: {
+                        versions: {
+                            links: {
+                                related: 'http://localhost:61749/api/versions/cHJvZ3JhbQ=='
+                            }
+                        },
+                        workingtree: {
+                            links: {
+                                related: 'http://localhost:61749/api/workingtrees/cHJvZ3JhbQ=='
+                            }
+                        }
                     }
                 });
                 done();

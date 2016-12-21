@@ -55,4 +55,12 @@ export default class Program {
     public getWorkingTreeDirectory(path: string): Promise<WorkingTreeDirectory> {
         return this.storage.getWorkingTreeDirectory(this.name, path);
     }
+
+    public getId() {
+        if(typeof(btoa) === 'function') {
+            return btoa(this.name);
+        } else {
+            return new Buffer(this.name).toString('base64');
+        }
+    }
 }
