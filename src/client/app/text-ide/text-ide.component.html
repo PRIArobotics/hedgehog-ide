@@ -19,11 +19,48 @@
             </template>
         </Tree>
 
-        <context-menu #basicMenu>
-            <template contextMenuItem let-node (execute)="newFile($event)">
-                New File
+        <context-menu #treeContextMenu>
+            <template contextMenuItem let-node (execute)="newData.file = true; openNewFileOrDirectoryModal($event)">
+                <i class="material-icons"> insert_drive_file </i> New File
+            </template>
+            <template contextMenuItem let-node (execute)="newData.file = false; openNewFileOrDirectoryModal($event)">
+                <i class="material-icons"> folder </i> New Directory
+            </template>
+            <template contextMenuItem let-node (execute)="openDeleteModal($event)">
+                <i class="material-icons"> delete </i> Delete
             </template>
         </context-menu>
+
+        <div id="create-modal" class="modal" materialize="modal" [materializeParams]="[{dismissible: true}]" [materializeActions]="newFileOrDirectoryModalActions">
+            <div class="modal-content">
+                <h4 *ngIf="newData.file">Create New File</h4>
+                <h4 *ngIf="!newData.file">Create New Directory</h4>
+                <div class="input-field">
+                    <input id="new-name" type="text" class="validate" [(ngModel)]="newData.name"/>
+                    <label for="new-name" *ngIf="newData.file">File Name</label>
+                    <label for="new-name" *ngIf="!newData.file">Directory Name</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a class="waves-effect waves-green btn-flat" (click)="closeNewFileOrDirectoryModal()">Close</a>
+                <a class="modal-action modal-close waves-effect waves-green btn-flat" (click)="newFileOrDirectory()">Create</a>
+            </div>
+        </div>
+
+        <div id="delete-modal" class="modal" materialize="modal" [materializeParams]="[{dismissible: true}]" [materializeActions]="deleteModalActions">
+            <div class="modal-content">
+                <h4>Delete File</h4>
+                <p *ngIf="!deleteFileData.children">Do you want to delete the File {{ deleteFileData.name }} ? <br />
+                    This operation cannot be undone.</p>
+
+                <p *ngIf="deleteFileData.children">Do you want to delete the whole Folder {{ deleteFileData.name }} ? <br />
+                    This operation cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <a class="waves-effect waves-green btn-flat" (click)="closeDeleteModal()">Close</a>
+                <a class="modal-action modal-close waves-effect waves-green btn-flat" (click)="deleteAction()">Delete</a>
+            </div>
+        </div>
     </div>
 
     <div class="col s10">
@@ -55,7 +92,7 @@
             <div class="col s12">
                 <div ace-editor
                      text="{{ editorContent }}"
-                     (textChanged)="changeEditorContent($event)"
+                     (textChanged)="onEditorContentChange($event)"
                      [mode]="'python'"
                      [theme]="'chrome'"
                      [readOnly]="false"
