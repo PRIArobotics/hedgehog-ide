@@ -1,9 +1,12 @@
 import "babel-polyfill";
-// import assert = require('assert');
+import assert = require('assert');
+import sinon = require('sinon');
 import Hapi = require('hapi');
 import Api from "../../../../../src/server/api/Api";
 import ApiResource from "../../../../../src/server/api/ApiResource";
 import ProgramResource from "../../../../../src/server/api/resource/versioncontrol/ProgramResource";
+import Program from "../../../../../src/common/versioncontrol/Program";
+import Version from "../../../../../src/common/versioncontrol/Version";
 import GitProgramStorage from "../../../../../src/server/versioncontrol/GitProgramStorage";
 
 function setupApiServer(...resources: ApiResource[]) {
@@ -20,16 +23,29 @@ function setupApiServer(...resources: ApiResource[]) {
     return server;
 }
 
-describe.skip('ProgramResource', () => {
+describe('ProgramResource', () => {
     let server: Hapi.Server;
+    let programResource: ProgramResource;
 
     before(() => {
-        const programResource = new ProgramResource(new GitProgramStorage('tmp'));
+        programResource = new ProgramResource(null);
         server = setupApiServer(programResource);
     });
 
     describe('createProgram', () => {
         it('should create a new program', (done) => {
+            const creationDate = new Date();
+
+            let storage = new GitProgramStorage(null);
+            let mock: any = sinon.mock(storage);
+            (<any>programResource).programStorage = storage;
+            mock.expects('createProgram')
+                .once()
+                .returns(Promise.resolve(new Program(storage, 'program', 'version1')));
+
+            mock.expects('getVersion')
+                .returns(Promise.resolve(new Version(storage, 'program', 'version1', '', '', creationDate, [], '')));
+
             server.inject({
                 url: '/programs',
                 method: 'POST',
@@ -42,7 +58,15 @@ describe.skip('ProgramResource', () => {
                     }
                 }
             }, (res) => {
-                console.log(res.payload);
+                mock.verify();
+                assert.deepEqual(JSON.parse(res.payload), {
+                    type: 'program',
+                    id: 'cHJvZ3JhbQ==',
+                    attributes: {
+                        name: 'program',
+                        creationDate: creationDate.toISOString()
+                    }
+                });
                 done();
             });
         });

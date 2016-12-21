@@ -23,16 +23,24 @@ export default class ProgramsResource extends ApiResource {
             }))
         });
 
-        let document = JsonApiDocument.getParser({
-            data: resourceParser
-        }).parse(req.payload);
-        console.log(document);
+        let document: JsonApiDocument;
+        try {
+            document = JsonApiDocument.getParser({
+                data: resourceParser
+            }).parse(req.payload);
+        } catch(err) {
+            return reply({
+                error: 'Error while paring the request. Argument might be missing'
+            }).code(400);
+        }
 
         let program: Program;
         try {
             program = await this.programStorage.createProgram((<JsonApiResource>document.data).attributes.name);
         } catch(err) {
-            return reply(err);
+            return reply({
+                error: 'An error occurred while creating the program.'
+            }).code(500);
         }
 
         let initialVersion = await program.getVersion(program.latestVersionId);
