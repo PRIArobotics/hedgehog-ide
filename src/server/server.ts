@@ -4,9 +4,6 @@ import path = require('path');
 import Api from "./api/Api";
 import ProgramResource from "./api/resource/versioncontrol/ProgramResource";
 import GitProgramStorage from "./versioncontrol/GitProgramStorage";
-import SerializerRegisty from "./serializer/SerializerRegistry";
-import ProgramSerializer from "./serializer/ProgramSerializer";
-import Program from "../common/versioncontrol/Program";
 import modelRegistry from "./jsonapi/ModelSerializerRegistry";
 
 // Create a server with a host and port
