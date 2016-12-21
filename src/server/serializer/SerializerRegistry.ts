@@ -3,7 +3,7 @@ import Hapi = require('hapi');
 import {JsonApiResource} from "../jsonapi/JsonApiObjects";
 import {JsonApiResourceBuilder} from "../jsonapi/JsonApiBuilder";
 
-export default class SerializerRegisty {
+export default class SerializerRegistry {
     private serializers: Map<string, ISerializer> = new Map();
 
     public registerSerializer(type: Function, serializer: ISerializer) {
