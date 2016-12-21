@@ -8,6 +8,7 @@ import ProgramResource from "../../../../../src/server/api/resource/versioncontr
 import Program from "../../../../../src/common/versioncontrol/Program";
 import Version from "../../../../../src/common/versioncontrol/Version";
 import GitProgramStorage from "../../../../../src/server/versioncontrol/GitProgramStorage";
+import modelRegistry from "../../../../../src/server/jsonapi/ModelSerializerRegistry";
 
 function setupApiServer(...resources: ApiResource[]) {
     let server = new Hapi.Server();
@@ -28,7 +29,7 @@ describe('ProgramResource', () => {
     let programResource: ProgramResource;
 
     before(() => {
-        programResource = new ProgramResource(null);
+        programResource = new ProgramResource(null, modelRegistry);
         server = setupApiServer(programResource);
     });
 
@@ -42,6 +43,9 @@ describe('ProgramResource', () => {
             mock.expects('createProgram')
                 .once()
                 .returns(Promise.resolve(new Program(storage, 'program', 'version1')));
+
+            mock.expects('getVersionIds')
+                .returns(Promise.resolve(['version1']));
 
             mock.expects('getVersion')
                 .returns(Promise.resolve(new Version(storage, 'program', 'version1', '', '', creationDate, [], '')));

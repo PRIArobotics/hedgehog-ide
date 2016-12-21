@@ -4,6 +4,10 @@ import path = require('path');
 import Api from "./api/Api";
 import ProgramResource from "./api/resource/versioncontrol/ProgramResource";
 import GitProgramStorage from "./versioncontrol/GitProgramStorage";
+import SerializerRegisty from "./serializer/SerializerRegistry";
+import ProgramSerializer from "./serializer/ProgramSerializer";
+import Program from "../common/versioncontrol/Program";
+import modelRegistry from "./jsonapi/ModelSerializerRegistry";
 
 // Create a server with a host and port
 const server = new Hapi.Server({
@@ -21,7 +25,7 @@ server.connection({
 });
 
 let hedgehogApi = new Api(server, '/api');
-hedgehogApi.registerEndpoint(new ProgramResource(new GitProgramStorage('tmp')));
+hedgehogApi.registerEndpoint(new ProgramResource(new GitProgramStorage('tmp'), modelRegistry));
 
 // tslint:disable-next-line
 server.register(require('inert'));

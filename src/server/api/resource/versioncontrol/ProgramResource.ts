@@ -5,10 +5,10 @@ import {JsonApiDocument, JsonApiResource} from "../../../jsonapi/JsonApiObjects"
 import {ObjectParser, parserHandler} from "../../../jsonapi/Parser";
 import Program from "../../../../common/versioncontrol/Program";
 import JsonApiDocumentBuilder from "../../../jsonapi/JsonApiBuilder";
-import {getLinkUrl} from "../../../utils";
+import SerializerRegisty from "../../../serializer/SerializerRegistry";
 
 export default class ProgramsResource extends ApiResource {
-    constructor(private programStorage: IProgramStorage) {
+    constructor(private programStorage: IProgramStorage, private serializerRegistry: SerializerRegisty) {
         super('/programs');
     }
 
@@ -44,27 +44,10 @@ export default class ProgramsResource extends ApiResource {
             }).code(500);
         }
 
-        let initialVersion = await program.getVersion(program.latestVersionId);
-
         let documentBuilder = new JsonApiDocumentBuilder();
         documentBuilder.setLinks(req.url, null);
 
-        let resourceBuilder = documentBuilder.getResourceBuilder();
-        resourceBuilder.resource.type = 'program';
-        resourceBuilder.resource.id = program.getId();
-        resourceBuilder.resource.attributes = {
-            name: program.name,
-            creationDate: initialVersion.creationDate.toISOString()
-        };
-
-        resourceBuilder.addManyRelationship('versions', {
-            related: getLinkUrl(req, `/api/versions/${program.getId()}`)
-        });
-        resourceBuilder.addSingleRelationship('workingtree', {
-            related: getLinkUrl(req, `/api/workingtrees/${program.getId()}`)
-        });
-
-        return reply(resourceBuilder.getProduct())
+        reply(await this.serializerRegistry.serialize(program, req, documentBuilder.getResourceBuilder()))
             .code(201);
     }
 
