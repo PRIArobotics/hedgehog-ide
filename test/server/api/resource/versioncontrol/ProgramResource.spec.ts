@@ -245,4 +245,25 @@ describe('ProgramResource', () => {
             });
         });
     });
+
+    describe('deleteProgram', () => {
+        it('should delete a program', (done) => {
+            let storage = new GitProgramStorage(null);
+            let mock: any = sinon.mock(storage);
+            (<any>programResource).programStorage = storage;
+
+            mock.expects('deleteProgram')
+                .once()
+                .withExactArgs('program1')
+                .returns(Promise.resolve());
+
+            server.inject({
+                url: '/api/programs/cHJvZ3JhbTE=',
+                method: 'DELETE'
+            }, (res) => {
+                mock.verify();
+                done();
+            });
+        });
+    });
 });

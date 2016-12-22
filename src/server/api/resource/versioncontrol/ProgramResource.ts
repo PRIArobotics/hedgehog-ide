@@ -60,11 +60,11 @@ export default class ProgramsResource extends ApiResource {
             .code(201);
     }
 
-    @ApiEndpoint('GET', '/{program_id}')
+    @ApiEndpoint('GET', '/{programId}')
     public async getProgram(req, reply) {
         let program: Program;
         try {
-            program = await this.programStorage.getProgram(Program.getNameFromId(req.params['program_id']));
+            program = await this.programStorage.getProgram(Program.getNameFromId(req.params['programId']));
         } catch(err) {
             winston.error(err);
             return reply({
@@ -110,5 +110,19 @@ export default class ProgramsResource extends ApiResource {
         }
 
         return reply(documentBuilder.getProduct());
+    }
+
+    @ApiEndpoint('DELETE', '/{programId}')
+    public async deleteProgram(req, reply) {
+        // TODO implement check whether program exists
+        try {
+            await this.programStorage.deleteProgram(Program.getNameFromId(req.params['programId']));
+        } catch(err) {
+            winston.error(err);
+            return reply({
+                error: 'Un unknown error occurred while deleting the program'
+            }).code(500);
+        }
+        return reply().code(204);
     }
 }
