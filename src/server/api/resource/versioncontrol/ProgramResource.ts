@@ -6,6 +6,7 @@ import {ObjectParser, parserHandler} from "../../../jsonapi/Parser";
 import Program from "../../../../common/versioncontrol/Program";
 import JsonApiDocumentBuilder from "../../../jsonapi/JsonApiBuilder";
 import SerializerRegisty from "../../../serializer/SerializerRegistry";
+import {DataType} from "../../../jsonapi/JsonApiBuilder";
 
 export default class ProgramsResource extends ApiResource {
     constructor(private programStorage: IProgramStorage, private serializerRegistry: SerializerRegisty) {
@@ -71,6 +72,30 @@ export default class ProgramsResource extends ApiResource {
 
     @ApiEndpoint('GET')
     public async getProgramList(req, reply) {
-        return undefined;
+        let documentBuilder = new JsonApiDocumentBuilder();
+        documentBuilder.setLinks(req.url, null);
+        documentBuilder.setDataType(DataType.Many);
+
+        let programNames: string[];
+        try {
+            programNames = await this.programStorage.getProgramNames();
+        } catch(err) {
+            return reply({
+                error: 'Failed to load program list'
+            }).code(500);
+        }
+
+        for(const name of programNames) {
+            try {
+                let program = await this.programStorage.getProgram(name);
+                documentBuilder.addResource(
+                    await this.serializerRegistry.serialize(program, req, documentBuilder.getResourceBuilder())
+                );
+            } catch(err) {
+                return;
+            }
+        }
+
+        return reply(documentBuilder.getProduct());
     }
 }
