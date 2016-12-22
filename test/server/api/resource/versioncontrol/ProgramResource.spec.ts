@@ -87,4 +87,53 @@ describe('ProgramResource', () => {
             });
         });
     });
+
+    describe('getProgram', () => {
+        it('should load and return an existing program', (done) => {
+            const creationDate = new Date();
+
+            let storage = new GitProgramStorage(null);
+            let mock: any = sinon.mock(storage);
+            (<any>programResource).programStorage = storage;
+            mock.expects('getProgram')
+                .once()
+                .withExactArgs('program1')
+                .returns(Promise.resolve(new Program(storage, 'program1', 'version1')));
+
+            mock.expects('getVersionIds')
+                .returns(Promise.resolve(['version1']));
+
+            mock.expects('getVersion')
+                .returns(Promise.resolve(new Version(storage, 'program1', 'version1', '', '', creationDate, [], '')));
+
+            server.inject({
+                url: '/programs/cHJvZ3JhbTE=',
+                method: 'GET'
+            }, (res) => {
+                console.log(res)
+                mock.verify();
+                assert.deepEqual(JSON.parse(res.payload), {
+                    type: 'program',
+                    id: 'cHJvZ3JhbTE=',
+                    attributes: {
+                        name: 'program1',
+                        creationDate: creationDate.toISOString()
+                    },
+                    relationships: {
+                        versions: {
+                            links: {
+                                related: 'http://localhost:61749/api/versions/cHJvZ3JhbTE='
+                            }
+                        },
+                        workingtree: {
+                            links: {
+                                related: 'http://localhost:61749/api/workingtrees/cHJvZ3JhbTE='
+                            }
+                        }
+                    }
+                });
+                done();
+            });
+        });
+    });
 });
