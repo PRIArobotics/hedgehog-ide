@@ -270,4 +270,73 @@ describe('ProgramResource', () => {
             });
         });
     });
+
+    describe('renameProgram', () => {
+        it('should rename a program', (done) => {
+            const creationDate = new Date();
+            let storage = new GitProgramStorage(null);
+            let mock: any = sinon.mock(storage);
+            (<any>programResource).programStorage = storage;
+
+            mock.expects('getProgram')
+                .once()
+                .withExactArgs('program2')
+                .returns(Promise.resolve(new Program(storage, 'program2', 'version1')));
+            mock.expects('getVersionIds')
+                .withExactArgs('program1')
+                .returns(Promise.resolve(['version1']));
+            mock.expects('getVersion')
+                .withExactArgs('program1', 'version1')
+                .returns(Promise.resolve(new Version(storage, 'program1', 'version1', '', '', creationDate, [], '')));
+
+            mock.expects('renameProgram')
+                .once()
+                .withExactArgs('program2', 'program1');
+
+            server.inject({
+                url: '/api/programs/cHJvZ3JhbTI=',
+                method: 'PATCH',
+                payload: {
+                    data: {
+                        type: 'program',
+                        attributes: {
+                            name: 'program1'
+                        }
+                    }
+                }
+            }, (res) => {
+                mock.verify();
+                assert.equal(res.statusCode, 200);
+                assert.deepEqual(JSON.parse(res.payload), {
+                    links: {
+                        self: 'http://localhost:61749/api/programs/cHJvZ3JhbTE='
+                    },
+                    jsonapi: {
+                        version: '1.0'
+                    },
+                    data: {
+                        type: 'program',
+                        id: 'cHJvZ3JhbTE=',
+                        attributes: {
+                            name: 'program1',
+                            creationDate: creationDate.toISOString()
+                        },
+                        relationships: {
+                            versions: {
+                                links: {
+                                    related: 'http://localhost:61749/api/versions/cHJvZ3JhbTE='
+                                }
+                            },
+                            workingtree: {
+                                links: {
+                                    related: 'http://localhost:61749/api/workingtrees/cHJvZ3JhbTE='
+                                }
+                            }
+                        }
+                    }
+                });
+                done();
+            });
+        });
+    });
 });

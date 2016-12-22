@@ -18,21 +18,9 @@ export default class ProgramsResource extends ApiResource {
 
     @ApiEndpoint('POST')
     public async createProgram(req, reply) {
-        let resourceParser = JsonApiResource.getParser();
-        resourceParser.addProperties({
-            name: 'attributes',
-            required: true,
-            handler: parserHandler(new ObjectParser(() => ({}), {
-                name: 'name',
-                required: true
-            }))
-        });
-
         let document: JsonApiDocument;
         try {
-            document = JsonApiDocument.getParser({
-                data: resourceParser
-            }).parse(req.payload);
+            document = this.parseProgramPayload(req.payload);
         } catch(err) {
             winston.error(err);
             return reply({
@@ -50,13 +38,7 @@ export default class ProgramsResource extends ApiResource {
             }).code(500);
         }
 
-        let documentBuilder = new JsonApiDocumentBuilder();
-        documentBuilder.setLinks(getLinkUrl(req, `/api/programs/${program.getId()}`), null);
-        documentBuilder.addResource(
-            await this.serializerRegistry.serialize(program, req, documentBuilder.getResourceBuilder()
-        ));
-
-        return reply(documentBuilder.getProduct())
+        return (await this.replyProgram(program, req, reply))
             .code(201);
     }
 
@@ -72,14 +54,7 @@ export default class ProgramsResource extends ApiResource {
             }).code(404);
         }
 
-        let documentBuilder = new JsonApiDocumentBuilder();
-        documentBuilder.setLinks(getRequestUrl(req), null);
-        documentBuilder.addResource(
-            await this.serializerRegistry.serialize(program, req, documentBuilder.getResourceBuilder()
-        ));
-
-        return reply(documentBuilder.getProduct())
-            .code(200);
+        return await this.replyProgram(program , req, reply);
     }
 
     @ApiEndpoint('GET')
@@ -124,5 +99,66 @@ export default class ProgramsResource extends ApiResource {
             }).code(500);
         }
         return reply().code(204);
+    }
+
+    @ApiEndpoint('PATCH', '/{programId}')
+    public async renameProgram(req, reply) {
+        let oldProgramName = Program.getNameFromId(req.params['programId']);
+        let newProgramName: string;
+        try {
+            newProgramName = (<JsonApiResource> this.parseProgramPayload(req.payload).data).attributes.name;
+        } catch(err) {
+            winston.error(err);
+            return reply({
+                error: 'Error while paring the request. Argument might be missing'
+            }).code(400);
+        }
+
+        let program: Program;
+        try {
+            program = await this.programStorage.getProgram(oldProgramName);
+        } catch(err) {
+            winston.error(err);
+            return reply({
+                error: 'Program not found or failed to load'
+            }).code(404);
+        }
+
+        try {
+            await program.rename(newProgramName);
+        } catch(err) {
+            return reply({
+                error: 'Failed to rename the program. Program with target name might already exist'
+            }).code(400);
+        }
+
+        return this.replyProgram(program, req, reply);
+    }
+
+    private async replyProgram(program: Program, request, reply) {
+        let documentBuilder = new JsonApiDocumentBuilder();
+        documentBuilder.setLinks(getLinkUrl(request, `/api/programs/${program.getId()}`), null);
+        documentBuilder.addResource(
+            await this.serializerRegistry.serialize(program, request, documentBuilder.getResourceBuilder()
+        ));
+
+        return reply(documentBuilder.getProduct())
+            .code(200);
+    }
+
+    private parseProgramPayload(payload) {
+        let resourceParser = JsonApiResource.getParser();
+        resourceParser.addProperties({
+            name: 'attributes',
+            required: true,
+            handler: parserHandler(new ObjectParser(() => ({}), {
+                name: 'name',
+                required: true
+            }))
+        });
+
+        return JsonApiDocument.getParser({
+            data: resourceParser
+        }).parse(payload);
     }
 }
