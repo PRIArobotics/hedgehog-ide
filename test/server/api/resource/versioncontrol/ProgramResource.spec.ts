@@ -17,7 +17,7 @@ function setupApiServer(...resources: ApiResource[]) {
         port: 61749
     });
 
-    let api = new Api(server, '/');
+    let api = new Api(server, '/api');
     for(const resource of resources) {
         api.registerEndpoint(resource);
     }
@@ -51,7 +51,7 @@ describe('ProgramResource', () => {
                 .returns(Promise.resolve(new Version(storage, 'program', 'version1', '', '', creationDate, [], '')));
 
             server.inject({
-                url: '/programs',
+                url: '/api/programs',
                 method: 'POST',
                 payload: {
                     data: {
@@ -107,7 +107,7 @@ describe('ProgramResource', () => {
                 .returns(Promise.resolve(new Version(storage, 'program1', 'version1', '', '', creationDate, [], '')));
 
             server.inject({
-                url: '/programs/cHJvZ3JhbTE=',
+                url: '/api/programs/cHJvZ3JhbTE=',
                 method: 'GET'
             }, (res) => {
                 console.log(res)
