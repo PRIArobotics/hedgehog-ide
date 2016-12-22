@@ -69,7 +69,7 @@ module.exports = function(grunt) {
             },
             server: 'src/server/**/*.ts',
             client: 'src/client/**/*.ts',
-            versioncontrol: 'src/versioncontrol/**/*.ts',
+            common: 'src/common/**/*.ts',
             test: 'test/**/*.ts'
         },
         concurrent: {

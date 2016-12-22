@@ -38,21 +38,21 @@ export function dirname(path: string): string {
 
 export function join(...paths: string[]): string {
 
-    if(paths[0].endsWith('/')){
+    if(paths[0].endsWith('/')) {
         paths[0] = paths[0].slice(0, paths[0].length - 1);
     }
 
-    for(let i = 1; i < paths.length; i++){
+    for(let i = 1; i < paths.length; i++) {
         if(paths[i].startsWith('/')) {
             paths[i] = paths[i].slice(1, paths[i].length);
         }
 
-        if(paths[i].endsWith('/')){
+        if(paths[i].endsWith('/')) {
             paths[i] = paths[i].slice(0, paths[i].length - 1);
         }
     }
 
-    return paths.join('/')
+    return paths.join('/');
 }
 
 // from: https://www.typescriptlang.org/docs/handbook/mixins.html

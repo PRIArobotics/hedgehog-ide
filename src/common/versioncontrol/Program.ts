@@ -7,11 +7,18 @@ import WorkingTree from "./WorkingTree";
 import IProgramStorage from "./ProgramStorage";
 
 export default class Program {
+    public static getNameFromId(id) {
+        if(typeof(atob) === 'function') {
+            return atob(id);
+        } else {
+            return new Buffer(id, 'base64').toString();
+        }
+    }
+
     public name: string;
     public latestVersionId: string;
 
     private storage: IProgramStorage;
-
 
     constructor(storage, name, latestVersionId) {
         this.storage = storage;
@@ -65,14 +72,6 @@ export default class Program {
             return btoa(this.name);
         } else {
             return new Buffer(this.name).toString('base64');
-        }
-    }
-
-    public static getNameFromId(id) {
-        if(typeof(atob) === 'function') {
-            return atob(id);
-        } else {
-            return new Buffer(id, 'base64').toString();
         }
     }
 }
