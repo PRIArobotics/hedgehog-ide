@@ -6,6 +6,9 @@ import ProgramResource from "./api/resource/versioncontrol/ProgramResource";
 import GitProgramStorage from "./versioncontrol/GitProgramStorage";
 import modelRegistry from "./jsonapi/ModelSerializerRegistry";
 
+/**
+ * Server setup
+ */
 // Create a server with a host and port
 const server = new Hapi.Server({
     connections: {
@@ -21,12 +24,18 @@ server.connection({
     port: 8000
 });
 
+/**
+ * API setup
+ */
 let hedgehogApi = new Api(server, '/api');
 hedgehogApi.registerEndpoint(new ProgramResource(new GitProgramStorage('tmp'), modelRegistry));
 
 // tslint:disable-next-line
 server.register(require('inert'));
 
+/**
+ * Static resources (Angular webapp)
+ */
 server.route({
     method: 'GET',
     path: '/node_modules/{param*}',
@@ -61,6 +70,10 @@ server.route({
     }
 });
 
+/**
+ * Handler for 404 which also serves the Angular webapp
+ * (This enables routing within the real path section)
+ */
 server.ext('onPreResponse', (request, reply) => {
     let response = <any> request.response;
     if (request.response.isBoom && (response.output.statusCode === 404)) {
@@ -70,7 +83,10 @@ server.ext('onPreResponse', (request, reply) => {
     return reply.continue();
 });
 
-// Start the server
+
+/**
+ * Run server
+ */
 server.start((err) => {
 
     if (err)
