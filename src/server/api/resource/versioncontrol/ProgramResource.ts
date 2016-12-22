@@ -51,6 +51,24 @@ export default class ProgramsResource extends ApiResource {
             .code(201);
     }
 
+    @ApiEndpoint('GET', '/{program_id}')
+    public async getProgram(req, reply) {
+        let program: Program;
+        try {
+            program = await this.programStorage.getProgram(Program.getNameFromId(req.params['program_id']));
+        } catch(err) {
+            return reply({
+                error: 'Program not found or failed to load'
+            }).code(400);
+        }
+
+        let documentBuilder = new JsonApiDocumentBuilder();
+        documentBuilder.setLinks(req.url, null);
+
+        return reply(await this.serializerRegistry.serialize(program, req, documentBuilder.getResourceBuilder()))
+            .code(200);
+    }
+
     @ApiEndpoint('GET')
     public async getProgramList(req, reply) {
         return undefined;

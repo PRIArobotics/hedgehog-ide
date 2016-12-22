@@ -67,4 +67,12 @@ export default class Program {
             return new Buffer(this.name).toString('base64');
         }
     }
+
+    public static getNameFromId(id) {
+        if(typeof(atob) === 'function') {
+            return atob(id);
+        } else {
+            return new Buffer(id, 'base64').toString();
+        }
+    }
 }
