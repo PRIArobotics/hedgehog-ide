@@ -63,6 +63,7 @@ describe('ProgramResource', () => {
                 }
             }, (res) => {
                 mock.verify();
+                assert.equal(res.statusCode, 201);
                 assert.deepEqual(JSON.parse(res.payload), {
                     links: {
                         self: 'http://localhost:61749/api/programs/cHJvZ3JhbQ=='
@@ -119,6 +120,7 @@ describe('ProgramResource', () => {
                 method: 'GET'
             }, (res) => {
                 mock.verify();
+                assert.equal(res.statusCode, 200);
                 assert.deepEqual(JSON.parse(res.payload), {
                     links: {
                         self: 'http://localhost:61749/api/programs/cHJvZ3JhbTE='
@@ -191,6 +193,7 @@ describe('ProgramResource', () => {
                 method: 'GET'
             }, (res) => {
                 mock.verify();
+                assert.equal(res.statusCode, 200);
                 assert.deepEqual(JSON.parse(res.payload),{
                     links: {
                         self: 'http://localhost:61749/api/programs'
@@ -262,6 +265,7 @@ describe('ProgramResource', () => {
                 method: 'DELETE'
             }, (res) => {
                 mock.verify();
+                assert.equal(res.statusCode, 204);
                 done();
             });
         });
