@@ -110,7 +110,6 @@ describe('ProgramResource', () => {
                 url: '/api/programs/cHJvZ3JhbTE=',
                 method: 'GET'
             }, (res) => {
-                console.log(res)
                 mock.verify();
                 assert.deepEqual(JSON.parse(res.payload), {
                     type: 'program',
@@ -131,6 +130,100 @@ describe('ProgramResource', () => {
                             }
                         }
                     }
+                });
+                done();
+            });
+        });
+    });
+
+    describe('getProgramList', () => {
+        it('should return a list containing all programs stored on the controller', (done) => {
+            const creationDate = new Date();
+
+            let storage = new GitProgramStorage(null);
+            let mock: any = sinon.mock(storage);
+            (<any>programResource).programStorage = storage;
+
+            mock.expects('getProgramNames')
+                .once()
+                .returns(Promise.resolve(['program1', 'program2']));
+
+            mock.expects('getProgram')
+                .once()
+                .withExactArgs('program1')
+                .returns(Promise.resolve(new Program(storage, 'program1', 'version1')));
+            mock.expects('getVersionIds')
+                .withExactArgs('program1')
+                .returns(Promise.resolve(['version1']));
+            mock.expects('getVersion')
+                .withExactArgs('program1', 'version1')
+                .returns(Promise.resolve(new Version(storage, 'program1', 'version1', '', '', creationDate, [], '')));
+
+            mock.expects('getProgram')
+                .once()
+                .withExactArgs('program2')
+                .returns(Promise.resolve(new Program(storage, 'program2', 'version2')));
+            mock.expects('getVersionIds')
+                .withExactArgs('program2')
+                .returns(Promise.resolve(['version2']));
+            mock.expects('getVersion')
+                .withExactArgs('program2', 'version2')
+                .returns(Promise.resolve(new Version(storage, 'program2', 'version2', '', '', creationDate, [], '')));
+
+            server.inject({
+                url: '/api/programs',
+                method: 'GET'
+            }, (res) => {
+                mock.verify();
+                assert.deepEqual(JSON.parse(res.payload),{
+                    links: {
+                        self: 'http://localhost:61749/api/programs'
+                    },
+                    jsonapi: {
+                        version: '1.0'
+                    },
+                    data: [
+                        {
+                            type: 'program',
+                            id: 'cHJvZ3JhbTE=',
+                            attributes: {
+                                name: 'program1',
+                                creationDate: creationDate.toISOString()
+                            },
+                            relationships: {
+                                versions: {
+                                    links: {
+                                        related: 'http://localhost:61749/api/versions/cHJvZ3JhbTE='
+                                    }
+                                },
+                                workingtree: {
+                                    links: {
+                                        related: 'http://localhost:61749/api/workingtrees/cHJvZ3JhbTE='
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            type: 'program',
+                            id: 'cHJvZ3JhbTI=',
+                            attributes: {
+                                name: 'program2',
+                                creationDate: creationDate.toISOString()
+                            },
+                            relationships: {
+                                versions: {
+                                    links: {
+                                        related: 'http://localhost:61749/api/versions/cHJvZ3JhbTI='
+                                    }
+                                },
+                                workingtree: {
+                                    links: {
+                                        related: 'http://localhost:61749/api/workingtrees/cHJvZ3JhbTI='
+                                    }
+                                }
+                            }
+                        }
+                    ]
                 });
                 done();
             });

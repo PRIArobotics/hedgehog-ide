@@ -9,6 +9,7 @@ import Program from "../../../../common/versioncontrol/Program";
 import JsonApiDocumentBuilder from "../../../jsonapi/JsonApiBuilder";
 import SerializerRegisty from "../../../serializer/SerializerRegistry";
 import {DataType} from "../../../jsonapi/JsonApiBuilder";
+import {getRequestUrl} from "../../../utils";
 
 export default class ProgramsResource extends ApiResource {
     constructor(private programStorage: IProgramStorage, private serializerRegistry: SerializerRegisty) {
@@ -78,7 +79,8 @@ export default class ProgramsResource extends ApiResource {
     @ApiEndpoint('GET')
     public async getProgramList(req, reply) {
         let documentBuilder = new JsonApiDocumentBuilder();
-        documentBuilder.setLinks(req.url, null);
+        console.log(documentBuilder);
+        documentBuilder.setLinks(getRequestUrl(req), null);
         documentBuilder.setDataType(DataType.Many);
 
         let programNames: string[];
