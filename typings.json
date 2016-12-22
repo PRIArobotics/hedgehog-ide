@@ -1,6 +1,8 @@
 {
   "name": "hedgehog-ide",
-  "dependencies": {},
+  "dependencies": {
+    "winston": "registry:dt/winston#0.0.0+20161122193333"
+  },
   "globalDependencies": {
     "hammerjs": "registry:dt/hammerjs#2.0.8+20160724063812",
     "hapi": "registry:dt/hapi#13.0.0+20160928135445",

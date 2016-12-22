@@ -1,3 +1,5 @@
+import winston = require('winston');
+
 import ApiResource from "../../ApiResource";
 import ApiEndpoint from "../../ApiEndpoint";
 import IProgramStorage from "../../../../common/versioncontrol/ProgramStorage";
@@ -31,6 +33,7 @@ export default class ProgramsResource extends ApiResource {
                 data: resourceParser
             }).parse(req.payload);
         } catch(err) {
+            winston.error(err);
             return reply({
                 error: 'Error while paring the request. Argument might be missing'
             }).code(400);
@@ -40,6 +43,7 @@ export default class ProgramsResource extends ApiResource {
         try {
             program = await this.programStorage.createProgram((<JsonApiResource>document.data).attributes.name);
         } catch(err) {
+            winston.error(err);
             return reply({
                 error: 'An error occurred while creating the program.'
             }).code(500);
@@ -58,6 +62,7 @@ export default class ProgramsResource extends ApiResource {
         try {
             program = await this.programStorage.getProgram(Program.getNameFromId(req.params['program_id']));
         } catch(err) {
+            winston.error(err);
             return reply({
                 error: 'Program not found or failed to load'
             }).code(400);
@@ -80,6 +85,7 @@ export default class ProgramsResource extends ApiResource {
         try {
             programNames = await this.programStorage.getProgramNames();
         } catch(err) {
+            winston.error(err);
             return reply({
                 error: 'Failed to load program list'
             }).code(500);
@@ -92,7 +98,7 @@ export default class ProgramsResource extends ApiResource {
                     await this.serializerRegistry.serialize(program, req, documentBuilder.getResourceBuilder())
                 );
             } catch(err) {
-                return;
+                winston.error(err);
             }
         }
 

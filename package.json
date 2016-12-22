@@ -47,6 +47,7 @@
     "rxjs": "^5.0.0-rc.5",
     "swagger-tools": "^0.10.1",
     "systemjs": "0.19.39",
+    "winston": "^2.3.0",
     "zone.js": "^0.6.21"
   },
   "devDependencies": {

@@ -5,6 +5,21 @@ import Api from "./api/Api";
 import ProgramResource from "./api/resource/versioncontrol/ProgramResource";
 import GitProgramStorage from "./versioncontrol/GitProgramStorage";
 import modelRegistry from "./jsonapi/ModelSerializerRegistry";
+import winston = require("winston");
+
+/**
+ * Logger setup
+ * We use one global logger instance for logging
+ */
+winston.configure({
+    transports: [
+        new (winston.transports.Console)({
+            colorize: true,
+            prettyPrint: true
+        })
+    ]
+});
+
 
 /**
  * Server setup
