@@ -9,7 +9,7 @@ import Program from "../../../../common/versioncontrol/Program";
 import JsonApiDocumentBuilder from "../../../jsonapi/JsonApiBuilder";
 import SerializerRegisty from "../../../serializer/SerializerRegistry";
 import {DataType} from "../../../jsonapi/JsonApiBuilder";
-import {getRequestUrl} from "../../../utils";
+import {getRequestUrl, getLinkUrl} from "../../../utils";
 
 export default class ProgramsResource extends ApiResource {
     constructor(private programStorage: IProgramStorage, private serializerRegistry: SerializerRegisty) {
@@ -51,9 +51,12 @@ export default class ProgramsResource extends ApiResource {
         }
 
         let documentBuilder = new JsonApiDocumentBuilder();
-        documentBuilder.setLinks(req.url, null);
+        documentBuilder.setLinks(getLinkUrl(req, `/api/programs/${program.getId()}`), null);
+        documentBuilder.addResource(
+            await this.serializerRegistry.serialize(program, req, documentBuilder.getResourceBuilder()
+        ));
 
-        reply(await this.serializerRegistry.serialize(program, req, documentBuilder.getResourceBuilder()))
+        return reply(documentBuilder.getProduct())
             .code(201);
     }
 
@@ -70,16 +73,18 @@ export default class ProgramsResource extends ApiResource {
         }
 
         let documentBuilder = new JsonApiDocumentBuilder();
-        documentBuilder.setLinks(req.url, null);
+        documentBuilder.setLinks(getRequestUrl(req), null);
+        documentBuilder.addResource(
+            await this.serializerRegistry.serialize(program, req, documentBuilder.getResourceBuilder()
+        ));
 
-        return reply(await this.serializerRegistry.serialize(program, req, documentBuilder.getResourceBuilder()))
+        return reply(documentBuilder.getProduct())
             .code(200);
     }
 
     @ApiEndpoint('GET')
     public async getProgramList(req, reply) {
         let documentBuilder = new JsonApiDocumentBuilder();
-        console.log(documentBuilder);
         documentBuilder.setLinks(getRequestUrl(req), null);
         documentBuilder.setDataType(DataType.Many);
 

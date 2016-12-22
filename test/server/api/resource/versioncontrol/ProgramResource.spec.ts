@@ -64,21 +64,29 @@ describe('ProgramResource', () => {
             }, (res) => {
                 mock.verify();
                 assert.deepEqual(JSON.parse(res.payload), {
-                    type: 'program',
-                    id: 'cHJvZ3JhbQ==',
-                    attributes: {
-                        name: 'program',
-                        creationDate: creationDate.toISOString()
+                    links: {
+                        self: 'http://localhost:61749/api/programs/cHJvZ3JhbQ=='
                     },
-                    relationships: {
-                        versions: {
-                            links: {
-                                related: 'http://localhost:61749/api/versions/cHJvZ3JhbQ=='
-                            }
+                    jsonapi: {
+                        version: '1.0'
+                    },
+                    data: {
+                        type: 'program',
+                        id: 'cHJvZ3JhbQ==',
+                        attributes: {
+                            name: 'program',
+                            creationDate: creationDate.toISOString()
                         },
-                        workingtree: {
-                            links: {
-                                related: 'http://localhost:61749/api/workingtrees/cHJvZ3JhbQ=='
+                        relationships: {
+                            versions: {
+                                links: {
+                                    related: 'http://localhost:61749/api/versions/cHJvZ3JhbQ=='
+                                }
+                            },
+                            workingtree: {
+                                links: {
+                                    related: 'http://localhost:61749/api/workingtrees/cHJvZ3JhbQ=='
+                                }
                             }
                         }
                     }
@@ -112,21 +120,29 @@ describe('ProgramResource', () => {
             }, (res) => {
                 mock.verify();
                 assert.deepEqual(JSON.parse(res.payload), {
-                    type: 'program',
-                    id: 'cHJvZ3JhbTE=',
-                    attributes: {
-                        name: 'program1',
-                        creationDate: creationDate.toISOString()
+                    links: {
+                        self: 'http://localhost:61749/api/programs/cHJvZ3JhbTE='
                     },
-                    relationships: {
-                        versions: {
-                            links: {
-                                related: 'http://localhost:61749/api/versions/cHJvZ3JhbTE='
-                            }
+                    jsonapi: {
+                        version: '1.0'
+                    },
+                    data: {
+                        type: 'program',
+                        id: 'cHJvZ3JhbTE=',
+                        attributes: {
+                            name: 'program1',
+                            creationDate: creationDate.toISOString()
                         },
-                        workingtree: {
-                            links: {
-                                related: 'http://localhost:61749/api/workingtrees/cHJvZ3JhbTE='
+                        relationships: {
+                            versions: {
+                                links: {
+                                    related: 'http://localhost:61749/api/versions/cHJvZ3JhbTE='
+                                }
+                            },
+                            workingtree: {
+                                links: {
+                                    related: 'http://localhost:61749/api/workingtrees/cHJvZ3JhbTE='
+                                }
                             }
                         }
                     }
