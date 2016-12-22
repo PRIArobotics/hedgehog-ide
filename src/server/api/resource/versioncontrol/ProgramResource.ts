@@ -65,7 +65,7 @@ export default class ProgramsResource extends ApiResource {
             winston.error(err);
             return reply({
                 error: 'Program not found or failed to load'
-            }).code(400);
+            }).code(404);
         }
 
         let documentBuilder = new JsonApiDocumentBuilder();
