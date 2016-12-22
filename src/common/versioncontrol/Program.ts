@@ -28,7 +28,7 @@ export default class Program {
         return this.storage.getWorkingTree(this.name);
     }
 
-    public getVersionIds(): Promise<string> {
+    public getVersionIds(): Promise<string[]> {
         return this.storage.getVersionIds(this.name);
     }
 
