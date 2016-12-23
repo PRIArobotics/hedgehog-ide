@@ -31,7 +31,7 @@
     "angular-in-memory-web-api": "~0.1.5",
     "angular2-contextmenu": "^0.5.2",
     "angular2-materialize": "^6.2.0",
-    "angular2-tree-component": "^1.3.5",
+    "angular2-tree-component": "^2.5.1",
     "babel-polyfill": "^6.16.0",
     "brace": "^0.8.0",
     "buffer": "^5.0.0",
