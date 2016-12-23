@@ -1,16 +1,26 @@
 <div class="app-content row">
-    <context-menu></context-menu>
+    <nav class="hedgehog-green-light">
+        <div class="nav-wrapper">
+            <a href="#" class="brand-logo"> {{ programName }} </a>
+            <ul id="nav-mobile" class="right hide-on-med-and-down">
+                <li><a><i class="material-icons">play_arrow</i></a></li>
+                <li><a><i class="material-icons">save</i></a></li>
+                <li><a><i class="material-icons">insert_drive_file</i></a></li>
+            </ul>
+        </div>
+    </nav>
 
     <div class="col s2">
-        <h3> {{ programName }} </h3>
-        <hr>
 
         <Tree #tree
-              [nodes]="filetree"
+              id="file-tree"
+              [nodes]="fileTree"
+              [options]="fileTreeOptions"
               [focused]="true"
-              (onActivate)="fileTreeEvent($event)">
+              (onActivate)="fileTreeEvent($event)"
+              (onMoveNode)="onMoveNode($event)">
             <template #treeNodeTemplate let-node>
-                <div [contextMenu]="basicMenu" [contextMenuSubject]="node">
+                <div [contextMenu]="fileTreeActions" [contextMenuSubject]="node">
                     <i *ngIf="node.data.children && !node.isExpanded" class="material-icons"> folder </i>
                     <i *ngIf="node.isExpanded" class="material-icons"> folder_open </i>
                     <i *ngIf="!node.data.children" class="material-icons"> insert_drive_file </i>
@@ -64,23 +74,6 @@
     </div>
 
     <div class="col s10">
-        <div class="col s12" style="margin-top: 2vh">
-            <div class="col l1">
-                <a class="waves-effect btn-floating waves-light">
-                    <i class="material-icons">play_arrow</i>
-                </a>
-            </div>
-            <div class="col l1">
-                <a class="waves-effect btn-floating waves-light">
-                    <i class="material-icons">save</i>
-                </a>
-            </div>
-            <div class="col l1" >
-                <a class="waves-effect btn-floating waves-light">
-                    <i class="material-icons">insert_drive_file</i>
-                </a>
-            </div>
-        </div>
 
         <div class="row">
             <div class="col s12" >
@@ -91,6 +84,7 @@
 
             <div class="col s12">
                 <div ace-editor
+                     id="ace-editor"
                      text="{{ editorContent }}"
                      (textChanged)="onEditorContentChange($event)"
                      [mode]="'python'"

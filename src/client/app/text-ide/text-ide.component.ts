@@ -14,7 +14,7 @@ declare var Materialize: any;
 export class File {
     public name: string;
     public content: string;
-    public storageFile: WorkingTreeFile;
+    public storageObject: WorkingTreeFile;
     public parentArray: Object[];
     public parentDirectory: WorkingTreeDirectory;
 }
@@ -31,6 +31,16 @@ export class File {
 })
 
 export class TextIdeComponent implements OnInit, AfterViewInit {
+    public fileTreeOptions = {
+        allowDrag: true,
+        allowDrop: (element, to) => {
+            if(to.parent.children && element.data.name) {
+                return to.parent.children && !this.checkDuplicate(element.data.name, to.parent.children);
+            }
+            return false;
+        }
+    };
+
     // TreeComponent for updating the file tree
     @ViewChild(TreeComponent)
     private tree: TreeComponent;
@@ -41,10 +51,10 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
     // modal action for deleting file
     private deleteModalActions = new EventEmitter<string|MaterializeAction>();
 
-    // filetree array containing TreeComponent compatible Objects
-    private filetree: Object[] = [];
+    // fileTree array containing TreeComponent compatible Objects
+    private fileTree: Object[] = [];
 
-    // indexed files from the filetree
+    // indexed files from the file tree
     private files: File[] = [];
 
     // last id of the file changed used for saving the file
@@ -71,7 +81,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
     private newData: any = {
         name: '',
         arrayToAddFileTo: [],
-        storageDirectory: WorkingTreeDirectory,
+        storageObject: WorkingTreeDirectory,
         file: true
     };
 
@@ -119,11 +129,12 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
 
         let childArray = [];
 
-        // set root element of the file tree
-        this.filetree[0] = {
+        // set root element of the file tree and set it to be expanded by default
+        this.fileTree[0] = {
             name: program1.name,
+            isExpanded: true,
             children: childArray,
-            storageDirectory: rootdir
+            storageObject: rootdir
         };
 
         // populate file tree and give it the root directory and it's childArray
@@ -143,18 +154,23 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
         // remove the tab empty tab that prevents the indicator error
         $('.tab').first().remove();
 
+        // allow the tabs to be draggable
         let tabs = <any>$("#sortable-tabs");
         tabs.sortable({
             items: "li",
             axis: "x",
             stop: (event, ui) => {
+                // get tab from ui
                 let tab = $(ui.item);
 
+                // update indicator to the tab and open it's file
                 this.updateIndicator(tab);
-                this.openFile(+tab.attr('id').substr(3, 4));
+                this.openFile(+tab.attr('id').substr(3));
             }
         });
-        tabs.disableSelection();
+
+        $('.node-content-wrapper').first().prev().remove();
+        console.log($('treenodecontent').first());
     }
 
     /**
@@ -188,7 +204,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
                     {
                         name: itemName,
                         content: await file.readContent(),
-                        storageFile: file,
+                        storageObject: file,
                         parentArray: childArray,
                         parentDirectory: directory
                     }
@@ -208,7 +224,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
                         {
                             name: itemName,
                             children: newChildArray,
-                            storageDirectory: newDirectory,
+                            storageObject: newDirectory,
                             parentArray: childArray,
                             parentDirectory: directory
                         }
@@ -264,7 +280,6 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
             let newTab = document.createElement('li');
             newTab.className = 'tab';
             newTab.id = 'tab' + file.fileId;
-            newTab.setAttribute('draggable', '');
 
             // create new a element that has the filename as
             // <a class='green-text lighten-3 waves-effect'> {filename} ... </a>
@@ -310,16 +325,44 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
         }
     }
 
+    /**
+     * Event binding when an element in the file tree is moved
+     *
+     * @param event data sent from the event that includes the file/directory
+     */
+    public onMoveNode(event) {
+        let node = event.node;
+        let to = event.to.parent;
+
+        // if it a file update the indexed file
+        if (!node.children) {
+            node = this.files[node.fileId];
+        }
+
+        // set new parent objects
+        node.parentArray = to.children;
+        node.parentDirectory = to.storageObject;
+
+        // move storage Object to other directory
+        node.storageObject.rename(node.parentDirectory.path + '/' + node.storageObject.getName(), true);
+    }
+
+    /**
+     * set the data for the new file/directory array
+     * meaning the arrayToAddFileTo and WorkingTreeObject
+     *
+     * @param data to set the newData array to
+     */
     public setNewData(data) {
         // check if it is a directory
         if (data.children) {
             // if it is add children and storageDirectory to newData
             this.newData.arrayToAddFileTo = data.children;
-            this.newData.storageDirectory = data.storageDirectory;
+            this.newData.storageObject = data.storageObject;
         } else {
             // if it isn't add the files parent directory and array to newData
             this.newData.arrayToAddFileTo = this.files[data.fileId].parentArray;
-            this.newData.storageDirectory = this.files[data.fileId].parentDirectory;
+            this.newData.storageObject = this.files[data.fileId].parentDirectory;
         }
     }
 
@@ -348,7 +391,12 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
     public async newFileOrDirectory() {
         // save new filename and Working Tree Directory to save it to
         let name: string = this.newData.name;
-        let directory: WorkingTreeDirectory = this.newData.storageDirectory;
+        let directory: WorkingTreeDirectory = this.newData.storageObject;
+
+        if (this.checkDuplicate(name, this.newData.arrayToAddFileTo)) {
+            Materialize.toast('<i class="material-icons">close</i> Duplicate entry: ' + this.newData.name, 3000);
+            return;
+        }
 
         if (this.newData.file) {
             // add file to parent child array
@@ -368,7 +416,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
                 {
                     name,
                     content: '',
-                    storageFile: newFile,
+                    storageObject: newFile,
                     parentArray: this.newData.arrayToAddFileTo,
                     parentDirectory: directory
                 }
@@ -382,7 +430,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
             this.newData.arrayToAddFileTo.push({
                 name,
                 children: [],
-                storageDirectory: newDirectory,
+                storageObject: newDirectory,
                 parentArray: this.newData.arrayToAddFileTo,
                 parentDirectory: directory
             });
@@ -438,8 +486,8 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
 
         // check if it is a directory or file
         if (this.deleteFileData.children) {
-            // TODO currently throws error
-            // await this.deleteFileData.storageDirectory.deleteDirectory(this.deleteFileData.name);
+            // delete directory from working tree
+            await this.deleteFileData.parentDirectory.deleteDirectory(this.deleteFileData.name);
 
             // since it is a file use the parentArray from it
             parentArray = this.deleteFileData.parentArray;
@@ -515,7 +563,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
             // save file from the last tab in local content
             this.files[this.openId].content = this.currentFileContent;
             // save file in storage
-            let wtFile: WorkingTreeFile = this.files[this.openId].storageFile;
+            let wtFile: WorkingTreeFile = this.files[this.openId].storageObject;
             await wtFile.writeContent(this.currentFileContent);
         }
 
@@ -537,6 +585,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
         // attach it to the thing you want darkened
         $('router-outlet').after(overlay);
     };
+
     /**
      * Update the indicator div to position under a tab
      *
@@ -564,8 +613,6 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
      * @param tabToClose the tab to close as a JQuery Object
      */
     private closeTab(tabToClose: JQuery) {
-
-
         let id = +tabToClose.attr('id').substr(3);
 
         // check if the current openId (open tab)
@@ -612,5 +659,31 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
             // update the Indicator if it exists
             this.updateIndicator(updateTabToIndicate);
         }
+    }
+
+    /**
+     * Compare every item's name of an given array with the given name
+     * to check if a file would be a duplicate
+     *
+     * @param name to compare with
+     * @param array with items to compare name to
+     * @returns {boolean} true if it is a duplicate false if it is not
+     */
+    private checkDuplicate(name: string, array: any[]) {
+        // iterate through given arrray
+        for (let item of array) {
+            // check whether it is a file and set item to indexed file if it is
+            let fileId = item.fileId;
+            if (fileId) {
+                item = this.files[fileId];
+            }
+
+            // if an item from the array has the same name as the given, it returns true
+            if (item.name === name) {
+                return true;
+            }
+        }
+        // return false if no item's names match the given
+        return false;
     }
 }

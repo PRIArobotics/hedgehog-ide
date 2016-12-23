@@ -23,30 +23,6 @@
     background-color: #fff !important;
 }
 
-.angular2-contextmenu .dropdown-menu {
-    border: solid 1px black;
-    background-color: white;
-    padding: 0;
-}
-.angular2-contextmenu li {
-    display: block;
-    border-top: solid 1px black;
-    text-transform: uppercase;
-    text-align: center;
-}
-.angular2-contextmenu li:first-child {
-    border-top:none;
-}
-.angular2-contextmenu a {
-    color:black;
-    display: block;
-    padding: 0.5em 1em;
-}
-.angular2-contextmenu a:hover {
-    color: black;
-    background-color:white;
-}
-
 .node-content-wrapper, .tree-children {
     position: relative;
 }
@@ -82,4 +58,49 @@ treenode:last-child > .tree-node > .tree-children::after {
 
 .toggle-children {
     z-index: 1;
+    margin-top: 5px;
+}
+
+/* context menu */
+
+.angular2-contextmenu .dropdown-menu {
+    border: solid 1px black;
+    background-color: white;
+    padding: 0;
+    z-index: 5;
+}
+.angular2-contextmenu li {
+    display: block;
+    border-top: solid 1px black;
+    text-transform: uppercase;
+    text-align: center;
+}
+.angular2-contextmenu li:first-child {
+    border-top:none;
+}
+.angular2-contextmenu a {
+    color:black;
+    display: block;
+    padding: 0.5em 1em;
+}
+.angular2-contextmenu a:hover {
+    color: black;
+    background-color:white;
+}
+
+
+/* rest */
+
+.tree {
+    margin-left: 5%;
+    margin-top: 15%;
+}
+
+#sortable-tabs {
+    z-index: 0;
+    margin-top: 10px;
+}
+
+div > ul > li > a {
+    text-transform: none;
 }
