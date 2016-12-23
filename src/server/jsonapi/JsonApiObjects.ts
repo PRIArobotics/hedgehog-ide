@@ -5,7 +5,7 @@ export interface IJsonApiLinkable {
 }
 
 export abstract class JsonApiObject {
-    public meta: JsonApiObject;
+    public meta?: JsonApiObject;
 }
 
 export class JsonApiDocument extends JsonApiObject implements IJsonApiLinkable {
@@ -78,8 +78,8 @@ export class JsonApiLinks extends JsonApiObject {
         return parser;
     }
 
-    public self: string;
-    public related: string;
+    public self?: string;
+    public related?: string;
 }
 
 export class JsonApiResource extends JsonApiObject implements IJsonApiLinkable {

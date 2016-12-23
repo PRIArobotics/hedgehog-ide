@@ -2,7 +2,7 @@
 import WorkingTreeFile from "./WorkingTreeFile";
 import WorkingTreeObject from "./WorkingTreeObject";
 import { WorkingTreeObjectType } from "./WorkingTreeObject";
-import {join, basename} from "../utils";
+import {join} from "../utils";
 
 export default class WorkingTreeDirectory extends WorkingTreeObject {
     public readonly type: WorkingTreeObjectType = WorkingTreeObjectType.Directory;

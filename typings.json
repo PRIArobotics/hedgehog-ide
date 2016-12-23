@@ -1,6 +1,8 @@
 {
   "name": "hedgehog-ide",
-  "dependencies": {},
+  "dependencies": {
+    "winston": "registry:dt/winston#0.0.0+20161122193333"
+  },
   "globalDependencies": {
     "hammerjs": "registry:dt/hammerjs#2.0.8+20160724063812",
     "hapi": "registry:dt/hapi#13.0.0+20160928135445",
@@ -10,6 +12,7 @@
   },
   "globalDevDependencies": {
     "mocha": "registry:dt/mocha#2.2.5+20160720003353",
-    "rimraf": "registry:dt/rimraf#0.0.0+20160317120654"
+    "rimraf": "registry:dt/rimraf#0.0.0+20160317120654",
+    "sinon": "registry:dt/sinon#1.16.1+20161208163514"
   }
 }

@@ -16,7 +16,10 @@ abstract class LinkBuilder implements IBuilder<IJsonApiLinkable> {
             this.getProduct().links = new JsonApiLinks();
         } else if (!self && !related) {
             this.getProduct().links = null;
-        } else if(self) {
+            return;
+        }
+
+        if(self) {
             this.getProduct().links.self = self;
         } else if(related) {
             this.getProduct().links.related = related;

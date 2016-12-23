@@ -23,11 +23,13 @@ abstract class WorkingTreeObject {
         return basename(this.path);
     }
 
-    public rename(newName: string): Promise<void> {
+    public rename(newName: string, isAbsolute = false): Promise<void> {
         return this.storage.updateWorkingTreeObject(
             this.programName,
             this.path,
-            {newPath: join(this.path, newName)}
+            {
+                newPath: isAbsolute ? newName : join(this.path, newName)
+            }
         );
     }
 
