@@ -9,6 +9,7 @@ import Program from "../../../../../src/common/versioncontrol/Program";
 import Version from "../../../../../src/common/versioncontrol/Version";
 import GitProgramStorage from "../../../../../src/server/versioncontrol/GitProgramStorage";
 import modelRegistry from "../../../../../src/server/jsonapi/ModelSerializerRegistry";
+import IProgramStorage from "../../../../../src/common/versioncontrol/ProgramStorage";
 
 function setupApiServer(...resources: ApiResource[]) {
     let server = new Hapi.Server();
@@ -24,22 +25,51 @@ function setupApiServer(...resources: ApiResource[]) {
     return server;
 }
 
+function getProgramResourceReply(name: string, creationDate: Date) {
+    const id = new Buffer(name).toString('base64');
+    return {
+        type: 'program',
+        id,
+        attributes: {
+            name,
+            creationDate: creationDate.toISOString()
+        },
+        relationships: {
+            versions: {
+                links: {
+                    related: `http://localhost:61749/api/versions/${id}`
+                }
+            },
+            workingtree: {
+                links: {
+                    related: `http://localhost:61749/api/workingtrees/${id}`
+                }
+            }
+        }
+    };
+}
+
 describe('ProgramResource', () => {
     let server: Hapi.Server;
     let programResource: ProgramResource;
+    let storage: IProgramStorage;
+    let mock: Sinon.SinonMock;
 
     before(() => {
         programResource = new ProgramResource(null, modelRegistry);
         server = setupApiServer(programResource);
     });
 
+    beforeEach(() => {
+        storage = new GitProgramStorage(null);
+        mock = sinon.mock(storage);
+        (<any>programResource).programStorage = storage;
+    });
+
     describe('createProgram', () => {
         it('should create a new program', (done) => {
             const creationDate = new Date();
 
-            let storage = new GitProgramStorage(null);
-            let mock: any = sinon.mock(storage);
-            (<any>programResource).programStorage = storage;
             mock.expects('createProgram')
                 .once()
                 .returns(Promise.resolve(new Program(storage, 'program', 'version1')));
@@ -71,26 +101,7 @@ describe('ProgramResource', () => {
                     jsonapi: {
                         version: '1.0'
                     },
-                    data: {
-                        type: 'program',
-                        id: 'cHJvZ3JhbQ==',
-                        attributes: {
-                            name: 'program',
-                            creationDate: creationDate.toISOString()
-                        },
-                        relationships: {
-                            versions: {
-                                links: {
-                                    related: 'http://localhost:61749/api/versions/cHJvZ3JhbQ=='
-                                }
-                            },
-                            workingtree: {
-                                links: {
-                                    related: 'http://localhost:61749/api/workingtrees/cHJvZ3JhbQ=='
-                                }
-                            }
-                        }
-                    }
+                    data: getProgramResourceReply('program', creationDate)
                 });
                 done();
             });
@@ -101,9 +112,6 @@ describe('ProgramResource', () => {
         it('should load and return an existing program', (done) => {
             const creationDate = new Date();
 
-            let storage = new GitProgramStorage(null);
-            let mock: any = sinon.mock(storage);
-            (<any>programResource).programStorage = storage;
             mock.expects('getProgram')
                 .once()
                 .withExactArgs('program1')
@@ -128,26 +136,7 @@ describe('ProgramResource', () => {
                     jsonapi: {
                         version: '1.0'
                     },
-                    data: {
-                        type: 'program',
-                        id: 'cHJvZ3JhbTE=',
-                        attributes: {
-                            name: 'program1',
-                            creationDate: creationDate.toISOString()
-                        },
-                        relationships: {
-                            versions: {
-                                links: {
-                                    related: 'http://localhost:61749/api/versions/cHJvZ3JhbTE='
-                                }
-                            },
-                            workingtree: {
-                                links: {
-                                    related: 'http://localhost:61749/api/workingtrees/cHJvZ3JhbTE='
-                                }
-                            }
-                        }
-                    }
+                    data: getProgramResourceReply('program1', creationDate)
                 });
                 done();
             });
@@ -157,10 +146,6 @@ describe('ProgramResource', () => {
     describe('getProgramList', () => {
         it('should return a list containing all programs stored on the controller', (done) => {
             const creationDate = new Date();
-
-            let storage = new GitProgramStorage(null);
-            let mock: any = sinon.mock(storage);
-            (<any>programResource).programStorage = storage;
 
             mock.expects('getProgramNames')
                 .once()
@@ -202,46 +187,8 @@ describe('ProgramResource', () => {
                         version: '1.0'
                     },
                     data: [
-                        {
-                            type: 'program',
-                            id: 'cHJvZ3JhbTE=',
-                            attributes: {
-                                name: 'program1',
-                                creationDate: creationDate.toISOString()
-                            },
-                            relationships: {
-                                versions: {
-                                    links: {
-                                        related: 'http://localhost:61749/api/versions/cHJvZ3JhbTE='
-                                    }
-                                },
-                                workingtree: {
-                                    links: {
-                                        related: 'http://localhost:61749/api/workingtrees/cHJvZ3JhbTE='
-                                    }
-                                }
-                            }
-                        },
-                        {
-                            type: 'program',
-                            id: 'cHJvZ3JhbTI=',
-                            attributes: {
-                                name: 'program2',
-                                creationDate: creationDate.toISOString()
-                            },
-                            relationships: {
-                                versions: {
-                                    links: {
-                                        related: 'http://localhost:61749/api/versions/cHJvZ3JhbTI='
-                                    }
-                                },
-                                workingtree: {
-                                    links: {
-                                        related: 'http://localhost:61749/api/workingtrees/cHJvZ3JhbTI='
-                                    }
-                                }
-                            }
-                        }
+                        getProgramResourceReply('program1', creationDate),
+                        getProgramResourceReply('program2', creationDate)
                     ]
                 });
                 done();
@@ -251,10 +198,6 @@ describe('ProgramResource', () => {
 
     describe('deleteProgram', () => {
         it('should delete a program', (done) => {
-            let storage = new GitProgramStorage(null);
-            let mock: any = sinon.mock(storage);
-            (<any>programResource).programStorage = storage;
-
             mock.expects('deleteProgram')
                 .once()
                 .withExactArgs('program1')
@@ -274,9 +217,6 @@ describe('ProgramResource', () => {
     describe('renameProgram', () => {
         it('should rename a program', (done) => {
             const creationDate = new Date();
-            let storage = new GitProgramStorage(null);
-            let mock: any = sinon.mock(storage);
-            (<any>programResource).programStorage = storage;
 
             mock.expects('getProgram')
                 .once()
@@ -314,26 +254,7 @@ describe('ProgramResource', () => {
                     jsonapi: {
                         version: '1.0'
                     },
-                    data: {
-                        type: 'program',
-                        id: 'cHJvZ3JhbTE=',
-                        attributes: {
-                            name: 'program1',
-                            creationDate: creationDate.toISOString()
-                        },
-                        relationships: {
-                            versions: {
-                                links: {
-                                    related: 'http://localhost:61749/api/versions/cHJvZ3JhbTE='
-                                }
-                            },
-                            workingtree: {
-                                links: {
-                                    related: 'http://localhost:61749/api/workingtrees/cHJvZ3JhbTE='
-                                }
-                            }
-                        }
-                    }
+                    data: getProgramResourceReply('program1', creationDate)
                 });
                 done();
             });
