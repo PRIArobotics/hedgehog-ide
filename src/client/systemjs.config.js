@@ -18,7 +18,8 @@
             rxjs: 'node_modules/rxjs',
             'materialize-css': 'node_modules/materialize-css',
             'angular2-materialize': 'node_modules/angular2-materialize',
-            'angular2-contextmenu': 'node_modules/angular2-contextmenu'
+            'angular2-contextmenu': 'node_modules/angular2-contextmenu',
+            'angular2-localstorage': 'node_modules/angular2-localstorage'
         },
         // map tells the System loader where to look for things
         map: {
@@ -44,8 +45,8 @@
             'ieee754': 'npm:ieee754/index.js',
 
             'angular2-tree-component': 'npm:angular2-tree-component',
-            'lodash': 'npm:lodash'
-
+            'lodash': 'npm:lodash',
+            'angular2-localstorage-circular': 'npm:angular2-localstorage'
         },
         // packages tells the System loader how to load when no filename and/or no extension
         packages: {
@@ -77,12 +78,16 @@
                 main: 'dist/angular2-tree-component.js',
                 defaultExtension: 'js'
             },
+            'lodash': {
+                main: 'lodash.js',
+                defaultExtension: 'js'
+            },
             'angular2-contextmenu': {
                 main: './angular2-contextmenu.js',
                 defaultExtension: 'js'
             },
-            'lodash': {
-                main: 'lodash.js',
+            'angular2-localstorage': {
+                main: 'dist/index.js',
                 defaultExtension: 'js'
             }
         }

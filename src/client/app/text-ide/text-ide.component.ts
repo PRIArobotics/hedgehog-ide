@@ -7,6 +7,8 @@ import {TreeComponent} from "angular2-tree-component";
 import WorkingTreeFile from "../../../common/versioncontrol/WorkingTreeFile";
 import IProgramStorage from "../../../common/versioncontrol/ProgramStorage";
 import {MaterializeAction} from "angular2-materialize";
+import Program from "../../../common/versioncontrol/Program";
+import {LocalStorageService, LocalStorage} from "angular2-localstorage";
 
 declare var $: JQueryStatic;
 declare var Materialize: any;
@@ -26,7 +28,8 @@ export class File {
     templateUrl: 'text-ide.component.html',
     styleUrls: ['text-ide.component.css'],
     providers: [
-        DummyProgramService
+        DummyProgramService,
+        LocalStorageService
     ]
 })
 
@@ -35,8 +38,11 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
         allowDrag: true,
         allowDrop: (element, to) => {
             if(to.parent.children && element.data.name) {
+                // check if it would be a duplicate
                 return to.parent.children && !this.checkDuplicate(element.data.name, to.parent.children);
             }
+
+            // return false by default
             return false;
         }
     };
@@ -53,6 +59,8 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
 
     // fileTree array containing TreeComponent compatible Objects
     private fileTree: Object[] = [];
+
+    @LocalStorage() private localStorageFiles: Object[] = [];
 
     // indexed files from the file tree
     private files: File[] = [];
@@ -72,10 +80,11 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
     // The Program name that is passed to this class by the router
     private programName: string;
 
+    private program: Program;
+
     // storage object for interacting with a ProgramStorage
     // can be any ProgramStorage depending on what getStorage returns
     private storage: IProgramStorage;
-
 
     // delete file name
     private newData: any = {
@@ -111,12 +120,14 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
      * it can be async (the constructor cannot) and therefore allows interaction with the ProgramStorage
      */
     public async ngOnInit() {
+
         // for test purposes
         this.storage.createProgram(this.programName);
         // no longer test
 
-        let program1 = await this.storage.getProgram(this.programName);
-        let rootdir = await program1.getWorkingTree().getRootDirectory();
+        this.program = await this.storage.getProgram(this.programName);
+
+        let rootdir = await this.program.getWorkingTree().getRootDirectory();
 
         // for test purposes
         rootdir.addFile('file1.py', 'testfile1');
@@ -131,7 +142,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
 
         // set root element of the file tree and set it to be expanded by default
         this.fileTree[0] = {
-            name: program1.name,
+            name: this.programName,
             isExpanded: true,
             children: childArray,
             storageObject: rootdir
@@ -169,8 +180,8 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
             }
         });
 
-        $('.node-content-wrapper').first().prev().remove();
-        console.log($('treenodecontent').first());
+        // hide the editor since no files are open
+        $('#ace-editor').hide();
     }
 
     /**
@@ -199,16 +210,38 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
                     }
                 );
 
-                // also index the file
-                this.files.push(
-                    {
-                        name: itemName,
-                        content: await file.readContent(),
-                        storageObject: file,
-                        parentArray: childArray,
-                        parentDirectory: directory
-                    }
-                );
+                if (this.nextFileId < this.localStorageFiles.length) {
+                    // also index the file
+                    this.files.push(
+                        {
+                            name: itemName,
+                            content: this.localStorageFiles[this.nextFileId]['content'],
+                            storageObject: file,
+                            parentArray: childArray,
+                            parentDirectory: directory
+                        }
+                    );
+                } else {
+                    let content = await file.readContent();
+
+                    // also index the file
+                    this.files.push(
+                        {
+                            name: itemName,
+                            content,
+                            storageObject: file,
+                            parentArray: childArray,
+                            parentDirectory: directory
+                        }
+                    );
+
+                    this.localStorageFiles.push(
+                        {
+                            name: itemName,
+                            content
+                        }
+                    );
+                }
 
                 this.nextFileId++;
             } else if (type === WorkingTreeObjectType.Directory) {
@@ -273,6 +306,9 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
 
                 // end method here
                 return;
+            } else if ($('#sortable-tabs').children().length === 1) {
+                // if no files are opened show the editor
+                $('#ace-editor').show();
             }
 
             // create new tab element if the file was not found as
@@ -562,6 +598,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
         if (this.openId > -1) {
             // save file from the last tab in local content
             this.files[this.openId].content = this.currentFileContent;
+            this.localStorageFiles[this.openId]['content'] = this.currentFileContent;
             // save file in storage
             let wtFile: WorkingTreeFile = this.files[this.openId].storageObject;
             await wtFile.writeContent(this.currentFileContent);
@@ -641,12 +678,14 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
                     this.resetIndicator();
                     this.editorContent = '';
                     this.openId = -1;
+                    $('#ace-editor').hide();
                 }
             }
         }
 
         // save file from the last tab in local content
         this.files[id].content = this.currentFileContent;
+        this.localStorageFiles[id]['content'] = this.currentFileContent;
 
         // finally remove tab
         tabToClose.remove();
