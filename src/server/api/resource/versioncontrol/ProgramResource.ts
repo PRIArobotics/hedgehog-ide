@@ -7,13 +7,13 @@ import {JsonApiDocument, JsonApiResource} from "../../../jsonapi/JsonApiObjects"
 import {ObjectParser, parserHandler} from "../../../jsonapi/Parser";
 import Program from "../../../../common/versioncontrol/Program";
 import JsonApiDocumentBuilder from "../../../jsonapi/JsonApiBuilder";
-import SerializerRegisty from "../../../serializer/SerializerRegistry";
+import SerializerRegistry from "../../../serializer/SerializerRegistry";
 import {DataType} from "../../../jsonapi/JsonApiBuilder";
 import {getRequestUrl, getLinkUrl} from "../../../utils";
 import {genericFromBase64, genericToBase64} from "../../../../common/utils";
 
 export default class ProgramsResource extends ApiResource {
-    constructor(private programStorage: IProgramStorage, private serializerRegistry: SerializerRegisty) {
+    constructor(private programStorage: IProgramStorage, private serializerRegistry: SerializerRegistry) {
         super('/programs');
     }
 
@@ -25,7 +25,7 @@ export default class ProgramsResource extends ApiResource {
         } catch(err) {
             winston.error(err);
             return reply({
-                error: 'Error while paring the request. Argument might be missing'
+                error: 'Error while parsing the request. Argument might be missing.'
             }).code(400);
         }
 
@@ -111,7 +111,7 @@ export default class ProgramsResource extends ApiResource {
         } catch(err) {
             winston.error(err);
             return reply({
-                error: 'Error while paring the request. Argument might be missing'
+                error: 'Error while parsing the request. Argument might be missing.'
             }).code(400);
         }
 
