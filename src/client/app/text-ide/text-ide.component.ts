@@ -60,7 +60,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
     // fileTree array containing TreeComponent compatible Objects
     private fileTree: Object[] = [];
 
-    @LocalStorage() private localStorageFiles: Object[] = [];
+    @LocalStorage() private localStorageFiles: Object = {};
 
     // indexed files from the file tree
     private files: File[] = [];
@@ -148,6 +148,12 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
             storageObject: rootdir
         };
 
+        // check if the local storage already has this program stored
+        if (!this.localStorageFiles.hasOwnProperty(this.programName)) {
+            // if not create a new array with the program name
+            this.localStorageFiles[this.programName] = [];
+        }
+
         // populate file tree and give it the root directory and it's childArray
         await this.populateFiletree(rootdir, childArray);
 
@@ -210,21 +216,22 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
                     }
                 );
 
-                if (this.nextFileId < this.localStorageFiles.length) {
-                    // also index the file
+                if (this.nextFileId < this.localStorageFiles[this.programName].length) {
+                    // if file is in the local storage index the new file and take the content from the localstorage
                     this.files.push(
                         {
                             name: itemName,
-                            content: this.localStorageFiles[this.nextFileId]['content'],
+                            content: this.localStorageFiles[this.programName][this.nextFileId]['content'],
                             storageObject: file,
                             parentArray: childArray,
                             parentDirectory: directory
                         }
                     );
                 } else {
+                    // read content of the file form the backend
                     let content = await file.readContent();
 
-                    // also index the file
+                    // index the file with the read content
                     this.files.push(
                         {
                             name: itemName,
@@ -235,7 +242,8 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
                         }
                     );
 
-                    this.localStorageFiles.push(
+                    // add content with the name of the file to the localstorage of this program
+                    this.localStorageFiles[this.programName].push(
                         {
                             name: itemName,
                             content
@@ -275,10 +283,21 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
      *
      * @param editorContent string that is the whole editor content
      */
-    public onEditorContentChange (editorContent) {
+    public async onEditorContentChange (editorContent) {
         // save editorContent to the local file and currentFileContent
         this.editorContent = editorContent;
         this.currentFileContent = editorContent;
+
+        // if no file has been opened or all have been closed the id is -1
+        // and you cannot save a file that is does not exist
+        if (this.openId > -1) {
+            // save file from the last tab in local content
+            this.files[this.openId].content = this.currentFileContent;
+            this.localStorageFiles[this.programName][this.openId]['content'] = this.currentFileContent;
+            // save file in storage
+            let wtFile: WorkingTreeFile = this.files[this.openId].storageObject;
+            await wtFile.writeContent(this.currentFileContent);
+        }
     }
 
     /**
@@ -457,6 +476,14 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
                     parentDirectory: directory
                 }
             );
+
+            // and the local storage
+            this.localStorageFiles[this.programName].push(
+                {
+                    name,
+                    content: ''
+                }
+            );
         } else {
             // add directory to the Working Tree Directory
             await directory.addDirectory(name);
@@ -593,18 +620,6 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
      * @param id of the file in the files array
      */
     private async openFile(id: number) {
-        // if no file has been opened or all have been closed the id is -1
-        // and you cannot save a file that is does not exist
-        if (this.openId > -1) {
-            // save file from the last tab in local content
-            this.files[this.openId].content = this.currentFileContent;
-            this.localStorageFiles[this.openId]['content'] = this.currentFileContent;
-            // save file in storage
-            let wtFile: WorkingTreeFile = this.files[this.openId].storageObject;
-            await wtFile.writeContent(this.currentFileContent);
-        }
-
-
         // update editorContent, currentFileContent to current files content and openId to this id
         this.editorContent = this.files[id].content;
         this.currentFileContent = this.files[id].content;
@@ -682,10 +697,6 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
                 }
             }
         }
-
-        // save file from the last tab in local content
-        this.files[id].content = this.currentFileContent;
-        this.localStorageFiles[id]['content'] = this.currentFileContent;
 
         // finally remove tab
         tabToClose.remove();
