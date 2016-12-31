@@ -82,6 +82,23 @@ export default class WorkingTreeFileResource extends ApiResource {
         );
     }
 
+    @ApiEndpoint('DELETE', '/{fileId}')
+    public async deleteFile(req, reply) {
+        // TODO implement check whether file exists
+        try {
+            await this.programStorage.deleteWorkingTreeObject(
+                genericFromBase64(req.params['programId']),
+                genericFromBase64(req.params['fileId'])
+            );
+        } catch(err) {
+            winston.error(err);
+            return reply({
+                error: 'An error occurred while deleting the file'
+            }).code(500);
+        }
+        return reply().code(204);
+    }
+
     private async replyFile(programName: string, fileName: string, request, reply) {
         let file: WorkingTreeFile;
         try {
