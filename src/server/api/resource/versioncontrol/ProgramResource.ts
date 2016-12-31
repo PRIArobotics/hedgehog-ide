@@ -7,12 +7,13 @@ import {JsonApiDocument, JsonApiResource} from "../../../jsonapi/JsonApiObjects"
 import {ObjectParser, parserHandler} from "../../../jsonapi/Parser";
 import Program from "../../../../common/versioncontrol/Program";
 import JsonApiDocumentBuilder from "../../../jsonapi/JsonApiBuilder";
-import SerializerRegisty from "../../../serializer/SerializerRegistry";
+import SerializerRegistry from "../../../serializer/SerializerRegistry";
 import {DataType} from "../../../jsonapi/JsonApiBuilder";
 import {getRequestUrl, getLinkUrl} from "../../../utils";
+import {genericFromBase64, genericToBase64} from "../../../../common/utils";
 
 export default class ProgramsResource extends ApiResource {
-    constructor(private programStorage: IProgramStorage, private serializerRegistry: SerializerRegisty) {
+    constructor(private programStorage: IProgramStorage, private serializerRegistry: SerializerRegistry) {
         super('/programs');
     }
 
@@ -24,7 +25,7 @@ export default class ProgramsResource extends ApiResource {
         } catch(err) {
             winston.error(err);
             return reply({
-                error: 'Error while paring the request. Argument might be missing'
+                error: 'Error while parsing the request. Argument might be missing.'
             }).code(400);
         }
 
@@ -46,7 +47,7 @@ export default class ProgramsResource extends ApiResource {
     public async getProgram(req, reply) {
         let program: Program;
         try {
-            program = await this.programStorage.getProgram(Program.getNameFromId(req.params['programId']));
+            program = await this.programStorage.getProgram(genericFromBase64(req.params['programId']));
         } catch(err) {
             winston.error(err);
             return reply({
@@ -91,7 +92,7 @@ export default class ProgramsResource extends ApiResource {
     public async deleteProgram(req, reply) {
         // TODO implement check whether program exists
         try {
-            await this.programStorage.deleteProgram(Program.getNameFromId(req.params['programId']));
+            await this.programStorage.deleteProgram(genericFromBase64(req.params['programId']));
         } catch(err) {
             winston.error(err);
             return reply({
@@ -103,14 +104,14 @@ export default class ProgramsResource extends ApiResource {
 
     @ApiEndpoint('PATCH', '/{programId}')
     public async renameProgram(req, reply) {
-        let oldProgramName = Program.getNameFromId(req.params['programId']);
+        let oldProgramName = genericFromBase64(req.params['programId']);
         let newProgramName: string;
         try {
             newProgramName = (<JsonApiResource> this.parseProgramPayload(req.payload).data).attributes.name;
         } catch(err) {
             winston.error(err);
             return reply({
-                error: 'Error while paring the request. Argument might be missing'
+                error: 'Error while parsing the request. Argument might be missing.'
             }).code(400);
         }
 
@@ -137,7 +138,7 @@ export default class ProgramsResource extends ApiResource {
 
     private async replyProgram(program: Program, request, reply) {
         let documentBuilder = new JsonApiDocumentBuilder();
-        documentBuilder.setLinks(getLinkUrl(request, `/api/programs/${program.getId()}`), null);
+        documentBuilder.setLinks(getLinkUrl(request, `/api/programs/${genericToBase64(program.name)}`), null);
         documentBuilder.addResource(
             await this.serializerRegistry.serialize(program, request, documentBuilder.getResourceBuilder()
         ));

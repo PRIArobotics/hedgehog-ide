@@ -63,3 +63,21 @@ export function applyMixins(derivedCtor: any, baseCtors: any[]) {
         });
     });
 }
+
+export function genericFromBase64(encoded: string): string {
+    if(typeof(atob) === 'function') {
+        return atob(encoded);
+    } else {
+        return new Buffer(encoded, 'base64').toString();
+    }
+}
+
+export function genericToBase64(decoded: string): string {
+    if(typeof(btoa) === 'function') {
+        return btoa(decoded);
+    } else {
+        return new Buffer(decoded).toString('base64');
+    }
+}
+
+

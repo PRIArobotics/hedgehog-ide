@@ -97,11 +97,11 @@ export class JsonApiResource extends JsonApiObject implements IJsonApiLinkable {
         parser.addProperties(
             {
                 name: 'id',
-                    required: false
+                required: false
             },
             {
                 name: 'type',
-                    required: true
+                required: true
             },
             {
                 name: 'attributes',

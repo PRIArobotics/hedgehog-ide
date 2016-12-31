@@ -19,7 +19,7 @@ module.exports = function(grunt) {
             },
             all: {
                 src: ['src/**/*.ts', 'typings/index.d.ts'],
-                outDir: 'build/src'
+                outDir: 'build'
             },
             test: {
                 src: ['test/**/*.ts', 'typings/index.d.ts'],

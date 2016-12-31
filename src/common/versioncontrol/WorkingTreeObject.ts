@@ -8,8 +8,8 @@ abstract class WorkingTreeObject {
 
     public path: string;
     public mode: number;
+    public programName: string;
 
-    protected programName: string;
     protected storage: IProgramStorage;
 
     protected constructor(storage, programName) {
