@@ -20,30 +20,18 @@ export default class WorkingTreeFileResource extends ApiResource {
     public async createFile(req, reply) {
         const programName = genericFromBase64(req.params['programId']);
 
-        let fileParser = JsonApiResource.getParser();
+        const attributesParser = this.getFileAttributesParser();
+        attributesParser.addProperties({
+            name: 'path',
+            required: true
+        });
+        const fileParser = JsonApiResource.getParser();
         fileParser.addProperties({
             name: 'attributes',
             required: true,
-            handler: parserHandler(
-                new ObjectParser(() => ({}),
-                {
-                    name: 'path',
-                    required: true
-                },
-                {
-                    name: 'mode',
-                    required: false
-                },
-                {
-                    name: 'content',
-                    required: false
-                },
-                {
-                    name: 'encoding',
-                    required: false
-                }
-            ))
+            handler: parserHandler(attributesParser)
         });
+
         let requestData: JsonApiResource;
         try {
              requestData = fileParser.parse(req.payload.data);
@@ -80,6 +68,61 @@ export default class WorkingTreeFileResource extends ApiResource {
             req,
             reply
         );
+    }
+
+    @ApiEndpoint('PATCH', '/{fileId}')
+    public async updateFile(req, reply) {
+        const programName = genericFromBase64(req.params['programId']);
+        let currentFilePath = genericFromBase64(req.params['fileId']);
+
+        const attributesParser = this.getFileAttributesParser();
+        attributesParser.addProperties({
+            name: 'path',
+            required: false
+        });
+        const fileParser = JsonApiResource.getParser();
+        fileParser.addProperties(
+            {
+                name: 'id',
+                required: true
+            },
+            {
+                name: 'attributes',
+                required: true,
+                handler: parserHandler(attributesParser)
+            }
+        );
+
+        let updatedFile;
+        try {
+            updatedFile = fileParser.parse(req.payload.data).attributes;
+        } catch(err) {
+            winston.error(err);
+            return reply({
+                error: 'Error while parsing the request. Arguments might be missing.'
+            }).code(400);
+        }
+
+        // This will use the smallest number of program storage operations
+        // by only performing updates when they are mandatory.
+        if((updatedFile.path && updatedFile.path !== currentFilePath) || (updatedFile.mode && !updatedFile.content)) {
+            await this.programStorage.updateWorkingTreeObject(programName, currentFilePath, {
+                newPath: updatedFile.path !== currentFilePath ? updatedFile.path : null,
+                mode: updatedFile.mode
+            });
+            currentFilePath = updatedFile.path;
+        }
+
+        if(updatedFile.content) {
+            await this.programStorage.createOrUpdateWorkingTreeFile(
+                programName,
+                currentFilePath,
+                updatedFile.content,
+                updatedFile.mode
+            );
+        }
+
+        return this.replyFile(programName, currentFilePath, req, reply);
     }
 
     @ApiEndpoint('DELETE', '/{fileId}')
@@ -123,5 +166,22 @@ export default class WorkingTreeFileResource extends ApiResource {
 
         return reply(documentBuilder.getProduct())
             .code(200);
+    }
+
+    private getFileAttributesParser() {
+        return new ObjectParser(() => ({}),
+            {
+                name: 'mode',
+                required: false
+            },
+            {
+                name: 'content',
+                required: false
+            },
+            {
+                name: 'encoding',
+                required: false
+            }
+        );
     }
 }
