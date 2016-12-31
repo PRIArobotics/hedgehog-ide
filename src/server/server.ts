@@ -6,6 +6,7 @@ import ProgramResource from "./api/resource/versioncontrol/ProgramResource";
 import GitProgramStorage from "./versioncontrol/GitProgramStorage";
 import modelRegistry from "./jsonapi/ModelSerializerRegistry";
 import winston = require("winston");
+import WorkingTreeFileResource from "./api/resource/versioncontrol/WorkingTreeFileResource";
 
 /**
  * Logger setup
@@ -19,6 +20,7 @@ winston.configure({
         })
     ]
 });
+winston.level = 'debug';
 
 
 /**
@@ -42,8 +44,11 @@ server.connection({
 /**
  * API setup
  */
+let programStorage = new GitProgramStorage('tmp');
+
 let hedgehogApi = new Api(server, '/api');
-hedgehogApi.registerEndpoint(new ProgramResource(new GitProgramStorage('tmp'), modelRegistry));
+hedgehogApi.registerEndpoint(new ProgramResource(programStorage, modelRegistry));
+hedgehogApi.registerEndpoint(new WorkingTreeFileResource(programStorage, modelRegistry));
 
 // tslint:disable-next-line
 server.register(require('inert'));
@@ -98,6 +103,11 @@ server.ext('onPreResponse', (request, reply) => {
     return reply.continue();
 });
 
+// Print routes for debugging
+winston.debug('Routes');
+for(const route of (<any>server.connections[0]).table()) {
+    winston.debug(`- ${route.method} ${route.path}`);
+}
 
 /**
  * Run server
