@@ -54,7 +54,6 @@ export default class WorkingTreeFileResource extends ApiResource {
             }).code(400);
         }
 
-        let file: WorkingTreeFile;
         try {
             await this.programStorage.createOrUpdateWorkingTreeFile(
                 programName,
@@ -62,7 +61,6 @@ export default class WorkingTreeFileResource extends ApiResource {
                 requestData.attributes.content,
                 requestData.attributes.mode
             );
-            file = await this.programStorage.getWorkingTreeFile(programName, requestData.attributes.path);
         } catch(err) {
             winston.error(err);
             return reply({
@@ -70,11 +68,31 @@ export default class WorkingTreeFileResource extends ApiResource {
             }).code(500);
         }
 
-        return (await this.replyFile(file, req, reply))
+        return (await this.replyFile(programName, requestData.attributes.path, req, reply))
             .code(201);
     }
 
-    private async replyFile(file: WorkingTreeFile, request, reply) {
+    @ApiEndpoint('GET', '/{fileId}')
+    public async getFile(req, reply) {
+        return await this.replyFile(
+            genericFromBase64(req.params['programId']),
+            genericFromBase64(req.params['fileId']),
+            req,
+            reply
+        );
+    }
+
+    private async replyFile(programName: string, fileName: string, request, reply) {
+        let file: WorkingTreeFile;
+        try {
+            file = await this.programStorage.getWorkingTreeFile(programName, fileName);
+        } catch(err) {
+            winston.error(err);
+            return reply({
+                error: 'Error while fetching the file.'
+            }).code(500);
+        }
+
         let documentBuilder = new JsonApiDocumentBuilder();
         const selfLink = getLinkUrl(
             request,
