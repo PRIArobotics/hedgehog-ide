@@ -73,10 +73,10 @@ export function genericFromBase64(encoded: string): string {
 }
 
 export function genericToBase64(decoded: string): string {
-    if(typeof(atob) === 'function') {
-        return atob(decoded);
+    if(typeof(btoa) === 'function') {
+        return btoa(decoded);
     } else {
-        return new Buffer(decoded, 'base64').toString();
+        return new Buffer(decoded).toString('base64');
     }
 }
 
