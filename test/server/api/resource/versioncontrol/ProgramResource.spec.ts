@@ -2,28 +2,13 @@ import "babel-polyfill";
 import assert = require('assert');
 import sinon = require('sinon');
 import Hapi = require('hapi');
-import Api from "../../../../../src/server/api/Api";
-import ApiResource from "../../../../../src/server/api/ApiResource";
 import ProgramResource from "../../../../../src/server/api/resource/versioncontrol/ProgramResource";
 import Program from "../../../../../src/common/versioncontrol/Program";
 import Version from "../../../../../src/common/versioncontrol/Version";
 import GitProgramStorage from "../../../../../src/server/versioncontrol/GitProgramStorage";
 import modelRegistry from "../../../../../src/server/jsonapi/ModelSerializerRegistry";
 import IProgramStorage from "../../../../../src/common/versioncontrol/ProgramStorage";
-
-function setupApiServer(...resources: ApiResource[]) {
-    let server = new Hapi.Server();
-    server.connection({
-        host: 'localhost',
-        port: 61749
-    });
-
-    let api = new Api(server, '/api');
-    for(const resource of resources) {
-        api.registerEndpoint(resource);
-    }
-    return server;
-}
+import {setupApiServer} from "../../testutils";
 
 function getProgramResourceReply(name: string, creationDate: Date) {
     const id = new Buffer(name).toString('base64');
