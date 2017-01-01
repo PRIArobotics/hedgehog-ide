@@ -20,6 +20,7 @@ export default class WorkingTreeFileResource extends ApiResource {
     public async createFile(req, reply) {
         const programName = genericFromBase64(req.params['programId']);
 
+        // Build parser
         const attributesParser = this.getFileAttributesParser();
         attributesParser.addProperties({
             name: 'path',
@@ -32,6 +33,7 @@ export default class WorkingTreeFileResource extends ApiResource {
             handler: parserHandler(attributesParser)
         });
 
+        // Parse request payload
         let requestData: JsonApiResource;
         try {
              requestData = fileParser.parse(req.payload.data);
@@ -42,6 +44,7 @@ export default class WorkingTreeFileResource extends ApiResource {
             }).code(400);
         }
 
+        // Create file
         try {
             await this.programStorage.createOrUpdateWorkingTreeFile(
                 programName,
@@ -56,6 +59,7 @@ export default class WorkingTreeFileResource extends ApiResource {
             }).code(500);
         }
 
+        // Return file
         return (await this.replyFile(programName, requestData.attributes.path, req, reply))
             .code(201);
     }
@@ -75,6 +79,7 @@ export default class WorkingTreeFileResource extends ApiResource {
         const programName = genericFromBase64(req.params['programId']);
         let currentFilePath = genericFromBase64(req.params['fileId']);
 
+        // Build parser
         const attributesParser = this.getFileAttributesParser();
         attributesParser.addProperties({
             name: 'path',
@@ -93,6 +98,7 @@ export default class WorkingTreeFileResource extends ApiResource {
             }
         );
 
+        // Update request payload
         let updatedFile;
         try {
             updatedFile = fileParser.parse(req.payload.data).attributes;
@@ -103,6 +109,7 @@ export default class WorkingTreeFileResource extends ApiResource {
             }).code(400);
         }
 
+        // Perform update
         // This will use the smallest number of program storage operations
         // by only performing updates when they are mandatory.
 
@@ -148,6 +155,7 @@ export default class WorkingTreeFileResource extends ApiResource {
     }
 
     private async replyFile(programName: string, fileName: string, request, reply) {
+        // Load file from storage
         let file: WorkingTreeFile;
         try {
             file = await this.programStorage.getWorkingTreeFile(programName, fileName);
@@ -158,6 +166,7 @@ export default class WorkingTreeFileResource extends ApiResource {
             }).code(500);
         }
 
+        // Serialize file
         let documentBuilder = new JsonApiDocumentBuilder();
         const selfLink = getLinkUrl(
             request,
@@ -169,6 +178,7 @@ export default class WorkingTreeFileResource extends ApiResource {
         documentBuilder.addResource(
         await this.serializerRegistry.serialize(file, request, documentBuilder.getResourceBuilder()));
 
+        // Return file
         return reply(documentBuilder.getProduct())
             .code(200);
     }
