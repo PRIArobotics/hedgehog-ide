@@ -2,6 +2,7 @@ import "babel-polyfill";
 import assert = require('assert');
 import sinon = require('sinon');
 import Hapi = require('hapi');
+
 import ProgramResource from "../../../../../src/server/api/resource/versioncontrol/ProgramResource";
 import Program from "../../../../../src/common/versioncontrol/Program";
 import Version from "../../../../../src/common/versioncontrol/Version";
