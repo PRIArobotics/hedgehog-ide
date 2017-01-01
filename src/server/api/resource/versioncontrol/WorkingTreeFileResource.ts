@@ -77,7 +77,7 @@ export default class WorkingTreeFileResource extends ApiResource {
     @ApiEndpoint('PATCH', '/{fileId}')
     public async updateFile(req, reply) {
         const programName = genericFromBase64(req.params['programId']);
-        let currentFilePath = genericFromBase64(req.params['fileId']);
+        let filePath = genericFromBase64(req.params['fileId']);
 
         // Build parser
         const attributesParser = this.getFileAttributesParser();
@@ -114,27 +114,27 @@ export default class WorkingTreeFileResource extends ApiResource {
         // by only performing updates when they are mandatory.
 
         // Move (rename) file if updated path != current path
-        if((updatedFile.path && updatedFile.path !== currentFilePath) || (updatedFile.mode && !updatedFile.content)) {
-            await this.programStorage.updateWorkingTreeObject(programName, currentFilePath, {
-                newPath: updatedFile.path !== currentFilePath ? updatedFile.path : null,
+        if((updatedFile.path && updatedFile.path !== filePath) || (updatedFile.mode && !updatedFile.content)) {
+            await this.programStorage.updateWorkingTreeObject(programName, filePath, {
+                newPath: updatedFile.path !== filePath ? updatedFile.path : null,
                 mode: updatedFile.mode
             });
 
             if(updatedFile.path)
-                currentFilePath = updatedFile.path;
+                filePath = updatedFile.path;
         }
 
         // Write content on content update
         if(updatedFile.content) {
             await this.programStorage.createOrUpdateWorkingTreeFile(
                 programName,
-                currentFilePath,
+                filePath,
                 updatedFile.content,
                 updatedFile.mode
             );
         }
 
-        return this.replyFile(programName, currentFilePath, req, reply);
+        return this.replyFile(programName, filePath, req, reply);
     }
 
     @ApiEndpoint('DELETE', '/{fileId}')
