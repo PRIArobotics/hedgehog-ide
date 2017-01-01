@@ -63,6 +63,86 @@ export default class WorkingTreeDirectoryResource extends ApiResource {
             .code(201);
     }
 
+    @ApiEndpoint('GET', '/{directoryId}')
+    public async getDirectory(req: Hapi.Request, reply: Hapi.IReply) {
+        console.log(genericFromBase64(req.params['directoryId']))
+        return await this.replyDirectory(
+            genericFromBase64(req.params['programId']),
+            genericFromBase64(req.params['directoryId']),
+            req,
+            reply
+        );
+    }
+
+    @ApiEndpoint('PATCH', '/{directoryId}')
+    public async updateDirectory(req: Hapi.Request, reply: Hapi.IReply) {
+        const programName = genericFromBase64(req.params['programId']);
+        let oldDirectoryPath = genericFromBase64(req.params['directoryId']);
+
+        // Build parser
+        let requestParser = JsonApiResource.getParser();
+        requestParser.addProperties({
+            name: 'attributes',
+            required: true,
+            handler: parserHandler(new ObjectParser(() => ({}),
+                {
+                    name: 'mode',
+                    required: false
+                },
+                {
+                    name: 'path',
+                    required: false
+                }
+            ))
+        });
+
+        // Parse request payload
+        let directoryData;
+        try {
+            directoryData = requestParser.parse(req.payload.data).attributes;
+        } catch(err) {
+            winston.error(err);
+            return reply({
+                error: 'Error while parsing the request. Arguments might be missing.'
+            }).code(400);
+        }
+
+        try {
+            await this.programStorage.updateWorkingTreeObject(programName, oldDirectoryPath, {
+                newPath: directoryData.path,
+                mode: directoryData.mode
+            });
+        } catch (err) {
+            return reply({
+                error: 'Failed to update the directory.'
+            }).code(500);
+        }
+
+        return await this.replyDirectory(
+            programName,
+            directoryData.path || oldDirectoryPath,
+            req,
+            reply
+        );
+    }
+
+    @ApiEndpoint('DELETE', '/{directoryId}')
+    public async deleteDirectory(req: Hapi.Request, reply: Hapi.IReply) {
+        // TODO implement check whether file exists
+        try {
+            await this.programStorage.deleteWorkingTreeObject(
+                genericFromBase64(req.params['programId']),
+                genericFromBase64(req.params['directoryId'])
+            );
+        } catch(err) {
+            winston.error(err);
+            return reply({
+                error: 'An error occurred while deleting the file'
+            }).code(500);
+        }
+        return reply('').code(204);
+    }
+
     private async replyDirectory(programName: string,
                                  directoryPath: string,
                                  request: Hapi.Request,
@@ -73,14 +153,14 @@ export default class WorkingTreeDirectoryResource extends ApiResource {
         } catch (err) {
             winston.error(err);
             return reply({
-                error: 'Error while fetching the file.'
+                error: 'Error while fetching the directory.'
             }).code(500);
         }
 
         let documentBuilder = new JsonApiDocumentBuilder();
         const selfLink = getLinkUrl(
             request,
-            `/api/workingtrees/${genericToBase64(directory.programName)}/files/${genericToBase64(directory.path)}`
+            `/api/workingtrees/${genericToBase64(directory.programName)}/directories/${genericToBase64(directory.path)}`
         );
         documentBuilder.setLinks(selfLink, null);
         documentBuilder.addResource(
