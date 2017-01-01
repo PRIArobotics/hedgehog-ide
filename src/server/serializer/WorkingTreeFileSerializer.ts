@@ -1,6 +1,6 @@
 import {ISerializer} from "./SerializerRegistry";
 import {JsonApiResource} from "../jsonapi/JsonApiObjects";
-import {genericToBase64, basename} from "../../common/utils";
+import {genericToBase64} from "../../common/utils";
 import {getLinkUrl} from "../utils";
 import WorkingTreeFile from "../../common/versioncontrol/WorkingTreeFile";
 
@@ -18,7 +18,7 @@ export default class WorkingTreeFileSerializer implements ISerializer {
         };
 
         resourceBuilder.addSingleRelationship('directory', {
-            related: getLinkUrl(request, `/api/directory/${genericToBase64(basename(file.path))}`)
+            related: getLinkUrl(request, `/api/directory/${genericToBase64(file.getParentPath())}`)
         });
 
         return resourceBuilder.getProduct();

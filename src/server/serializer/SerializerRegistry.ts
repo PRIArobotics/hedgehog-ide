@@ -15,10 +15,13 @@ export default class SerializerRegistry {
         if(!this.serializers.has(type))
             throw new Error(`Serializer for type '${type}' not found.`);
 
-        return this.serializers.get(type).serialize(object, request, resourceBuilder);
+        return this.serializers.get(type).serialize(object, request, resourceBuilder, this);
     }
 }
 
 export interface ISerializer {
-    serialize(object: any, request: Hapi.Request, resourceBuilder: JsonApiResourceBuilder): Promise<JsonApiResource>;
+    serialize(object: any,
+              request: Hapi.Request,
+              resourceBuilder: JsonApiResourceBuilder,
+              registry?: SerializerRegistry): Promise<JsonApiResource>;
 }
