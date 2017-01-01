@@ -276,67 +276,67 @@ describe('WorkingTreeFileResource', () => {
                 done();
             });
         });
-    });
 
-    it('should chmod the file', (done) => {
-        mock.expects('updateWorkingTreeObject')
-            .once()
-            .withExactArgs('program1', 'testfile', {
-                newPath: undefined,
-                mode: 0o100666
-            })
-            .returns(Promise.resolve());
+        it('should chmod the file', (done) => {
+            mock.expects('updateWorkingTreeObject')
+                .once()
+                .withExactArgs('program1', 'testfile', {
+                    newPath: undefined,
+                    mode: 0o100666
+                })
+                .returns(Promise.resolve());
 
-        mock.expects('getWorkingTreeFile')
-            .withExactArgs('program1', 'testfile')
-            .returns(new WorkingTreeFile(storage, 'program1', 'testfile', 0o100666, 12));
+            mock.expects('getWorkingTreeFile')
+                .withExactArgs('program1', 'testfile')
+                .returns(new WorkingTreeFile(storage, 'program1', 'testfile', 0o100666, 12));
 
-        mock.expects('getWorkingTreeFileContent')
-            .withExactArgs('program1', 'testfile')
-            .returns('Hello World!');
+            mock.expects('getWorkingTreeFileContent')
+                .withExactArgs('program1', 'testfile')
+                .returns('Hello World!');
 
-        server.inject({
-            url: 'http://localhost:61749/api/workingtrees/cHJvZ3JhbTE=/files/dGVzdGZpbGU=',
-            method: 'patch',
-            payload: {
-                data: {
-                    id: "dGVzdGZpbGU=",
-                    type: "file",
-                    attributes: {
-                        mode: 0o100666
-                    }
-                }
-            }
-        }, (res) => {
-            mock.verify();
-            assert.equal(res.statusCode, 200);
-            assert.deepEqual(JSON.parse(res.payload), {
-                jsonapi: {
-                    version: "1.0"
-                },
-                links: {
-                    self: "http://localhost:61749/api/workingtrees/cHJvZ3JhbTE=/files/dGVzdGZpbGU="
-                },
-                data: {
-                    type: "file",
-                    id: "dGVzdGZpbGU=",
-                    attributes: {
-                        path: "testfile",
-                        mode: 0o100666,
-                        content: "Hello World!",
-                        encoding: "utf-8",
-                        size: 12
-                    },
-                    relationships: {
-                        workingtree: {
-                            links: {
-                                related: "http://localhost:61749/api/directory/dGVzdGZpbGU="
-                            }
+            server.inject({
+                url: 'http://localhost:61749/api/workingtrees/cHJvZ3JhbTE=/files/dGVzdGZpbGU=',
+                method: 'patch',
+                payload: {
+                    data: {
+                        id: "dGVzdGZpbGU=",
+                        type: "file",
+                        attributes: {
+                            mode: 0o100666
                         }
                     }
                 }
+            }, (res) => {
+                mock.verify();
+                assert.equal(res.statusCode, 200);
+                assert.deepEqual(JSON.parse(res.payload), {
+                    jsonapi: {
+                        version: "1.0"
+                    },
+                    links: {
+                        self: "http://localhost:61749/api/workingtrees/cHJvZ3JhbTE=/files/dGVzdGZpbGU="
+                    },
+                    data: {
+                        type: "file",
+                        id: "dGVzdGZpbGU=",
+                        attributes: {
+                            path: "testfile",
+                            mode: 0o100666,
+                            content: "Hello World!",
+                            encoding: "utf-8",
+                            size: 12
+                        },
+                        relationships: {
+                            workingtree: {
+                                links: {
+                                    related: "http://localhost:61749/api/directory/dGVzdGZpbGU="
+                                }
+                            }
+                        }
+                    }
+                });
+                done();
             });
-            done();
         });
     });
 });
