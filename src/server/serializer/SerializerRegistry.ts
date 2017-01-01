@@ -1,7 +1,7 @@
 import Hapi = require('hapi');
 
 import {JsonApiResource} from "../jsonapi/JsonApiObjects";
-import {JsonApiResourceBuilder, default as JsonApiDocumentBuilder} from "../jsonapi/JsonApiBuilder";
+import JsonApiDocumentBuilder from "../jsonapi/JsonApiBuilder";
 
 export default class SerializerRegistry {
     private serializers: Map<string, ISerializer> = new Map();
