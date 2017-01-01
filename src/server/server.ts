@@ -7,6 +7,7 @@ import GitProgramStorage from "./versioncontrol/GitProgramStorage";
 import modelRegistry from "./jsonapi/ModelSerializerRegistry";
 import winston = require("winston");
 import WorkingTreeFileResource from "./api/resource/versioncontrol/WorkingTreeFileResource";
+import WorkingTreeDirectoryResource from "./api/resource/versioncontrol/WorkingTreeDirectoryResource";
 
 /**
  * Logger setup
@@ -49,6 +50,7 @@ let programStorage = new GitProgramStorage('tmp');
 let hedgehogApi = new Api(server, '/api');
 hedgehogApi.registerEndpoint(new ProgramResource(programStorage, modelRegistry));
 hedgehogApi.registerEndpoint(new WorkingTreeFileResource(programStorage, modelRegistry));
+hedgehogApi.registerEndpoint(new WorkingTreeDirectoryResource(programStorage, modelRegistry));
 
 // tslint:disable-next-line
 server.register(require('inert'));
