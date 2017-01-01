@@ -70,7 +70,7 @@ export class JsonApiResourceBuilder implements IBuilder<JsonApiResource>, LinkBu
 
     public resource: JsonApiResource = new JsonApiResource();
 
-    constructor(public readonly documentBuilder: JsonApiDocumentBuilder) { };
+    constructor(private documentBuilder: JsonApiDocumentBuilder) { };
 
     public addSingleRelationship(name: string, relatedResource: JsonApiResource | JsonApiLinks) {
         let relationship = new JsonApiSingleRelationships();

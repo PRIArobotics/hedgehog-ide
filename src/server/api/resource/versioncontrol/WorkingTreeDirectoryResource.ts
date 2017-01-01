@@ -163,7 +163,7 @@ export default class WorkingTreeDirectoryResource extends ApiResource {
         );
         documentBuilder.setLinks(selfLink, null);
         documentBuilder.addResource(
-            await this.serializerRegistry.serialize(directory, request, documentBuilder.getResourceBuilder()));
+            await this.serializerRegistry.serialize(directory, request, documentBuilder));
 
         // Return file
         return reply(documentBuilder.getProduct())

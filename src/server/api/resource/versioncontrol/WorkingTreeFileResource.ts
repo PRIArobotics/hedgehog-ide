@@ -174,7 +174,7 @@ export default class WorkingTreeFileResource extends ApiResource {
         );
         documentBuilder.setLinks(selfLink, null);
         documentBuilder.addResource(
-            await this.serializerRegistry.serialize(file, request, documentBuilder.getResourceBuilder()));
+            await this.serializerRegistry.serialize(file, request, documentBuilder));
 
         // Return file
         return reply(documentBuilder.getProduct())

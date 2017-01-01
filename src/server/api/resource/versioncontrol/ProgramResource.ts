@@ -77,9 +77,7 @@ export default class ProgramsResource extends ApiResource {
         for(const name of programNames) {
             try {
                 let program = await this.programStorage.getProgram(name);
-                documentBuilder.addResource(
-                    await this.serializerRegistry.serialize(program, req, documentBuilder.getResourceBuilder())
-                );
+                documentBuilder.addResource(await this.serializerRegistry.serialize(program, req, documentBuilder));
             } catch(err) {
                 winston.error(err);
             }
@@ -139,9 +137,7 @@ export default class ProgramsResource extends ApiResource {
     private async replyProgram(program: Program, request, reply) {
         let documentBuilder = new JsonApiDocumentBuilder();
         documentBuilder.setLinks(getLinkUrl(request, `/api/programs/${genericToBase64(program.name)}`), null);
-        documentBuilder.addResource(
-            await this.serializerRegistry.serialize(program, request, documentBuilder.getResourceBuilder()
-        ));
+        documentBuilder.addResource( await this.serializerRegistry.serialize(program, request, documentBuilder));
 
         return reply(documentBuilder.getProduct())
             .code(200);

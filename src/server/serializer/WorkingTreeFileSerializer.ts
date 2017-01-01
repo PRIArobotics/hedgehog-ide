@@ -3,10 +3,12 @@ import {JsonApiResource} from "../jsonapi/JsonApiObjects";
 import {genericToBase64} from "../../common/utils";
 import {getLinkUrl} from "../utils";
 import WorkingTreeFile from "../../common/versioncontrol/WorkingTreeFile";
+import {JsonApiResourceBuilder} from "../jsonapi/JsonApiBuilder";
 
 export default class WorkingTreeFileSerializer implements ISerializer {
 
-    public async serialize(file: WorkingTreeFile, request, resourceBuilder): Promise<JsonApiResource> {
+    public async serialize(file: WorkingTreeFile, request, documentBuilder): Promise<JsonApiResource> {
+        let resourceBuilder = new JsonApiResourceBuilder(documentBuilder);
         resourceBuilder.resource.type = 'file';
         resourceBuilder.resource.id = genericToBase64(file.path);
         resourceBuilder.resource.attributes = {
