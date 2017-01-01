@@ -154,11 +154,11 @@ export default class WorkingTreeFileResource extends ApiResource {
         return reply().code(204);
     }
 
-    private async replyFile(programName: string, fileName: string, request, reply) {
+    private async replyFile(programName: string, filePath: string, request, reply) {
         // Load file from storage
         let file: WorkingTreeFile;
         try {
-            file = await this.programStorage.getWorkingTreeFile(programName, fileName);
+            file = await this.programStorage.getWorkingTreeFile(programName, filePath);
         } catch(err) {
             winston.error(err);
             return reply({
@@ -172,11 +172,9 @@ export default class WorkingTreeFileResource extends ApiResource {
             request,
             `/api/workingtrees/${genericToBase64(file.programName)}/files/${genericToBase64(file.path)}`
         );
-
         documentBuilder.setLinks(selfLink, null);
-
         documentBuilder.addResource(
-        await this.serializerRegistry.serialize(file, request, documentBuilder.getResourceBuilder()));
+            await this.serializerRegistry.serialize(file, request, documentBuilder.getResourceBuilder()));
 
         // Return file
         return reply(documentBuilder.getProduct())
