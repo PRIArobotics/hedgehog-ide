@@ -75,7 +75,7 @@ describe('WorkingTreeFileResource', () => {
                             size: 12
                         },
                         relationships: {
-                            workingtree: {
+                            directory: {
                                 links: {
                                     related: "http://localhost:61749/api/directory/dGVzdGZpbGU="
                                 }
