@@ -15,7 +15,8 @@ module.exports = function(grunt) {
                 emitDecoratorMetadata: true,
                 experimentalDecorators: true,
                 removeComments: false,
-                noImplicitAny: false
+                noImplicitAny: false,
+                rootDir: '.'
             },
             all: {
                 src: ['src/**/*.ts', 'typings/index.d.ts'],
