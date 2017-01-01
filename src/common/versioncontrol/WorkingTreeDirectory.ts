@@ -21,7 +21,7 @@ export default class WorkingTreeDirectory extends WorkingTreeObject {
         this.types = types;
     }
 
-    public getType(itemName: string) {
+    public getItemType(itemName: string) {
         return this.types[itemName];
     }
 
@@ -34,7 +34,7 @@ export default class WorkingTreeDirectory extends WorkingTreeObject {
     }
 
     public async getItem(itemName: string): Promise<WorkingTreeObject> {
-        if(this.getType(itemName) === WorkingTreeObjectType.File) {
+        if(this.getItemType(itemName) === WorkingTreeObjectType.File) {
             return this.getFile(itemName);
         } else {
             return this.getDirectory(itemName);

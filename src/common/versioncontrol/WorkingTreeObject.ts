@@ -23,6 +23,10 @@ abstract class WorkingTreeObject {
         return basename(this.path);
     }
 
+    public getParentPath(): string {
+        return basename(this.path);
+    }
+
     public rename(newName: string, isAbsolute = false): Promise<void> {
         return this.storage.updateWorkingTreeObject(
             this.programName,

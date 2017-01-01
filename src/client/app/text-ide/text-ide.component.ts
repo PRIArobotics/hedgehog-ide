@@ -201,7 +201,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
         // loop through all items of the directory
         for(let itemName of directory.items) {
             // get type of the item
-            let type = directory.getType(itemName);
+            let type = directory.getItemType(itemName);
 
             // check whether it is a file or directory
             if (type === WorkingTreeObjectType.File) {
