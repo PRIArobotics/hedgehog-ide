@@ -105,14 +105,19 @@ export default class WorkingTreeFileResource extends ApiResource {
 
         // This will use the smallest number of program storage operations
         // by only performing updates when they are mandatory.
+
+        // Move (rename) file if updated path != current path
         if((updatedFile.path && updatedFile.path !== currentFilePath) || (updatedFile.mode && !updatedFile.content)) {
             await this.programStorage.updateWorkingTreeObject(programName, currentFilePath, {
                 newPath: updatedFile.path !== currentFilePath ? updatedFile.path : null,
                 mode: updatedFile.mode
             });
-            currentFilePath = updatedFile.path;
+
+            if(updatedFile.path)
+                currentFilePath = updatedFile.path;
         }
 
+        // Write content on content update
         if(updatedFile.content) {
             await this.programStorage.createOrUpdateWorkingTreeFile(
                 programName,
