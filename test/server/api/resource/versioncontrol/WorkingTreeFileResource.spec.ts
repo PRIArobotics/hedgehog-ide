@@ -124,7 +124,7 @@ describe('WorkingTreeFileResource', () => {
                             size: 12
                         },
                         relationships: {
-                            workingtree: {
+                            directory: {
                                 links: {
                                     related: "http://localhost:61749/api/directory/dGVzdGZpbGU="
                                 }
@@ -206,7 +206,7 @@ describe('WorkingTreeFileResource', () => {
                             size: 12
                         },
                         relationships: {
-                            workingtree: {
+                            directory: {
                                 links: {
                                     related: "http://localhost:61749/api/directory/bmV3X3Rlc3RmaWxl"
                                 }
@@ -265,7 +265,7 @@ describe('WorkingTreeFileResource', () => {
                             size: 12
                         },
                         relationships: {
-                            workingtree: {
+                            directory: {
                                 links: {
                                     related: "http://localhost:61749/api/directory/dGVzdGZpbGU="
                                 }
@@ -327,7 +327,7 @@ describe('WorkingTreeFileResource', () => {
                             size: 12
                         },
                         relationships: {
-                            workingtree: {
+                            directory: {
                                 links: {
                                     related: "http://localhost:61749/api/directory/dGVzdGZpbGU="
                                 }

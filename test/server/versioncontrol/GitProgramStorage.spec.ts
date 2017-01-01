@@ -395,8 +395,8 @@ describe('GitProgramStorage', () => {
             await wrapCallbackAsPromise(fs.writeFile, `tmp/${programName}/test1`, 'test1');
             await wrapCallbackAsPromise(fs.mkdir, `tmp/${programName}/test2`);
             let directory = await programStorage.getWorkingTreeDirectory(programName, '.');
-            assert.equal(directory.getType('test1'), WorkingTreeObjectType.File);
-            assert.equal(directory.getType('test2'), WorkingTreeObjectType.Directory);
+            assert.equal(directory.getItemType('test1'), WorkingTreeObjectType.File);
+            assert.equal(directory.getItemType('test2'), WorkingTreeObjectType.Directory);
         });
 
         it('should normalize the directory\'s path', async () => {
