@@ -105,6 +105,7 @@ export class ObjectParser<T> {
 
             this.properties.set(property.name, property);
         }
+        return this;
     }
 }
 
