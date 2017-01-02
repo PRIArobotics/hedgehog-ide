@@ -13,20 +13,16 @@ import ApiEndpoint from "../../ApiEndpoint";
 
 export default class WorkingTreeFileResource extends ApiResource {
 
-    private static fileParser = JsonApiResource.getParser();
-
-    private static initializeParser() {
-        WorkingTreeFileResource.fileParser.addProperties({
-            name: 'attributes',
-            required: RequirementType.Required,
-            handler: new ObjectParser(() => ({}),
-                { name: 'path' },
-                { name: 'mode' },
-                { name: 'content'},
-                { name: 'encoding' }
-            )
-        });
-    }
+    private static fileParser = JsonApiResource.getParser().addProperties({
+        name: 'attributes',
+        required: RequirementType.Required,
+        handler: new ObjectParser(() => ({}),
+            { name: 'path' },
+            { name: 'mode' },
+            { name: 'content'},
+            { name: 'encoding' }
+        )
+    });
 
     constructor(private programStorage: IProgramStorage, private serializerRegistry: SerializerRegistry) {
         super('/workingtrees/{programId}/files');
@@ -170,4 +166,3 @@ export default class WorkingTreeFileResource extends ApiResource {
             .code(200);
     }
 }
-(<any> WorkingTreeFileResource).initializeParser();

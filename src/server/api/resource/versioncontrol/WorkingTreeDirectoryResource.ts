@@ -14,18 +14,14 @@ import {getLinkUrl} from "../../../utils";
 
 export default class WorkingTreeDirectoryResource extends ApiResource {
 
-    private static directoryParser = JsonApiResource.getParser();
-
-    private static initializeParser() {
-        WorkingTreeDirectoryResource.directoryParser.addProperties({
-            name: 'attributes',
-            required: RequirementType.Required,
-            handler: new ObjectParser(() => ({}),
-                { name: 'path' },
-                { name: 'mode' }
-            )
-        });
-    }
+    private static directoryParser = JsonApiResource.getParser().addProperties({
+        name: 'attributes',
+        required: RequirementType.Required,
+        handler: new ObjectParser(() => ({}),
+            { name: 'path' },
+            { name: 'mode' }
+        )
+    });
 
     constructor(private programStorage: IProgramStorage, private serializerRegistry: SerializerRegistry) {
         super('/workingtrees/{programId}/directories');
@@ -155,4 +151,3 @@ export default class WorkingTreeDirectoryResource extends ApiResource {
             .code(200);
     }
 }
-(<any> WorkingTreeDirectoryResource).initializeParser();
