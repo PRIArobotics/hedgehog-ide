@@ -9,29 +9,13 @@ export abstract class JsonApiObject {
 }
 
 export class JsonApiDocument extends JsonApiObject implements IJsonApiLinkable {
-    public static getParser(
-        overwriteSubParser: {[key: string]: ObjectParser<JsonApiObject>} = { }
-    ): ObjectParser<JsonApiDocument> {
-        let parser = new ObjectParser(() => new JsonApiDocument());
-        let subParsers = Object.assign({
-            data: JsonApiResource.getParser(),
-            included: JsonApiResource.getParser()
-        }, overwriteSubParser);
-
-        parser.addProperties(
+    public static getParser(): ObjectParser<JsonApiDocument> {
+        let parser = new ObjectParser(() => new JsonApiDocument(),
             {
                 name: 'data',
                 required: (object) => !object.hasOwnProperty('meta')
                     ? RequirementType.Required
                     : RequirementType.Allowed,
-                handler: (property) => {
-                    let propertyParser = subParsers['data'];
-                    if(property instanceof Array) {
-                        return propertyParser.parseArray(property);
-                    } else {
-                        return propertyParser.parse(property);
-                    }
-                }
             },
             {
                 name: 'meta',
@@ -45,10 +29,8 @@ export class JsonApiDocument extends JsonApiObject implements IJsonApiLinkable {
             },
             {
                 name: 'included',
-                handler: subParsers['included']
             }
         );
-
         return parser;
     }
 
@@ -87,16 +69,8 @@ export class JsonApiLinks extends JsonApiObject {
 }
 
 export class JsonApiResource extends JsonApiObject implements IJsonApiLinkable {
-    public static getParser(
-        overwriteSubParser: {[key: string]: ObjectParser<JsonApiObject>} = { }
-    ): ObjectParser<JsonApiResource> {
+    public static getParser(): ObjectParser<JsonApiResource> {
         let parser = new ObjectParser(() => new JsonApiResource());
-        let subParsers = Object.assign({
-            relationships: {
-                many: JsonApiManyRelationships.getParser(),
-                single: JsonApiSingleRelationships.getParser()
-            },
-        }, overwriteSubParser);
 
         parser.addProperties(
             {
@@ -109,23 +83,7 @@ export class JsonApiResource extends JsonApiObject implements IJsonApiLinkable {
             },
             { name: 'attributes' },
             { name: 'meta' },
-            {
-                name: 'relationships',
-                handler: (object) => {
-                    let manyParser = subParsers['relationships']['many'];
-                    let singleParser = subParsers['relationships']['single'];
-
-                    let parsedObject = { };
-                    for(const propertyName of Object.getOwnPropertyNames(object)) {
-                        if(object[propertyName].data instanceof Array) {
-                            parsedObject[propertyName] = manyParser.parse(object[propertyName]);
-                        } else {
-                            parsedObject[propertyName] = singleParser.parse(object[propertyName]);
-                        }
-                    }
-                    return parsedObject;
-                }
-            },
+            { name: 'relationships' },
             {
                 name: 'links',
                 handler: JsonApiLinks.getParser()
@@ -170,20 +128,14 @@ function getRelationshipBaseParser<T>(factory: () => T): ObjectParser<T> {
 }
 
 export class JsonApiManyRelationships extends JsonApiObject implements IJsonApiLinkable {
-    public static getParser(
-        overwriteSubParser: {[key: string]: ObjectParser<JsonApiObject>} = { }
-    ): ObjectParser<JsonApiManyRelationships> {
+    public static getParser(): ObjectParser<JsonApiManyRelationships> {
         let parser = getRelationshipBaseParser(() => new JsonApiManyRelationships());
-        let subParsers = Object.assign({
-            data: JsonApiResourceIdentifier.getParser()
-        }, overwriteSubParser);
 
         parser.addProperties({
             name: 'data',
             required: object => !object.hasOwnProperty('links') && !object.hasOwnProperty('meta')
                 ? RequirementType.Required
-                : RequirementType.Allowed,
-            handler: subParsers['data']
+                : RequirementType.Allowed
         });
 
         return parser;
@@ -194,20 +146,14 @@ export class JsonApiManyRelationships extends JsonApiObject implements IJsonApiL
 }
 
 export class JsonApiSingleRelationships extends JsonApiObject implements IJsonApiLinkable {
-    public static getParser(
-        overwriteSubParser: {[key: string]: ObjectParser<JsonApiObject>} = { }
-    ): ObjectParser<JsonApiSingleRelationships> {
+    public static getParser(): ObjectParser<JsonApiSingleRelationships> {
         let parser = getRelationshipBaseParser(() => new JsonApiSingleRelationships());
-        let subParsers = Object.assign({
-            data: JsonApiResourceIdentifier.getParser()
-        }, overwriteSubParser);
 
         parser.addProperties({
             name: 'data',
             required: object => !object.hasOwnProperty('links') && !object.hasOwnProperty('meta')
                 ? RequirementType.Required
-                : RequirementType.Allowed,
-            handler: subParsers['data']
+                : RequirementType.Allowed
         });
 
         return parser;
