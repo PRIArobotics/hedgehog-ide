@@ -1,13 +1,19 @@
 import "babel-polyfill";
 import Hapi = require('hapi');
 import path = require('path');
+import winston = require("winston");
+import chalk = require('chalk');
+import figlet = require('figlet');
+
 import Api from "./api/Api";
 import ProgramResource from "./api/resource/versioncontrol/ProgramResource";
 import GitProgramStorage from "./versioncontrol/GitProgramStorage";
 import modelRegistry from "./jsonapi/ModelSerializerRegistry";
-import winston = require("winston");
 import WorkingTreeFileResource from "./api/resource/versioncontrol/WorkingTreeFileResource";
 import WorkingTreeDirectoryResource from "./api/resource/versioncontrol/WorkingTreeDirectoryResource";
+
+
+console.log(chalk.green(figlet.textSync('Hedgehog IDE')));
 
 /**
  * Logger setup
@@ -105,8 +111,10 @@ server.ext('onPreResponse', (request, reply) => {
     return reply.continue();
 });
 
-// Print routes for debugging
-winston.debug('Routes');
+/**
+ * Print routes for debugging
+ */
+winston.debug(chalk.underline.cyan('Routes'));
 for(const route of (<any>server.connections[0]).table()) {
     winston.debug(`- ${route.method} ${route.path}`);
 }
@@ -119,5 +127,5 @@ server.start((err) => {
     if (err)
         throw err;
 
-    console.log('Server running at:', server.info.uri);
+    winston.info('Server running at:', server.info.uri);
 });
