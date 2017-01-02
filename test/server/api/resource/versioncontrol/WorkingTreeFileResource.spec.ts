@@ -77,7 +77,7 @@ describe('WorkingTreeFileResource', () => {
                         relationships: {
                             directory: {
                                 links: {
-                                    related: "http://localhost:61749/api/directory/dGVzdGZpbGU="
+                                    related: "http://localhost:61749/api/directory/Lg=="
                                 }
                             }
                         }
@@ -126,7 +126,7 @@ describe('WorkingTreeFileResource', () => {
                         relationships: {
                             directory: {
                                 links: {
-                                    related: "http://localhost:61749/api/directory/dGVzdGZpbGU="
+                                    related: "http://localhost:61749/api/directory/Lg=="
                                 }
                             }
                         }
@@ -208,7 +208,7 @@ describe('WorkingTreeFileResource', () => {
                         relationships: {
                             directory: {
                                 links: {
-                                    related: "http://localhost:61749/api/directory/bmV3X3Rlc3RmaWxl"
+                                    related: "http://localhost:61749/api/directory/Lg=="
                                 }
                             }
                         }
@@ -267,7 +267,7 @@ describe('WorkingTreeFileResource', () => {
                         relationships: {
                             directory: {
                                 links: {
-                                    related: "http://localhost:61749/api/directory/dGVzdGZpbGU="
+                                    related: "http://localhost:61749/api/directory/Lg=="
                                 }
                             }
                         }
@@ -329,7 +329,7 @@ describe('WorkingTreeFileResource', () => {
                         relationships: {
                             directory: {
                                 links: {
-                                    related: "http://localhost:61749/api/directory/dGVzdGZpbGU="
+                                    related: "http://localhost:61749/api/directory/Lg=="
                                 }
                             }
                         }
