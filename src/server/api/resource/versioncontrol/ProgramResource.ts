@@ -13,6 +13,21 @@ import {getRequestUrl, getLinkUrl} from "../../../utils";
 import {genericFromBase64, genericToBase64} from "../../../../common/utils";
 
 export default class ProgramsResource extends ApiResource {
+    private static programParser = JsonApiDocument.getParser().addProperties({
+        name: 'data',
+        required: RequirementType.Required,
+        handler: JsonApiResource.getParser().addProperties(
+            {
+                name: 'attributes',
+                required: RequirementType.Required,
+                handler: new ObjectParser(() => ({}), {
+                    name: 'name',
+                    required: RequirementType.Required
+                })
+            }
+        )
+    });
+
     constructor(private programStorage: IProgramStorage, private serializerRegistry: SerializerRegistry) {
         super('/programs');
     }
@@ -21,7 +36,11 @@ export default class ProgramsResource extends ApiResource {
     public async createProgram(req, reply) {
         let document: JsonApiDocument;
         try {
-            document = this.parseProgramPayload(req.payload);
+            document = ProgramsResource.programParser.parse(req.payload, {
+                data: {
+                    id: RequirementType.Forbidden
+                }
+            });
         } catch(err) {
             winston.error(err);
             return reply({
@@ -105,7 +124,7 @@ export default class ProgramsResource extends ApiResource {
         let oldProgramName = genericFromBase64(req.params['programId']);
         let newProgramName: string;
         try {
-            newProgramName = (<JsonApiResource> this.parseProgramPayload(req.payload).data).attributes.name;
+            newProgramName = (<JsonApiResource> ProgramsResource.programParser.parse(req.payload).data).attributes.name;
         } catch(err) {
             winston.error(err);
             return reply({
@@ -141,23 +160,5 @@ export default class ProgramsResource extends ApiResource {
 
         return reply(documentBuilder.getProduct())
             .code(200);
-    }
-
-    private parseProgramPayload(payload) {
-        let resourceParser = JsonApiResource.getParser();
-        resourceParser.addProperties(
-            {
-                name: 'attributes',
-                required: RequirementType.Required,
-                handler: new ObjectParser(() => ({}), {
-                    name: 'name',
-                    required: RequirementType.Required
-                })
-            }
-        );
-
-        return JsonApiDocument.getParser({
-            data: resourceParser
-        }).parse(payload);
     }
 }
