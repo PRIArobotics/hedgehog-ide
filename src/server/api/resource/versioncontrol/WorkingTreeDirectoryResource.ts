@@ -7,12 +7,26 @@ import IProgramStorage from "../../../../common/versioncontrol/ProgramStorage";
 import SerializerRegistry from "../../../serializer/SerializerRegistry";
 import {genericFromBase64, genericToBase64} from "../../../../common/utils";
 import {JsonApiResource} from "../../../jsonapi/JsonApiObjects";
-import {ObjectParser, parserHandler} from "../../../jsonapi/Parser";
+import {ObjectParser, RequirementType} from "../../../jsonapi/Parser";
 import WorkingTreeDirectory from "../../../../common/versioncontrol/WorkingTreeDirectory";
 import JsonApiDocumentBuilder from "../../../jsonapi/JsonApiBuilder";
 import {getLinkUrl} from "../../../utils";
 
 export default class WorkingTreeDirectoryResource extends ApiResource {
+
+    private static directoryParser = JsonApiResource.getParser();
+
+    private static initializeParser() {
+        WorkingTreeDirectoryResource.directoryParser.addProperties({
+            name: 'attributes',
+            required: RequirementType.Required,
+            handler: new ObjectParser(() => ({}),
+                { name: 'path' },
+                { name: 'mode' }
+            )
+        });
+    }
+
     constructor(private programStorage: IProgramStorage, private serializerRegistry: SerializerRegistry) {
         super('/workingtrees/{programId}/directories');
     }
@@ -21,27 +35,15 @@ export default class WorkingTreeDirectoryResource extends ApiResource {
     public async createDirectory(req: Hapi.Request, reply: Hapi.IReply) {
         const programName = genericFromBase64(req.params['programId']);
 
-        // Build parser
-        let requestParser = JsonApiResource.getParser();
-        requestParser.addProperties({
-            name: 'attributes',
-            required: true,
-            handler: parserHandler(new ObjectParser(() => ({}),
-                {
-                    name: 'mode',
-                    required: false
-                },
-                {
-                    name: 'path',
-                    required: true
-                }
-            ))
-        });
-
         // Parse request payload
         let directoryData;
         try {
-            directoryData = requestParser.parse(req.payload.data).attributes;
+            directoryData = WorkingTreeDirectoryResource.directoryParser.parse(req.payload.data, {
+                id: RequirementType.Forbidden,
+                attributes: {
+                    path: RequirementType.Required
+                }
+            }).attributes;
         } catch(err) {
             winston.error(err);
             return reply({
@@ -78,27 +80,10 @@ export default class WorkingTreeDirectoryResource extends ApiResource {
         const programName = genericFromBase64(req.params['programId']);
         let oldDirectoryPath = genericFromBase64(req.params['directoryId']);
 
-        // Build parser
-        let requestParser = JsonApiResource.getParser();
-        requestParser.addProperties({
-            name: 'attributes',
-            required: true,
-            handler: parserHandler(new ObjectParser(() => ({}),
-                {
-                    name: 'mode',
-                    required: false
-                },
-                {
-                    name: 'path',
-                    required: false
-                }
-            ))
-        });
-
         // Parse request payload
         let directoryData;
         try {
-            directoryData = requestParser.parse(req.payload.data).attributes;
+            directoryData = WorkingTreeDirectoryResource.directoryParser.parse(req.payload.data).attributes;
         } catch(err) {
             winston.error(err);
             return reply({
@@ -170,3 +155,4 @@ export default class WorkingTreeDirectoryResource extends ApiResource {
             .code(200);
     }
 }
+(<any> WorkingTreeDirectoryResource).initializeParser();

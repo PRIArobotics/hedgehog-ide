@@ -3,7 +3,7 @@ import winston = require("winston");
 import ApiResource from "../../ApiResource";
 import IProgramStorage from "../../../../common/versioncontrol/ProgramStorage";
 import {JsonApiResource} from "../../../jsonapi/JsonApiObjects";
-import {parserHandler, ObjectParser} from "../../../jsonapi/Parser";
+import {ObjectParser, RequirementType} from "../../../jsonapi/Parser";
 import SerializerRegistry from "../../../serializer/SerializerRegistry";
 import {genericFromBase64, genericToBase64} from "../../../../common/utils";
 import WorkingTreeFile from "../../../../common/versioncontrol/WorkingTreeFile";
@@ -12,6 +12,22 @@ import {getLinkUrl} from "../../../utils";
 import ApiEndpoint from "../../ApiEndpoint";
 
 export default class WorkingTreeFileResource extends ApiResource {
+
+    private static fileParser = JsonApiResource.getParser();
+
+    private static initializeParser() {
+        WorkingTreeFileResource.fileParser.addProperties({
+            name: 'attributes',
+            required: RequirementType.Required,
+            handler: new ObjectParser(() => ({}),
+                { name: 'path' },
+                { name: 'mode' },
+                { name: 'content'},
+                { name: 'encoding' }
+            )
+        });
+    }
+
     constructor(private programStorage: IProgramStorage, private serializerRegistry: SerializerRegistry) {
         super('/workingtrees/{programId}/files');
     }
@@ -20,23 +36,15 @@ export default class WorkingTreeFileResource extends ApiResource {
     public async createFile(req, reply) {
         const programName = genericFromBase64(req.params['programId']);
 
-        // Build parser
-        const attributesParser = this.getFileAttributesParser();
-        attributesParser.addProperties({
-            name: 'path',
-            required: true
-        });
-        const fileParser = JsonApiResource.getParser();
-        fileParser.addProperties({
-            name: 'attributes',
-            required: true,
-            handler: parserHandler(attributesParser)
-        });
-
         // Parse request payload
         let requestData: JsonApiResource;
         try {
-             requestData = fileParser.parse(req.payload.data);
+             requestData = WorkingTreeFileResource.fileParser.parse(req.payload.data, {
+                 id: RequirementType.Forbidden,
+                 attributes: {
+                     path: RequirementType.Required
+                 }
+             });
         } catch(err) {
             winston.error(err);
             return reply({
@@ -79,29 +87,10 @@ export default class WorkingTreeFileResource extends ApiResource {
         const programName = genericFromBase64(req.params['programId']);
         let filePath = genericFromBase64(req.params['fileId']);
 
-        // Build parser
-        const attributesParser = this.getFileAttributesParser();
-        attributesParser.addProperties({
-            name: 'path',
-            required: false
-        });
-        const fileParser = JsonApiResource.getParser();
-        fileParser.addProperties(
-            {
-                name: 'id',
-                required: true
-            },
-            {
-                name: 'attributes',
-                required: true,
-                handler: parserHandler(attributesParser)
-            }
-        );
-
         // Update request payload
         let updatedFile;
         try {
-            updatedFile = fileParser.parse(req.payload.data).attributes;
+            updatedFile = WorkingTreeFileResource.fileParser.parse(req.payload.data).attributes;
         } catch(err) {
             winston.error(err);
             return reply({
@@ -180,21 +169,5 @@ export default class WorkingTreeFileResource extends ApiResource {
         return reply(documentBuilder.getProduct())
             .code(200);
     }
-
-    private getFileAttributesParser() {
-        return new ObjectParser(() => ({}),
-            {
-                name: 'mode',
-                required: false
-            },
-            {
-                name: 'content',
-                required: false
-            },
-            {
-                name: 'encoding',
-                required: false
-            }
-        );
-    }
 }
+(<any> WorkingTreeFileResource).initializeParser();

@@ -224,6 +224,7 @@ describe('ProgramResource', () => {
                 method: 'PATCH',
                 payload: {
                     data: {
+                        id: 'cHJvZ3JhbTE=',
                         type: 'program',
                         attributes: {
                             name: 'program1'

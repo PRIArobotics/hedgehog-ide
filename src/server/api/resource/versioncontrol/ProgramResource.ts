@@ -4,7 +4,7 @@ import ApiResource from "../../ApiResource";
 import ApiEndpoint from "../../ApiEndpoint";
 import IProgramStorage from "../../../../common/versioncontrol/ProgramStorage";
 import {JsonApiDocument, JsonApiResource} from "../../../jsonapi/JsonApiObjects";
-import {ObjectParser, parserHandler} from "../../../jsonapi/Parser";
+import {ObjectParser, RequirementType} from "../../../jsonapi/Parser";
 import Program from "../../../../common/versioncontrol/Program";
 import JsonApiDocumentBuilder from "../../../jsonapi/JsonApiBuilder";
 import SerializerRegistry from "../../../serializer/SerializerRegistry";
@@ -145,14 +145,16 @@ export default class ProgramsResource extends ApiResource {
 
     private parseProgramPayload(payload) {
         let resourceParser = JsonApiResource.getParser();
-        resourceParser.addProperties({
-            name: 'attributes',
-            required: true,
-            handler: parserHandler(new ObjectParser(() => ({}), {
-                name: 'name',
-                required: true
-            }))
-        });
+        resourceParser.addProperties(
+            {
+                name: 'attributes',
+                required: RequirementType.Required,
+                handler: new ObjectParser(() => ({}), {
+                    name: 'name',
+                    required: RequirementType.Required
+                })
+            }
+        );
 
         return JsonApiDocument.getParser({
             data: resourceParser

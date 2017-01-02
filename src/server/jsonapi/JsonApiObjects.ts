@@ -1,4 +1,4 @@
-import {ObjectParser, parserHandler, arrayParserHandler} from "./Parser";
+import {ObjectParser, RequirementType} from "./Parser";
 
 export interface IJsonApiLinkable {
     links: JsonApiLinks;
@@ -21,7 +21,9 @@ export class JsonApiDocument extends JsonApiObject implements IJsonApiLinkable {
         parser.addProperties(
             {
                 name: 'data',
-                required: (object) => !object.hasOwnProperty('meta'),
+                required: (object) => !object.hasOwnProperty('meta')
+                    ? RequirementType.Required
+                    : RequirementType.Allowed,
                 handler: (property) => {
                     let propertyParser = subParsers['data'];
                     if(property instanceof Array) {
@@ -33,19 +35,17 @@ export class JsonApiDocument extends JsonApiObject implements IJsonApiLinkable {
             },
             {
                 name: 'meta',
-                required: (object) => {
-                    return !object.hasOwnProperty('data');
-                }
+                required: (object) => !object.hasOwnProperty('data')
+                    ? RequirementType.Required
+                    : RequirementType.Allowed,
             },
             {
                 name: 'links',
-                required: false,
-                handler: parserHandler(JsonApiLinks.getParser())
+                handler: JsonApiLinks.getParser()
             },
             {
                 name: 'included',
-                required: false,
-                handler: arrayParserHandler(subParsers['included'])
+                handler: subParsers['included']
             }
         );
 
@@ -68,10 +68,14 @@ export class JsonApiLinks extends JsonApiObject {
             {
                 name: 'self',
                 required: (object) => !object.hasOwnProperty('related')
+                    ? RequirementType.Required
+                    : RequirementType.Allowed,
             },
             {
                 name: 'related',
                 required: (object) => !object.hasOwnProperty('self')
+                    ? RequirementType.Required
+                    : RequirementType.Allowed,
             }
         );
 
@@ -97,23 +101,16 @@ export class JsonApiResource extends JsonApiObject implements IJsonApiLinkable {
         parser.addProperties(
             {
                 name: 'id',
-                required: false
+                required: RequirementType.Required
             },
             {
                 name: 'type',
-                required: true
+                required: RequirementType.Required
             },
-            {
-                name: 'attributes',
-                required: false
-            },
-            {
-                name: 'meta',
-                required: false
-            },
+            { name: 'attributes' },
+            { name: 'meta' },
             {
                 name: 'relationships',
-                required: false,
                 handler: (object) => {
                     let manyParser = subParsers['relationships']['many'];
                     let singleParser = subParsers['relationships']['single'];
@@ -131,8 +128,7 @@ export class JsonApiResource extends JsonApiObject implements IJsonApiLinkable {
             },
             {
                 name: 'links',
-                required: false,
-                handler: parserHandler(JsonApiLinks.getParser())
+                handler: JsonApiLinks.getParser()
             }
         );
 
@@ -160,12 +156,13 @@ function getRelationshipBaseParser<T>(factory: () => T): ObjectParser<T> {
     parser.addProperties(
         {
             name: 'links',
-            required: false,
             handler: object => !object.hasOwnProperty('data') && !object.hasOwnProperty('meta')
         },
         {
             name: 'meta',
             required: object => !object.hasOwnProperty('links') && !object.hasOwnProperty('data')
+                ? RequirementType.Required
+                : RequirementType.Allowed
         }
     );
 
@@ -183,8 +180,10 @@ export class JsonApiManyRelationships extends JsonApiObject implements IJsonApiL
 
         parser.addProperties({
             name: 'data',
-            required: object => !object.hasOwnProperty('links') && !object.hasOwnProperty('meta'),
-            handler: arrayParserHandler(subParsers['data'])
+            required: object => !object.hasOwnProperty('links') && !object.hasOwnProperty('meta')
+                ? RequirementType.Required
+                : RequirementType.Allowed,
+            handler: subParsers['data']
         });
 
         return parser;
@@ -205,8 +204,10 @@ export class JsonApiSingleRelationships extends JsonApiObject implements IJsonAp
 
         parser.addProperties({
             name: 'data',
-            required: object => !object.hasOwnProperty('links') && !object.hasOwnProperty('meta'),
-            handler: parserHandler(subParsers['data'])
+            required: object => !object.hasOwnProperty('links') && !object.hasOwnProperty('meta')
+                ? RequirementType.Required
+                : RequirementType.Allowed,
+            handler: subParsers['data']
         });
 
         return parser;
@@ -222,11 +223,11 @@ export class JsonApiResourceIdentifier extends JsonApiObject {
         parser.addProperties(
             {
                 name: 'id',
-                required: true
+                required: RequirementType.Required
             },
             {
                 name: 'type',
-                required: true
+                required: RequirementType.Required
             }
         );
         return parser;
