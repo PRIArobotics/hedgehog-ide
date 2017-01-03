@@ -12,7 +12,7 @@ import {DataType} from "../../../jsonapi/JsonApiBuilder";
 import {getRequestUrl, getLinkUrl} from "../../../utils";
 import {genericFromBase64, genericToBase64} from "../../../../common/utils";
 
-export default class ProgramsResource extends ApiResource {
+export default class ProgramResource extends ApiResource {
     private static programParser = JsonApiDocument.getParser().addProperties({
         name: 'data',
         required: RequirementType.Required,
@@ -36,7 +36,7 @@ export default class ProgramsResource extends ApiResource {
     public async createProgram(req, reply) {
         let document: JsonApiDocument;
         try {
-            document = ProgramsResource.programParser.parse(req.payload, {
+            document = ProgramResource.programParser.parse(req.payload, {
                 data: {
                     id: RequirementType.Forbidden
                 }
@@ -124,7 +124,7 @@ export default class ProgramsResource extends ApiResource {
         let oldProgramName = genericFromBase64(req.params['programId']);
         let newProgramName: string;
         try {
-            newProgramName = (<JsonApiResource> ProgramsResource.programParser.parse(req.payload).data).attributes.name;
+            newProgramName = (<JsonApiResource> ProgramResource.programParser.parse(req.payload).data).attributes.name;
         } catch(err) {
             winston.error(err);
             return reply({
