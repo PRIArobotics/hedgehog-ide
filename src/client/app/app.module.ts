@@ -7,6 +7,7 @@ import {TextIdeComponent} from "./text-ide/text-ide.component";
 import {TextIdeModule} from "./text-ide/text-ide.module";
 import {ProgramListComponent} from "./program/program-list.component";
 import {ProgramModule} from "./program/program.module";
+import {BlocklyComponent} from "./blockly/editor.component";
 
 const appRoutes: Routes = [
     {
@@ -20,6 +21,10 @@ const appRoutes: Routes = [
     {
         path: '*',
         redirectTo: '/'
+    },
+    {
+        path: 'blockly',
+        component: BlocklyComponent
     }
 ];
 
@@ -31,7 +36,8 @@ const appRoutes: Routes = [
         RouterModule.forRoot(appRoutes)
     ],
     declarations: [
-        AppComponent
+        AppComponent,
+        BlocklyComponent
     ],
     bootstrap: [ AppComponent ],
 })
