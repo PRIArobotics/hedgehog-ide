@@ -8,6 +8,7 @@
     <link href="assets/css/google-material/material-icons.css" rel="stylesheet">
     <link href="node_modules/materialize-css/dist/css/materialize.min.css" rel="stylesheet">
     <link href="node_modules/jquery-ui-dist/jquery-ui.min.css" rel="stylesheet">
+
     <!-- 1. Load libraries -->
     <!-- Polyfill(s) for older browsers -->
     <script src="node_modules/babel-polyfill/dist/polyfill.min.js"></script>
@@ -21,6 +22,11 @@
     <script src="node_modules/jquery/dist/jquery.min.js"></script>
     <script src="node_modules/jquery-ui-dist/jquery-ui.min.js"></script>
 
+    <!-- 4. Blockly Libraries -->
+    <script src="src/client/app/blockly/lib/blockly_compressed.js"></script>
+    <script src="src/client/app/blockly/lib/blocks_compressed.js"></script>
+    <script src="src/client/app/blockly/lib/python_compressed.js"></script>
+    <script src="src/client/app/blockly/lib/msg/js/en.js"></script>
 
     <script>
         System.import('app').catch(function(err){ console.error(err); });
