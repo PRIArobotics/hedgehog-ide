@@ -372,6 +372,41 @@ describe('GitProgramStorage', () => {
     });
 
     describe('getWorkingTreeDirectory', () => {
+        it('should set the isClean property to true if the working tree has not been changed', async () => {
+            const programName = getProgramName();
+            let repository = await NodeGit.Repository.init(`tmp/${programName}`, 0);
+
+            await wrapCallbackAsPromise(fs.writeFile, `tmp/${programName}/test`, 'hello');
+            await repository.createCommitOnHead(
+                ['test'],
+                GitProgramStorage.signature,
+                GitProgramStorage.signature,
+                'initial commit'
+            );
+
+            let workingtree = await programStorage.getWorkingTree(programName);
+            assert.equal(workingtree.isClean, true);
+        });
+
+        it('should set the isClean property to true if the working tree has been changed', async () => {
+            const programName = getProgramName();
+            let repository = await NodeGit.Repository.init(`tmp/${programName}`, 0);
+
+            await wrapCallbackAsPromise(fs.writeFile, `tmp/${programName}/test`, 'hello');
+            await repository.createCommitOnHead(
+                ['test'],
+                GitProgramStorage.signature,
+                GitProgramStorage.signature,
+                'initial commit'
+            );
+            await wrapCallbackAsPromise(fs.writeFile, `tmp/${programName}/test`, 'test');
+
+            let workingtree = await programStorage.getWorkingTree(programName);
+            assert.equal(workingtree.isClean, false);
+        });
+    });
+
+    describe('getWorkingTreeDirectory', () => {
         it('should get a directory from the working tree', async () => {
             const programName = getProgramName();
             await wrapCallbackAsPromise(fs.mkdir, `tmp/${programName}`);

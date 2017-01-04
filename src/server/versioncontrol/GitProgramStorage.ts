@@ -148,8 +148,10 @@ export default class GitProgramStorage implements IProgramStorage {
     }
 
 
-    public getWorkingTree(programName: string): WorkingTree {
-        return new WorkingTree(this, programName);
+    public async getWorkingTree(programName: string): Promise<WorkingTree> {
+        let repository = await this.getRepository(programName);
+        const isClean = (await repository.getStatus({})).length === 0;
+        return new WorkingTree(this, programName, isClean);
     }
 
     public async getWorkingTreeDirectory(programName: string, directoryPath: string): Promise<WorkingTreeDirectory> {

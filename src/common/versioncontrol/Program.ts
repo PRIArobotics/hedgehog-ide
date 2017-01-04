@@ -23,7 +23,7 @@ export default class Program {
         this.name = newName;
     }
 
-    public getWorkingTree(): WorkingTree {
+    public getWorkingTree(): Promise<WorkingTree> {
         return this.storage.getWorkingTree(this.name);
     }
 

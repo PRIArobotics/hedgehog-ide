@@ -125,8 +125,9 @@ export default class DummyProgramStorage implements IProgramStorage {
         return undefined;
     }
 
-    public getWorkingTree(programName: string): WorkingTree {
-        return new WorkingTree(this, programName);
+    public getWorkingTree(programName: string): Promise<WorkingTree> {
+        // Repository status (is clean) is not supported, just set it to false
+        return Promise.resolve(new WorkingTree(this, programName, false));
     }
 
     public getWorkingTreeDirectory(programName: string, path: string): Promise<WorkingTreeDirectory> {

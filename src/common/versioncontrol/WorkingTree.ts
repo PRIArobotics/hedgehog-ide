@@ -3,13 +3,15 @@ import WorkingTreeFile from "./WorkingTreeFile";
 import IProgramStorage from "./ProgramStorage";
 
 export default class WorkingTree {
+    public readonly isClean: boolean;
+
     private programName;
     private storage: IProgramStorage;
 
-
-    public constructor(storage, programName: string) {
+    public constructor(storage, programName: string, isClean) {
         this.storage = storage;
         this.programName = programName;
+        this.isClean = isClean;
     }
 
     public getRootDirectory(): Promise<WorkingTreeDirectory> {
@@ -22,11 +24,6 @@ export default class WorkingTree {
 
     public getFile(path: string): Promise<WorkingTreeFile> {
         return this.storage.getWorkingTreeFile(this.programName, path);
-    }
-
-    // TODO: check whether this method is needed
-    public isClean(): boolean {
-        return undefined;
     }
 
     public saveAsVersion(message: string, tag?: string): Promise<string> {

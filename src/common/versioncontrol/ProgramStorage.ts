@@ -122,7 +122,7 @@ interface IProgramStorage {
      * @param programName
      * @returns the working tree object
      */
-    getWorkingTree(programName: string): WorkingTree;
+    getWorkingTree(programName: string): Promise<WorkingTree>;
 
     /**
      * Get a directory of a program's working tree
