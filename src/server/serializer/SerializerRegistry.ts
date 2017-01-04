@@ -10,12 +10,12 @@ export default class SerializerRegistry {
         this.serializers.set(type.name, serializer);
     }
 
-    public async serialize(object, request, resourceBuilder): Promise<JsonApiResource> {
+    public async serialize(object, request, documentBuilder): Promise<JsonApiResource> {
         const type = object.constructor.name;
         if(!this.serializers.has(type))
             throw new Error(`Serializer for type '${type}' not found.`);
 
-        return this.serializers.get(type).serialize(object, request, resourceBuilder, this);
+        return this.serializers.get(type).serialize(object, request, documentBuilder, this);
     }
 }
 

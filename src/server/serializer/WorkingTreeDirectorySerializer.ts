@@ -24,11 +24,7 @@ export default class WorkingTreeDirectorySerializer implements ISerializer {
 
         let items = [];
         for(const item of directory.items) {
-            items.push(await registry.serialize(
-                await directory.getItem(item),
-                request,
-                new JsonApiResourceBuilder(documentBuilder)
-            ));
+            items.push(await registry.serialize(await directory.getItem(item), request, documentBuilder));
         }
         resourceBuilder.addManyRelationship('items', items);
 
