@@ -212,7 +212,7 @@ describe('ProgramResource', () => {
         });
     });
 
-    describe('renameProgram', () => {
+    describe('updateProgram', () => {
         it('should rename a program', (done) => {
             const creationDate = new Date();
             let program = new Program(storage, 'program2', 'version1', true);
@@ -247,6 +247,101 @@ describe('ProgramResource', () => {
             }, (res) => {
                 mock.verify();
                 assert.equal(res.statusCode, 200);
+                assert.deepEqual(JSON.parse(res.payload), {
+                    links: {
+                        self: 'http://localhost:61749/api/programs/cHJvZ3JhbTE='
+                    },
+                    jsonapi: {
+                        version: '1.0'
+                    },
+                    data: getProgramResourceReply(program, creationDate)
+                });
+                done();
+            });
+        });
+
+        it('should reset a programs working tree', (done) => {
+            const creationDate = new Date();
+            let program = new Program(storage, 'program1', 'version1', false);
+
+            mock.expects('getProgram')
+                .once()
+                .withExactArgs('program1')
+                .returns(Promise.resolve(program));
+            mock.expects('getVersionIds')
+                .withExactArgs('program1')
+                .returns(Promise.resolve(['version1']));
+            mock.expects('getVersion')
+                .withExactArgs('program1', 'version1')
+                .returns(Promise.resolve(new Version(storage, 'program1', 'version1', '', '', creationDate, [], '')));
+
+            mock.expects('resetWorkingTree')
+                .once()
+                .withExactArgs('program1');
+
+            server.inject({
+                url: '/api/programs/cHJvZ3JhbTE=',
+                method: 'PATCH',
+                payload: {
+                    data: {
+                        id: 'cHJvZ3JhbTE=',
+                        type: 'program',
+                        attributes: {
+                            workingTreeClean: true
+                        }
+                    }
+                }
+            }, (res) => {
+                mock.verify();
+                assert.equal(res.statusCode, 200);
+                assert.deepEqual(JSON.parse(res.payload), {
+                    links: {
+                        self: 'http://localhost:61749/api/programs/cHJvZ3JhbTE='
+                    },
+                    jsonapi: {
+                        version: '1.0'
+                    },
+                    data: getProgramResourceReply(program, creationDate)
+                });
+                done();
+            });
+        });
+
+        it('should reset the program', (done) => {
+            const creationDate = new Date();
+            let program = new Program(storage, 'program1', 'version2', true);
+
+            mock.expects('getProgram')
+                .once()
+                .withExactArgs('program1')
+                .returns(Promise.resolve(program));
+            mock.expects('getVersionIds')
+                .withExactArgs('program1')
+                .returns(Promise.resolve(['version1', 'version2']));
+            mock.expects('getVersion')
+                .withExactArgs('program1', 'version2')
+                .returns(Promise.resolve(new Version(storage, 'program1', 'version2', '', '', creationDate, [], '')));
+
+            mock.expects('resetProgram')
+                .once()
+                .withExactArgs('program1', 'version1');
+
+            server.inject({
+                url: '/api/programs/cHJvZ3JhbTE=',
+                method: 'PATCH',
+                payload: {
+                    data: {
+                        id: 'cHJvZ3JhbTE=',
+                        type: 'program',
+                        attributes: {
+                            latestVersionId: 'version1'
+                        }
+                    }
+                }
+            }, (res) => {
+                mock.verify();
+                assert.equal(res.statusCode, 200);
+                program.latestVersionId = 'version1';
                 assert.deepEqual(JSON.parse(res.payload), {
                     links: {
                         self: 'http://localhost:61749/api/programs/cHJvZ3JhbTE='

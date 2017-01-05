@@ -20,10 +20,11 @@ export default class ProgramResource extends ApiResource {
             {
                 name: 'attributes',
                 required: RequirementType.Required,
-                handler: new ObjectParser(() => ({}), {
-                    name: 'name',
-                    required: RequirementType.Required
-                })
+                handler: new ObjectParser(() => ({}),
+                    { name: 'name'},
+                    { name: 'latestVersionId'},
+                    { name: 'workingTreeClean'},
+                )
             }
         )
     });
@@ -38,7 +39,10 @@ export default class ProgramResource extends ApiResource {
         try {
             document = ProgramResource.programParser.parse(req.payload, {
                 data: {
-                    id: RequirementType.Forbidden
+                    id: RequirementType.Forbidden,
+                    attributes: {
+                        name: RequirementType.Required
+                    }
                 }
             });
         } catch(err) {
@@ -120,11 +124,10 @@ export default class ProgramResource extends ApiResource {
     }
 
     @ApiEndpoint('PATCH', '/{programId}')
-    public async renameProgram(req, reply) {
-        let oldProgramName = genericFromBase64(req.params['programId']);
-        let newProgramName: string;
+    public async updateProgram(req, reply) {
+        let requestData: JsonApiResource;
         try {
-            newProgramName = (<JsonApiResource> ProgramResource.programParser.parse(req.payload).data).attributes.name;
+            requestData = (<JsonApiResource> ProgramResource.programParser.parse(req.payload).data);
         } catch(err) {
             winston.error(err);
             return reply({
@@ -134,7 +137,7 @@ export default class ProgramResource extends ApiResource {
 
         let program: Program;
         try {
-            program = await this.programStorage.getProgram(oldProgramName);
+            program = await this.programStorage.getProgram(genericFromBase64(req.params['programId']));
         } catch(err) {
             winston.error(err);
             return reply({
@@ -142,12 +145,38 @@ export default class ProgramResource extends ApiResource {
             }).code(404);
         }
 
-        try {
-            await program.rename(newProgramName);
-        } catch(err) {
-            return reply({
-                error: 'Failed to rename the program. Program with target name might already exist'
-            }).code(400);
+        // rename if name changed
+        if (requestData.attributes.name && requestData.attributes.name !== program.name) {
+            try {
+                await program.rename(requestData.attributes.name);
+            } catch(err) {
+                return reply({
+                    error: 'Failed to rename the program. Program with target name might already exist'
+                }).code(400);
+            }
+        }
+
+        // reset working tree if workingTreeClean has been set to true
+        if (requestData.attributes.workingTreeClean && !program.workingTreeClean) {
+            try {
+                await program.resetWorkingTree();
+            } catch(err) {
+                return reply({
+                    error: 'Failed to reset the program\'s working tree'
+                }).code(500);
+            }
+        }
+
+        // reset program if latestVersionId changed
+        if (requestData.attributes.latestVersionId
+            && requestData.attributes.latestVersionId !== program.latestVersionId) {
+            try {
+                await program.reset(requestData.attributes.latestVersionId);
+            } catch (err) {
+                return reply({
+                    error: 'Failed to reset the program'
+                }).code(500);
+            }
         }
 
         return this.replyProgram(program, req, reply);

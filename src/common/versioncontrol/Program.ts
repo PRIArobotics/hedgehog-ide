@@ -16,6 +16,16 @@ export default class Program {
         this.name = newName;
     }
 
+    public async resetWorkingTree(): Promise<void> {
+        await this.storage.resetWorkingTree(this.name);
+        this.workingTreeClean = true;
+    }
+
+    public async reset(versionId: string): Promise<void> {
+        await this.storage.resetProgram(this.name, versionId);
+        this.latestVersionId = versionId;
+    }
+
     public getVersionIds(): Promise<string[]> {
         return this.storage.getVersionIds(this.name);
     }
