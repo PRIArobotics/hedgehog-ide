@@ -125,6 +125,54 @@ describe('GitProgramStorage', () => {
             assert.ok(program instanceof Program);
             assert.equal(program.name, programName);
         });
+
+        it('should get the latest version id correctly', async () => {
+            let programName = getProgramName();
+
+            let repository = await NodeGit.Repository.init(`tmp/${programName}`, 0);
+            let commit = await repository.createCommitOnHead(
+                [],
+                GitProgramStorage.signature,
+                GitProgramStorage.signature,
+                'initial commit'
+            );
+
+            let program = await programStorage.getProgram(programName);
+            assert.equal(program.latestVersionId, commit.tostrS());
+        });
+
+        it('should set the isClean property to true if the working tree has not been changed', async () => {
+            const programName = getProgramName();
+            let repository = await NodeGit.Repository.init(`tmp/${programName}`, 0);
+
+            await wrapCallbackAsPromise(fs.writeFile, `tmp/${programName}/test`, 'hello');
+            await repository.createCommitOnHead(
+                ['test'],
+                GitProgramStorage.signature,
+                GitProgramStorage.signature,
+                'initial commit'
+            );
+
+            let program = await programStorage.getProgram(programName);
+            assert.equal(program.workingTreeClean, true);
+        });
+
+        it('should set the isClean property to true if the working tree has been changed', async () => {
+            const programName = getProgramName();
+            let repository = await NodeGit.Repository.init(`tmp/${programName}`, 0);
+
+            await wrapCallbackAsPromise(fs.writeFile, `tmp/${programName}/test`, 'hello');
+            await repository.createCommitOnHead(
+                ['test'],
+                GitProgramStorage.signature,
+                GitProgramStorage.signature,
+                'initial commit'
+            );
+            await wrapCallbackAsPromise(fs.writeFile, `tmp/${programName}/test`, 'test');
+
+            let program = await programStorage.getProgram(programName);
+            assert.equal(program.workingTreeClean, false);
+        });
     });
 
     describe('renameProgram', () => {
