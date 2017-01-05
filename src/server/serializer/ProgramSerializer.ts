@@ -16,14 +16,15 @@ async function serializeProgram (program: any,
     resourceBuilder.resource.attributes = {
         name: program.name,
         creationDate: initialVersion.creationDate.toISOString(),
-        currentVersionId: program.currentVersionId
+        latestVersionId: program.latestVersionId,
+        workingTreeClean: program.workingTreeClean
     };
 
     resourceBuilder.addManyRelationship('versions', {
         related: getLinkUrl(request, `/api/versions/${resourceBuilder.resource.id}`)
     });
-    resourceBuilder.addSingleRelationship('workingtree', {
-        related: getLinkUrl(request, `/api/workingtrees/${resourceBuilder.resource.id}`)
+    resourceBuilder.addSingleRelationship('workingTreeRoot', {
+        related: getLinkUrl(request, `/api/directories/${resourceBuilder.resource.id}/${genericToBase64('.')}`)
     });
     resourceBuilder.addSingleRelationship('latestVersion', {
         related: getLinkUrl(request, `/api/versions/${resourceBuilder.resource.id}/${program.latestVersionId}`)

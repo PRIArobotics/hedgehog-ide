@@ -6,7 +6,6 @@ import Program from './Program';
 import Blob from './Blob';
 import Tree from './Tree';
 import Version from './Version';
-import WorkingTree from './WorkingTree';
 import WorkingTreeDirectory from './WorkingTreeDirectory';
 import WorkingTreeFile from './WorkingTreeFile';
 import {WorkingTreeObjectType} from "./WorkingTreeObject";
@@ -33,7 +32,7 @@ export default class DummyProgramStorage implements IProgramStorage {
     }
 
     public createProgram(name: string): Promise<Program> {
-        let program = new Program(this, name, null);
+        let program = new Program(this, name, null, true);
 
         this.programs.set(name, program);
         this.programVersions.set(name, new Map<string, Version>());
@@ -123,11 +122,6 @@ export default class DummyProgramStorage implements IProgramStorage {
     // TODO
     public createVersionFromWorkingTree(programName: string, message: string, tag?: string): Promise<string> {
         return undefined;
-    }
-
-    public getWorkingTree(programName: string): Promise<WorkingTree> {
-        // Repository status (is clean) is not supported, just set it to false
-        return Promise.resolve(new WorkingTree(this, programName, false));
     }
 
     public getWorkingTreeDirectory(programName: string, path: string): Promise<WorkingTreeDirectory> {

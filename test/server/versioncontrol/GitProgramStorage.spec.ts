@@ -113,7 +113,13 @@ describe('GitProgramStorage', () => {
         it('should load an existing program', async () => {
             let programName = getProgramName();
 
-            await NodeGit.Repository.init(`tmp/${programName}`, 0);
+            let repository = await NodeGit.Repository.init(`tmp/${programName}`, 0);
+            await repository.createCommitOnHead(
+                [],
+                GitProgramStorage.signature,
+                GitProgramStorage.signature,
+                'initial commit'
+            );
 
             let program = await programStorage.getProgram(programName);
             assert.ok(program instanceof Program);
@@ -368,41 +374,6 @@ describe('GitProgramStorage', () => {
             let tag = await repository.getTagByName('v1.0');
             assert.equal(tag.targetId().tostrS(), versionId);
             assert.equal(tag.message(), 'test');
-        });
-    });
-
-    describe('getWorkingTreeDirectory', () => {
-        it('should set the isClean property to true if the working tree has not been changed', async () => {
-            const programName = getProgramName();
-            let repository = await NodeGit.Repository.init(`tmp/${programName}`, 0);
-
-            await wrapCallbackAsPromise(fs.writeFile, `tmp/${programName}/test`, 'hello');
-            await repository.createCommitOnHead(
-                ['test'],
-                GitProgramStorage.signature,
-                GitProgramStorage.signature,
-                'initial commit'
-            );
-
-            let workingtree = await programStorage.getWorkingTree(programName);
-            assert.equal(workingtree.isClean, true);
-        });
-
-        it('should set the isClean property to true if the working tree has been changed', async () => {
-            const programName = getProgramName();
-            let repository = await NodeGit.Repository.init(`tmp/${programName}`, 0);
-
-            await wrapCallbackAsPromise(fs.writeFile, `tmp/${programName}/test`, 'hello');
-            await repository.createCommitOnHead(
-                ['test'],
-                GitProgramStorage.signature,
-                GitProgramStorage.signature,
-                'initial commit'
-            );
-            await wrapCallbackAsPromise(fs.writeFile, `tmp/${programName}/test`, 'test');
-
-            let workingtree = await programStorage.getWorkingTree(programName);
-            assert.equal(workingtree.isClean, false);
         });
     });
 

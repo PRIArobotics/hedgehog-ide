@@ -127,7 +127,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
 
         this.program = await this.storage.getProgram(this.programName);
 
-        let rootdir = await (await this.program.getWorkingTree()).getRootDirectory();
+        let rootdir = await this.program.getWorkingTreeRoot();
 
         // for test purposes
         rootdir.addFile('file1.py', 'testfile1');
