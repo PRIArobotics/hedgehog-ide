@@ -6,10 +6,10 @@ import WorkingTreeDirectory from "./WorkingTreeDirectory";
 import IProgramStorage from "./ProgramStorage";
 
 export default class Program {
-    constructor(private storage,
-                public name,
-                public latestVersionId,
-                public workingTreeClean) { }
+    constructor(private storage: IProgramStorage,
+                public name: string,
+                public latestVersionId: string,
+                public workingTreeClean: boolean) { }
 
     public async rename(newName: string): Promise<void> {
         await this.storage.renameProgram(this.name, newName);
