@@ -19,8 +19,10 @@ export default class WorkingTreeFileSerializer implements ISerializer {
             size: file.size
         };
 
+        const programId = genericToBase64(file.programName);
+        const directoryId = genericToBase64(file.getParentPath());
         resourceBuilder.addSingleRelationship('directory', {
-            related: getLinkUrl(request, `/api/directory/${genericToBase64(file.getParentPath())}`)
+            related: getLinkUrl(request, `/api/workingtrees/${programId}/directories/${directoryId}`)
         });
 
         return resourceBuilder.getProduct();
