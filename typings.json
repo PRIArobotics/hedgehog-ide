@@ -4,7 +4,6 @@
     "winston": "registry:dt/winston#0.0.0+20161122193333"
   },
   "globalDependencies": {
-    "core-js": "registry:dt/core-js#0.9.7+20161130133742",
     "hammerjs": "registry:dt/hammerjs#2.0.8+20160724063812",
     "hapi": "registry:dt/hapi#13.0.0+20160928135445",
     "jquery": "registry:dt/jquery#1.10.0+20160929162922",
