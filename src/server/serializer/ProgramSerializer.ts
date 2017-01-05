@@ -15,7 +15,8 @@ async function serializeProgram (program: any,
     resourceBuilder.resource.id = genericToBase64(program.name);
     resourceBuilder.resource.attributes = {
         name: program.name,
-        creationDate: initialVersion.creationDate.toISOString()
+        creationDate: initialVersion.creationDate.toISOString(),
+        currentVersionId: program.currentVersionId
     };
 
     resourceBuilder.addManyRelationship('versions', {
@@ -23,6 +24,9 @@ async function serializeProgram (program: any,
     });
     resourceBuilder.addSingleRelationship('workingtree', {
         related: getLinkUrl(request, `/api/workingtrees/${resourceBuilder.resource.id}`)
+    });
+    resourceBuilder.addSingleRelationship('latestVersion', {
+        related: getLinkUrl(request, `/api/versions/${resourceBuilder.resource.id}/${program.latestVersionId}`)
     });
 
     return resourceBuilder.getProduct();

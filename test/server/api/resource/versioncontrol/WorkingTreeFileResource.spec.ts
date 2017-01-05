@@ -77,7 +77,7 @@ describe('WorkingTreeFileResource', () => {
                         relationships: {
                             directory: {
                                 links: {
-                                    related: "http://localhost:61749/api/directory/Lg=="
+                                    related: "http://localhost:61749/api/workingtrees/cHJvZ3JhbTE=/directories/Lg=="
                                 }
                             }
                         }
@@ -126,7 +126,7 @@ describe('WorkingTreeFileResource', () => {
                         relationships: {
                             directory: {
                                 links: {
-                                    related: "http://localhost:61749/api/directory/Lg=="
+                                    related: "http://localhost:61749/api/workingtrees/cHJvZ3JhbTE=/directories/Lg=="
                                 }
                             }
                         }
@@ -208,7 +208,7 @@ describe('WorkingTreeFileResource', () => {
                         relationships: {
                             directory: {
                                 links: {
-                                    related: "http://localhost:61749/api/directory/Lg=="
+                                    related: "http://localhost:61749/api/workingtrees/cHJvZ3JhbTE=/directories/Lg=="
                                 }
                             }
                         }
@@ -267,7 +267,7 @@ describe('WorkingTreeFileResource', () => {
                         relationships: {
                             directory: {
                                 links: {
-                                    related: "http://localhost:61749/api/directory/Lg=="
+                                    related: "http://localhost:61749/api/workingtrees/cHJvZ3JhbTE=/directories/Lg=="
                                 }
                             }
                         }
@@ -329,7 +329,7 @@ describe('WorkingTreeFileResource', () => {
                         relationships: {
                             directory: {
                                 links: {
-                                    related: "http://localhost:61749/api/directory/Lg=="
+                                    related: "http://localhost:61749/api/workingtrees/cHJvZ3JhbTE=/directories/Lg=="
                                 }
                             }
                         }

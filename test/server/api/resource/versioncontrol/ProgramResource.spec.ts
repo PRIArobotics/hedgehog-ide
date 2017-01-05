@@ -11,7 +11,7 @@ import modelRegistry from "../../../../../src/server/jsonapi/ModelSerializerRegi
 import IProgramStorage from "../../../../../src/common/versioncontrol/ProgramStorage";
 import {setupApiServer} from "../../testutils";
 
-function getProgramResourceReply(name: string, creationDate: Date) {
+function getProgramResourceReply(name: string, creationDate: Date, currentVersionId: string) {
     const id = new Buffer(name).toString('base64');
     return {
         type: 'program',
@@ -29,6 +29,11 @@ function getProgramResourceReply(name: string, creationDate: Date) {
             workingtree: {
                 links: {
                     related: `http://localhost:61749/api/workingtrees/${id}`
+                }
+            },
+            latestVersion: {
+                links: {
+                    related: `http://localhost:61749/api/versions/${id}/${currentVersionId}`
                 }
             }
         }
@@ -87,7 +92,7 @@ describe('ProgramResource', () => {
                     jsonapi: {
                         version: '1.0'
                     },
-                    data: getProgramResourceReply('program', creationDate)
+                    data: getProgramResourceReply('program', creationDate, 'version1')
                 });
                 done();
             });
@@ -122,7 +127,7 @@ describe('ProgramResource', () => {
                     jsonapi: {
                         version: '1.0'
                     },
-                    data: getProgramResourceReply('program1', creationDate)
+                    data: getProgramResourceReply('program1', creationDate, 'version1')
                 });
                 done();
             });
@@ -173,8 +178,8 @@ describe('ProgramResource', () => {
                         version: '1.0'
                     },
                     data: [
-                        getProgramResourceReply('program1', creationDate),
-                        getProgramResourceReply('program2', creationDate)
+                        getProgramResourceReply('program1', creationDate, 'version1'),
+                        getProgramResourceReply('program2', creationDate, 'version2')
                     ]
                 });
                 done();
@@ -241,7 +246,7 @@ describe('ProgramResource', () => {
                     jsonapi: {
                         version: '1.0'
                     },
-                    data: getProgramResourceReply('program1', creationDate)
+                    data: getProgramResourceReply('program1', creationDate, 'version1')
                 });
                 done();
             });
