@@ -6,11 +6,11 @@ export default class Version {
     public tag: string;
     public message: string;
     public creationDate: Date;
+    public programName: string;
 
     public parentIds: string[];
     public treeId: string;
 
-    private programName: string;
     private storage: IProgramStorage;
 
     public constructor(storage, programName, id, tag, message, creationDate, parentIds, treeId) {

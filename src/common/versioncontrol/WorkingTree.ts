@@ -4,8 +4,8 @@ import IProgramStorage from "./ProgramStorage";
 
 export default class WorkingTree {
     public readonly isClean: boolean;
+    public  programName;
 
-    private programName;
     private storage: IProgramStorage;
 
     public constructor(storage, programName: string, isClean) {

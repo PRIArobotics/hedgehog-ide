@@ -4,8 +4,8 @@ import IProgramStorage from "./ProgramStorage";
 export default class Tree {
     public id: string;
     public items: Map<string, TreeItem>;
+    public programName: string;
 
-    private programName: string;
     private storage: IProgramStorage;
 
     public constructor(storage, programName, id, items) {
