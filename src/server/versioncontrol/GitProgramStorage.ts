@@ -241,15 +241,7 @@ export default class GitProgramStorage implements IProgramStorage {
         await wrapCallbackAsPromise(rimraf, absolutePath);
     }
 
-    private getProgramPath(name: string) {
-        return path.resolve(this.storagePath, name);
-    }
-
-    private getRepository(programName: string) {
-        return NodeGit.Repository.open(this.getProgramPath(programName));
-    }
-
-    private getWorkingTreePath(programName: string, targetPath: string) {
+    public getWorkingTreePath(programName: string, targetPath: string) {
         const programPath = this.getProgramPath(programName);
         let absolutePath = path.resolve(programPath, targetPath);
 
@@ -258,5 +250,13 @@ export default class GitProgramStorage implements IProgramStorage {
             throw new Error(`Target '${targetPath}' is outside of working tree.`);
 
         return absolutePath;
+    }
+
+    private getProgramPath(name: string) {
+        return path.resolve(this.storagePath, name);
+    }
+
+    private getRepository(programName: string) {
+        return NodeGit.Repository.open(this.getProgramPath(programName));
     }
 }
