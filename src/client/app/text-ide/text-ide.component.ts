@@ -9,6 +9,7 @@ import IProgramStorage from "../../../common/versioncontrol/ProgramStorage";
 import {MaterializeAction} from "angular2-materialize";
 import Program from "../../../common/versioncontrol/Program";
 import {LocalStorageService, LocalStorage} from "angular2-localstorage";
+import {HttpProgramService} from "../program/http-program.service";
 
 declare var $: JQueryStatic;
 declare var Materialize: any;
@@ -29,7 +30,8 @@ export class File {
     styleUrls: ['text-ide.component.css'],
     providers: [
         DummyProgramService,
-        LocalStorageService
+        LocalStorageService,
+        HttpProgramService
     ]
 })
 
@@ -108,11 +110,10 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
      * @param route for messages sent from another view
      * @param storageService service that controls the ProgramStorage
      */
-    constructor(route: ActivatedRoute, storageService: DummyProgramService) {
+    constructor(route: ActivatedRoute, storageService: HttpProgramService) {
         this.programName = route.snapshot.params['programName'];
 
         this.storage = storageService.getStorage();
-
     }
 
     /**
@@ -122,7 +123,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
     public async ngOnInit() {
 
         // for test purposes
-        this.storage.createProgram(this.programName);
+        await this.storage.createProgram(this.programName);
         // no longer test
 
         this.program = await this.storage.getProgram(this.programName);
@@ -130,12 +131,13 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
         let rootdir = await this.program.getWorkingTreeRoot();
 
         // for test purposes
-        rootdir.addFile('file1.py', 'testfile1');
-        rootdir.addFile('file2.py', 'testfile2');
+        await rootdir.addFile('file1.py', 'testfile1');
+        await rootdir.addFile('file2.py', 'testfile2');
 
         await rootdir.addDirectory('dir');
         let dir = await rootdir.getDirectory('dir');
-        dir.addFile('file3.py', 'testfile3');
+        await dir.addFile('file3.py', 'testfile3');
+        await dir.addFile('file4.py', 'testfile4');
         // no longer test
 
         let childArray = [];
@@ -198,10 +200,15 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
      * @param childArray child array to add the sub-files and directories too
      */
     public async populateFiletree (directory: WorkingTreeDirectory, childArray: Object[]) {
+        console.log('--------------');
+        console.log(directory);
+
         // loop through all items of the directory
         for(let itemName of directory.items) {
             // get type of the item
             let type = directory.getItemType(itemName);
+
+            console.log(itemName);
 
             // check whether it is a file or directory
             if (type === WorkingTreeObjectType.File) {
@@ -217,7 +224,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
                 );
 
                 if (this.nextFileId < this.localStorageFiles[this.programName].length) {
-                    // if file is in the local storage index the new file and take the content from the localstorage
+                    // if file is in the local storage index the new file and take the content from the local storage
                     this.files.push(
                         {
                             name: itemName,
@@ -242,7 +249,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
                         }
                     );
 
-                    // add content with the name of the file to the localstorage of this program
+                    // add content with the name of the file to the local storage of this program
                     this.localStorageFiles[this.programName].push(
                         {
                             name: itemName,
