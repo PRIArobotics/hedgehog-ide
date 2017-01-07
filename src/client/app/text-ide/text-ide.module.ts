@@ -9,6 +9,7 @@ import {AceEditorDirective} from './ace-editor.directive';
 import {MaterializeModule} from "angular2-materialize";
 
 import {TextIdeComponent} from "./text-ide.component";
+import {HttpModule} from "@angular/http";
 
 @NgModule({
     imports: [
@@ -17,6 +18,7 @@ import {TextIdeComponent} from "./text-ide.component";
         TreeModule,
         ContextMenuModule,
         FormsModule,
+        HttpModule,
     ],
     declarations: [
         TextIdeComponent,
