@@ -54,6 +54,14 @@ module.exports = function(grunt) {
                         dest: 'build/src'
                     },
 
+                    //blockly libs
+                    {
+                        expand: true,
+                        cwd: 'src/client/app/blockly/lib',
+                        src: ['msg/js/en.js', 'blockly_compressed.js', 'blocks_compressed.js', 'python_compressed.js'],
+                        dest: 'build/src/client/app/blockly/lib'
+                    },
+
                     //google material files
                     {
                         expand: true,
