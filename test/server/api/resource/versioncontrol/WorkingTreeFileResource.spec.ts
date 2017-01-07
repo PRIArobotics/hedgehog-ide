@@ -43,7 +43,7 @@ describe('WorkingTreeFileResource', () => {
                 .returns('Hello World!');
 
             server.inject({
-                url: 'http://localhost:61749/api/workingtrees/cHJvZ3JhbTE=/files',
+                url: 'http://localhost:61749/api/files/cHJvZ3JhbTE=',
                 method: 'POST',
                 payload: {
                     data: {
@@ -62,7 +62,7 @@ describe('WorkingTreeFileResource', () => {
                         version: "1.0"
                     },
                     links: {
-                        self: "http://localhost:61749/api/workingtrees/cHJvZ3JhbTE=/files/dGVzdGZpbGU="
+                        self: "http://localhost:61749/api/files/cHJvZ3JhbTE=/dGVzdGZpbGU="
                     },
                     data: {
                         type: "file",
@@ -77,7 +77,7 @@ describe('WorkingTreeFileResource', () => {
                         relationships: {
                             directory: {
                                 links: {
-                                    related: "http://localhost:61749/api/workingtrees/cHJvZ3JhbTE=/directories/Lg=="
+                                    related: "http://localhost:61749/api/directories/cHJvZ3JhbTE=/Lg=="
                                 }
                             }
                         }
@@ -101,7 +101,7 @@ describe('WorkingTreeFileResource', () => {
                 .returns('Hello World!');
 
             server.inject({
-                url: 'http://localhost:61749/api/workingtrees/cHJvZ3JhbTE=/files/dGVzdGZpbGU=',
+                url: 'http://localhost:61749/api/files/cHJvZ3JhbTE=/dGVzdGZpbGU=',
                 method: 'GET'
             }, (res) => {
                 mock.verify();
@@ -111,7 +111,7 @@ describe('WorkingTreeFileResource', () => {
                         version: "1.0"
                     },
                     links: {
-                        self: "http://localhost:61749/api/workingtrees/cHJvZ3JhbTE=/files/dGVzdGZpbGU="
+                        self: "http://localhost:61749/api/files/cHJvZ3JhbTE=/dGVzdGZpbGU="
                     },
                     data: {
                         type: "file",
@@ -126,7 +126,7 @@ describe('WorkingTreeFileResource', () => {
                         relationships: {
                             directory: {
                                 links: {
-                                    related: "http://localhost:61749/api/workingtrees/cHJvZ3JhbTE=/directories/Lg=="
+                                    related: "http://localhost:61749/api/directories/cHJvZ3JhbTE=/Lg=="
                                 }
                             }
                         }
@@ -145,7 +145,7 @@ describe('WorkingTreeFileResource', () => {
                 .returns(Promise.resolve());
 
             server.inject({
-                url: 'http://localhost:61749/api/workingtrees/cHJvZ3JhbTE=/files/dGVzdGZpbGU=',
+                url: 'http://localhost:61749/api/files/cHJvZ3JhbTE=/dGVzdGZpbGU=',
                 method: 'delete'
             }, (res) => {
                 mock.verify();
@@ -174,7 +174,7 @@ describe('WorkingTreeFileResource', () => {
                 .returns('Hello World!');
 
             server.inject({
-                url: 'http://localhost:61749/api/workingtrees/cHJvZ3JhbTE=/files/dGVzdGZpbGU=',
+                url: 'http://localhost:61749/api/files/cHJvZ3JhbTE=/dGVzdGZpbGU=',
                 method: 'patch',
                 payload: {
                     data: {
@@ -193,7 +193,7 @@ describe('WorkingTreeFileResource', () => {
                         version: "1.0"
                     },
                     links: {
-                        self: "http://localhost:61749/api/workingtrees/cHJvZ3JhbTE=/files/bmV3X3Rlc3RmaWxl"
+                        self: "http://localhost:61749/api/files/cHJvZ3JhbTE=/bmV3X3Rlc3RmaWxl"
                     },
                     data: {
                         type: "file",
@@ -208,7 +208,7 @@ describe('WorkingTreeFileResource', () => {
                         relationships: {
                             directory: {
                                 links: {
-                                    related: "http://localhost:61749/api/workingtrees/cHJvZ3JhbTE=/directories/Lg=="
+                                    related: "http://localhost:61749/api/directories/cHJvZ3JhbTE=/Lg=="
                                 }
                             }
                         }
@@ -233,7 +233,7 @@ describe('WorkingTreeFileResource', () => {
                 .returns('Knock knock.');
 
             server.inject({
-                url: 'http://localhost:61749/api/workingtrees/cHJvZ3JhbTE=/files/dGVzdGZpbGU=',
+                url: 'http://localhost:61749/api/files/cHJvZ3JhbTE=/dGVzdGZpbGU=',
                 method: 'patch',
                 payload: {
                     data: {
@@ -252,7 +252,7 @@ describe('WorkingTreeFileResource', () => {
                         version: "1.0"
                     },
                     links: {
-                        self: "http://localhost:61749/api/workingtrees/cHJvZ3JhbTE=/files/dGVzdGZpbGU="
+                        self: "http://localhost:61749/api/files/cHJvZ3JhbTE=/dGVzdGZpbGU="
                     },
                     data: {
                         type: "file",
@@ -267,7 +267,7 @@ describe('WorkingTreeFileResource', () => {
                         relationships: {
                             directory: {
                                 links: {
-                                    related: "http://localhost:61749/api/workingtrees/cHJvZ3JhbTE=/directories/Lg=="
+                                    related: "http://localhost:61749/api/directories/cHJvZ3JhbTE=/Lg=="
                                 }
                             }
                         }
@@ -295,7 +295,7 @@ describe('WorkingTreeFileResource', () => {
                 .returns('Hello World!');
 
             server.inject({
-                url: 'http://localhost:61749/api/workingtrees/cHJvZ3JhbTE=/files/dGVzdGZpbGU=',
+                url: 'http://localhost:61749/api/files/cHJvZ3JhbTE=/dGVzdGZpbGU=',
                 method: 'patch',
                 payload: {
                     data: {
@@ -314,7 +314,7 @@ describe('WorkingTreeFileResource', () => {
                         version: "1.0"
                     },
                     links: {
-                        self: "http://localhost:61749/api/workingtrees/cHJvZ3JhbTE=/files/dGVzdGZpbGU="
+                        self: "http://localhost:61749/api/files/cHJvZ3JhbTE=/dGVzdGZpbGU="
                     },
                     data: {
                         type: "file",
@@ -329,7 +329,7 @@ describe('WorkingTreeFileResource', () => {
                         relationships: {
                             directory: {
                                 links: {
-                                    related: "http://localhost:61749/api/workingtrees/cHJvZ3JhbTE=/directories/Lg=="
+                                    related: "http://localhost:61749/api/directories/cHJvZ3JhbTE=/Lg=="
                                 }
                             }
                         }

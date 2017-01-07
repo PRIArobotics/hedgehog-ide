@@ -23,7 +23,7 @@ async function serializeWorkingTreeFile (file: WorkingTreeFile,
     const programId = genericToBase64(file.programName);
     const directoryId = genericToBase64(file.getParentPath());
     resourceBuilder.addSingleRelationship('directory', {
-        related: getLinkUrl(request, `/api/workingtrees/${programId}/directories/${directoryId}`)
+        related: getLinkUrl(request, `/api/directories/${programId}/${directoryId}`)
     });
 
     return resourceBuilder.getProduct();

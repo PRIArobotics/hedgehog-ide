@@ -120,7 +120,7 @@ export default class HttpProgramStorage implements IProgramStorage {
 
     public getWorkingTreeDirectory(programName: string, path: string): Promise<WorkingTreeDirectory> {
         return this.http
-            .get(`/api/workingtrees/${genericToBase64(programName)}/directories/${genericToBase64(path)}`)
+            .get(`/api/directories/${genericToBase64(programName)}/${genericToBase64(path)}`)
             .toPromise()
             .then(response => {
                 // get response data
@@ -151,7 +151,7 @@ export default class HttpProgramStorage implements IProgramStorage {
 
     public getWorkingTreeFile(programName: string, path: string): Promise<WorkingTreeFile> {
         return this.http
-            .get(`/api/workingtrees/${genericToBase64(programName)}/files/${genericToBase64(path)}`)
+            .get(`/api/files/${genericToBase64(programName)}/${genericToBase64(path)}`)
             .toPromise()
             .then(response => {
                 // get response data
@@ -184,7 +184,7 @@ export default class HttpProgramStorage implements IProgramStorage {
         };
 
         return this.http
-            .post(`/api/workingtrees/${genericToBase64(programName)}/directories`,
+            .post(`/api/directories/${genericToBase64(programName)}`,
                 JSON.stringify(directoryData),
                 {headers: this.headers})
             .toPromise()
@@ -210,7 +210,7 @@ export default class HttpProgramStorage implements IProgramStorage {
         };
 
         return this.http
-            .post(`/api/workingtrees/${genericToBase64(programName)}/files`,
+            .post(`/api/files/${genericToBase64(programName)}`,
                 JSON.stringify(fileData),
                 {headers: this.headers})
             .toPromise()

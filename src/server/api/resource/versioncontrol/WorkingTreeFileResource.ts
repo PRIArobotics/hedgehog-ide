@@ -25,7 +25,7 @@ export default class WorkingTreeFileResource extends ApiResource {
     });
 
     constructor(private programStorage: IProgramStorage, private serializerRegistry: SerializerRegistry) {
-        super('/workingtrees/{programId}/files');
+        super('/files/{programId}');
     }
 
     @ApiEndpoint('POST')
@@ -155,7 +155,7 @@ export default class WorkingTreeFileResource extends ApiResource {
         let documentBuilder = new JsonApiDocumentBuilder();
         const selfLink = getLinkUrl(
             request,
-            `/api/workingtrees/${genericToBase64(file.programName)}/files/${genericToBase64(file.path)}`
+            `/api/files/${genericToBase64(file.programName)}/${genericToBase64(file.path)}`
         );
         documentBuilder.setLinks(selfLink, null);
         documentBuilder.addResource(

@@ -24,7 +24,7 @@ export default class WorkingTreeDirectoryResource extends ApiResource {
     });
 
     constructor(private programStorage: IProgramStorage, private serializerRegistry: SerializerRegistry) {
-        super('/workingtrees/{programId}/directories');
+        super('/directories/{programId}');
     }
 
     @ApiEndpoint('POST')
@@ -140,7 +140,7 @@ export default class WorkingTreeDirectoryResource extends ApiResource {
         let documentBuilder = new JsonApiDocumentBuilder();
         const selfLink = getLinkUrl(
             request,
-            `/api/workingtrees/${genericToBase64(directory.programName)}/directories/${genericToBase64(directory.path)}`
+            `/api/directories/${genericToBase64(directory.programName)}/${genericToBase64(directory.path)}`
         );
         documentBuilder.setLinks(selfLink, null);
         documentBuilder.addResource(
