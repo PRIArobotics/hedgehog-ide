@@ -19,6 +19,8 @@ export default class ProcessManager {
             args,
             spawn(`python3`, [this.storage.getWorkingTreePath(programName, filePath), ...args])
         );
+        winston.debug(`Spawning process: ${programName} - ${filePath} ${args}`);
+
         this.processes.set(process.nodeProcess.pid, process);
 
         this.registerProcessExitHandler(process.nodeProcess);
@@ -54,8 +56,23 @@ export default class ProcessManager {
     }
 
     private registerProcessExitHandler(process: ChildProcess) {
-        process.on('exit', () => {
+        process.on('exit', async () => {
+            winston.debug(`Process exited: ${process.pid}`);
             this.processes.delete(process.pid);
+
+            try {
+                await wrapCallbackAsPromise(fs.unlink, this.getStreamStorageFile(process.pid, 'stdout'));
+            } catch (err) {
+                if (err.code !== 'ENOENT')
+                    winston.error(err);
+            }
+
+            try {
+                await wrapCallbackAsPromise(fs.unlink, this.getStreamStorageFile(process.pid, 'stderr'));
+            } catch (err) {
+                if (err.code !== 'ENOENT')
+                    winston.error(err);
+            }
             // TODO: stop moters and servos here
         });
     }
