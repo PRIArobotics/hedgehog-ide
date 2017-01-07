@@ -58,3 +58,6 @@ typings
 
 # Temporary files
 tmp
+
+# vim swap files
+*.swp
