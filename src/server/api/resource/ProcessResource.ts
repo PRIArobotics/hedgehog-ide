@@ -63,8 +63,74 @@ export default class ProcessResource extends ApiResource {
 
         let documentBuilder = new JsonApiDocumentBuilder();
         documentBuilder.setLinks(getLinkUrl(req, `/api/processes/${process.nodeProcess.pid}`), null);
-        documentBuilder.addResource( await this.serializerRegistry.serialize(process, req, documentBuilder));
+        documentBuilder.addResource(await this.serializerRegistry.serialize(process, req, documentBuilder));
+        return reply(documentBuilder.getProduct())
+            .code(201);
+    }
+
+    @ApiEndpoint('GET', '/{pid}')
+    public async getProcess (req: Hapi.Request, reply: Hapi.IReply) {
+        let process = this.processManager.getProcess(Number(req.params['pid']));
+
+        let documentBuilder = new JsonApiDocumentBuilder();
+        documentBuilder.setLinks(getLinkUrl(req, `/api/processes/${process.nodeProcess.pid}`), null);
+        documentBuilder.addResource(await this.serializerRegistry.serialize(process, req, documentBuilder));
         return reply(documentBuilder.getProduct())
             .code(200);
+    }
+
+    @ApiEndpoint('DELETE', '/{pid}')
+    public killProcess (req: Hapi.Request, reply: Hapi.IReply) {
+        this.processManager.kill(Number(req.params['pid']));
+
+        return reply('')
+            .code(204);
+    }
+
+    @ApiEndpoint('GET', '/{pid}/stdout')
+    public async getStdout (req: Hapi.Request, reply: Hapi.IReply) {
+        let output: string;
+        try {
+            output = await this.processManager.getStdout(Number(req.params['pid']));
+        } catch (err) {
+            winston.error(err);
+            return reply({
+                error: 'Failed to retrieve process output. The process might not exist or has stopped already.'
+            }).code(400);
+        }
+
+        return reply(output)
+            .code(200);
+    }
+
+    @ApiEndpoint('GET', '/{pid}/stderr')
+    public async getStderr (req: Hapi.Request, reply: Hapi.IReply) {
+        let errorStream: string;
+        try {
+            errorStream = await this.processManager.getStderr(Number(req.params['pid']));
+        } catch (err) {
+            winston.error(err);
+            return reply({
+                error: 'Failed to retrieve process error stream. The process might not exist or has stopped already.'
+            }).code(400);
+        }
+
+        return reply(errorStream)
+            .code(200);
+    }
+
+    @ApiEndpoint('PATCH', '/{pid}/stdin')
+    public async writeStdin (req: Hapi.Request, reply: Hapi.IReply) {
+        try {
+            await this.processManager.writeStdin(Number(req.params['pid']), req.payload);
+        } catch (err) {
+            winston.error(err);
+            return reply({
+                error: 'Failed to retrieve process error stream. The process might not exist or has stopped already.'
+            }).code(400);
+        }
+
+        reply('')
+            .code(204);
     }
 }

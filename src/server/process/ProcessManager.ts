@@ -13,19 +13,18 @@ export default class ProcessManager {
     constructor(private processDir: string, private storage: GitProgramStorage) { }
 
     public run(programName: string, filePath: string, args: string[] = []): Process {
-        args.unshift(this.storage.getWorkingTreePath(programName, filePath));
         let process: Process = new Process(
             programName,
             filePath,
             args,
-            spawn(`python`, args)
+            spawn(`python3`, [this.storage.getWorkingTreePath(programName, filePath), ...args])
         );
         this.processes.set(process.nodeProcess.pid, process);
 
         this.registerProcessExitHandler(process.nodeProcess);
         this.registerRedirectOutputHandler(process.nodeProcess, 'stdout');
         this.registerRedirectOutputHandler(process.nodeProcess, 'stderr');
-
+        this.registerErrorHandler(process.nodeProcess);
         return process;
     }
 
@@ -42,11 +41,12 @@ export default class ProcessManager {
     }
 
     public getStderr(pid: number): Promise<string> {
-        return wrapCallbackAsPromise(fs.readFile, this.getStreamStorageFile(pid, 'err'));
+        return wrapCallbackAsPromise(fs.readFile, this.getStreamStorageFile(pid, 'stderr'));
     }
 
     public writeStdin(pid: number, data: string): Promise<void> {
-        return wrapCallbackAsPromise(this.processes.get(pid).nodeProcess.stdin.write, data);
+        let process = this.processes.get(pid).nodeProcess;
+        return wrapCallbackAsPromise(process.stdin.write.bind(process.stdin), data);
     }
 
     public getProcess(pid: number): Process {
@@ -60,12 +60,18 @@ export default class ProcessManager {
         });
     }
 
-    private registerRedirectOutputHandler(process: ChildProcess, stream: string) {
+    private registerRedirectOutputHandler (process: ChildProcess, stream: string) {
         process[stream].on('data', (data: string) => {
             fs.appendFile(this.getStreamStorageFile(process.pid, stream), data, (err: Object) => {
                 if (err)
                     winston.error(err.toString());
             });
+        });
+    }
+
+    private registerErrorHandler (process: ChildProcess) {
+        process.on('error', (err) => {
+            winston.error(err);
         });
     }
 
