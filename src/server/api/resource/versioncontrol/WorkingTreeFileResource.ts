@@ -139,6 +139,24 @@ export default class WorkingTreeFileResource extends ApiResource {
         return reply().code(204);
     }
 
+    @ApiEndpoint('GET', '/{fileId}/content')
+    public async getContent(req, reply) {
+        let content: string;
+        try {
+            content = await this.programStorage.getWorkingTreeFileContent(
+                genericFromBase64(req.params['programId']),
+                genericFromBase64(req.params['fileId'])
+            );
+        } catch (err) {
+            winston.error(err);
+            return reply({
+                error: 'Failed to retrieve file content'
+            }).code(500);
+        }
+        return reply(content)
+            .code(200);
+    }
+
     private async replyFile(programName: string, filePath: string, request, reply) {
         // Load file from storage
         let file: WorkingTreeFile;
