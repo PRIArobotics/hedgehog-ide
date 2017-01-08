@@ -3,7 +3,7 @@ import winston = require("winston");
 import ApiResource from "../../ApiResource";
 import IProgramStorage from "../../../../common/versioncontrol/ProgramStorage";
 import {JsonApiResource} from "../../../jsonapi/JsonApiObjects";
-import {parserHandler, ObjectParser} from "../../../jsonapi/Parser";
+import {ObjectParser, RequirementType} from "../../../jsonapi/Parser";
 import SerializerRegistry from "../../../serializer/SerializerRegistry";
 import {genericFromBase64, genericToBase64} from "../../../../common/utils";
 import WorkingTreeFile from "../../../../common/versioncontrol/WorkingTreeFile";
@@ -12,31 +12,35 @@ import {getLinkUrl} from "../../../utils";
 import ApiEndpoint from "../../ApiEndpoint";
 
 export default class WorkingTreeFileResource extends ApiResource {
+
+    private static fileParser = JsonApiResource.getParser().addProperties({
+        name: 'attributes',
+        required: RequirementType.Required,
+        handler: new ObjectParser(() => ({}),
+            { name: 'path' },
+            { name: 'mode' },
+            { name: 'content'},
+            { name: 'encoding' }
+        )
+    });
+
     constructor(private programStorage: IProgramStorage, private serializerRegistry: SerializerRegistry) {
-        super('/workingtrees/{programId}/files');
+        super('/files/{programId}');
     }
 
     @ApiEndpoint('POST')
     public async createFile(req, reply) {
         const programName = genericFromBase64(req.params['programId']);
 
-        // Build parser
-        const attributesParser = this.getFileAttributesParser();
-        attributesParser.addProperties({
-            name: 'path',
-            required: true
-        });
-        const fileParser = JsonApiResource.getParser();
-        fileParser.addProperties({
-            name: 'attributes',
-            required: true,
-            handler: parserHandler(attributesParser)
-        });
-
         // Parse request payload
         let requestData: JsonApiResource;
         try {
-             requestData = fileParser.parse(req.payload.data);
+             requestData = WorkingTreeFileResource.fileParser.parse(req.payload.data, {
+                 id: RequirementType.Forbidden,
+                 attributes: {
+                     path: RequirementType.Required
+                 }
+             });
         } catch(err) {
             winston.error(err);
             return reply({
@@ -77,31 +81,12 @@ export default class WorkingTreeFileResource extends ApiResource {
     @ApiEndpoint('PATCH', '/{fileId}')
     public async updateFile(req, reply) {
         const programName = genericFromBase64(req.params['programId']);
-        let currentFilePath = genericFromBase64(req.params['fileId']);
-
-        // Build parser
-        const attributesParser = this.getFileAttributesParser();
-        attributesParser.addProperties({
-            name: 'path',
-            required: false
-        });
-        const fileParser = JsonApiResource.getParser();
-        fileParser.addProperties(
-            {
-                name: 'id',
-                required: true
-            },
-            {
-                name: 'attributes',
-                required: true,
-                handler: parserHandler(attributesParser)
-            }
-        );
+        let filePath = genericFromBase64(req.params['fileId']);
 
         // Update request payload
         let updatedFile;
         try {
-            updatedFile = fileParser.parse(req.payload.data).attributes;
+            updatedFile = WorkingTreeFileResource.fileParser.parse(req.payload.data).attributes;
         } catch(err) {
             winston.error(err);
             return reply({
@@ -114,27 +99,27 @@ export default class WorkingTreeFileResource extends ApiResource {
         // by only performing updates when they are mandatory.
 
         // Move (rename) file if updated path != current path
-        if((updatedFile.path && updatedFile.path !== currentFilePath) || (updatedFile.mode && !updatedFile.content)) {
-            await this.programStorage.updateWorkingTreeObject(programName, currentFilePath, {
-                newPath: updatedFile.path !== currentFilePath ? updatedFile.path : null,
+        if((updatedFile.path && updatedFile.path !== filePath) || (updatedFile.mode && !updatedFile.content)) {
+            await this.programStorage.updateWorkingTreeObject(programName, filePath, {
+                newPath: updatedFile.path !== filePath ? updatedFile.path : null,
                 mode: updatedFile.mode
             });
 
             if(updatedFile.path)
-                currentFilePath = updatedFile.path;
+                filePath = updatedFile.path;
         }
 
         // Write content on content update
         if(updatedFile.content) {
             await this.programStorage.createOrUpdateWorkingTreeFile(
                 programName,
-                currentFilePath,
+                filePath,
                 updatedFile.content,
                 updatedFile.mode
             );
         }
 
-        return this.replyFile(programName, currentFilePath, req, reply);
+        return this.replyFile(programName, filePath, req, reply);
     }
 
     @ApiEndpoint('DELETE', '/{fileId}')
@@ -154,6 +139,24 @@ export default class WorkingTreeFileResource extends ApiResource {
         return reply().code(204);
     }
 
+    @ApiEndpoint('GET', '/{fileId}/content')
+    public async getContent(req, reply) {
+        let content: string;
+        try {
+            content = await this.programStorage.getWorkingTreeFileContent(
+                genericFromBase64(req.params['programId']),
+                genericFromBase64(req.params['fileId'])
+            );
+        } catch (err) {
+            winston.error(err);
+            return reply({
+                error: 'Failed to retrieve file content'
+            }).code(500);
+        }
+        return reply(content)
+            .code(200);
+    }
+
     private async replyFile(programName: string, filePath: string, request, reply) {
         // Load file from storage
         let file: WorkingTreeFile;
@@ -170,31 +173,14 @@ export default class WorkingTreeFileResource extends ApiResource {
         let documentBuilder = new JsonApiDocumentBuilder();
         const selfLink = getLinkUrl(
             request,
-            `/api/workingtrees/${genericToBase64(file.programName)}/files/${genericToBase64(file.path)}`
+            `/api/files/${genericToBase64(file.programName)}/${genericToBase64(file.path)}`
         );
         documentBuilder.setLinks(selfLink, null);
         documentBuilder.addResource(
-            await this.serializerRegistry.serialize(file, request, documentBuilder.getResourceBuilder()));
+            await this.serializerRegistry.serialize(file, request, documentBuilder));
 
         // Return file
         return reply(documentBuilder.getProduct())
             .code(200);
-    }
-
-    private getFileAttributesParser() {
-        return new ObjectParser(() => ({}),
-            {
-                name: 'mode',
-                required: false
-            },
-            {
-                name: 'content',
-                required: false
-            },
-            {
-                name: 'encoding',
-                required: false
-            }
-        );
     }
 }

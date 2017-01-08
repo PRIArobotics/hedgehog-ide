@@ -10,7 +10,6 @@ import * as GitVersionControlFactory from './GitVersionControlFactory';
 import Blob from "../../common/versioncontrol/Blob";
 import Tree from "../../common/versioncontrol/Tree";
 import Version from "../../common/versioncontrol/Version";
-import WorkingTree from "../../common/versioncontrol/WorkingTree";
 import WorkingTreeFile from "../../common/versioncontrol/WorkingTreeFile";
 import WorkingTreeDirectory from "../../common/versioncontrol/WorkingTreeDirectory";
 import {WorkingTreeObjectType} from "../../common/versioncontrol/WorkingTreeObject";
@@ -31,6 +30,7 @@ export default class GitProgramStorage implements IProgramStorage {
 
     public async createProgram(name: string): Promise<Program> {
         let repository = await NodeGit.Repository.init(this.getProgramPath(name), 0);
+        const isClean = (await repository.getStatus({})).length === 0;
 
         let initialVersion = await repository.createCommitOnHead(
             [],
@@ -39,7 +39,7 @@ export default class GitProgramStorage implements IProgramStorage {
             'initial commit'
         );
 
-        return new Program(this, name, initialVersion.tostrS());
+        return new Program(this, name, initialVersion.tostrS(), isClean);
     }
 
     public async deleteProgram(name: string): Promise<void> {
@@ -52,8 +52,12 @@ export default class GitProgramStorage implements IProgramStorage {
     }
 
     public async getProgram(name: string): Promise<Program> {
-        await NodeGit.Repository.open(this.getProgramPath(name));
-        return new Program(this, name, null);
+        let repo = await NodeGit.Repository.open(this.getProgramPath(name));
+
+        const isClean = (await repo.getStatus({})).length === 0;
+        const latestVersionId = (await repo.getHeadCommit()).id().tostrS();
+
+        return new Program(this, name, latestVersionId, isClean);
     }
 
     public async renameProgram(oldName: string, newName: string): Promise<void> {
@@ -147,11 +151,6 @@ export default class GitProgramStorage implements IProgramStorage {
         return commitId.tostrS();
     }
 
-
-    public getWorkingTree(programName: string): WorkingTree {
-        return new WorkingTree(this, programName);
-    }
-
     public async getWorkingTreeDirectory(programName: string, directoryPath: string): Promise<WorkingTreeDirectory> {
         directoryPath = GitProgramStorage.normalizePath(directoryPath);
         const absoluteDirectoryPath = this.getWorkingTreePath(programName, directoryPath);
@@ -242,15 +241,7 @@ export default class GitProgramStorage implements IProgramStorage {
         await wrapCallbackAsPromise(rimraf, absolutePath);
     }
 
-    private getProgramPath(name: string) {
-        return path.resolve(this.storagePath, name);
-    }
-
-    private getRepository(programName: string) {
-        return NodeGit.Repository.open(this.getProgramPath(programName));
-    }
-
-    private getWorkingTreePath(programName: string, targetPath: string) {
+    public getWorkingTreePath(programName: string, targetPath: string) {
         const programPath = this.getProgramPath(programName);
         let absolutePath = path.resolve(programPath, targetPath);
 
@@ -259,5 +250,13 @@ export default class GitProgramStorage implements IProgramStorage {
             throw new Error(`Target '${targetPath}' is outside of working tree.`);
 
         return absolutePath;
+    }
+
+    private getProgramPath(name: string) {
+        return path.resolve(this.storagePath, name);
+    }
+
+    private getRepository(programName: string) {
+        return NodeGit.Repository.open(this.getProgramPath(programName));
     }
 }

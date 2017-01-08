@@ -1,3 +1,5 @@
+type Required = RequirementType | ((object: Object, name: string) => RequirementType);
+
 /**
  * The ObjectParser is used both for validation and parsing JSON (request) data
  * into the resource model class instances.
@@ -25,18 +27,50 @@ export class ObjectParser<T> {
      * Parse a single resource
      *
      * @param object Deserialized JSON data
+     * @param requiredProperties Overrides the default property requirements
+     *                           See {@link IParserProperty} for a description of property requirements.
      * @returns {T} Parsed resource
      */
-    public parse(object: Object): T {
+    public parse(object: Object, requiredProperties: {[key: string]: any} = { }): T {
         object = object || { };
+
+        function getRequirementType(required: Required, propertyName: string): RequirementType {
+            if(typeof required === 'number' && required in RequirementType) {
+                return required;
+            } else if(typeof(required) === 'function') {
+                return required(object, propertyName);
+            } else {
+                return RequirementType.Allowed;
+            }
+        }
 
         let target = this.targetFactory();
         for(const property of this.properties.values()) {
-            if(object[property.name]) {
-                target[property.name] = property.handler(object[property.name]);
-            } else if((typeof(property.required) === 'function' && property.required(object, property.name))
-                   || (typeof(property.required) === 'boolean' && property.required)) {
+            const requirementType = requiredProperties[property.name]
+                ? getRequirementType(requiredProperties[property.name], property.name)
+                : getRequirementType(property.required, property.name);
+            if(requirementType === RequirementType.Required && !object[property.name]) {
                 throw new Error(`Missing property: ${property.name}`);
+            } else if(requirementType === RequirementType.Forbidden && object[property.name]) {
+                throw new Error(`Forbidden property: ${property.name}`);
+            }
+
+            if(object[property.name]) {
+                if(property.handler instanceof ObjectParser) {
+                    if(target[property.name] instanceof Array) {
+                        target[property.name] = property.handler.parseArray(
+                            object[property.name],
+                            requiredProperties[property.name] || { }
+                        );
+                    } else {
+                        target[property.name] = property.handler.parse(
+                            object[property.name],
+                            requiredProperties[property.name] || { }
+                        );
+                    }
+                } else {
+                    target[property.name] = property.handler(object[property.name]);
+                }
             }
         }
         return target;
@@ -46,12 +80,14 @@ export class ObjectParser<T> {
      * Parse an array of same-typed resources at once
      *
      * @param objects array of JSON objects
+     * @param requiredProperties Overrides the default property requirements
+     *                           See {@link IParserProperty} for a description of property requirements.
      * @returns {T[]} array containing the parsed resources
      */
-    public parseArray(objects: Object[]): T[] {
+    public parseArray(objects: Object[], requiredProperties: {[key: string]: any} = { }): T[] {
         let parsedObjects = [];
         for(const object of objects) {
-            parsedObjects.push(this.parse(object));
+            parsedObjects.push(this.parse(object, requiredProperties));
         }
         return parsedObjects;
     }
@@ -69,7 +105,14 @@ export class ObjectParser<T> {
 
             this.properties.set(property.name, property);
         }
+        return this;
     }
+}
+
+export enum RequirementType {
+    Required,
+    Allowed,
+    Forbidden
 }
 
 /**
@@ -77,17 +120,18 @@ export class ObjectParser<T> {
  *
  * It contains the following properties:
  * - `name`: Name of the property. This is defines the name of the origin as well as on the target object.
- * - `require`: Either a boolean which denoted whether this property is required or a function which gets
+ * - `required`: Either a boolean which denoted whether this property is required or a function which gets
  *              called to dynamically decide whether the property is necessary for the current object.
  *              The function gets called with the current JSON object and the property name.
+ *              The specified value is a default value and can be overwritten when an object is being parsed.
  * - `handler`: optional; Function for parsing the property of the JSON object.
  *              The property value is supplied as the only function argument.
  *              Defaults to the {@link identityHandler} function which returns the JSON object without modification.
  */
 export interface IParserProperty {
     name: string;
-    required: boolean | ((object: Object, name: string) => boolean);
-    handler?: (value: any) => any;
+    required?: Required;
+    handler?: ObjectParser<any> | ((value: any) => any);
 }
 
 /**
@@ -99,29 +143,4 @@ export interface IParserProperty {
  */
 export function identityHandler(value: any) {
     return value;
-}
-
-/**
- * Handler which parses the property value using the specified {@link ObjectParser}.
- * This is a higher order function and returns the actual parser function which can be passed to the parser.
- *
- * @param parser Parser instance
- * @returns {(value:Object)=>T} Handler function
- */
-export function parserHandler<T>(parser: ObjectParser<T>) {
-    return (value: Object) => {
-        return parser.parse(value);
-    };
-}
-
-/**
- * Same as {@link parserHandler} but for handling an array of objects.
- *
- * @param parser Parser instance
- * @returns {(values:Object[])=>T[]} Handler function
- */
-export function arrayParserHandler<T>(parser: ObjectParser<T>) {
-    return (values: Object[]) => {
-        return parser.parseArray(values);
-    };
 }

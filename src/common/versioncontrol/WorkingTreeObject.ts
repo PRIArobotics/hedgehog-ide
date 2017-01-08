@@ -1,5 +1,5 @@
 
-import { basename } from "../utils";
+import {basename, dirname} from "../utils";
 import { join } from "../utils";
 import IProgramStorage from "./ProgramStorage";
 
@@ -24,7 +24,7 @@ abstract class WorkingTreeObject {
     }
 
     public getParentPath(): string {
-        return basename(this.path);
+        return dirname(this.path);
     }
 
     public rename(newName: string, isAbsolute = false): Promise<void> {

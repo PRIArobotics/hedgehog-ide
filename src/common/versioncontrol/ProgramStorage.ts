@@ -2,7 +2,6 @@ import Program from "./Program";
 import Blob from "./Blob";
 import Tree from "./Tree";
 import Version from "./Version";
-import WorkingTree from "./WorkingTree";
 import WorkingTreeDirectory from "./WorkingTreeDirectory";
 import WorkingTreeFile from "./WorkingTreeFile";
 
@@ -106,7 +105,6 @@ interface IProgramStorage {
      */
     getVersion(programName: string, versionId: string): Promise<Version>;
 
-
     /**
      * Create a new version from the workingtree contents
      *
@@ -114,15 +112,6 @@ interface IProgramStorage {
      * @returns the newly created version's id
      */
     createVersionFromWorkingTree(programName: string, message: string, tag?: string): Promise<string>;
-
-
-    /**
-     * Get the workingtree for a program
-     *
-     * @param programName
-     * @returns the working tree object
-     */
-    getWorkingTree(programName: string): WorkingTree;
 
     /**
      * Get a directory of a program's working tree

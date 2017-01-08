@@ -3,28 +3,27 @@ import Blob from "./Blob";
 import Tree from "./Tree";
 import WorkingTreeFile from "./WorkingTreeFile";
 import WorkingTreeDirectory from "./WorkingTreeDirectory";
-import WorkingTree from "./WorkingTree";
 import IProgramStorage from "./ProgramStorage";
 
 export default class Program {
-    public name: string;
-    public latestVersionId: string;
-
-    private storage: IProgramStorage;
-
-    constructor(storage, name, latestVersionId) {
-        this.storage = storage;
-        this.name = name;
-        this.latestVersionId = latestVersionId;
-    }
+    constructor(private storage: IProgramStorage,
+                public name: string,
+                public latestVersionId: string,
+                public workingTreeClean: boolean) { }
 
     public async rename(newName: string): Promise<void> {
         await this.storage.renameProgram(this.name, newName);
         this.name = newName;
     }
 
-    public getWorkingTree(): WorkingTree {
-        return this.storage.getWorkingTree(this.name);
+    public async resetWorkingTree(): Promise<void> {
+        await this.storage.resetWorkingTree(this.name);
+        this.workingTreeClean = true;
+    }
+
+    public async reset(versionId: string): Promise<void> {
+        await this.storage.resetProgram(this.name, versionId);
+        this.latestVersionId = versionId;
     }
 
     public getVersionIds(): Promise<string[]> {
@@ -57,5 +56,9 @@ export default class Program {
 
     public getWorkingTreeDirectory(path: string): Promise<WorkingTreeDirectory> {
         return this.storage.getWorkingTreeDirectory(this.name, path);
+    }
+
+    public getWorkingTreeRoot(): Promise<WorkingTreeDirectory> {
+        return this.getWorkingTreeDirectory('.');
     }
 }

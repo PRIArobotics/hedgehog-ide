@@ -4,7 +4,7 @@ import ApiResource from "../../ApiResource";
 import ApiEndpoint from "../../ApiEndpoint";
 import IProgramStorage from "../../../../common/versioncontrol/ProgramStorage";
 import {JsonApiDocument, JsonApiResource} from "../../../jsonapi/JsonApiObjects";
-import {ObjectParser, parserHandler} from "../../../jsonapi/Parser";
+import {ObjectParser, RequirementType} from "../../../jsonapi/Parser";
 import Program from "../../../../common/versioncontrol/Program";
 import JsonApiDocumentBuilder from "../../../jsonapi/JsonApiBuilder";
 import SerializerRegistry from "../../../serializer/SerializerRegistry";
@@ -12,7 +12,23 @@ import {DataType} from "../../../jsonapi/JsonApiBuilder";
 import {getRequestUrl, getLinkUrl} from "../../../utils";
 import {genericFromBase64, genericToBase64} from "../../../../common/utils";
 
-export default class ProgramsResource extends ApiResource {
+export default class ProgramResource extends ApiResource {
+    private static programParser = JsonApiDocument.getParser().addProperties({
+        name: 'data',
+        required: RequirementType.Required,
+        handler: JsonApiResource.getParser().addProperties(
+            {
+                name: 'attributes',
+                required: RequirementType.Required,
+                handler: new ObjectParser(() => ({}),
+                    { name: 'name'},
+                    { name: 'latestVersionId'},
+                    { name: 'workingTreeClean'},
+                )
+            }
+        )
+    });
+
     constructor(private programStorage: IProgramStorage, private serializerRegistry: SerializerRegistry) {
         super('/programs');
     }
@@ -21,7 +37,14 @@ export default class ProgramsResource extends ApiResource {
     public async createProgram(req, reply) {
         let document: JsonApiDocument;
         try {
-            document = this.parseProgramPayload(req.payload);
+            document = ProgramResource.programParser.parse(req.payload, {
+                data: {
+                    id: RequirementType.Forbidden,
+                    attributes: {
+                        name: RequirementType.Required
+                    }
+                }
+            });
         } catch(err) {
             winston.error(err);
             return reply({
@@ -77,9 +100,7 @@ export default class ProgramsResource extends ApiResource {
         for(const name of programNames) {
             try {
                 let program = await this.programStorage.getProgram(name);
-                documentBuilder.addResource(
-                    await this.serializerRegistry.serialize(program, req, documentBuilder.getResourceBuilder())
-                );
+                documentBuilder.addResource(await this.serializerRegistry.serialize(program, req, documentBuilder));
             } catch(err) {
                 winston.error(err);
             }
@@ -103,11 +124,10 @@ export default class ProgramsResource extends ApiResource {
     }
 
     @ApiEndpoint('PATCH', '/{programId}')
-    public async renameProgram(req, reply) {
-        let oldProgramName = genericFromBase64(req.params['programId']);
-        let newProgramName: string;
+    public async updateProgram(req, reply) {
+        let requestData: JsonApiResource;
         try {
-            newProgramName = (<JsonApiResource> this.parseProgramPayload(req.payload).data).attributes.name;
+            requestData = (<JsonApiResource> ProgramResource.programParser.parse(req.payload).data);
         } catch(err) {
             winston.error(err);
             return reply({
@@ -117,7 +137,7 @@ export default class ProgramsResource extends ApiResource {
 
         let program: Program;
         try {
-            program = await this.programStorage.getProgram(oldProgramName);
+            program = await this.programStorage.getProgram(genericFromBase64(req.params['programId']));
         } catch(err) {
             winston.error(err);
             return reply({
@@ -125,12 +145,38 @@ export default class ProgramsResource extends ApiResource {
             }).code(404);
         }
 
-        try {
-            await program.rename(newProgramName);
-        } catch(err) {
-            return reply({
-                error: 'Failed to rename the program. Program with target name might already exist'
-            }).code(400);
+        // rename if name changed
+        if (requestData.attributes.name && requestData.attributes.name !== program.name) {
+            try {
+                await program.rename(requestData.attributes.name);
+            } catch(err) {
+                return reply({
+                    error: 'Failed to rename the program. Program with target name might already exist'
+                }).code(400);
+            }
+        }
+
+        // reset working tree if workingTreeClean has been set to true
+        if (requestData.attributes.workingTreeClean && !program.workingTreeClean) {
+            try {
+                await program.resetWorkingTree();
+            } catch(err) {
+                return reply({
+                    error: 'Failed to reset the program\'s working tree'
+                }).code(500);
+            }
+        }
+
+        // reset program if latestVersionId changed
+        if (requestData.attributes.latestVersionId
+            && requestData.attributes.latestVersionId !== program.latestVersionId) {
+            try {
+                await program.reset(requestData.attributes.latestVersionId);
+            } catch (err) {
+                return reply({
+                    error: 'Failed to reset the program'
+                }).code(500);
+            }
         }
 
         return this.replyProgram(program, req, reply);
@@ -139,27 +185,9 @@ export default class ProgramsResource extends ApiResource {
     private async replyProgram(program: Program, request, reply) {
         let documentBuilder = new JsonApiDocumentBuilder();
         documentBuilder.setLinks(getLinkUrl(request, `/api/programs/${genericToBase64(program.name)}`), null);
-        documentBuilder.addResource(
-            await this.serializerRegistry.serialize(program, request, documentBuilder.getResourceBuilder()
-        ));
+        documentBuilder.addResource( await this.serializerRegistry.serialize(program, request, documentBuilder));
 
         return reply(documentBuilder.getProduct())
             .code(200);
-    }
-
-    private parseProgramPayload(payload) {
-        let resourceParser = JsonApiResource.getParser();
-        resourceParser.addProperties({
-            name: 'attributes',
-            required: true,
-            handler: parserHandler(new ObjectParser(() => ({}), {
-                name: 'name',
-                required: true
-            }))
-        });
-
-        return JsonApiDocument.getParser({
-            data: resourceParser
-        }).parse(payload);
     }
 }

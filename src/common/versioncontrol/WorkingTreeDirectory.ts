@@ -57,7 +57,7 @@ export default class WorkingTreeDirectory extends WorkingTreeObject {
         // only delete the item if it has not already been done by the program storage
         if(this.items.indexOf(name) !== -1) {
             this.items.splice(this.items.indexOf(name));
-            this.types[name] = WorkingTreeObjectType.Directory;
+            delete this.types[name];
         }
     }
 
@@ -67,7 +67,7 @@ export default class WorkingTreeDirectory extends WorkingTreeObject {
         // only add the new item if it has not already been done by the program storage
         if(this.items.indexOf(name) === -1) {
             this.items.push(name);
-            delete this.types[name];
+            this.types[name] = WorkingTreeObjectType.Directory;
         }
     }
 

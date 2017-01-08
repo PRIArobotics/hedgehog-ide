@@ -2,11 +2,14 @@ swagger: '2.0'
 info:
   title: Hedgehog Deployment API
   description: Program management and deployment API of the Hedgehog controller
-  version: '1.0.0'
+  version: '1.2.0'
   contact:
     name: 'Markus Klein'
     url: 'http://pria.at'
     email: 'klein@pria.at'
+  license:
+    name: AGPL-3.0
+    url: https://www.gnu.org/licenses/agpl.txt
 produces:
 - application/vnd.api+json
 consumes:
@@ -80,7 +83,7 @@ paths:
                   $ref: '#/definitions/Program'
             - $ref: '#/definitions/JsonApiTopLevelLink'
     patch:
-      summary: 'Rename a program'
+      summary: 'Update a program'
       parameters:
       - name: program_id
         in: path
@@ -292,71 +295,7 @@ paths:
                     $ref: '#/definitions/Version'
             - $ref: '#/definitions/JsonApiTopLevelLink'
 
-  /workingtrees/{program_id}:
-    get:
-      summary: 'Get the workingtree of a project'
-      parameters:
-       - name: program_id
-         in: path
-         type: string
-         required: true
-      responses:
-        200:
-          description: 'Returns the workingtree of a program'
-          schema:
-            allOf:
-            - type: object
-              properties:
-                data:
-                  $ref: '#/definitions/WorkingTree'
-                included:
-                  type: array
-                  items:
-                    type: object
-            - $ref: '#/definitions/JsonApiTopLevelLink'
-    patch:
-      summary: 'Checkout a previous version reset the hedgehog branch to this version'
-      parameters:
-      - name: program_id
-        in: path
-        type: string
-        required: true
-      - name: workingtree
-        in: body
-        required: true
-        schema:
-          type: object
-          properties:
-            data:
-              type: object
-              required:
-              - id
-              - type
-              properties:
-                id:
-                  type: string
-                type:
-                  type: string
-                  enum:
-                  - workingtree
-                relationships:
-                  type: object
-                  required:
-                  - version
-                  properties:
-                    version:
-                      $ref: '#/definitions/JsonApiRelatedLink'
-      responses:
-        200:
-          description: 'Returns the updated workingtree'
-          schema:
-            allOf:
-            - type: object
-              properties:
-                data:
-                  $ref: '#/definitions/WorkingTree'
-            - $ref: '#/definitions/JsonApiTopLevelLink'
-  /workingtrees/{program_id}/directories:
+  /directories/{program_id}:
     post:
       summary: 'Create a new directory in the workingtree'
       parameters:
@@ -399,7 +338,7 @@ paths:
                 data:
                   $ref: '#/definitions/Directory'
             - $ref: '#/definitions/JsonApiTopLevelLink'
-  /workingtrees/{program_id}/directories/{directory_id}:
+  /directories/{program_id}/{directory_id}:
     get:
       summary: 'Get a directory in the workingtree'
       parameters:
@@ -486,7 +425,7 @@ paths:
         204:
           description: 'The resource has been deleted accordingly'
 
-  /workingtrees/{program_id}/files:
+  /files/{program_id}:
     post:
       summary: 'Create a new file within a program'
       parameters:
@@ -536,10 +475,14 @@ paths:
                 data:
                   $ref: '#/definitions/File'
             - $ref: '#/definitions/JsonApiTopLevelLink'
-  /workingtrees/{program_id}/files/{file_id}:
+  /files/{program_id}/{file_id}:
     get:
       summary: 'Get a file'
       parameters:
+      - name: content
+        in: query
+        description: 'Include file content in response'
+        type: boolean
       - name: program_id
         in: path
         type: string
@@ -625,6 +568,23 @@ paths:
       responses:
         204:
           description: 'The resource has been deleted accordingly'
+  /files/{program_id}/{file_id}/content:
+    get:
+      summary: 'Get the content of a file'
+      parameters:
+      - name: program_id
+        in: path
+        type: string
+        required: true
+      - name: file_id
+        in: path
+        type: string
+        required: true
+      responses:
+        200:
+          description: 'File content'
+          schema:
+            type: file
 
   /sensors:
     get:
@@ -820,85 +780,115 @@ paths:
                   $ref: '#/definitions/Motor'
             - $ref: '#/definitions/JsonApiTopLevelLink'
 
-  /run:
+  /processes:
+    post:
+      summary: 'Spawn a new process'
+      parameters:
+        - name: program
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                required:
+                - type
+                properties:
+                  type:
+                    type: string
+                    enum:
+                    - process
+                  attributes:
+                    type: object
+                    required:
+                    - programId
+                    - file
+                    properties:
+                      programId:
+                          type: string
+                      file:
+                        type: string
+                      args:
+                        type: array
+                        items:
+                          type: string
+      responses:
+        201:
+          description: 'Returns newly created process'
+          schema:
+            allOf:
+            - type: object
+              properties:
+                data:
+                  $ref: '#/definitions/Process'
+            - $ref: '#/definitions/JsonApiTopLevelLink'
+  /processes/{pid}:
+    parameters:
+    - name: pid
+      in: path
+      type: string
+      required: true
     get:
-      summary: 'Get information about the current program execution'
+      summary: 'Get a process'
       responses:
         200:
-          description: 'Returns information of the current program execution'
+          description: 'Process data'
           schema:
-            $ref: '#/definitions/ProgramRun'
-    post:
-      summary: 'Run a program'
+            allOf:
+            - type: object
+              properties:
+                data:
+                  $ref: '#/definitions/Process'
+            - $ref: '#/definitions/JsonApiTopLevelLink'
+    delete:
+      summary: 'Kill a running process'
+      responses:
+        204:
+          description: 'The process has been killed successfully'
+  /processes/{pid}/stdout:
+    parameters:
+      - name: pid
+        in: path
+        type: string
+        required: true
+    get:
+      summary: 'Get the output of a process; Only available while process is alive'
+      responses:
+        200:
+          description: 'Process stdout'
+          schema:
+            type: file
+  /processes/{pid}/stderr:
+    parameters:
+      - name: pid
+        in: path
+        type: string
+        required: true
+    get:
+      summary: 'Get content of the stderr stream of a process; Only available while process is alive'
+      responses:
+        200:
+          description: 'Process stderr'
+          schema:
+            type: file
+  /processes/{pid}/stdin:
+    parameters:
+      - name: pid
+        in: path
+        type: string
+        required: true
+    patch:
+      summary: 'Send data to the stdin of the process'
       parameters:
       - name: program
         in: body
         required: true
         schema:
-          type: object
-          properties:
-            data:
-              type: object
-              required:
-              - type
-              - relationships
-              properties:
-                type:
-                  type: string
-                  enum:
-                  - run
-                relationships:
-                  type: object
-                  properties:
-                    program:
-                      $ref: '#/definitions/JsonApiRelatedLink'
-      responses:
-        201:
-          description: 'Returns information about the spawned program'
-          schema:
-            allOf:
-            - $ref: '#/definitions/ProgramRun'
-            - $ref: '#/definitions/JsonApiTopLevelLink'
-    delete:
-      summary: 'Stop the current program execution'
+          type: string
       responses:
         204:
-          description: 'The program execution has been stopped properly'
-  /run/stdout:
-    get:
-      summary: 'Get the standard output of the program execution'
-      responses:
-        200:
-          description: 'Returns a list of output strings produced during the program execution'
-          schema:
-            allOf:
-            - $ref: '#/definitions/ProgramIO'
-            - $ref: '#/definitions/JsonApiTopLevelLink'
-  /run/stdin:
-    get:
-      summary: 'Get text which has been sent to the program so far'
-      responses:
-        200:
-          description: 'Returns a list of input text sent to the program'
-          schema:
-            allOf:
-            - $ref: '#/definitions/ProgramIO'
-            - $ref: '#/definitions/JsonApiTopLevelLink'
-    patch:
-      summary: 'Send text to the running program'
-      parameters:
-      - name: program-io
-        in: body
-        required: true
-        schema:
-          $ref: '#/definitions/ProgramIO'
-      responses:
-        200:
-          description: 'Returns the updated program input'
-          schema:
-            allOf:
-            - $ref: '#/definitions/ProgramIO'
-            - $ref: '#/definitions/JsonApiTopLevelLink'
+          description: 'Data has been written successfully'
 
 definitions:
   Program:
@@ -917,18 +907,26 @@ definitions:
         required:
         - name
         - creationDate
+        - latestVersionId
+        - workingTreeClean
         properties:
           name:
             type: string
           creationDate:
             type: string
             format: dateTime
+          latestVersionId:
+            type: string
+          workingTreeClean:
+            type: boolean
       relationships:
         type: object
         properties:
           versions:
             $ref: '#/definitions/JsonApiRelatedLink'
-          workingtree:
+          latestVersion:
+            $ref: '#/definitions/JsonApiRelatedLink'
+          workingtreeRoot:
             $ref: '#/definitions/JsonApiRelatedLink'
 
   Blob:
@@ -1022,29 +1020,6 @@ definitions:
           parents:
             $ref: '#/definitions/JsonApiRelatedLink'
 
-  WorkingTree:
-    type: object
-    required:
-    - type
-    properties:
-      id:
-        type: string
-      type:
-        type: string
-        enum:
-        - workingtree
-      attributes:
-        type: object
-        properties:
-          clean:
-            type: boolean
-      relationships:
-        type: object
-        properties:
-          rootDirectory:
-            $ref: '#/definitions/JsonApiRelationshipIncludedOne'
-          version:
-            $ref: '#/definitions/JsonApiRelatedLink'
   Directory:
     type: object
     required:
@@ -1183,75 +1158,35 @@ definitions:
           velocity:
             type: integer
 
-  ProgramRun:
+  Process:
     type: object
+    required:
+    - type
     properties:
-      data:
+      id:
+        type: string
+      type:
+        type: string
+        enum:
+        - process
+      attributes:
         type: object
-        required:
-        - type
         properties:
-          id:
+          programId:
             type: string
-          type:
+          file:
             type: string
-            enum:
-            - run
-          attributes:
-            type: object
-            properties:
-              startTime:
-                type: string
-                format: dateTime
-          relationships:
-            type: object
-            properties:
-              program:
-                $ref: '#/definitions/JsonApiRelatedLink'
-              input:
-                type: object
-                properties:
-                  links:
-                    type: object
-                    properties:
-                      related:
-                        type: string
-                        format: uri
-                  data:
-                    $ref: '#/definitions/JsonApiResourceIdentifier'
-              output:
-                type: object
-                properties:
-                  links:
-                    type: object
-                    properties:
-                      related:
-                        type: string
-                        format: uri
-                  data:
-                    $ref: '#/definitions/JsonApiResourceIdentifier'
-
-  ProgramIO:
-    type: object
-    properties:
-      data:
+          args:
+            type: array
+            items:
+              type: string
+      relationships:
         type: object
-        required:
-        - type
         properties:
-          id:
-            type: string
-          type:
-            type: string
-            enum:
-            - program-io
-          attributes:
-            type: object
-            properties:
-              io:
-                type: array
-                items:
-                  type: string
+          stdout:
+            $ref: '#/definitions/JsonApiRelatedLink'
+          stdin:
+            $ref: '#/definitions/JsonApiRelatedLink'
 
   JsonApiRelatedLink:
     type: object

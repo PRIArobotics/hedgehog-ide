@@ -1,4 +1,4 @@
-import {Component, ViewChild, OnInit, AfterViewInit, EventEmitter} from '@angular/core';
+import {Component, ViewChild, OnInit, AfterViewInit, EventEmitter, HostListener} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {DummyProgramService} from "../program/dummy-program.service";
 import {WorkingTreeObjectType} from "../../../common/versioncontrol/WorkingTreeObject";
@@ -9,6 +9,7 @@ import IProgramStorage from "../../../common/versioncontrol/ProgramStorage";
 import {MaterializeAction} from "angular2-materialize";
 import Program from "../../../common/versioncontrol/Program";
 import {LocalStorageService, LocalStorage} from "angular2-localstorage";
+import {HttpProgramService} from "../program/http-program.service";
 
 declare var $: JQueryStatic;
 declare var Materialize: any;
@@ -19,6 +20,7 @@ export class File {
     public storageObject: WorkingTreeFile;
     public parentArray: Object[];
     public parentDirectory: WorkingTreeDirectory;
+    public changed: boolean;
 }
 
 
@@ -29,7 +31,8 @@ export class File {
     styleUrls: ['text-ide.component.css'],
     providers: [
         DummyProgramService,
-        LocalStorageService
+        LocalStorageService,
+        HttpProgramService
     ]
 })
 
@@ -108,11 +111,10 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
      * @param route for messages sent from another view
      * @param storageService service that controls the ProgramStorage
      */
-    constructor(route: ActivatedRoute, storageService: DummyProgramService) {
+    constructor(route: ActivatedRoute, storageService: HttpProgramService) {
         this.programName = route.snapshot.params['programName'];
 
         this.storage = storageService.getStorage();
-
     }
 
     /**
@@ -120,23 +122,9 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
      * it can be async (the constructor cannot) and therefore allows interaction with the ProgramStorage
      */
     public async ngOnInit() {
-
-        // for test purposes
-        this.storage.createProgram(this.programName);
-        // no longer test
-
         this.program = await this.storage.getProgram(this.programName);
 
-        let rootdir = await this.program.getWorkingTree().getRootDirectory();
-
-        // for test purposes
-        rootdir.addFile('file1.py', 'testfile1');
-        rootdir.addFile('file2.py', 'testfile2');
-
-        await rootdir.addDirectory('dir');
-        let dir = await rootdir.getDirectory('dir');
-        dir.addFile('file3.py', 'testfile3');
-        // no longer test
+        let rootdir = await this.program.getWorkingTreeRoot();
 
         let childArray = [];
 
@@ -217,14 +205,15 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
                 );
 
                 if (this.nextFileId < this.localStorageFiles[this.programName].length) {
-                    // if file is in the local storage index the new file and take the content from the localstorage
+                    // if file is in the local storage index the new file and take the content from the local storage
                     this.files.push(
                         {
                             name: itemName,
                             content: this.localStorageFiles[this.programName][this.nextFileId]['content'],
                             storageObject: file,
                             parentArray: childArray,
-                            parentDirectory: directory
+                            parentDirectory: directory,
+                            changed: false
                         }
                     );
                 } else {
@@ -238,11 +227,12 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
                             content,
                             storageObject: file,
                             parentArray: childArray,
-                            parentDirectory: directory
+                            parentDirectory: directory,
+                            changed: false
                         }
                     );
 
-                    // add content with the name of the file to the localstorage of this program
+                    // add content with the name of the file to the local storage of this program
                     this.localStorageFiles[this.programName].push(
                         {
                             name: itemName,
@@ -278,6 +268,15 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
         }
     }
 
+    @HostListener('window:keydown', ['$event'])
+    public keyPressed(event) {
+        // check if the user pressed CTRL - S to save all files
+        if (event.keyCode === 83 && event.ctrlKey) {
+            this.saveAllFiles();
+            event.preventDefault();
+        }
+    }
+
     /**
      * Event binding when character is input in the ace editor
      *
@@ -294,9 +293,8 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
             // save file from the last tab in local content
             this.files[this.openId].content = this.currentFileContent;
             this.localStorageFiles[this.programName][this.openId]['content'] = this.currentFileContent;
-            // save file in storage
-            let wtFile: WorkingTreeFile = this.files[this.openId].storageObject;
-            await wtFile.writeContent(this.currentFileContent);
+
+            this.files[this.openId].changed = true;
         }
     }
 
@@ -473,7 +471,8 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
                     content: '',
                     storageObject: newFile,
                     parentArray: this.newData.arrayToAddFileTo,
-                    parentDirectory: directory
+                    parentDirectory: directory,
+                    changed: false
                 }
             );
 
@@ -612,6 +611,21 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
                 right: indicator.parent().width()
             }
         );
+    }
+
+    /**
+     * Save all files that have changed and are in the current project
+     */
+    private saveAllFiles () {
+        for (let file of this.files) {
+            if(file.changed) {
+                file.storageObject.writeContent(file.content);
+                file.changed = false;
+            }
+        }
+
+        Materialize.toast('<i class="material-icons">done</i>' +
+            'Successfully saved all changed files ' + this.deleteFileData.name, 3000);
     }
 
     /**

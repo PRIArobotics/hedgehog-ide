@@ -3,8 +3,8 @@ import IProgramStorage from "./ProgramStorage";
 export default class Blob {
     public id: string;
     public size: number;
+    public programName: string;
 
-    private programName: string;
     private storage: IProgramStorage;
 
     public constructor(storage, programName, id, size) {
