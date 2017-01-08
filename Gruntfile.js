@@ -58,7 +58,7 @@ module.exports = function(grunt) {
                     {
                         expand: true,
                         cwd: 'src/client/app/blockly/lib',
-                        src: ['msg/js/en.js', 'blockly_compressed.js', 'blocks_compressed.js', 'python_compressed.js'],
+                        src: ['msg/js/en.js', 'blockly_compressed.js', 'blocks_compressed.js', 'python_compressed.js', 'media'],
                         dest: 'build/src/client/app/blockly/lib'
                     },
 
