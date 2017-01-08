@@ -5,7 +5,7 @@ import WorkingTreeDirectory from "../../common/versioncontrol/WorkingTreeDirecto
 import serializeProgram from "../serializer/ProgramSerializer";
 import serializeWorkingTreeFile from "../serializer/WorkingTreeFileSerializer";
 import serializeWorkingTreeDirectory from "../serializer/WorkingTreeDirectorySerializer";
-import {Process} from "../process/ProcessManager";
+import {NodeProcess} from "../process/ProcessManager";
 import serializeProcess from "../serializer/ProcessSerializer";
 
 let modelRegistry = new SerializerRegisty();
@@ -13,6 +13,8 @@ modelRegistry.registerSerializer(Program, serializeProgram);
 modelRegistry.registerSerializer(WorkingTreeFile, serializeWorkingTreeFile);
 modelRegistry.registerSerializer(WorkingTreeDirectory, serializeWorkingTreeDirectory);
 
-modelRegistry.registerSerializer(Process, serializeProcess);
+// We need a class so we cannot use the IProcess interface here
+// Instead, use NodeProcess
+modelRegistry.registerSerializer(NodeProcess, serializeProcess);
 
 export default modelRegistry;

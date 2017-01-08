@@ -6,17 +6,18 @@ import {EventEmitter} from "events";
 
 import GitProgramStorage from "../versioncontrol/GitProgramStorage";
 import {wrapCallbackAsPromise} from "../../common/utils";
+import {IProcess} from "../../common/ProcessManager";
 
 export default class ProcessManager {
     private eventEmitter = new EventEmitter();
 
-    private processes: Map<number, Process> = new Map();
+    private processes: Map<number, NodeProcess> = new Map();
 
     // GitProgramStorage is required here as we need the program to be physically stored on the system
     constructor(private processDir: string, private storage: GitProgramStorage) { }
 
-    public run(programName: string, filePath: string, args: string[] = []): Process {
-        let process: Process = new Process(
+    public run(programName: string, filePath: string, args: string[] = []): NodeProcess {
+        let process: NodeProcess = new NodeProcess(
             programName,
             filePath,
             args,
@@ -56,7 +57,7 @@ export default class ProcessManager {
         return wrapCallbackAsPromise(process.stdin.write.bind(process.stdin), data);
     }
 
-    public getProcess(pid: number): Process {
+    public getProcess(pid: number): NodeProcess {
         return this.processes.get(pid);
     }
 
@@ -64,7 +65,7 @@ export default class ProcessManager {
         this.eventEmitter.on(event, handler);
     }
 
-    private registerProcessExitHandler(process: Process) {
+    private registerProcessExitHandler(process: NodeProcess) {
         const pid = process.nodeProcess.pid;
         process.nodeProcess.on('exit', async () => {
             winston.debug(`Process exited: ${pid}`);
@@ -89,7 +90,7 @@ export default class ProcessManager {
         });
     }
 
-    private registerRedirectOutputHandler (process: Process, stream: string) {
+    private registerRedirectOutputHandler (process: NodeProcess, stream: string) {
         process.nodeProcess[stream].on('data', (data: string) => {
             this.eventEmitter.emit('data_' + stream, process, data);
             fs.appendFile(this.getStreamStorageFile(process.nodeProcess.pid, stream), data, (err: Object) => {
@@ -99,7 +100,7 @@ export default class ProcessManager {
         });
     }
 
-    private registerErrorHandler (process: Process) {
+    private registerErrorHandler (process: NodeProcess) {
         process.nodeProcess.on('error', (err) => {
             this.eventEmitter.emit('error', process, err);
             winston.error(err);
@@ -111,16 +112,19 @@ export default class ProcessManager {
     }
 }
 
-export class Process {
+export class NodeProcess implements IProcess {
     public programName: string;
     public filePath: string;
     public args: string[];
+    public pid: number;
+
     public nodeProcess: ChildProcess;
 
     public constructor(programName: string, filePath: string, args: string[], nodeProcess: ChildProcess) {
         this.programName = programName;
         this.filePath = filePath;
         this.args = args;
+        this.pid = nodeProcess.pid;
         this.nodeProcess = nodeProcess;
     }
 }
