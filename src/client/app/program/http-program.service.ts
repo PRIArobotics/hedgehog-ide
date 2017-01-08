@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import HttpProgramStorage from "../../../common/versioncontrol/HttpProgramStorage";
+import HttpProgramStorage from "./HttpProgramStorage";
 import {Http} from "@angular/http";
 
 @Injectable()
