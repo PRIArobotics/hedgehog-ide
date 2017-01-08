@@ -13,15 +13,11 @@ export class BlocklyComponent implements AfterViewInit {
     ngAfterViewInit(): void {
 
 
-        let s: string = `<xml id="toolbox" style="display: none">
+        let tools: string = `<xml id="toolbox" style="display: none">
             <block type="controls_if"></block>
         </xml>`;
 
-        var div: any = document.createElement('div');
-        div.innerHTML = s;
-        var elements: any = div.firstChild;
-
-        let toolbox: any = {toolbox: elements,
+        let toolbox: any = {toolbox: tools,
             zoom: {controls: true,
                    wheel: true,
                    startScale: 1.0,
