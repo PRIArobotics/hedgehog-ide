@@ -10,7 +10,8 @@
     "whitespace": [false, "check-branch"],
     "ordered-imports": false,
     "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore"],
-    "no-string-literal": false
+    "no-string-literal": false,
+    "no-unused-new": false
   },
   "rulesDirectory": [
     "node_modules/codelyzer"
