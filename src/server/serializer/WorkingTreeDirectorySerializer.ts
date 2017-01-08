@@ -27,6 +27,7 @@ async function serializeWorkingTreeDirectory (directory: WorkingTreeDirectory,
     if(includeItems) {
         let items = [];
         for(const item of directory.items) {
+            // Do not include items of subdirectories and file contents
             items.push(await registry.serialize(await directory.getItem(item), request, documentBuilder, false));
         }
         resourceBuilder.addManyRelationship('items', items);
