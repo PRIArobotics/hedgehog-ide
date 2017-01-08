@@ -10,7 +10,8 @@ import SerializerRegistry from "./SerializerRegistry";
 async function serializeWorkingTreeDirectory (directory: WorkingTreeDirectory,
                                               request: Hapi.Request,
                                               documentBuilder: JsonApiDocumentBuilder,
-                                              registry: SerializerRegistry): Promise<JsonApiResource> {
+                                              registry: SerializerRegistry,
+                                              includeItems: boolean = true): Promise<JsonApiResource> {
     let resourceBuilder = new JsonApiResourceBuilder(documentBuilder);
     resourceBuilder.resource.type = 'directory';
     resourceBuilder.resource.id = genericToBase64(directory.path);
@@ -23,11 +24,13 @@ async function serializeWorkingTreeDirectory (directory: WorkingTreeDirectory,
         related: getLinkUrl(request, `/api/directories/${genericToBase64(directory.getParentPath())}`)
     });
 
-    let items = [];
-    for(const item of directory.items) {
-        items.push(await registry.serialize(await directory.getItem(item), request, documentBuilder));
+    if(includeItems) {
+        let items = [];
+        for(const item of directory.items) {
+            items.push(await registry.serialize(await directory.getItem(item), request, documentBuilder, false));
+        }
+        resourceBuilder.addManyRelationship('items', items);
     }
-    resourceBuilder.addManyRelationship('items', items);
 
     return resourceBuilder.getProduct();
 }
