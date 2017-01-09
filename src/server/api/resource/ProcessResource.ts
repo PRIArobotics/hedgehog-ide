@@ -2,7 +2,6 @@ import Hapi = require('hapi');
 
 import ApiResource from "../ApiResource";
 import SerializerRegistry from "../../serializer/SerializerRegistry";
-import ProcessManager from "../../process/ProcessManager";
 import ApiEndpoint from "../ApiEndpoint";
 import {JsonApiDocument, JsonApiResource} from "../../jsonapi/JsonApiObjects";
 import {RequirementType, ObjectParser} from "../../jsonapi/Parser";
@@ -10,9 +9,10 @@ import winston = require("winston");
 import {genericFromBase64} from "../../../common/utils";
 import JsonApiDocumentBuilder from "../../jsonapi/JsonApiBuilder";
 import {getLinkUrl} from "../../utils";
+import IProcessManager from "../../../common/ProcessManager";
 
 export default class ProcessResource extends ApiResource {
-    public constructor (private processManager: ProcessManager, private serializerRegistry: SerializerRegistry) {
+    public constructor (private processManager: IProcessManager, private serializerRegistry: SerializerRegistry) {
         super('/processes');
     }
 
@@ -55,14 +55,14 @@ export default class ProcessResource extends ApiResource {
                 error: 'Error while parsing the request. Argument might be missing.'
             }).code(400);
         }
-        let process = this.processManager.run(
+        let process = await this.processManager.run(
             genericFromBase64(requestData.attributes.programId),
             genericFromBase64(requestData.attributes.fileId),
             requestData.attributes.args || [ ]
         );
 
         let documentBuilder = new JsonApiDocumentBuilder();
-        documentBuilder.setLinks(getLinkUrl(req, `/api/processes/${process.nodeProcess.pid}`), null);
+        documentBuilder.setLinks(getLinkUrl(req, `/api/processes/${process.pid}`), null);
         documentBuilder.addResource(await this.serializerRegistry.serialize(process, req, documentBuilder));
         return reply(documentBuilder.getProduct())
             .code(201);
@@ -70,18 +70,18 @@ export default class ProcessResource extends ApiResource {
 
     @ApiEndpoint('GET', '/{pid}')
     public async getProcess (req: Hapi.Request, reply: Hapi.IReply) {
-        let process = this.processManager.getProcess(Number(req.params['pid']));
+        let process = await this.processManager.getProcess(Number(req.params['pid']));
 
         let documentBuilder = new JsonApiDocumentBuilder();
-        documentBuilder.setLinks(getLinkUrl(req, `/api/processes/${process.nodeProcess.pid}`), null);
+        documentBuilder.setLinks(getLinkUrl(req, `/api/processes/${process.pid}`), null);
         documentBuilder.addResource(await this.serializerRegistry.serialize(process, req, documentBuilder));
         return reply(documentBuilder.getProduct())
             .code(200);
     }
 
     @ApiEndpoint('DELETE', '/{pid}')
-    public killProcess (req: Hapi.Request, reply: Hapi.IReply) {
-        this.processManager.kill(Number(req.params['pid']));
+    public async killProcess (req: Hapi.Request, reply: Hapi.IReply) {
+        await this.processManager.kill(Number(req.params['pid']));
 
         return reply('')
             .code(204);

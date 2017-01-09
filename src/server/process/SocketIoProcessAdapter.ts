@@ -1,8 +1,7 @@
-import ProcessManager from "./ProcessManager";
-import {IProcess} from "../../common/ProcessManager";
+import {IProcess, default as IProcessManager} from "../../common/ProcessManager";
 
 export default class SocketIoProcessAdapter {
-    public constructor (private processManager: ProcessManager, private io: SocketIO.Server) {
+    public constructor (private processManager: IProcessManager, private io: SocketIO.Server) {
         this.registerNewProcessHandler();
         this.registerStreamDataHandler('stdout');
         this.registerStreamDataHandler('stderr');
