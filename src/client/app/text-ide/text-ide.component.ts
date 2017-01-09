@@ -8,10 +8,11 @@ import WorkingTreeFile from "../../../common/versioncontrol/WorkingTreeFile";
 import IProgramStorage from "../../../common/versioncontrol/ProgramStorage";
 import {MaterializeAction} from "angular2-materialize";
 import Program from "../../../common/versioncontrol/Program";
-import {LocalStorageService, LocalStorage} from "angular2-localstorage";
+import {LocalStorageService} from "angular2-localstorage";
 import {HttpProgramService} from "../program/http-program.service";
 import {ProgramExecutionComponent} from "../program-execution/program-execution.component";
-import {genericToBase64, genericToHex} from "../../../common/utils";
+import {genericToHex} from "../../../common/utils";
+import {LocalStorage} from "angular2-localstorage";
 
 declare var $: JQueryStatic;
 declare var Materialize: any;
@@ -69,7 +70,8 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
     // fileTree array containing TreeComponent compatible Objects
     private fileTree: Object[] = [];
 
-    private localStorageFiles: Object = {};
+    // local storage Object as programName: { }
+    @LocalStorage() private localStorageFiles: {[programName: string]: {[fileId: string]: string}};
 
     // indexed files from the file tree
     private files: Map<string, File>;
@@ -117,6 +119,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
     constructor(route: ActivatedRoute, storageService: HttpProgramService) {
         this.programName = route.snapshot.params['programName'];
         this.files = new Map<string, File>();
+        this.localStorageFiles = {};
         this.storage = storageService.getStorage();
     }
 
@@ -142,9 +145,9 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
         };
 
         // check if the local storage already has this program stored
-        if (!this.localStorageFiles.hasOwnProperty(this.programName)) {
-            // if not create a new array with the program name
-            this.localStorageFiles[this.programName] = [];
+        if (!this.localStorageFiles[this.programName]) {
+            // if not create a new Map with the program name
+            this.localStorageFiles[this.programName] = {};
         }
 
         // populate file tree and give it the root directory and it's childArray
@@ -214,7 +217,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
                     // if file is in the local storage index the new file and take the content from the local storage
                     this.files.set(fileId, {
                         name: itemName,
-                        content: this.localStorageFiles[this.programName][fileId]['content'],
+                        content: this.localStorageFiles[this.programName][fileId],
                         storageObject: file,
                         parentArray: childArray,
                         parentDirectory: directory,
@@ -231,28 +234,26 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
                         changed: false
                     });
                 }
-            } else if (type === WorkingTreeObjectType.Directory) {
-                if (itemName !== '.') {
-                    // get the directory
-                    let newDirectory = await directory.getDirectory(itemName);
+            } else if (type === WorkingTreeObjectType.Directory && !directory.getItemPath(itemName).startsWith('.')) {
+                // get the directory
+                let newDirectory = await directory.getDirectory(itemName);
 
-                    // create children's array
-                    let newChildArray = [];
+                // create children's array
+                let newChildArray = [];
 
-                    // add directory to children of the directory
-                    childArray.push(
-                        {
-                            name: itemName,
-                            children: newChildArray,
-                            storageObject: newDirectory,
-                            parentArray: childArray,
-                            parentDirectory: directory
-                        }
-                    );
+                // add directory to children of the directory
+                childArray.push(
+                    {
+                        name: itemName,
+                        children: newChildArray,
+                        storageObject: newDirectory,
+                        parentArray: childArray,
+                        parentDirectory: directory
+                    }
+                );
 
-                    // recurse over the directory and give it the children array
-                    await this.populateFiletree(newDirectory, newChildArray);
-                }
+                // recurse over the directory and give it the children array
+                await this.populateFiletree(newDirectory, newChildArray);
             }
         }
     }
@@ -281,9 +282,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
         if (this.openId) {
             // save file from the last tab in local content
             this.files.get(this.openId).content = this.currentFileContent;
-
-            // this.localStorageFiles[this.programName][this.openId]['content'] = this.currentFileContent;
-
+            this.localStorageFiles[this.programName][this.openId] = this.currentFileContent;
             this.files.get(this.openId).changed = true;
         }
     }
@@ -462,14 +461,6 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
                 parentDirectory: directory,
                 changed: false
             });
-
-            // and the local storage
-            this.localStorageFiles[this.programName].push(
-                {
-                    name,
-                    content: ''
-                }
-            );
         } else {
             // add directory to the Working Tree Directory
             await directory.addDirectory(name);
@@ -557,7 +548,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
             parentArray = file.parentArray;
 
             // delete the file from the files array
-            this.files.delete(this.deleteFileData.fileId)
+            this.files.delete(this.deleteFileData.fileId);
 
             // delete file in Working Directory
             await file.parentDirectory.deleteFile(this.deleteFileData.name);
