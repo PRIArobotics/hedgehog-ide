@@ -10,6 +10,7 @@ import {MaterializeModule} from "angular2-materialize";
 
 import {TextIdeComponent} from "./text-ide.component";
 import {HttpModule} from "@angular/http";
+import {ProgramExecutionComponent} from "../program-execution/program-execution.component";
 
 @NgModule({
     imports: [
@@ -22,6 +23,7 @@ import {HttpModule} from "@angular/http";
     ],
     declarations: [
         TextIdeComponent,
+        ProgramExecutionComponent,
         AceEditorDirective
     ],
 })

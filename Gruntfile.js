@@ -74,7 +74,7 @@ module.exports = function(grunt) {
             test: 'test/**/*.ts'
         },
         concurrent: {
-            run: [['build', 'run-server'], 'watch:compile', 'watch:copy'],
+            run: [['compile', 'copy', 'run-server'], 'watch:compile', 'watch:copy'],
             options: {
                 logConcurrentOutput: true
             }
@@ -89,7 +89,7 @@ module.exports = function(grunt) {
             },
             compile: {
                 files: 'src/**/*.ts',
-                tasks: ['build'],
+                tasks: ['compile'],
                 options: {
                     interrupt: true
                 }

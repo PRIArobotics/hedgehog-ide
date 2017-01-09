@@ -1,0 +1,20 @@
+#program-execution {
+    position:fixed;
+    bottom: 0;
+    height: 20%;
+    display: flex;
+}
+
+#program-execution-sidebar {
+    display: inline-block;
+    border: 1px solid;
+    color: #000;
+    padding: 1vh;
+}
+
+#program-execution-terminal {
+    width: 100vw;
+    border: 1px solid;
+    flex: 1;
+    padding: 1vh;
+}
