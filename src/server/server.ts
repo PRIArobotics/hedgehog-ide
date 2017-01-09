@@ -1,5 +1,6 @@
 import "babel-polyfill";
 import Hapi = require('hapi');
+import Io = require('socket.io');
 import path = require('path');
 import winston = require("winston");
 import chalk = require('chalk');
@@ -13,6 +14,7 @@ import WorkingTreeFileResource from "./api/resource/versioncontrol/WorkingTreeFi
 import WorkingTreeDirectoryResource from "./api/resource/versioncontrol/WorkingTreeDirectoryResource";
 import ProcessManager from "./process/ProcessManager";
 import ProcessResource from "./api/resource/ProcessResource";
+import SocketIoProcessAdapter from "./process/SocketIoProcessAdapter";
 
 
 console.log(chalk.green(figlet.textSync('Hedgehog IDE')));
@@ -61,6 +63,12 @@ hedgehogApi.registerEndpoint(new ProgramResource(programStorage, modelRegistry))
 hedgehogApi.registerEndpoint(new WorkingTreeFileResource(programStorage, modelRegistry));
 hedgehogApi.registerEndpoint(new WorkingTreeDirectoryResource(programStorage, modelRegistry));
 hedgehogApi.registerEndpoint(new ProcessResource(processManager, modelRegistry));
+
+/**
+ * Socket.io setup
+ */
+let io = Io(server.listener);
+new SocketIoProcessAdapter(processManager, io);
 
 // tslint:disable-next-line
 server.register(require('inert'));

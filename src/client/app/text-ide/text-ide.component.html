@@ -3,7 +3,10 @@
         <div class="nav-wrapper">
             <a href="#" class="brand-logo"> {{ programName }} </a>
             <ul id="nav-mobile" class="right hide-on-med-and-down">
-                <li><a><i class="material-icons">play_arrow</i></a></li>
+                <li>
+                    <a><i *ngIf="!programExecution.isRunning" class="material-icons">play_arrow</i></a>
+                    <a><i *ngIf="programExecution.isRunning" class="material-icons">stop</i></a>
+                </li>
                 <li (click)="saveAllFiles()"><a><i class="material-icons">save</i></a></li>
                 <li><a><i class="material-icons">insert_drive_file</i></a></li>
             </ul>
@@ -91,10 +94,10 @@
                      [theme]="'chrome'"
                      [readOnly]="false"
                      style="display:block; height: 88vh; width:100%"> </div>
-
-
             </div>
         </div>
     </div>
+
+    <program-execution></program-execution>
 </div>
 

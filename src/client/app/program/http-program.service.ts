@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
-import HttpProgramStorage from "./HttpProgramStorage";
+import {Injectable} from '@angular/core';
 import {Http} from "@angular/http";
+import HttpProgramStorage from "./HttpProgramStorage";
 
 @Injectable()
 export class HttpProgramService {

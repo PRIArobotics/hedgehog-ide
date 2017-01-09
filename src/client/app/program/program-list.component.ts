@@ -28,25 +28,6 @@ export class ProgramListComponent implements OnInit {
 
     public async ngOnInit() {
         // add programs for testing
-
-        try {
-            let program = await this.storage.createProgram('program 1');
-
-            let rootdir = await program.getWorkingTreeRoot();
-
-            // with a few files and a subdirectory
-            await rootdir.addFile('file1.py', 'testfile1');
-            await rootdir.addFile('file2.py', 'testfile2');
-
-            await rootdir.addDirectory('dir');
-            let dir = await rootdir.getDirectory('dir');
-            await dir.addFile('file3.py', 'testfile3');
-            await dir.addFile('file4.py', 'testfile4');
-        } catch (e) {
-            console.log(e);
-        }
-
-
         return this.reloadProgramList();
     }
 

@@ -8,8 +8,11 @@ import WorkingTreeFile from "../../../common/versioncontrol/WorkingTreeFile";
 import IProgramStorage from "../../../common/versioncontrol/ProgramStorage";
 import {MaterializeAction} from "angular2-materialize";
 import Program from "../../../common/versioncontrol/Program";
-import {LocalStorageService, LocalStorage} from "angular2-localstorage";
+import {LocalStorageService} from "angular2-localstorage";
 import {HttpProgramService} from "../program/http-program.service";
+import {ProgramExecutionComponent} from "../program-execution/program-execution.component";
+import {genericToHex} from "../../../common/utils";
+import {LocalStorage} from "angular2-localstorage";
 
 declare var $: JQueryStatic;
 declare var Materialize: any;
@@ -54,6 +57,10 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
     @ViewChild(TreeComponent)
     private tree: TreeComponent;
 
+    // TreeComponent for updating the file tree
+    @ViewChild(ProgramExecutionComponent)
+    private programExecution: ProgramExecutionComponent;
+
     // modal action for creating a new file
     private newFileOrDirectoryModalActions = new EventEmitter<string|MaterializeAction>();
 
@@ -63,16 +70,14 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
     // fileTree array containing TreeComponent compatible Objects
     private fileTree: Object[] = [];
 
-    @LocalStorage() private localStorageFiles: Object = {};
+    // local storage Object as programName: { }
+    @LocalStorage() private localStorageFiles: {[programName: string]: {[fileId: string]: string}};
 
     // indexed files from the file tree
-    private files: File[] = [];
+    private files: Map<string, File>;
 
     // last id of the file changed used for saving the file
-    private openId: number = -1;
-
-    // iterator for file objects
-    private nextFileId: number = 0;
+    private openId: string;
 
     // editor content bind
     private editorContent: string;
@@ -113,7 +118,8 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
      */
     constructor(route: ActivatedRoute, storageService: HttpProgramService) {
         this.programName = route.snapshot.params['programName'];
-
+        this.files = new Map<string, File>();
+        this.localStorageFiles = {};
         this.storage = storageService.getStorage();
     }
 
@@ -122,9 +128,11 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
      * it can be async (the constructor cannot) and therefore allows interaction with the ProgramStorage
      */
     public async ngOnInit() {
+        this.programExecution.isRunning = true;
+
         this.program = await this.storage.getProgram(this.programName);
 
-        let rootdir = await this.program.getWorkingTreeRoot();
+        let rootDir = await this.program.getWorkingTreeRoot();
 
         let childArray = [];
 
@@ -133,17 +141,17 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
             name: this.programName,
             isExpanded: true,
             children: childArray,
-            storageObject: rootdir
+            storageObject: rootDir
         };
 
         // check if the local storage already has this program stored
-        if (!this.localStorageFiles.hasOwnProperty(this.programName)) {
-            // if not create a new array with the program name
-            this.localStorageFiles[this.programName] = [];
+        if (!this.localStorageFiles[this.programName]) {
+            // if not create a new Map with the program name
+            this.localStorageFiles[this.programName] = {};
         }
 
         // populate file tree and give it the root directory and it's childArray
-        await this.populateFiletree(rootdir, childArray);
+        await this.populateFiletree(rootDir, childArray);
 
         // update the tree model after file tree has been populated
         this.tree.treeModel.update();
@@ -170,7 +178,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
 
                 // update indicator to the tab and open it's file
                 this.updateIndicator(tab);
-                this.openFile(+tab.attr('id').substr(3));
+                this.openFile(tab.attr('id').substr(3));
             }
         });
 
@@ -195,75 +203,57 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
             if (type === WorkingTreeObjectType.File) {
                 // get the file
                 let file = await directory.getFile(itemName);
+                let fileId = genericToHex(directory.getItemPath(itemName));
 
                 // add file to children of the directory
                 childArray.push(
                     {
-                        fileId: this.nextFileId,
+                        fileId,
                         name: itemName,
                     }
                 );
 
-                if (this.nextFileId < this.localStorageFiles[this.programName].length) {
+                if (this.localStorageFiles[this.programName][fileId]) {
                     // if file is in the local storage index the new file and take the content from the local storage
-                    this.files.push(
-                        {
-                            name: itemName,
-                            content: this.localStorageFiles[this.programName][this.nextFileId]['content'],
-                            storageObject: file,
-                            parentArray: childArray,
-                            parentDirectory: directory,
-                            changed: false
-                        }
-                    );
+                    this.files.set(fileId, {
+                        name: itemName,
+                        content: this.localStorageFiles[this.programName][fileId],
+                        storageObject: file,
+                        parentArray: childArray,
+                        parentDirectory: directory,
+                        changed: false
+                    });
                 } else {
-                    // read content of the file form the backend
-                    let content = await file.readContent();
-
                     // index the file with the read content
-                    this.files.push(
-                        {
-                            name: itemName,
-                            content,
-                            storageObject: file,
-                            parentArray: childArray,
-                            parentDirectory: directory,
-                            changed: false
-                        }
-                    );
-
-                    // add content with the name of the file to the local storage of this program
-                    this.localStorageFiles[this.programName].push(
-                        {
-                            name: itemName,
-                            content
-                        }
-                    );
+                    this.files.set(fileId, {
+                        name: itemName,
+                        content: null,
+                        storageObject: file,
+                        parentArray: childArray,
+                        parentDirectory: directory,
+                        changed: false
+                    });
                 }
+            } else if (type === WorkingTreeObjectType.Directory && !directory.getItemPath(itemName).startsWith('.')) {
+                // get the directory
+                let newDirectory = await directory.getDirectory(itemName);
 
-                this.nextFileId++;
-            } else if (type === WorkingTreeObjectType.Directory) {
-                if (itemName !== '.') {
-                    // get the directory
-                    let newDirectory = await directory.getDirectory(itemName);
+                // create children's array
+                let newChildArray = [];
 
-                    // create children's array
-                    let newChildArray = [];
+                // add directory to children of the directory
+                childArray.push(
+                    {
+                        name: itemName,
+                        children: newChildArray,
+                        storageObject: newDirectory,
+                        parentArray: childArray,
+                        parentDirectory: directory
+                    }
+                );
 
-                    // add directory to children of the directory
-                    childArray.push(
-                        {
-                            name: itemName,
-                            children: newChildArray,
-                            storageObject: newDirectory,
-                            parentArray: childArray,
-                            parentDirectory: directory
-                        }
-                    );
-
-                    // recurse over the directory and give it the children array
-                    await this.populateFiletree(newDirectory, newChildArray);
-                }
+                // recurse over the directory and give it the children array
+                await this.populateFiletree(newDirectory, newChildArray);
             }
         }
     }
@@ -287,14 +277,13 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
         this.editorContent = editorContent;
         this.currentFileContent = editorContent;
 
-        // if no file has been opened or all have been closed the id is -1
+        // if no file has been opened or all have been closed the id is null
         // and you cannot save a file that is does not exist
-        if (this.openId > -1) {
+        if (this.openId) {
             // save file from the last tab in local content
-            this.files[this.openId].content = this.currentFileContent;
-            this.localStorageFiles[this.programName][this.openId]['content'] = this.currentFileContent;
-
-            this.files[this.openId].changed = true;
+            this.files.get(this.openId).content = this.currentFileContent;
+            this.localStorageFiles[this.programName][this.openId] = this.currentFileContent;
+            this.files.get(this.openId).changed = true;
         }
     }
 
@@ -389,7 +378,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
 
         // if it a file update the indexed file
         if (!node.children) {
-            node = this.files[node.fileId];
+            node = this.files.get(node.fileId);
         }
 
         // set new parent objects
@@ -414,8 +403,8 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
             this.newData.storageObject = data.storageObject;
         } else {
             // if it isn't add the files parent directory and array to newData
-            this.newData.arrayToAddFileTo = this.files[data.fileId].parentArray;
-            this.newData.storageObject = this.files[data.fileId].parentDirectory;
+            this.newData.arrayToAddFileTo = this.files.get(data.fileId).parentArray;
+            this.newData.storageObject = this.files.get(data.fileId).parentDirectory;
         }
     }
 
@@ -452,37 +441,26 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
         }
 
         if (this.newData.file) {
-            // add file to parent child array
-            this.newData.arrayToAddFileTo.push({
-                fileId: this.nextFileId,
-                name,
-            });
-
-            this.nextFileId++;
-
             // add file with no content to the Working Tree Directory
             await directory.addFile(name, '');
             let newFile: WorkingTreeFile = await directory.getFile(name);
+            let fileId = genericToHex(directory.getItemPath(name));
+
+            // add file to parent child array
+            this.newData.arrayToAddFileTo.push({
+                fileId,
+                name
+            });
 
             // save file in the indexed files array
-            this.files.push(
-                {
-                    name,
-                    content: '',
-                    storageObject: newFile,
-                    parentArray: this.newData.arrayToAddFileTo,
-                    parentDirectory: directory,
-                    changed: false
-                }
-            );
-
-            // and the local storage
-            this.localStorageFiles[this.programName].push(
-                {
-                    name,
-                    content: ''
-                }
-            );
+            this.files.set(fileId, {
+                name,
+                content: null,
+                storageObject: newFile,
+                parentArray: this.newData.arrayToAddFileTo,
+                parentDirectory: directory,
+                changed: false
+            });
         } else {
             // add directory to the Working Tree Directory
             await directory.addDirectory(name);
@@ -521,7 +499,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
 
         // check if there is no parentArray and if the type of fileId is undefined
         // this means it is the root directory and therefore cannot be deleted
-        if (!this.deleteFileData.parentArray && typeof this.deleteFileData.fileId === 'undefined') {
+        if (!this.deleteFileData.parentArray && this.deleteFileData.fileId) {
             Materialize.toast('<i class="material-icons">close</i>Cannot delete root directory', 3000);
             return;
         }
@@ -555,7 +533,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
             parentArray = this.deleteFileData.parentArray;
         } else {
             // retrieve file from files using it's fileId
-            let file: File = this.files[this.deleteFileData.fileId];
+            let file: File = this.files.get(this.deleteFileData.fileId);
 
             // get tab using the it's id
             let fileTab: JQuery = $('#tab' + this.deleteFileData.fileId);
@@ -570,7 +548,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
             parentArray = file.parentArray;
 
             // delete the file from the files array
-            delete this.files[this.deleteFileData.fileId];
+            this.files.delete(this.deleteFileData.fileId);
 
             // delete file in Working Directory
             await file.parentDirectory.deleteFile(this.deleteFileData.name);
@@ -617,7 +595,9 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
      * Save all files that have changed and are in the current project
      */
     private saveAllFiles () {
-        for (let file of this.files) {
+        for (let fileName of this.files.keys()) {
+            let file = this.files.get(fileName);
+
             if(file.changed) {
                 file.storageObject.writeContent(file.content);
                 file.changed = false;
@@ -633,10 +613,17 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
      *
      * @param id of the file in the files array
      */
-    private async openFile(id: number) {
+    private async openFile(id: string) {
+        let file = this.files.get(id);
+
+        if (!file.content) {
+            // read content of the file form the backend
+            file.content = await file.storageObject.readContent();
+        }
+
         // update editorContent, currentFileContent to current files content and openId to this id
-        this.editorContent = this.files[id].content;
-        this.currentFileContent = this.files[id].content;
+        this.editorContent = file.content;
+        this.currentFileContent = file.content;
         this.openId = id;
     }
 
@@ -679,7 +666,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
      * @param tabToClose the tab to close as a JQuery Object
      */
     private closeTab(tabToClose: JQuery) {
-        let id = +tabToClose.attr('id').substr(3);
+        let id: string = tabToClose.attr('id').substr(3);
 
         // check if the current openId (open tab)
         if (this.openId === id) {
@@ -691,7 +678,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
                 // if there is, open the file and update the indicator to the previous tab
                 this.updateIndicator($('#' + prevId));
                 // cut "tab"  from the id leaving only a number and converting it into a number using the + operator
-                this.openFile(+prevId.substr(3));
+                this.openFile(prevId.substr(3));
             } else if (!prevId) {
                 // if there is no previous ( the open tab is first or most left ) check what comes after
                 let nextId = tabToClose.next().attr('id');
@@ -701,12 +688,12 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
                     // if there is, open the file and update the indicator to the next tab
                     this.updateIndicator(tabToClose);
                     // cut "tab"  from the id leaving only a number and converting it into a number using the + operator
-                    this.openFile(+nextId.substr(3));
+                    this.openFile(nextId.substr(3));
                 } else {
                     // if not reset the indicator and reset editorContent and openId
                     this.resetIndicator();
                     this.editorContent = '';
-                    this.openId = -1;
+                    this.openId = null;
                     $('#ace-editor').hide();
                 }
             }
@@ -734,12 +721,12 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
      * @returns {boolean} true if it is a duplicate false if it is not
      */
     private checkDuplicate(name: string, array: any[]) {
-        // iterate through given arrray
+        // iterate through given array
         for (let item of array) {
             // check whether it is a file and set item to indexed file if it is
             let fileId = item.fileId;
             if (fileId) {
-                item = this.files[fileId];
+                item = this.files.get(fileId);
             }
 
             // if an item from the array has the same name as the given, it returns true

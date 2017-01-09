@@ -49,6 +49,7 @@
     "reflect-metadata": "^0.1.8",
     "rimraf": "^2.5.4",
     "rxjs": "^5.0.0-rc.5",
+    "socket.io": "^1.7.2",
     "swagger-tools": "^0.10.1",
     "systemjs": "0.19.39",
     "winston": "^2.3.0",
