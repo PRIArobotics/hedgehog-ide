@@ -80,4 +80,14 @@ export function genericToBase64(decoded: string): string {
     }
 }
 
+export function genericToHex(decoded: string): string {
+    let hex, i;
 
+    let result = "";
+    for (i = 0; i < decoded.length; i++) {
+        hex = decoded.charCodeAt(i).toString(16);
+        result += ("000"+hex).slice(-4);
+    }
+
+    return result
+}
