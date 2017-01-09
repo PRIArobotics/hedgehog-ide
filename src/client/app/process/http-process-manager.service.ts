@@ -1,11 +1,15 @@
 import {Http} from "@angular/http";
+import {Injectable, Inject} from "@angular/core";
+import {DOCUMENT} from "@angular/platform-browser";
+import io = require('socket.io-client');
 
 import IProcessManager from "../../../common/ProcessManager";
 import {IProcess} from "../../../common/ProcessManager";
-import {genericToBase64, genericFromBase64} from "../../../common/utils";
+import {genericFromBase64, genericToBase64} from "../../../common/utils";
+import EventEmitter from "./EventEmitter";
 
-export default class HttpProcessManager implements IProcessManager {
-
+@Injectable()
+export class HttpProcessManagerService implements IProcessManager {
     private static resourceToProcess (resource: any): IProcess {
         return {
             programName: genericFromBase64(resource.attributes.programId),
@@ -15,7 +19,14 @@ export default class HttpProcessManager implements IProcessManager {
         };
     }
 
-    private constructor (private http: Http) { }
+    private eventEmitter = new EventEmitter();
+    private io: SocketIOClient.Socket;
+
+    public constructor (private http: Http, @Inject(DOCUMENT) private document) {
+        console.log(`${document.location.protocol}//${document.location.hostname}:${document.location.port}`);
+        this.io = io(`${document.location.protocol}//${document.location.hostname}:${document.location.port}`);
+        this.socketIoRegisterNewSocketHandler();
+    }
 
     public async run (programName: string, filePath: string, args: string[] = [ ]) {
         let response = (await this.http.post('/api/processes', {
@@ -29,7 +40,7 @@ export default class HttpProcessManager implements IProcessManager {
             }
         }).toPromise()).json().data;
 
-        return HttpProcessManager.resourceToProcess(response);
+        return HttpProcessManagerService.resourceToProcess(response);
     }
 
     public async kill (pid: number) {
@@ -50,10 +61,16 @@ export default class HttpProcessManager implements IProcessManager {
 
     public async getProcess (pid: number): Promise<IProcess> {
         let response = await this.http.get(`/api/processes/${pid}`).toPromise();
-        return HttpProcessManager.resourceToProcess(response);
+        return HttpProcessManagerService.resourceToProcess(response);
     }
 
     public on (event: string, handler: Function) {
+        this.eventEmitter.on(event, handler);
+    }
 
+    private socketIoRegisterNewSocketHandler () {
+        this.io.on('process_new', (process: IProcess) => {
+            console.log(process);
+        });
     }
 }
