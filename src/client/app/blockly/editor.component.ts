@@ -10,7 +10,7 @@ export class BlocklyComponent implements AfterViewInit {
 
     private _workspace: any;
 
-    ngAfterViewInit(): void {
+    public ngAfterViewInit(): void {
 
 
         let tools: string = `<xml id="toolbox" style="display: none">
