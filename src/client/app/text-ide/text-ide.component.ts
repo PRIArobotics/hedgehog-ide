@@ -11,7 +11,7 @@ import Program from "../../../common/versioncontrol/Program";
 import {LocalStorageService} from "angular2-localstorage";
 import {HttpProgramService} from "../program/http-program.service";
 import {ProgramExecutionComponent} from "../program-execution/program-execution.component";
-import {genericToHex, join} from "../../../common/utils";
+import {genericToHex} from "../../../common/utils";
 import {LocalStorage} from "angular2-localstorage";
 
 declare var $: JQueryStatic;
