@@ -1,15 +1,13 @@
 interface IProcessManager {
-    run (programName: string, filePath: string, args?: string[]);
-    kill (pid: number);
-    isAlive (pid: number);
+    run (programName: string, filePath: string, args?: string[]): Promise<IProcess>;
+    kill (pid: number): Promise<void>;
 
     getStdout (pid: number): Promise<string>;
     getStderr (pid: number): Promise<string>;
     writeStdin (pid: number, data: string): Promise<void>;
 
-    getProcess(pid: number): IProcess;
-    on (event: string, handler: Function);
-    registerProcessExitHandler (process: IProcess);
+    getProcess (pid: number): Promise<IProcess>;
+    on (event: string, handler: Function): void;
 }
 export default IProcessManager;
 

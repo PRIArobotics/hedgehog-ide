@@ -12,9 +12,9 @@ import GitProgramStorage from "./versioncontrol/GitProgramStorage";
 import modelRegistry from "./jsonapi/ModelSerializerRegistry";
 import WorkingTreeFileResource from "./api/resource/versioncontrol/WorkingTreeFileResource";
 import WorkingTreeDirectoryResource from "./api/resource/versioncontrol/WorkingTreeDirectoryResource";
-import ProcessManager from "./process/ProcessManager";
 import ProcessResource from "./api/resource/ProcessResource";
 import SocketIoProcessAdapter from "./process/SocketIoProcessAdapter";
+import NodeProcessManager from "./process/NodeProcessManager";
 
 
 console.log(chalk.green(figlet.textSync('Hedgehog IDE')));
@@ -56,7 +56,7 @@ server.connection({
  * API setup
  */
 let programStorage = new GitProgramStorage('tmp');
-let processManager = new ProcessManager('tmp_proc', programStorage);
+let processManager = new NodeProcessManager('tmp_proc', programStorage);
 
 let hedgehogApi = new Api(server, '/api');
 hedgehogApi.registerEndpoint(new ProgramResource(programStorage, modelRegistry));

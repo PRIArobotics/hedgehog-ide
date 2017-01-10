@@ -6,17 +6,17 @@ import {EventEmitter} from "events";
 
 import GitProgramStorage from "../versioncontrol/GitProgramStorage";
 import {wrapCallbackAsPromise} from "../../common/utils";
-import {IProcess} from "../../common/ProcessManager";
+import {IProcess, default as IProcessManager} from "../../common/ProcessManager";
 
-export default class ProcessManager {
+export default class NodeProcessManager implements IProcessManager {
     private eventEmitter = new EventEmitter();
 
     private processes: Map<number, NodeProcess> = new Map();
 
     // GitProgramStorage is required here as we need the program to be physically stored on the system
-    constructor(private processDir: string, private storage: GitProgramStorage) { }
+    constructor (private processDir: string, private storage: GitProgramStorage) { }
 
-    public run(programName: string, filePath: string, args: string[] = []): NodeProcess {
+    public run (programName: string, filePath: string, args: string[] = []): Promise<NodeProcess> {
         let process: NodeProcess = new NodeProcess(
             programName,
             filePath,
@@ -33,32 +33,29 @@ export default class ProcessManager {
         winston.debug(`Spawning process: ${programName} - ${filePath} ${args}`);
         this.eventEmitter.emit('new', process);
 
-        return process;
+        return Promise.resolve(process);
     }
 
-    public kill(pid: number) {
+    public kill (pid: number): Promise<void> {
         this.processes.get(pid).nodeProcess.kill();
+        return Promise.resolve();
     }
 
-    public isAlive(pid: number) {
-        return this.processes.has(pid);
-    }
-
-    public getStdout(pid: number): Promise<string> {
+    public getStdout (pid: number): Promise<string> {
         return wrapCallbackAsPromise(fs.readFile, this.getStreamStorageFile(pid, 'stdout'));
     }
 
-    public getStderr(pid: number): Promise<string> {
+    public getStderr (pid: number): Promise<string> {
         return wrapCallbackAsPromise(fs.readFile, this.getStreamStorageFile(pid, 'stderr'));
     }
 
-    public writeStdin(pid: number, data: string): Promise<void> {
+    public writeStdin (pid: number, data: string): Promise<void> {
         let process = this.processes.get(pid).nodeProcess;
         return wrapCallbackAsPromise(process.stdin.write.bind(process.stdin), data);
     }
 
-    public getProcess(pid: number): NodeProcess {
-        return this.processes.get(pid);
+    public getProcess (pid: number): Promise<NodeProcess> {
+        return Promise.resolve(this.processes.get(pid));
     }
 
     public on (event: string, handler: Function) {

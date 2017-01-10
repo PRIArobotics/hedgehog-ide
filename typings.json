@@ -9,7 +9,8 @@
     "jquery": "registry:dt/jquery#1.10.0+20160929162922",
     "node": "registry:dt/node#6.0.0+20161010101523",
     "nodegit": "github:FlorianKoerner/nodegit-typescript-definition/nodegit.d.ts",
-    "socket.io": "registry:dt/socket.io#1.4.4+20160915014424"
+    "socket.io": "registry:dt/socket.io#1.4.4+20160915014424",
+    "socket.io-client": "registry:dt/socket.io-client#1.4.4+20161116080703"
   },
   "globalDevDependencies": {
     "mocha": "registry:dt/mocha#2.2.5+20160720003353",

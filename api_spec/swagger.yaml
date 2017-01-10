@@ -520,30 +520,27 @@ paths:
           properties:
             data:
               type: object
+              required:
+              - id
+              - type
               properties:
-                data:
+                id:
+                    type: string
+                type:
+                  type: string
+                  enum:
+                  - file
+                attributes:
                   type: object
-                  required:
-                  - id
-                  - type
                   properties:
-                    id:
-                        type: string
-                    type:
+                    path:
                       type: string
-                      enum:
-                      - file
-                    attributes:
-                      type: object
-                      properties:
-                        path:
-                          type: string
-                        mode:
-                          type: string
-                        content:
-                          type: string
-                        encoding:
-                          type: string
+                    mode:
+                      type: string
+                    content:
+                      type: string
+                    encoding:
+                      type: string
       responses:
         200:
           description: 'Returns the updated version of the file'
