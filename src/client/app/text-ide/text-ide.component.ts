@@ -128,7 +128,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
      * it can be async (the constructor cannot) and therefore allows interaction with the ProgramStorage
      */
     public async ngOnInit() {
-        this.programExecution.isRunning = true;
+        this.programExecution.isRunning = false;
 
         this.program = await this.storage.getProgram(this.programName);
 
@@ -203,6 +203,8 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
             if (type === WorkingTreeObjectType.File) {
                 // get the file
                 let file = await directory.getFile(itemName);
+
+                // generate file id as Hex code form the file path
                 let fileId = genericToHex(directory.getItemPath(itemName));
 
                 // add file to children of the directory
@@ -213,28 +215,24 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
                     }
                 );
 
+                // create the file to index
+                let indexedFile = {
+                    name: itemName,
+                    content: null,
+                    storageObject: file,
+                    parentArray: childArray,
+                    parentDirectory: directory,
+                    changed: false
+                };
+
+                // add file to Map using the id
+                this.files.set(fileId, indexedFile);
+
                 if (this.localStorageFiles[this.programName][fileId]) {
-                    // if file is in the local storage index the new file and take the content from the local storage
-                    this.files.set(fileId, {
-                        name: itemName,
-                        content: this.localStorageFiles[this.programName][fileId],
-                        storageObject: file,
-                        parentArray: childArray,
-                        parentDirectory: directory,
-                        changed: false
-                    });
-                } else {
-                    // index the file with the read content
-                    this.files.set(fileId, {
-                        name: itemName,
-                        content: null,
-                        storageObject: file,
-                        parentArray: childArray,
-                        parentDirectory: directory,
-                        changed: false
-                    });
+                    // if file is in the local storage  take the content from the local storage
+                    indexedFile.content = this.localStorageFiles[this.programName][fileId];
                 }
-            } else if (type === WorkingTreeObjectType.Directory && !directory.getItemPath(itemName).startsWith('.')) {
+            } else if (type === WorkingTreeObjectType.Directory && !itemName.startsWith('.')) {
                 // get the directory
                 let newDirectory = await directory.getDirectory(itemName);
 
@@ -499,7 +497,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
 
         // check if there is no parentArray and if the type of fileId is undefined
         // this means it is the root directory and therefore cannot be deleted
-        if (!this.deleteFileData.parentArray && this.deleteFileData.fileId) {
+        if (!this.deleteFileData.parentArray && !this.deleteFileData.fileId) {
             Materialize.toast('<i class="material-icons">close</i>Cannot delete root directory', 3000);
             return;
         }
