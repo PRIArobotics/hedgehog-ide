@@ -32,7 +32,7 @@ abstract class WorkingTreeObject {
             this.programName,
             this.path,
             {
-                newPath: isAbsolute ? newName : join(this.path, newName)
+                newPath: isAbsolute ? newName : join(this.getParentPath(), newName)
             }
         );
     }
