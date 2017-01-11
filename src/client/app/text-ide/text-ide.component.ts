@@ -69,6 +69,9 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
     // modal action for deleting file
     private deleteModalActions = new EventEmitter<string|MaterializeAction>();
 
+    // modal action for deleting file
+    private renameModalActions = new EventEmitter<string|MaterializeAction>();
+
     // fileTree array containing TreeComponent compatible Objects
     private fileTree: Object[] = [];
 
@@ -96,7 +99,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
     // can be any ProgramStorage depending on what getStorage returns
     private storage: IProgramStorage;
 
-    // delete file name
+    // new directory or file data
     private newData: any = {
         name: '',
         arrayToAddFileTo: [],
@@ -105,10 +108,16 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
     };
 
     // delete file name
-    private deleteFileData: any= {
+    private deleteFileData: any = {
         name: '',
         parentArray: [],
         parentDirectory: WorkingTreeDirectory
+    };
+
+    // rename file name
+    private renameFileData: any = {
+        currentItem: {},
+        newName: ''
     };
 
     /**
@@ -123,6 +132,11 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
         this.files = new Map<string, File>();
         this.localStorageFiles = {};
         this.storage = storageService.getStorage();
+        this.fileTree[0] = {
+            name: this.programName,
+            isExpanded: true
+        };
+
     }
 
     /**
@@ -139,12 +153,8 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
         let childArray = [];
 
         // set root element of the file tree and set it to be expanded by default
-        this.fileTree[0] = {
-            name: this.programName,
-            isExpanded: true,
-            children: childArray,
-            storageObject: rootDir
-        };
+        this.fileTree[0]['children'] = childArray;
+        this.fileTree[0]['storageObject'] = rootDir;
 
         // check if the local storage already has this program stored
         if (!this.localStorageFiles[this.programName]) {
@@ -576,6 +586,58 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
 
         // reset deleteFileData
         this.deleteFileData = {};
+    }
+
+    /**
+     * Event binding for tree context menu "delete" (directory or file)
+     * This checks if it is the root directory and if not opens the modal
+     *
+     * @param event TreeNode object with the file tree object data
+     */
+    public openRenameModal(event) {
+        // save data (either file or directory) to deleteFileData
+        this.renameFileData.currentItem = event.item.data;
+
+        // check if there is no parentArray and if the type of fileId is undefined
+        // this means it is the root directory and therefore cannot be deleted
+        if (!this.renameFileData.currentItem.parentArray && !this.renameFileData.currentItem.fileId) {
+            Materialize.toast('<i class="material-icons">close</i>Cannot rename project here', 3000);
+            return;
+        }
+
+        // open modal
+        this.renameModalActions.emit({action:"modal", params:['open']});
+        this.fixModalOverlay();
+    }
+
+    /**
+     * Close the delete file modal
+     */
+    public closeRenameModal() {
+        this.renameModalActions.emit({action:"modal", params:['close']});
+    }
+
+    /**
+     * Delete a file or directory using the data given from the modal
+     */
+    public async renameAction() {
+        let newName = this.renameFileData.newName;
+
+        this.renameFileData.currentItem.name = newName;
+
+        let fileId = this.renameFileData.currentItem.fileId;
+
+        if (fileId) {
+            this.files.get(fileId).storageObject.rename(newName);
+        } else {
+            this.renameFileData.currentItem.storageObject.rename(newName);
+        }
+
+        // reset deleteFileData
+        this.renameFileData = {
+            currentItem: {},
+            newName: ''
+        };
     }
 
     /**
