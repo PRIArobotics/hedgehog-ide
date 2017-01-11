@@ -50,8 +50,24 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
 
             // return false by default
             return false;
+        },
+        actionMapping: {
+            keys: {
+                [67]: (tree, node, $event) => {
+                    if ($event.ctrlKey || $event.metaKey) {
+                        this.copyData = node.data;
+                    }
+                },
+                [86]: (tree, node, $event) => {
+                    if ($event.ctrlKey || $event.metaKey) {
+                        this.pasteFile(node);
+                    }
+                }
+            }
         }
     };
+
+
 
     // TreeComponent for updating the file tree
     @ViewChild(TreeComponent)
@@ -117,6 +133,8 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
         currentItem: {},
         newName: ''
     };
+
+    private copyData: any = {};
 
     /**
      * Constructor that sets the programName from the router
@@ -266,12 +284,63 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
         }
     }
 
+    public async pasteFile(node) {
+        let parentArray: Array<Object>;
+        let parentDirectory: WorkingTreeDirectory;
+
+
+        if (node.data.children) {
+            parentArray = node.data.children;
+            parentDirectory = node.data.storageObject;
+
+            // change itemname if it is a duplicate
+            // if (this.checkDuplicate(this.copyData.name, parentArray)) { }
+        } else {
+            parentArray = this.files.get(node.data.fileId).parentArray;
+            parentDirectory = this.files.get(node.data.fileId).parentDirectory;
+
+            let newName: string = this.copyData.name;
+
+            let copyFile: File = this.files.get(this.copyData.fileId);
+
+            copyFile.parentArray = parentArray;
+            copyFile.parentDirectory = parentDirectory;
+
+
+            if (this.checkDuplicate(newName, parentArray)) {
+                // let withoutExtension: string = newName.split(".")[0];
+                // let iterator = withoutExtension.match(/\d+$/);
+            }
+
+            await parentDirectory.addFile(newName, copyFile.content);
+
+
+            // update the fileId
+            let newFileId = genericToHex(parentDirectory.getItemPath(newName));
+
+            this.copyData.fileId = newFileId;
+
+            parentArray.push(this.copyData);
+            this.files.set(newFileId, copyFile);
+        }
+
+        this.tree.treeModel.update();
+    }
+
     @HostListener('window:keydown', ['$event'])
-    public keyPressed(event) {
+    public saveFile(e) {
         // check if the user pressed CTRL - S to save all files
-        if (event.keyCode === 83 && event.ctrlKey) {
-            this.saveAllFiles();
-            event.preventDefault();
+        if ((e.which === '115' || e.which === '83' ) && (e.ctrlKey || e.metaKey) && this.openId) {
+            let file = this.files.get(this.openId);
+
+            if(file.changed) {
+                file.storageObject.writeContent(file.content);
+                file.changed = false;
+            }
+
+            Materialize.toast('<i class="material-icons">done</i>' +
+                'Successfully saved ' + file.name, 3000);
+            e.preventDefault();
         }
     }
 
@@ -654,6 +723,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
     /**
      * Save all files that have changed and are in the current project
      */
+    // tslint:disable-next-line
     private saveAllFiles () {
         for (let fileName of this.files.keys()) {
             let file = this.files.get(fileName);

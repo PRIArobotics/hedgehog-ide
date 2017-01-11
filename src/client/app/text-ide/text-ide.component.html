@@ -22,6 +22,7 @@
               [focused]="true"
               (onActivate)="fileTreeEvent($event)"
               (onMoveNode)="onMoveNode($event)">
+
             <template #treeNodeTemplate let-node>
                 <div [contextMenu]="fileTreeActions" [contextMenuSubject]="node">
                     <i *ngIf="node.data.children && !node.isExpanded" class="material-icons"> folder </i>
@@ -30,6 +31,7 @@
                     <span> {{ node.data.name }} </span>
                 </div>
             </template>
+
         </Tree>
 
         <context-menu #treeContextMenu>
@@ -80,19 +82,12 @@
 
         <div id="rename-modal" class="modal" materialize="modal" [materializeParams]="[{dismissible: true}]" [materializeActions]="renameModalActions">
             <div class="modal-content">
-                <h4>Delete File</h4>
-                <p *ngIf="!renameFileData.currentItem.children"></p>
-
-                <p *ngIf="renameFileData.currentItem.children"></p>
-            </div>
-
-            <div class="modal-content">
-                <h4 *ngIf="renameFileData.currentItem.children">Rename Directory</h4>
-                <h4 *ngIf="!renameFileData.currentItem.children">Create New Directory</h4>
+                <h4 *ngIf="renameFileData.currentItem.children">Rename Directory "{{renameFileData.currentItem.name}}"</h4>
+                <h4 *ngIf="!renameFileData.currentItem.children">Rename File "{{renameFileData.currentItem.name}}"</h4>
                 <div class="input-field">
                     <input id="rename-new-name" type="text" class="validate" [(ngModel)]="renameFileData.newName"/>
-                    <label for="rename-new-name" *ngIf="renameFileData.currentItem.children">File Name</label>
-                    <label for="rename-new-name" *ngIf="!renameFileData.currentItem.children">Directory Name</label>
+                    <label for="rename-new-name" *ngIf="renameFileData.currentItem.children">Directory Name</label>
+                    <label for="rename-new-name" *ngIf="!renameFileData.currentItem.children">File Name</label>
                 </div>
             </div>
             <div class="modal-footer">
