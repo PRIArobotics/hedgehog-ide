@@ -11,7 +11,7 @@ import Program from "../../../common/versioncontrol/Program";
 import {LocalStorageService} from "angular2-localstorage";
 import {HttpProgramService} from "../program/http-program.service";
 import {ProgramExecutionComponent} from "../program-execution/program-execution.component";
-import {genericToHex} from "../../../common/utils";
+import {genericToHex, genericFromHex} from "../../../common/utils";
 import {LocalStorage} from "angular2-localstorage";
 
 declare var $: JQueryStatic;
@@ -60,6 +60,8 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
     // TreeComponent for updating the file tree
     @ViewChild(ProgramExecutionComponent)
     private programExecution: ProgramExecutionComponent;
+
+    private programIsRunning: boolean = false;
 
     // modal action for creating a new file
     private newFileOrDirectoryModalActions = new EventEmitter<string|MaterializeAction>();
@@ -734,5 +736,15 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
         }
         // return false if no item's names match the given
         return false;
+    }
+
+    private async run () {
+        await this.programExecution.run(this.programName, genericFromHex(this.openId));
+        this.programIsRunning = true;
+    }
+
+    private onExecutionExit () {
+        console.log('exit');
+        this.programIsRunning = false;
     }
 }

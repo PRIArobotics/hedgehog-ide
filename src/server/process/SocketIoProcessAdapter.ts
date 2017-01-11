@@ -5,6 +5,7 @@ export default class SocketIoProcessAdapter {
         this.registerNewProcessHandler();
         this.registerStreamDataHandler('stdout');
         this.registerStreamDataHandler('stderr');
+        this.registerProcessExitHandler();
     }
 
     private registerNewProcessHandler () {
@@ -23,6 +24,12 @@ export default class SocketIoProcessAdapter {
     private registerStreamDataHandler (stream: string) {
         this.processManager.on('data_' + stream, (process: IProcess, data: string) => {
             this.io.emit('process_data_' + stream, process.pid, data.toString());
+        });
+    }
+
+    private registerProcessExitHandler () {
+        this.processManager.on('exit', (process: IProcess) => {
+            this.io.emit('process_exit', process.pid);
         });
     }
 }

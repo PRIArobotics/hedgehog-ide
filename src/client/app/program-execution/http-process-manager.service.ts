@@ -11,11 +11,12 @@ import EventEmitter from "./EventEmitter";
 @Injectable()
 export class HttpProcessManagerService implements IProcessManager {
     private static resourceToProcess (resource: any): IProcess {
+        console.log(resource);
         return {
             programName: genericFromBase64(resource.attributes.programId),
-            filePath: genericFromBase64(resource.attributes.filePath),
+            filePath: resource.attributes.file,
             args: resource.attributes.args || [ ],
-            pid: resource.id
+            pid: Number(resource.id)
         };
     }
 
@@ -25,7 +26,10 @@ export class HttpProcessManagerService implements IProcessManager {
     public constructor (private http: Http, @Inject(DOCUMENT) private document) {
         console.log(`${document.location.protocol}//${document.location.hostname}:${document.location.port}`);
         this.io = io(`${document.location.protocol}//${document.location.hostname}:${document.location.port}`);
-        this.socketIoRegisterNewSocketHandler();
+        this.socketIoRegisterNewProcessHandler();
+        this.socketIoRegisterStreamDataHandler('stdout');
+        this.socketIoRegisterStreamDataHandler('stderr');
+        this.socketIoRegisterProcessExitHandler();
     }
 
     public async run (programName: string, filePath: string, args: string[] = [ ]) {
@@ -60,7 +64,7 @@ export class HttpProcessManagerService implements IProcessManager {
     }
 
     public async getProcess (pid: number): Promise<IProcess> {
-        let response = await this.http.get(`/api/processes/${pid}`).toPromise();
+        let response = (await this.http.get(`/api/processes/${pid}`).toPromise()).json().data;
         return HttpProcessManagerService.resourceToProcess(response);
     }
 
@@ -68,9 +72,20 @@ export class HttpProcessManagerService implements IProcessManager {
         this.eventEmitter.on(event, handler);
     }
 
-    private socketIoRegisterNewSocketHandler () {
+    private socketIoRegisterNewProcessHandler () {
         this.io.on('process_new', (process: IProcess) => {
-            console.log(process);
+        });
+    }
+
+    private socketIoRegisterProcessExitHandler () {
+        this.io.on('process_exit', (pid: number) => {
+            this.eventEmitter.emit('exit', pid);
+        });
+    }
+
+    private socketIoRegisterStreamDataHandler (stream: string) {
+        this.io.on('process_data_' + stream, (pid: number, data: string) => {
+            this.eventEmitter.emit(stream, pid, data);
         });
     }
 }
