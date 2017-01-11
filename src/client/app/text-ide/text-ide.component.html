@@ -4,8 +4,8 @@
             <a href="#" class="brand-logo"> {{ programName }} </a>
             <ul id="nav-mobile" class="right hide-on-med-and-down">
                 <li>
-                    <a><i *ngIf="!programExecution.isRunning" class="material-icons">play_arrow</i></a>
-                    <a><i *ngIf="programExecution.isRunning" class="material-icons">stop</i></a>
+                    <a (click)="run()" [ngClass]="{ 'disabled': !openId }"><i *ngIf="!programIsRunning" class="material-icons">play_arrow</i></a>
+                    <a><i *ngIf="programIsRunning" class="material-icons">stop</i></a>
                 </li>
                 <li (click)="saveAllFiles()"><a><i class="material-icons">save</i></a></li>
                 <li><a><i class="material-icons">insert_drive_file</i></a></li>
@@ -119,6 +119,6 @@
         </div>
     </div>
 
-    <program-execution></program-execution>
+    <program-execution (onExit)="onExecutionExit($event)"></program-execution>
 </div>
 

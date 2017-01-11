@@ -1,11 +1,11 @@
-<div id="program-execution" *ngIf="isRunning">
+<div id="program-execution" *ngIf="showPanel" style="z-index: 100000">
     <div id="program-execution-sidebar">
         <a><i class="material-icons">replay</i></a>
         <br/><br/>
         <a><i class="material-icons">stop</i></a>
     </div>
 
-    <div id="program-execution-terminal">
-        Program Output
+    <div id="program-execution-terminal" style="background: #fff">
+        <pre>{{ output }}</pre>
     </div>
 </div>
