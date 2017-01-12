@@ -5,8 +5,8 @@ import WorkingTreeDirectory from "../../common/versioncontrol/WorkingTreeDirecto
 import serializeProgram from "../serializer/ProgramSerializer";
 import serializeWorkingTreeFile from "../serializer/WorkingTreeFileSerializer";
 import serializeWorkingTreeDirectory from "../serializer/WorkingTreeDirectorySerializer";
-import {NodeProcess} from "../process/ProcessManager";
 import serializeProcess from "../serializer/ProcessSerializer";
+import {NodeProcess} from "../process/NodeProcessManager";
 
 let modelRegistry = new SerializerRegisty();
 modelRegistry.registerSerializer(Program, serializeProgram);

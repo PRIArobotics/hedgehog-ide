@@ -46,7 +46,9 @@
 
             'angular2-tree-component': 'npm:angular2-tree-component',
             'lodash': 'npm:lodash',
-            'angular2-localstorage-circular': 'npm:angular2-localstorage'
+            'angular2-localstorage-circular': 'npm:angular2-localstorage',
+
+            'socket.io-client': 'npm:socket.io-client/dist/socket.io.min.js',
         },
         // packages tells the System loader how to load when no filename and/or no extension
         packages: {
@@ -55,6 +57,7 @@
                 defaultExtension: 'js'
             },
             rxjs: {
+                main: './Rx.js',
                 defaultExtension: 'js'
             },
             'angular-in-memory-web-api': {

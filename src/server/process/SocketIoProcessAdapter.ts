@@ -1,11 +1,11 @@
-import ProcessManager from "./ProcessManager";
-import {IProcess} from "../../common/ProcessManager";
+import {IProcess, default as IProcessManager} from "../../common/ProcessManager";
 
 export default class SocketIoProcessAdapter {
-    public constructor (private processManager: ProcessManager, private io: SocketIO.Server) {
+    public constructor (private processManager: IProcessManager, private io: SocketIO.Server) {
         this.registerNewProcessHandler();
         this.registerStreamDataHandler('stdout');
         this.registerStreamDataHandler('stderr');
+        this.registerProcessExitHandler();
     }
 
     private registerNewProcessHandler () {
@@ -24,6 +24,12 @@ export default class SocketIoProcessAdapter {
     private registerStreamDataHandler (stream: string) {
         this.processManager.on('data_' + stream, (process: IProcess, data: string) => {
             this.io.emit('process_data_' + stream, process.pid, data.toString());
+        });
+    }
+
+    private registerProcessExitHandler () {
+        this.processManager.on('exit', (process: IProcess) => {
+            this.io.emit('process_exit', process.pid);
         });
     }
 }

@@ -1,4 +1,11 @@
 /* Master Styles */
+nav .disabled {
+    pointer-events: none;
+    box-shadow: none;
+    color: #b9b9b9 !important;
+    cursor: default;
+}
+
 .brand-logo {
     margin-left: 15px;
 }
