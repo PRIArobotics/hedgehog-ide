@@ -21,6 +21,7 @@ export class ProgramListComponent implements OnInit {
 
     private newProgramName: string;
     private deleteProgramName: string;
+    private isBlocklyProject: boolean = false;
 
     public constructor(storageService: HttpProgramService) {
         this.storage = storageService.getStorage();
@@ -45,8 +46,11 @@ export class ProgramListComponent implements OnInit {
     }
 
     public async createProgram() {
-        await this.storage.createProgram(this.newProgramName);
-
+        if(this.isBlocklyProject) {
+            await this.storage.createProgram(this.newProgramName + ".blockly");
+        } else {
+            await this.storage.createProgram(this.newProgramName);
+        }
         this.newProgramName = '';
         await this.reloadProgramList();
     }
