@@ -3,7 +3,6 @@
         <a href="#" class="brand-logo">Programs</a>
         <ul id="nav-mobile" class="right hide-on-med-and-down">
             <li><a (click)="openCreateModal()"><i class="material-icons">add</i></a></li>
-            <li><a [routerLink]="['/blockly']"><i class="material-icons">view_module</i></a></li>
             <li><a><i class="material-icons">replay</i></a></li>
         </ul>
     </div>
@@ -12,10 +11,12 @@
 <div class="container z-depth-1">
     <ul class="collection">
         <li class="collection-item avatar valign-wrapper program-item" *ngFor="let program of programs">
-            <i class="material-icons circle valign">code</i>
-            <span class="title valign">{{ program }}</span>
+            <i class="material-icons circle valign" *ngIf="!program.endsWith('.blockly')">code</i>
+            <i class="material-icons circle valign" *ngIf="program.endsWith('.blockly')">view_module</i>
+            <span class="title valign">{{ program.replace(".blockly","") }}</span>
             <div class="secondary-content">
-                <button class="waves-effect waves-teal btn-flat" [routerLink]="['/text-ide', program]"><i class="material-icons">mode_edit</i></button>
+                <button class="waves-effect waves-teal btn-flat" *ngIf="!program.endsWith('.blockly')" [routerLink]="['/text-ide', program]"><i class="material-icons">mode_edit</i></button>
+                <button class="waves-effect waves-teal btn-flat" *ngIf="program.endsWith('.blockly')" [routerLink]="['/blockly']"><i class="material-icons">mode_edit</i></button>
                 <button class="waves-effect waves-teal btn-flat" (click)="openDeleteModal(program)"><i class="material-icons">delete</i></button>
             </div>
         </li>
@@ -29,6 +30,14 @@
             <input id="new-program-name" type="text" class="validate" [(ngModel)]="newProgramName"/>
             <label for="new-program-name">Program Name</label>
         </div>
+        <p>
+            <input class="with-gap" name="group" type="radio" id="python" [(ngModel)]="isBlocklyProject" [value]="false"/>
+            <label for="python">Python</label>
+        </p>
+        <p>
+            <input class="with-gap" name="group" type="radio" id="blockly" [(ngModel)]="isBlocklyProject" [value]="true"/>
+            <label for="blockly">Blockly</label>
+        </p>
     </div>
     <div class="modal-footer">
         <a class="waves-effect waves-green btn-flat" (click)="closeCreateModal()">Close</a>
