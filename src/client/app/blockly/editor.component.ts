@@ -10,6 +10,10 @@ export class BlocklyComponent implements AfterViewInit {
 
     private _workspace: any;
 
+    private clearWorkspace(): void {
+        this._workspace.clear();
+    }
+
     public ngAfterViewInit(): void {
 
 
