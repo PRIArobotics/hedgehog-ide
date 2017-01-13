@@ -760,6 +760,15 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
         };
     }
 
+    public async run () {
+        await this.programExecution.run(this.programName, genericFromHex(this.openId));
+        this.programIsRunning = true;
+    }
+
+    public onExecutionExit () {
+        this.programIsRunning = false;
+    }
+
     /**
      * reset indicator by setting it's left and right coordinate to the same point
      */
@@ -919,15 +928,5 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
         }
         // return false if no item's names match the given
         return false;
-    }
-
-    private async run () {
-        await this.programExecution.run(this.programName, genericFromHex(this.openId));
-        this.programIsRunning = true;
-    }
-
-    private onExecutionExit () {
-        console.log('exit');
-        this.programIsRunning = false;
     }
 }

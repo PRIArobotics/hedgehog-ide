@@ -74,6 +74,7 @@ export class HttpProcessManagerService implements IProcessManager {
 
     private socketIoRegisterNewProcessHandler () {
         this.io.on('process_new', (process: IProcess) => {
+            this.eventEmitter.emit('new', process);
         });
     }
 

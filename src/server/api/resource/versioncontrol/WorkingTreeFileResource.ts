@@ -1,3 +1,4 @@
+import Hapi = require('hapi');
 import winston = require("winston");
 
 import ApiResource from "../../ApiResource";
@@ -157,7 +158,7 @@ export default class WorkingTreeFileResource extends ApiResource {
             .code(200);
     }
 
-    private async replyFile(programName: string, filePath: string, request, reply) {
+    private async replyFile(programName: string, filePath: string, request: Hapi.Request, reply) {
         // Load file from storage
         let file: WorkingTreeFile;
         try {
@@ -177,7 +178,7 @@ export default class WorkingTreeFileResource extends ApiResource {
         );
         documentBuilder.setLinks(selfLink, null);
         documentBuilder.addResource(
-            await this.serializerRegistry.serialize(file, request, documentBuilder));
+            await this.serializerRegistry.serialize(file, request, documentBuilder, request.query['content'] === 'true' || false));
 
         // Return file
         return reply(documentBuilder.getProduct())
