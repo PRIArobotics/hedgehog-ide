@@ -16,7 +16,7 @@
             <span class="title valign">{{ program.replace(".blockly","") }}</span>
             <div class="secondary-content">
                 <button class="waves-effect waves-teal btn-flat" *ngIf="!program.endsWith('.blockly')" [routerLink]="['/text-ide', program]"><i class="material-icons">mode_edit</i></button>
-                <button class="waves-effect waves-teal btn-flat" *ngIf="program.endsWith('.blockly')" [routerLink]="['/blockly']"><i class="material-icons">mode_edit</i></button>
+                <button class="waves-effect waves-teal btn-flat" *ngIf="program.endsWith('.blockly')" [routerLink]="['/blockly', program]"><i class="material-icons">mode_edit</i></button>
                 <button class="waves-effect waves-teal btn-flat" (click)="openDeleteModal(program)"><i class="material-icons">delete</i></button>
             </div>
         </li>

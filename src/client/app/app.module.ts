@@ -24,7 +24,7 @@ const appRoutes: Routes = [
         redirectTo: '/'
     },
     {
-        path: 'blockly',
+        path: 'blockly/:programName',
         component: BlocklyComponent
     }
 ];
