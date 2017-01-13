@@ -35,7 +35,7 @@ module.exports = function(grunt) {
                 files: [{
                     expand: true,
                     cwd: 'build',
-                    src: ['**/*.js', '!src/client/node_modules/*'],
+                    src: ['**/*.js', '!src/client/node_modules/*', '!src/client/app/blockly/lib/*'],
                     dest: 'build'
                 }]
             }
