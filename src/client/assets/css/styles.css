@@ -80,7 +80,7 @@ treenode:last-child > .tree-node > .tree-children::after {
     display: block;
     border-top: solid 1px black;
     text-transform: uppercase;
-    text-align: center;
+    text-align: left;
 }
 .angular2-contextmenu li:first-child {
     border-top:none;

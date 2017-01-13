@@ -50,50 +50,59 @@
         </context-menu>
 
         <div id="create-modal" class="modal" materialize="modal" [materializeParams]="[{dismissible: true}]" [materializeActions]="newFileOrDirectoryModalActions">
-            <div class="modal-content">
-                <h4 *ngIf="newData.file">Create New File</h4>
-                <h4 *ngIf="!newData.file">Create New Directory</h4>
-                <div class="input-field">
-                    <input id="new-name" type="text" class="validate" [(ngModel)]="newData.name"/>
-                    <label for="new-name" *ngIf="newData.file">do_stuff.py</label>
-                    <label for="new-name" *ngIf="!newData.file">Directory Name</label>
+            <form (submit)="newFileOrDirectory()">
+                <div class="modal-content">
+                    <h4 *ngIf="newData.file">Create New File</h4>
+                    <h4 *ngIf="!newData.file">Create New Directory</h4>
+                    <div class="input-field">
+                        <input name="new-name" id="new-name" type="text" class="validate" [(ngModel)]="newData.name"/>
+                        <label for="new-name" *ngIf="newData.file">do_stuff.py</label>
+                        <label for="new-name" *ngIf="!newData.file">Directory Name</label>
+                    </div>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <a class="waves-effect waves-green btn-flat" (click)="closeNewFileOrDirectoryModal()">Close</a>
-                <a class="modal-action modal-close waves-effect waves-green btn-flat" (click)="newFileOrDirectory()">Create</a>
-            </div>
+                <div class="modal-footer">
+                    <button class="waves-effect waves-green btn-flat" (click)="closeNewFileOrDirectoryModal()">Close</button>
+                    <button class="modal-action modal-close waves-effect waves-green btn-flat" type="submit">Create</button>
+                </div>
+            </form>
         </div>
 
         <div id="delete-modal" class="modal" materialize="modal" [materializeParams]="[{dismissible: true}]" [materializeActions]="deleteModalActions">
-            <div class="modal-content">
-                <h4>Delete File</h4>
-                <p *ngIf="!deleteFileData.children">Do you want to delete the File {{ deleteFileData.name }} ? <br />
-                    This operation cannot be undone.</p>
 
-                <p *ngIf="deleteFileData.children">Do you want to delete the whole Folder {{ deleteFileData.name }} ? <br />
-                    This operation cannot be undone.</p>
-            </div>
-            <div class="modal-footer">
-                <a class="waves-effect waves-green btn-flat" (click)="closeDeleteModal()">Close</a>
-                <a class="modal-action modal-close waves-effect waves-green btn-flat" (click)="deleteAction()">Delete</a>
-            </div>
+            <form (submit)="deleteAction()">
+                <div class="modal-content">
+                    <h4>Delete File</h4>
+                    <p *ngIf="!deleteFileData.children">Do you want to delete the File {{ deleteFileData.name }} ? <br />
+                        This operation cannot be undone.</p>
+
+                    <p *ngIf="deleteFileData.children">Do you want to delete the whole Folder {{ deleteFileData.name }} ? <br />
+                        This operation cannot be undone.</p>
+                </div>
+                <div class="modal-footer">
+                    <button class="waves-effect waves-green btn-flat" (click)="closeDeleteModal()">Close</button>
+                    <button class="modal-action modal-close waves-effect waves-green btn-flat" type="submit">Delete</button>
+                </div>
+            </form>
         </div>
 
         <div id="rename-modal" class="modal" materialize="modal" [materializeParams]="[{dismissible: true}]" [materializeActions]="renameModalActions">
-            <div class="modal-content">
-                <h4 *ngIf="renameFileData.currentItem.children">Rename Directory "{{renameFileData.currentItem.name}}"</h4>
-                <h4 *ngIf="!renameFileData.currentItem.children">Rename File "{{renameFileData.currentItem.name}}"</h4>
-                <div class="input-field">
-                    <input id="rename-new-name" type="text" class="validate" [(ngModel)]="renameFileData.newName"/>
-                    <label for="rename-new-name" *ngIf="renameFileData.currentItem.children">Directory Name</label>
-                    <label for="rename-new-name" *ngIf="!renameFileData.currentItem.children">do_stuff.py</label>
+
+            <form (submit)="renameAction()">
+                <div class="modal-content">
+                    <h4 *ngIf="renameFileData.currentItem.children">Rename Directory "{{renameFileData.currentItem.name}}"</h4>
+                    <h4 *ngIf="!renameFileData.currentItem.children">Rename File "{{renameFileData.currentItem.name}}"</h4>
+                    <div class="input-field">
+                        <input name="rename-new-name" id="rename-new-name" type="text" class="validate" [(ngModel)]="renameFileData.newName" />
+                        <label for="rename-new-name" *ngIf="renameFileData.currentItem.children">Directory Name</label>
+                        <label for="rename-new-name" *ngIf="!renameFileData.currentItem.children">do_stuff.py</label>
+                    </div>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <a class="waves-effect waves-green btn-flat" (click)="closeRenameModal()">Close</a>
-                <a class="modal-action modal-close waves-effect waves-green btn-flat" (click)="renameAction()">Rename</a>
-            </div>
+                <div class="modal-footer">
+                    <button class="waves-effect waves-green btn-flat" (click)="closeRenameModal()">Close</button>
+                    <button class="modal-action modal-close waves-effect waves-green btn-flat" type="submit">Rename</button>
+
+                </div>
+            </form>
         </div>
     </div>
 
