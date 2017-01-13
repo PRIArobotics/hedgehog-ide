@@ -24,35 +24,39 @@
 </div>
 
 <div id="create-modal" class="modal" materialize="modal" [materializeParams]="[{dismissible: true}]" [materializeActions]="createModalActions">
-    <div class="modal-content">
-        <h4>Create New Program</h4>
-        <div class="input-field">
-            <input id="new-program-name" type="text" class="validate" [(ngModel)]="newProgramName"/>
-            <label for="new-program-name">Program Name</label>
+    <form (submit)="createProgram()">
+        <div class="modal-content">
+            <h4>Create New Program</h4>
+            <div class="input-field">
+                <input name="new-program-name" id="new-program-name" type="text" class="validate" [(ngModel)]="newProgramName"/>
+                <label for="new-program-name">Program Name</label>
+            </div>
+            <p>
+                <input class="with-gap" name="group" type="radio" id="python" [(ngModel)]="isBlocklyProject" [value]="false"/>
+                <label for="python">Python</label>
+            </p>
+            <p>
+                <input class="with-gap" name="group" type="radio" id="blockly" [(ngModel)]="isBlocklyProject" [value]="true"/>
+                <label for="blockly">Blockly</label>
+            </p>
         </div>
-        <p>
-            <input class="with-gap" name="group" type="radio" id="python" [(ngModel)]="isBlocklyProject" [value]="false"/>
-            <label for="python">Python</label>
-        </p>
-        <p>
-            <input class="with-gap" name="group" type="radio" id="blockly" [(ngModel)]="isBlocklyProject" [value]="true"/>
-            <label for="blockly">Blockly</label>
-        </p>
-    </div>
-    <div class="modal-footer">
-        <a class="waves-effect waves-green btn-flat" (click)="closeCreateModal()">Close</a>
-        <a class="modal-action modal-close waves-effect waves-green btn-flat" (click)="createProgram()">Create</a>
-    </div>
+        <div class="modal-footer">
+            <button class="waves-effect waves-green btn-flat" (click)="closeCreateModal()">Close</button>
+            <button class="modal-action modal-close waves-effect waves-green btn-flat" type="submit">Create</button>
+        </div>
+    </form>
 </div>
 
 <div id="delete-modal" class="modal" materialize="modal" [materializeParams]="[{dismissible: true}]" [materializeActions]="deleteModalActions">
-    <div class="modal-content">
-        <h4>Delete Program</h4>
-        <p>Do you want to delete the program {{ deleteProgramName }}? <br />
-        This operation cannot be undone.</p>
-    </div>
-    <div class="modal-footer">
-        <a class="waves-effect waves-green btn-flat" (click)="closeDeleteModal()">Close</a>
-        <a class="modal-action modal-close waves-effect waves-green btn-flat" (click)="deleteProgram()">Delete</a>
-    </div>
+    <form (submit)="deleteProgram()">
+        <div class="modal-content">
+            <h4>Delete Program</h4>
+            <p>Do you want to delete the program {{ deleteProgramName }}? <br />
+            This operation cannot be undone.</p>
+        </div>
+        <div class="modal-footer">
+            <button class="waves-effect waves-green btn-flat" (click)="closeDeleteModal()">Close</button>
+            <button class="modal-action modal-close waves-effect waves-green btn-flat" type="submit">Delete</button>
+        </div>
+    </form>
 </div>
