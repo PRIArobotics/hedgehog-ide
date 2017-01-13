@@ -60,8 +60,13 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
                 },
                 [86]: (tree, node, $event) => {
                     if ($event.ctrlKey || $event.metaKey) {
-                        this.pasteFile(node);
+                        if (this.copyData) {
+                            this.paste(node.data, this.copyData);
+                        }
                     }
+                },
+                [46]: (tree, node, $event) => {
+                    this.openDeleteModal({item: node});
                 }
             }
         }
@@ -286,33 +291,47 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
         }
     }
 
-    public async pasteFile(node) {
+    public async paste(itemToAddTo, copyData) {
         let parentArray: Array<Object>;
         let parentDirectory: WorkingTreeDirectory;
 
+        let newName: string = copyData.name;
 
-        if (node.data.children) {
-            parentArray = node.data.children;
-            parentDirectory = node.data.storageObject;
-
-            // change itemname if it is a duplicate
-            // if (this.checkDuplicate(this.copyData.name, parentArray)) { }
+        if (itemToAddTo.children) {
+            parentArray = itemToAddTo.children;
+            parentDirectory = itemToAddTo.storageObject;
         } else {
-            parentArray = this.files.get(node.data.fileId).parentArray;
-            parentDirectory = this.files.get(node.data.fileId).parentDirectory;
+            parentArray = this.files.get(itemToAddTo.fileId).parentArray;
+            parentDirectory = this.files.get(itemToAddTo.fileId).parentDirectory;
+        }
 
-            let newName: string = this.copyData.name;
+        newName = this.increaseFileIterator(newName, parentArray);
 
-            let copyFile: File = this.files.get(this.copyData.fileId);
+        if (copyData.children) {
+            // change itemname if it is a duplicate
+            await parentDirectory.addDirectory(newName);
 
-            copyFile.parentArray = parentArray;
-            copyFile.parentDirectory = parentDirectory;
+            let newDirectoryItem = {
+                name: newName,
+                children: [],
+                storageObject: await parentDirectory.getDirectory(newName),
+                parentArray,
+                parentDirectory
+            };
 
+            parentArray.push(newDirectoryItem);
 
-            if (this.checkDuplicate(newName, parentArray)) {
-                // let withoutExtension: string = newName.split(".")[0];
-                // let iterator = withoutExtension.match(/\d+$/);
+            for (let item of copyData.children) {
+                // check if the item is the current directory to prevent infinite recursion
+                if (newDirectoryItem !== item) {
+                    this.paste(newDirectoryItem, item);
+                }
             }
+
+        } else {
+            newName = this.increaseFileIterator(newName, parentArray);
+
+            let copyFile: File = this.files.get(copyData.fileId);
 
             await parentDirectory.addFile(newName, copyFile.content);
 
@@ -320,19 +339,51 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
             // update the fileId
             let newFileId = genericToHex(parentDirectory.getItemPath(newName));
 
-            this.copyData.fileId = newFileId;
+            parentArray.push({
+                fileId: newFileId,
+                name: newName,
+            });
 
-            parentArray.push(this.copyData);
-            this.files.set(newFileId, copyFile);
+            this.files.set(newFileId, {
+                name: newName,
+                content: copyFile.content,
+                storageObject: await parentDirectory.getFile(newName),
+                parentArray,
+                parentDirectory,
+                changed: false
+            });
         }
 
         this.tree.treeModel.update();
     }
 
+    public increaseFileIterator(fileName: string, parentArray: any[]) {
+        if (this.checkDuplicate(fileName, parentArray)) {
+            let splitFileName: string[] = fileName.split(".");
+            let iterator = splitFileName[0].match(/\d+$/);
+
+            if (iterator) {
+                splitFileName[0] = splitFileName[0].replace(iterator[0], String(+iterator[0] + 1));
+            } else {
+                splitFileName[0] = splitFileName[0] + '-0';
+            }
+
+            let newName: string = splitFileName.join('.');
+
+            if (this.checkDuplicate(newName, parentArray)) {
+                newName = this.increaseFileIterator(newName, parentArray);
+            }
+
+            return newName;
+        } else {
+            return fileName;
+        }
+    }
+
     @HostListener('window:keydown', ['$event'])
     public saveFile(e) {
         // check if the user pressed CTRL - S to save all files
-        if ((e.which === '115' || e.which === '83' ) && (e.ctrlKey || e.metaKey) && this.openId) {
+        if ((e.keyCode === 115 || e.keyCode === 83 ) && (e.ctrlKey || e.metaKey) && this.openId) {
             let file = this.files.get(this.openId);
 
             if(file.changed) {

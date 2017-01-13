@@ -13,7 +13,7 @@
         </div>
     </nav>
 
-    <div class="col s2">
+    <div class="col s2" id="sidebar">
 
         <Tree #tree
               id="file-tree"
@@ -55,7 +55,7 @@
                 <h4 *ngIf="!newData.file">Create New Directory</h4>
                 <div class="input-field">
                     <input id="new-name" type="text" class="validate" [(ngModel)]="newData.name"/>
-                    <label for="new-name" *ngIf="newData.file">File Name</label>
+                    <label for="new-name" *ngIf="newData.file">do_stuff.py</label>
                     <label for="new-name" *ngIf="!newData.file">Directory Name</label>
                 </div>
             </div>
@@ -87,7 +87,7 @@
                 <div class="input-field">
                     <input id="rename-new-name" type="text" class="validate" [(ngModel)]="renameFileData.newName"/>
                     <label for="rename-new-name" *ngIf="renameFileData.currentItem.children">Directory Name</label>
-                    <label for="rename-new-name" *ngIf="!renameFileData.currentItem.children">File Name</label>
+                    <label for="rename-new-name" *ngIf="!renameFileData.currentItem.children">do_stuff.py</label>
                 </div>
             </div>
             <div class="modal-footer">
@@ -113,8 +113,7 @@
                      (textChanged)="onEditorContentChange($event)"
                      [mode]="'python'"
                      [theme]="'chrome'"
-                     [readOnly]="false"
-                     style="display:block; height: 88vh; width:100%"> </div>
+                     [readOnly]="false"> </div>
             </div>
         </div>
     </div>

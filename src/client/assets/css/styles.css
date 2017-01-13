@@ -96,11 +96,17 @@ treenode:last-child > .tree-node > .tree-children::after {
 }
 
 
-/* rest */
+/* all other styles */
+
+#sidebar {
+    height: 100%;
+    overflow-y: auto;
+    margin-top: 10px;
+}
 
 .tree {
     margin-left: 5%;
-    margin-top: 15%;
+    margin-top: 10%;
 }
 
 #sortable-tabs {
@@ -110,4 +116,10 @@ treenode:last-child > .tree-node > .tree-children::after {
 
 div > ul > li > a {
     text-transform: none;
+}
+
+#ace-editor {
+    display:block;
+    height: 88vh;
+    width:100%
 }
