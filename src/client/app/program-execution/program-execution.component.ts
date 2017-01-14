@@ -10,6 +10,7 @@ import {HttpProcessManagerService} from "./http-process-manager.service";
 export class ProgramExecutionComponent {
     public isRunning: boolean = false;
     public output: string = '';
+    public input: string = '';
 
     private showPanel = false;
 
