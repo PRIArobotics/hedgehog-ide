@@ -102,6 +102,7 @@ treenode:last-child > .tree-node > .tree-children::after {
     height: 100%;
     overflow-y: auto;
     margin-top: 10px;
+    resize: horizontal;
 }
 
 .tree {
@@ -121,5 +122,5 @@ div > ul > li > a {
 #ace-editor {
     display:block;
     height: 88vh;
-    width:100%
+    width:100%;
 }

@@ -7,5 +7,10 @@
 
     <div id="program-execution-terminal" style="background: #fff">
         <pre>{{ output }}</pre>
+
+        <form (submit)="sendInput()">
+            <input name="stdin" id="stdin" type="text" class="validate" [(ngModel)]="input" />
+            <label for="stdin">Input ...</label>
+        </form>
     </div>
 </div>

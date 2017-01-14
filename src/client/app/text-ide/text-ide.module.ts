@@ -5,12 +5,12 @@ import {FormsModule} from "@angular/forms";
 import {TreeModule} from 'angular2-tree-component';
 import {ContextMenuModule} from 'angular2-contextmenu';
 
-import {AceEditorDirective} from './ace-editor.directive';
 import {MaterializeModule} from "angular2-materialize";
-
-import {TextIdeComponent} from "./text-ide.component";
+import {AceEditorComponent} from 'ng2-ace-editor';
 import {HttpModule} from "@angular/http";
 import {ProgramExecutionModule} from "../program-execution/program-execution.module";
+
+import {TextIdeComponent} from "./text-ide.component";
 
 @NgModule({
     imports: [
@@ -24,7 +24,7 @@ import {ProgramExecutionModule} from "../program-execution/program-execution.mod
     ],
     declarations: [
         TextIdeComponent,
-        AceEditorDirective
+        AceEditorComponent
     ]
 })
 

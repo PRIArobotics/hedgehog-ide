@@ -10,6 +10,7 @@ import {HttpProcessManagerService} from "./http-process-manager.service";
 export class ProgramExecutionComponent {
     public isRunning: boolean = false;
     public output: string = '';
+    public input: string = '';
 
     private showPanel = false;
 
@@ -40,5 +41,9 @@ export class ProgramExecutionComponent {
         this.showPanel = true;
         this.output = '';
         this.processPid = (await this.processManager.run(programName, filePath, args)).pid;
+    }
+
+    public async sendInput () {
+        await this.processManager.writeStdin(this.processPid, this.input + '\n');
     }
 }
