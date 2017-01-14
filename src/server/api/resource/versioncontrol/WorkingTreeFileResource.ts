@@ -181,7 +181,7 @@ export default class WorkingTreeFileResource extends ApiResource {
             file,
             request,
             documentBuilder,
-            request.query['content'] === 'true' || false
+            request.query['content'] === 'true' || true
         ));
 
         // Return file
