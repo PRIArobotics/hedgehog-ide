@@ -22,6 +22,10 @@ export class ProgramExecutionComponent {
             this.output += data;
         });
 
+        processManager.on('stderr', (pid: number, data: string) => {
+            this.output += data;
+        });
+
         processManager.on('exit', (pid: number) => {
             if (pid === this.processPid) {
                 this.processPid = 0;
