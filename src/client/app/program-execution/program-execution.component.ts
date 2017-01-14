@@ -38,4 +38,8 @@ export class ProgramExecutionComponent {
         this.output = '';
         this.processPid = (await this.processManager.run(programName, filePath, args)).pid;
     }
+
+    public async sendInput () {
+        await this.processManager.writeStdin(this.processPid, this.input + '\n');
+    }
 }

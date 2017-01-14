@@ -745,7 +745,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
     }
 
     /**
-     * Event binding for tree context menu "delete" (directory or file)
+     * Event binding for tree context menu "rename" (directory or file)
      * This checks if it is the root directory and if not opens the modal
      *
      * @param event TreeNode object with the file tree object data
@@ -767,14 +767,14 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
     }
 
     /**
-     * Close the delete file modal
+     * Close the rename file modal
      */
     public closeRenameModal() {
         this.renameModalActions.emit({action:"modal", params:['close']});
     }
 
     /**
-     * Delete a file or directory using the data given from the modal
+     * Rename a file or directory using the data given from the modal
      */
     public async renameAction() {
         let newName = this.renameFileData.newName;
@@ -810,8 +810,6 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
 
     public async run () {
         await this.saveOpenFile();
-        console.log(genericFromHex(this.openId));
-
         await this.programExecution.run(this.programName, genericFromHex(this.openId));
         this.programIsRunning = true;
     }
