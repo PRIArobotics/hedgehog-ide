@@ -10,7 +10,7 @@ declare var Blockly: any;
 export class BlocklyComponent implements AfterViewInit {
 
     private _workspace: any;
-    //
+
     // The Program name that is passed to this class by the router
     private programName: string;
 
