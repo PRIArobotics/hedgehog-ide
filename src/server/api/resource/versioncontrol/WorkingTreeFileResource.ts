@@ -177,8 +177,12 @@ export default class WorkingTreeFileResource extends ApiResource {
             `/api/files/${genericToBase64(file.programName)}/${genericToBase64(file.path)}`
         );
         documentBuilder.setLinks(selfLink, null);
-        documentBuilder.addResource(
-            await this.serializerRegistry.serialize(file, request, documentBuilder, request.query['content'] === 'true' || false));
+        documentBuilder.addResource(await this.serializerRegistry.serialize(
+            file,
+            request,
+            documentBuilder,
+            request.query['content'] === 'true' || true
+        ));
 
         // Return file
         return reply(documentBuilder.getProduct())
