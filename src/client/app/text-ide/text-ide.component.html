@@ -61,7 +61,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="waves-effect waves-green btn-flat" (click)="closeNewFileOrDirectoryModal()">Close</button>
+                    <button class="waves-effect waves-green btn-flat" type="reset" (click)="closeNewFileOrDirectoryModal()">Close</button>
                     <button class="modal-action modal-close waves-effect waves-green btn-flat" type="submit">Create</button>
                 </div>
             </form>
@@ -79,7 +79,7 @@
                         This operation cannot be undone.</p>
                 </div>
                 <div class="modal-footer">
-                    <button class="waves-effect waves-green btn-flat" (click)="closeDeleteModal()">Close</button>
+                    <button class="waves-effect waves-green btn-flat" type="reset" (click)="closeDeleteModal()">Close</button>
                     <button class="modal-action modal-close waves-effect waves-green btn-flat" type="submit">Delete</button>
                 </div>
             </form>
@@ -98,7 +98,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="waves-effect waves-green btn-flat" (click)="closeRenameModal()">Close</button>
+                    <button class="waves-effect waves-green btn-flat" type="reset" (click)="closeRenameModal()">Close</button>
                     <button class="modal-action modal-close waves-effect waves-green btn-flat" type="submit">Rename</button>
 
                 </div>
@@ -116,13 +116,14 @@
             </div>
 
             <div class="col s12">
-                <div ace-editor
-                     id="ace-editor"
-                     text="{{ editorContent }}"
-                     (textChanged)="onEditorContentChange($event)"
-                     [mode]="'python'"
-                     [theme]="'chrome'"
-                     [readOnly]="false"> </div>
+                <ace-editor
+                        #editor
+                        id="ace-editor"
+                        [text]="editorContent"
+                        (textChanged)="onEditorContentChange($event)"
+                        [mode]="'python'"
+                        [theme]="'textmate'"
+                        [readOnly]="false"></ace-editor>
             </div>
         </div>
     </div>

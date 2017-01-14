@@ -86,14 +86,16 @@ export function genericToHex(decoded: string): string {
 
     for (let i = 0; i < decoded.length; i++) {
         hex = decoded.charCodeAt(i).toString(16);
-        encoded += ("000"+hex).slice(-4);
+        encoded += (hex).slice(-4);
     }
+
     return encoded;
 }
 
 export function genericFromHex(encoded: string) {
-    let hexes = encoded.match(/.{1,4}/g) || [];
+    let hexes = encoded.match(/.{1,2}/g) || [];
     let decoded = "";
+
     for(let j = 0; j < hexes.length; j++) {
         decoded += String.fromCharCode(parseInt(hexes[j], 16));
     }

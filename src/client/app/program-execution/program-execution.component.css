@@ -3,6 +3,7 @@
     bottom: 0;
     height: 20%;
     display: flex;
+    resize: vertical;
 }
 
 #program-execution-sidebar {
@@ -17,4 +18,9 @@
     border: 1px solid;
     flex: 1;
     padding: 1vh;
+}
+
+#stdin {
+    position:fixed;
+    bottom: 0;
 }

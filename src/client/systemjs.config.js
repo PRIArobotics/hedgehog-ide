@@ -19,7 +19,8 @@
             'materialize-css': 'node_modules/materialize-css',
             'angular2-materialize': 'node_modules/angular2-materialize',
             'angular2-contextmenu': 'node_modules/angular2-contextmenu',
-            'angular2-localstorage': 'node_modules/angular2-localstorage'
+            'angular2-localstorage': 'node_modules/angular2-localstorage',
+            'ng2-ace-editor': 'node_modules/ng2-ace-editor'
         },
         // map tells the System loader where to look for things
         map: {
@@ -43,12 +44,13 @@
             'buffer': 'npm:buffer/index.js',
             'base64-js': 'npm:base64-js/index.js',
             'ieee754': 'npm:ieee754/index.js',
+            'ng2-ace-editor': 'node_modules/ng2-ace-editor',
 
             'angular2-tree-component': 'npm:angular2-tree-component',
             'lodash': 'npm:lodash',
             'angular2-localstorage-circular': 'npm:angular2-localstorage',
 
-            'socket.io-client': 'npm:socket.io-client/dist/socket.io.min.js',
+            'socket.io-client': 'npm:socket.io-client/dist/socket.io.min.js'
         },
         // packages tells the System loader how to load when no filename and/or no extension
         packages: {
@@ -70,7 +72,7 @@
             },
             'materialize-css': {
                 format: "global",
-                main: "dist/js/materialize",
+                main: "./dist/js/materialize",
                 defaultExtension: "js"
             },
             'angular2-materialize': {
@@ -78,11 +80,11 @@
                 defaultExtension: "js"
             },
             'angular2-tree-component': {
-                main: 'dist/angular2-tree-component.js',
+                main: './dist/angular2-tree-component.js',
                 defaultExtension: 'js'
             },
             'lodash': {
-                main: 'lodash.js',
+                main: './lodash.js',
                 defaultExtension: 'js'
             },
             'angular2-contextmenu': {
@@ -90,7 +92,11 @@
                 defaultExtension: 'js'
             },
             'angular2-localstorage': {
-                main: 'dist/index.js',
+                main: './dist/index.js',
+                defaultExtension: 'js'
+            },
+            'ng2-ace-editor': {
+                main: './ng2-ace-editor.js',
                 defaultExtension: 'js'
             }
         }
