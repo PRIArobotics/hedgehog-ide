@@ -60,7 +60,7 @@ export class HttpProcessManagerService implements IProcessManager {
     }
 
     public async writeStdin (pid: number, data: string): Promise<void> {
-        await this.http.patch(`/api/processes/${pid}/stdin`, data);
+        await this.http.patch(`/api/processes/${pid}/stdin`, data).toPromise();
     }
 
     public async getProcess (pid: number): Promise<IProcess> {
