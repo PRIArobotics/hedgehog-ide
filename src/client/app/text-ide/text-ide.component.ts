@@ -98,8 +98,14 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
     // fileTree array containing TreeComponent compatible Objects
     private fileTree: Object[] = [];
 
-    // local storage Object as programName: { }
-    @LocalStorage() private localStorageFiles: {[programName: string]: {[fileId: string]: string}};
+    // local storage Object as programName: { fileId: string }
+    @LocalStorage('files') private localStorageFiles: {[programName: string]: {[fileId: string]: string}} = {};
+
+    // local storage Object as programName: string[]
+    @LocalStorage('openFiles') private openFiles: {[programName: string]: string[]} = {};
+
+    // local storage Object as programName: string
+    @LocalStorage('openFileId') private openFileId: {[programName: string]: string} = {};
 
     // indexed files from the file tree
     private files: Map<string, File>;
@@ -155,7 +161,15 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
     constructor(route: ActivatedRoute, storageService: HttpProgramService) {
         this.programName = route.snapshot.params['programName'];
         this.files = new Map<string, File>();
-        this.localStorageFiles = {};
+
+        if (!this.openFiles[this.programName]) {
+            this.openFiles[this.programName] = [];
+        }
+
+        if (!this.openFileId[this.programName]) {
+            this.openFileId[this.programName] = null;
+        }
+
         this.storage = storageService.getStorage();
 
         this.fileTree[0] = {
@@ -170,7 +184,6 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
      */
     public async ngOnInit() {
         this.programExecution.isRunning = false;
-
         this.program = await this.storage.getProgram(this.programName);
 
         let rootDir = await this.program.getWorkingTreeRoot();
@@ -190,6 +203,15 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
         // populate file tree and give it the root directory and it's childArray
         await this.populateFiletree(rootDir, childArray);
 
+        for (let fileId of this.openFiles[this.programName]) {
+            await this.openFileTab(fileId);
+        }
+
+        if (this.openFileId[this.programName] !== null) {
+            await this.openFile(this.openFileId[this.programName]);
+            this.updateIndicator($('#tab' + this.openFileId[this.programName]));
+        }
+
         // update the tree model after file tree has been populated
         this.tree.treeModel.update();
     }
@@ -197,7 +219,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
     /**
      * This method is called after the view is initialized so it can access frontend items
      */
-    public ngAfterViewInit(): void {
+    public async ngAfterViewInit(): Promise<void> {
         // reset indicator from the tabs
         this.resetIndicator();
 
@@ -443,73 +465,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
         if (event.node.children == null) {
 
             // set file to the data from the event
-            let file = event.node.data;
-
-            // update the editor content
-            await this.openFile(file.fileId);
-
-            // search for tab
-            let tab = $('#tab' + file.fileId);
-
-            // check if tab was found
-            if (tab.length > 0) {
-                // update the indicator to be under the tab
-                this.updateIndicator(tab);
-
-                // end method here
-                return;
-            } else if ($('#sortable-tabs').children().length === 1) {
-                // if no files are opened show the editor
-                $('#ace-editor').show();
-            }
-
-            // create new tab element if the file was not found as
-            // <li class='tab' id='tab{id}' draggable> ... <li>
-            let newTab = document.createElement('li');
-            newTab.className = 'tab';
-            newTab.id = 'tab' + file.fileId;
-
-            // create new a element that has the filename as
-            // <a class='green-text lighten-3 waves-effect'> {filename} ... </a>
-            let linkToEditor = document.createElement('a');
-            linkToEditor.className =  'green-text lighten-3 waves-effect';
-
-            // create close button as
-            // <i class='material-icons' onclick="..."> close </i>
-            let closeButton = document.createElement('i');
-            closeButton.className = 'material-icons';
-            closeButton.addEventListener('click', () => this.closeTab($(newTab)));
-
-            // add close icon to close button
-            closeButton.appendChild(document.createTextNode('close'));
-
-            // create file name text
-            let fileNameElement = document.createTextNode(file.name);
-
-            // add filename and close button to the tab content
-            linkToEditor.appendChild(fileNameElement);
-            linkToEditor.appendChild(closeButton);
-
-            // add tab content to the tab ( <a> into <li>
-            newTab.appendChild(linkToEditor);
-
-            // create click event for text node to open the file with it's id
-            newTab.addEventListener('click', async (clickEvent) => {
-                // check whether the target was <i> meaning the close button
-                if (!$(clickEvent.target).is('i')) {
-                    // if it wasn't it opens the file
-                    await this.openFile(file.fileId);
-                }
-            });
-
-            // add element to the sortable-tabs div
-            document.getElementById('sortable-tabs').appendChild(newTab);
-
-            // update the indicator to this new tab
-            this.updateIndicator(newTab);
-
-            // load new li as tab
-            (<any>$('div.tabs')).tabs();
+            this.openFileTab(event.node.data.fileId);
         }
     }
 
@@ -875,6 +831,83 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
         this.openId = id;
     }
 
+    public async openFileTab(fileId: string) {
+        let index = this.openFiles[this.programName].indexOf(fileId);
+
+        if (index < 0) {
+            this.openFiles[this.programName].push(fileId);
+        }
+
+        // update the editor content
+        await this.openFile(fileId);
+
+        // search for tab
+        let tab = $('#tab' + fileId);
+
+        // check if tab was found
+        if (tab.length > 0) {
+            // update the indicator to be under the tab
+            this.updateIndicator(tab);
+
+            // end method here
+            return;
+        } else if ($('#sortable-tabs').children().length === 1) {
+            // if no files are opened show the editor
+            $('#ace-editor').show();
+        }
+
+        // create new tab element if the file was not found as
+        // <li class='tab' id='tab{id}' draggable> ... <li>
+        let newTab = document.createElement('li');
+        newTab.className = 'tab';
+        newTab.id = 'tab' + fileId;
+
+        // create new a element that has the filename as
+        // <a class='green-text lighten-3 waves-effect'> {filename} ... </a>
+        let linkToEditor = document.createElement('a');
+        linkToEditor.className =  'green-text lighten-3 waves-effect';
+
+        // create close button as
+        // <i class='material-icons' onclick="..."> close </i>
+        let closeButton = document.createElement('i');
+        closeButton.className = 'material-icons';
+        closeButton.addEventListener('click', () => this.closeTab($(newTab)));
+
+        // add close icon to close button
+        closeButton.appendChild(document.createTextNode('close'));
+
+        // create file name text
+        let fileNameElement = document.createTextNode(this.files.get(fileId).name);
+
+        // add filename and close button to the tab content
+        linkToEditor.appendChild(fileNameElement);
+        linkToEditor.appendChild(closeButton);
+
+        // add tab content to the tab ( <a> into <li>
+        newTab.appendChild(linkToEditor);
+
+        // create click event for text node to open the file with it's id
+        newTab.addEventListener('click', async (clickEvent) => {
+            // check whether the target was <i> meaning the close button
+            if (!$(clickEvent.target).is('i')) {
+                // update the openFileId for the local storage
+                this.openFileId[this.programName] = fileId;
+
+                // if it wasn't it opens the file
+                await this.openFile(fileId);
+            }
+        });
+
+        // add element to the sortable-tabs div
+        document.getElementById('sortable-tabs').appendChild(newTab);
+
+        // update the indicator to this new tab
+        this.updateIndicator(newTab);
+
+        // load new li as tab
+        (<any>$('div.tabs')).tabs();
+    }
+
     private fixModalOverlay() {
         // This is extremely hacky but apparently, there is no other solution.
         // Move modal to right location as it should fill the whole screen otherwise
@@ -915,6 +948,12 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
      */
     private closeTab(tabToClose: JQuery) {
         let id: string = tabToClose.attr('id').substr(3);
+
+        let index = this.openFiles[this.programName].indexOf(id);
+
+        if (index > -1) {
+            this.openFiles[this.programName].splice(index, 1);
+        }
 
         // check if the current openId (open tab)
         if (this.openId === id) {
