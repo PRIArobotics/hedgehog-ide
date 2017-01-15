@@ -831,7 +831,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
         this.openId = id;
     }
 
-    public async openFileTab(fileId: string) {
+    private async openFileTab(fileId: string) {
         let index = this.openFiles[this.programName].indexOf(fileId);
 
         if (index < 0) {
