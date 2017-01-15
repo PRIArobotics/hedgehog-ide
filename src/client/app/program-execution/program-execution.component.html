@@ -1,16 +1,19 @@
 <div id="program-execution" *ngIf="showPanel" style="z-index: 100000">
     <div id="program-execution-sidebar">
-        <a><i class="material-icons">replay</i></a>
+        <i class="material-icons">replay</i>
         <br/><br/>
         <a><i class="material-icons">stop</i></a>
     </div>
 
     <div id="program-execution-terminal" style="background: #fff">
-        <pre>{{ output }}</pre>
+        <div id="output">
+            <pre *ngFor="let output of outputList" class="{{output.type}}">{{ output.data }}</pre>
+        </div>
 
-        <form (submit)="sendInput()">
-            <input name="stdin" id="stdin" type="text" class="validate" [(ngModel)]="input" />
-            <label for="stdin">Input ...</label>
-        </form>
+        <div class="input-field">
+            <form (submit)="sendInput()">
+                <input placeholder="Input ..." name="stdin" id="stdin" type="text" class="validate" [(ngModel)]="input" [disabled]="!isRunning"/>
+            </form>
+        </div>
     </div>
 </div>

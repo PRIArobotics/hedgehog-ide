@@ -83,10 +83,10 @@ treenode:last-child > .tree-node > .tree-children::after {
     text-align: left;
 }
 .angular2-contextmenu li:first-child {
-    border-top:none;
+    border-top: none;
 }
 .angular2-contextmenu a {
-    color:black;
+    color: black;
     display: block;
     padding: 0.5em 1em;
 }
