@@ -63,4 +63,15 @@ export class ProgramExecutionComponent {
             this.input = '';
         }
     }
+
+    public async stop () {
+        if (this.isRunning) {
+            this.outputList.push({
+                type: 'stdout',
+                data: 'program stopped ...'
+            });
+
+            await this.processManager.kill(this.processPid);
+        }
+    }
 }

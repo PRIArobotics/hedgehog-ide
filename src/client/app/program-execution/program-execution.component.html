@@ -2,12 +2,14 @@
     <div id="program-execution-sidebar">
         <i class="material-icons">replay</i>
         <br/><br/>
-        <i class="material-icons" *ngIf="isRunning">stop</i>
+        <i class="material-icons" *ngIf="isRunning" (click)="stop()">stop</i>
     </div>
 
     <div id="program-execution-terminal" style="background: #fff">
 
-        <a class="btn-floating waves-effect waves-light red right" (click)="showPanel=false; "><i class="material-icons">close</i></a>
+        <a class="btn-floating waves-effect waves-light red right" (click)="showPanel = false; stop()">
+            <i class="material-icons">close</i>
+        </a>
 
         <div id="output">
             <pre *ngFor="let output of outputList" class="{{output.type}}">{{ output.data }}</pre>
