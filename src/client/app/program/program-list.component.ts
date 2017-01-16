@@ -47,7 +47,7 @@ export class ProgramListComponent implements OnInit {
     }
 
     public async createProgram() {
-        if(this.newProgramType == "blockly") {
+        if(this.newProgramType === "blockly") {
             await this.storage.createProgram(this.newProgramName + ".blockly");
         } else {
             await this.storage.createProgram(this.newProgramName);
