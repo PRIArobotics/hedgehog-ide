@@ -61,3 +61,6 @@ tmp
 
 # vim swap files
 *.swp
+
+# tscommand tmp files
+tscommand-*.tmp.txt
