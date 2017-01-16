@@ -1,11 +1,12 @@
-import { Component, AfterViewInit, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 
-import {LocalStorageService} from "angular2-localstorage";
-import {LocalStorage} from "angular2-localstorage";
+import IProgramStorage from "../../../common/versioncontrol/ProgramStorage";
+import {HttpProgramService} from "../program/http-program.service";
+import Program from "../../../common/versioncontrol/Program";
 
 /*
- * TODO: add toast notifications, http storage
+ * TODO: add toast notifications, run programs, split code view
  */
 declare var Blockly: any;
 
@@ -13,63 +14,65 @@ declare var Blockly: any;
     selector: 'my-app',
     templateUrl: 'app/blockly/editor.component.html',
     providers: [
-        LocalStorageService,
+        HttpProgramService
     ]
 })
-export class BlocklyComponent implements AfterViewInit,OnInit {
+export class BlocklyComponent implements OnInit, OnDestroy {
 
     private workspace: any;
 
     // The Program name that is passed to this class by the router
     private programName: string;
 
-    // local storage Object as programName: { }
-    @LocalStorage()
-    private localStorageFiles: {[programName: string]: {[fileId: string]: string}};
+    // remote storage
+    private storage: IProgramStorage;
+    private program: Program;
+    private rootDir;
 
-    constructor(route: ActivatedRoute) {
+    constructor(route: ActivatedRoute, storageService: HttpProgramService) {
         this.programName = route.snapshot.params['programName'];
-        this.localStorageFiles = {};
+        this.storage = storageService.getStorage();
     }
 
     public clearWorkspace(): void {
         this.workspace.clear();
     }
 
-    public saveWorkspace(): void {
-        this.localStorageFiles[this.programName]["xml"] = this.toXML();
+    public async saveWorkspace() {
+        await this.rootDir.addFile("workspace.xml", this.toXML());
+    }
+
+    public ngOnDestroy() {
+        this.saveWorkspace();
     }
 
     public async ngOnInit() {
-        // check if the local storage already has this program stored
-        if (!this.localStorageFiles[this.programName]) {
-            // if not create a new Map with the program name
-            this.localStorageFiles[this.programName] = {};
-        }
-    }
 
-    public ngAfterViewInit(): void {
+        this.program = await this.storage.getProgram(this.programName);
+        this.rootDir = await this.program.getWorkingTreeRoot();
 
         let toolbox: any = {toolbox: this.getToolbox(),
             zoom: {controls: true,
-                   wheel: true,
-                   startScale: 1.0,
-                   maxScale: 2,
-                   minScale: 0.8,
-                   scaleSpeed: 1.05},
-            grid: {spacing: 20,
-                   length: 3,
-                   colour: '#ccc',
-                   snap: true},
-            trashcan: true,
-            maxBlocks: 100,
-            media: 'app/blockly/lib/media/'
+                wheel: true,
+                startScale: 1.0,
+                maxScale: 2,
+                minScale: 0.8,
+                scaleSpeed: 1.05},
+                grid: {spacing: 20,
+                    length: 3,
+                    colour: '#ccc',
+                    snap: true},
+                    trashcan: true,
+                    maxBlocks: 100,
+                    media: 'app/blockly/lib/media/'
         };
 
         this.workspace = Blockly.inject('blocklyDiv', toolbox);
-        this.toWorkspace(this.localStorageFiles[this.programName]["xml"]);
-        this.workspace.addChangeListener(e => this.saveWorkspace());
 
+        // load workspace from remote storage if it exists
+        if (this.rootDir.items.includes("workspace.xml")) {
+            this.toWorkspace(await (await this.rootDir.getFile("workspace.xml")).readContent());
+        }
     }
 
     private toWorkspace(xml: string) {
