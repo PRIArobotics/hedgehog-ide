@@ -1,7 +1,7 @@
 <div>
     <nav class="hedgehog-green-light">
         <div class="nav-wrapper">
-            <a href="#" class="brand-logo"> {{ programName }} </a>
+            <a href="#" class="brand-logo"> {{ programName.replace(".blockly","") }} </a>
             <ul id="nav-mobile" class="right hide-on-med-and-down">
                 <li (click)="clearWorkspace()"><a><i class="material-icons">delete</i></a></li>
             </ul>
