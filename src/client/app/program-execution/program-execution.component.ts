@@ -8,9 +8,11 @@ import {HttpProcessManagerService} from "./http-process-manager.service";
     styleUrls: ['program-execution.component.css'],
 })
 export class ProgramExecutionComponent {
+
     public isRunning: boolean = false;
-    public output: string = '';
     public input: string = '';
+
+    public outputList: Object[] = [];
 
     private showPanel = false;
 
@@ -20,11 +22,17 @@ export class ProgramExecutionComponent {
 
     public constructor (private processManager: HttpProcessManagerService) {
         processManager.on('stdout', (pid: number, data: string) => {
-            this.output += data;
+            this.outputList.push({
+                type: 'stdout',
+                data
+            });
         });
 
         processManager.on('stderr', (pid: number, data: string) => {
-            this.output += data;
+            this.outputList.push({
+                type: 'stderr',
+                data
+            });
         });
 
         processManager.on('exit', (pid: number) => {
@@ -39,11 +47,20 @@ export class ProgramExecutionComponent {
     public async run (programName: string, filePath: string, args?: string[]) {
         this.isRunning = true;
         this.showPanel = true;
-        this.output = '';
+        this.outputList = [];
         this.processPid = (await this.processManager.run(programName, filePath, args)).pid;
     }
 
     public async sendInput () {
-        await this.processManager.writeStdin(this.processPid, this.input + '\n');
+        if (this.isRunning) {
+            await this.processManager.writeStdin(this.processPid, this.input + '\n');
+
+            this.outputList.push({
+                type: 'stdin',
+                data: this.input
+            });
+
+            this.input = '';
+        }
     }
 }
