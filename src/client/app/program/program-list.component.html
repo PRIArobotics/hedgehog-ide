@@ -2,11 +2,25 @@
     <div class="nav-wrapper">
         <a href="#" class="brand-logo">Programs</a>
         <ul id="nav-mobile" class="right hide-on-med-and-down">
-            <li><a (click)="openCreateModal()"><i class="material-icons">add</i></a></li>
+            <li><a (click)="openCreateModal('python')"><i class="material-icons">add</i></a></li>
             <li><a><i class="material-icons">replay</i></a></li>
         </ul>
     </div>
 </nav>
+
+<div class="fixed-action-btn">
+    <a class="btn-floating btn-large waves-effect waves-light green z-depth-4">
+        <i class="material-icons">add</i>
+    </a>
+    <ul>
+        <li><a (click)="openCreateModal('python')" class="btn-floating blue">
+            <i class="material-icons">code</i>
+        </a></li>
+        <li><a (click)="openCreateModal('blockly')" class="btn-floating red">
+            <i class="material-icons">view_module</i>
+        </a></li>
+    </ul>
+</div>
 
 <div class="container z-depth-1">
     <ul class="collection">
@@ -31,14 +45,6 @@
                 <input name="new-program-name" id="new-program-name" type="text" class="validate" [(ngModel)]="newProgramName"/>
                 <label for="new-program-name">Program Name</label>
             </div>
-            <p>
-                <input class="with-gap" name="group" type="radio" id="python" [(ngModel)]="isBlocklyProject" [value]="false"/>
-                <label for="python">Python</label>
-            </p>
-            <p>
-                <input class="with-gap" name="group" type="radio" id="blockly" [(ngModel)]="isBlocklyProject" [value]="true"/>
-                <label for="blockly">Blockly</label>
-            </p>
         </div>
         <div class="modal-footer">
             <button class="waves-effect waves-green btn-flat" type="reset" (click)="closeCreateModal()">Close</button>

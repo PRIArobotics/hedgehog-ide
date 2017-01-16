@@ -21,7 +21,7 @@ export class ProgramListComponent implements OnInit {
 
     private newProgramName: string;
     private deleteProgramName: string;
-    private isBlocklyProject: boolean = false;
+    private newProgramType: string;
 
     public constructor(storageService: HttpProgramService) {
         this.storage = storageService.getStorage();
@@ -36,7 +36,8 @@ export class ProgramListComponent implements OnInit {
         this.programs = await this.storage.getProgramNames();
     }
 
-    public openCreateModal() {
+    public openCreateModal(type: string) {
+        this.newProgramType = type;
         this.createModalActions.emit({action:"modal", params:['open']});
         this.fixModalOverlay();
     }
@@ -46,7 +47,7 @@ export class ProgramListComponent implements OnInit {
     }
 
     public async createProgram() {
-        if(this.isBlocklyProject) {
+        if(this.newProgramType == "blockly") {
             await this.storage.createProgram(this.newProgramName + ".blockly");
         } else {
             await this.storage.createProgram(this.newProgramName);
