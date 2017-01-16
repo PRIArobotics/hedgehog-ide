@@ -29,6 +29,9 @@ export class BlocklyComponent implements OnInit, OnDestroy {
     private program: Program;
     private rootDir;
 
+    // store the last time the workspace was saved
+    private lastSave: number;
+
     constructor(route: ActivatedRoute, storageService: HttpProgramService) {
         this.programName = route.snapshot.params['programName'];
         this.storage = storageService.getStorage();
@@ -40,6 +43,7 @@ export class BlocklyComponent implements OnInit, OnDestroy {
 
     public async saveWorkspace() {
         await this.rootDir.addFile("workspace.xml", this.toXML());
+        this.lastSave = new Date().getTime();
     }
 
     public ngOnDestroy() {
@@ -72,6 +76,17 @@ export class BlocklyComponent implements OnInit, OnDestroy {
         // load workspace from remote storage if it exists
         if (this.rootDir.items.includes("workspace.xml")) {
             this.toWorkspace(await (await this.rootDir.getFile("workspace.xml")).readContent());
+        }
+
+        // add change listener
+        this.workspace.addChangeListener(e => this.onWorkspaceChange());
+        this.lastSave = new Date().getTime();
+    }
+
+    private onWorkspaceChange() {
+        let currentDate = new Date().getTime();
+        if((currentDate - this.lastSave) > 10000) {
+            this.saveWorkspace();
         }
     }
 
