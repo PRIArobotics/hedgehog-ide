@@ -173,7 +173,7 @@ interface IProgramStorage {
      */
     updateWorkingTreeObject(programName: string,
                             currentPath: string,
-                            options: {mode?: number, newPath?: string}): Promise<void>;
+                            options: {mode?: number, newPath?: string, directory?: boolean}): Promise<void>;
 
     /**
      * Delete a file or directory from the working tree.
@@ -183,7 +183,7 @@ interface IProgramStorage {
      * @param programName
      * @param objectPath path to the file or directory
      */
-    deleteWorkingTreeObject(programName: string, objectPath: string): Promise<void>;
+    deleteWorkingTreeObject(programName: string, objectPath: string, directory?: boolean): Promise<void>;
 
     /**
      * Reset the workingtree to the latest version

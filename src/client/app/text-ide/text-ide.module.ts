@@ -11,6 +11,7 @@ import {HttpModule} from "@angular/http";
 import {ProgramExecutionModule} from "../program-execution/program-execution.module";
 
 import {TextIdeComponent} from "./text-ide.component";
+import 'brace';
 
 @NgModule({
     imports: [

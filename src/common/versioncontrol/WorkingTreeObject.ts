@@ -27,12 +27,13 @@ abstract class WorkingTreeObject {
         return dirname(this.path);
     }
 
-    public rename(newName: string, isAbsolute = false): Promise<void> {
+    public rename(newName: string, isAbsolute = false, directory = false): Promise<void> {
         return this.storage.updateWorkingTreeObject(
             this.programName,
             this.path,
             {
-                newPath: isAbsolute ? newName : join(this.getParentPath(), newName)
+                newPath: isAbsolute ? newName : join(this.getParentPath(), newName),
+                directory
             }
         );
     }

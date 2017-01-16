@@ -1,6 +1,5 @@
 import {Component, ViewChild, OnInit, AfterViewInit, EventEmitter, HostListener} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
-import {DummyProgramService} from "../program/dummy-program.service";
 import {WorkingTreeObjectType} from "../../../common/versioncontrol/WorkingTreeObject";
 import WorkingTreeDirectory from "../../../common/versioncontrol/WorkingTreeDirectory";
 import {TreeComponent} from "angular2-tree-component";
@@ -14,6 +13,10 @@ import {HttpProgramService} from "../program/http-program.service";
 import {ProgramExecutionComponent} from "../program-execution/program-execution.component";
 import {genericToHex, genericFromHex} from "../../../common/utils";
 import {LocalStorage} from "angular2-localstorage";
+
+import 'brace';
+import 'brace/theme/textmate';
+import 'brace/mode/python';
 
 declare var $: JQueryStatic;
 declare var Materialize: any;
@@ -34,7 +37,6 @@ export class File {
     templateUrl: 'text-ide.component.html',
     styleUrls: ['text-ide.component.css'],
     providers: [
-        DummyProgramService,
         LocalStorageService,
         HttpProgramService
     ]
@@ -44,7 +46,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
     public fileTreeOptions = {
         allowDrag: true,
         allowDrop: (element, to) => {
-            if (to.parent.children && element.data.name) {
+            if (to.parent.children && element.data) {
                 // check if it would be a duplicate
                 return to.parent.children && !this.checkDuplicate(element.data.name, to.parent.children);
             }

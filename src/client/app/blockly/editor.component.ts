@@ -77,6 +77,7 @@ export class BlocklyComponent implements AfterViewInit,OnInit {
         Blockly.Xml.domToWorkspace(dom, this.workspace);
     }
 
+    // tslint:disable-next-line
     private toPython(): string {
         Blockly.Python.INFINITE_LOOP_TRAP = null;
         return Blockly.Python.workspaceToCode(this.workspace);

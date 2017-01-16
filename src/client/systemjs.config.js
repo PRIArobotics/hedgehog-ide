@@ -19,8 +19,7 @@
             'materialize-css': 'node_modules/materialize-css',
             'angular2-materialize': 'node_modules/angular2-materialize',
             'angular2-contextmenu': 'node_modules/angular2-contextmenu',
-            'angular2-localstorage': 'node_modules/angular2-localstorage',
-            'ng2-ace-editor': 'node_modules/ng2-ace-editor'
+            'angular2-localstorage': 'node_modules/angular2-localstorage'
         },
         // map tells the System loader where to look for things
         map: {
@@ -39,12 +38,12 @@
             'rxjs':                      'npm:rxjs',
             'angular-in-memory-web-api': 'npm:angular-in-memory-web-api',
 
+            'ng2-ace-editor': 'npm:ng2-ace-editor',
             'brace': 'npm:brace',
             'w3c-blob': 'npm:w3c-blob/index.js',
             'buffer': 'npm:buffer/index.js',
             'base64-js': 'npm:base64-js/index.js',
             'ieee754': 'npm:ieee754/index.js',
-            'ng2-ace-editor': 'node_modules/ng2-ace-editor',
 
             'angular2-tree-component': 'npm:angular2-tree-component',
             'lodash': 'npm:lodash',
@@ -84,19 +83,19 @@
                 defaultExtension: 'js'
             },
             'lodash': {
-                main: './lodash.js',
+                main: './lodash',
                 defaultExtension: 'js'
             },
             'angular2-contextmenu': {
-                main: './angular2-contextmenu.js',
+                main: './angular2-contextmenu',
                 defaultExtension: 'js'
             },
             'angular2-localstorage': {
-                main: './dist/index.js',
+                main: './dist/index',
                 defaultExtension: 'js'
             },
             'ng2-ace-editor': {
-                main: './ng2-ace-editor.js',
+                main: './ng2-ace-editor',
                 defaultExtension: 'js'
             }
         }
