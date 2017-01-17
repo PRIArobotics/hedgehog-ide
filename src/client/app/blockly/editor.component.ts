@@ -95,6 +95,7 @@ export class BlocklyComponent implements OnInit, OnDestroy {
         Blockly.Xml.domToWorkspace(dom, this.workspace);
     }
 
+    // tslint:disable-next-line
     private toPython(): string {
         Blockly.Python.INFINITE_LOOP_TRAP = null;
         return Blockly.Python.workspaceToCode(this.workspace);
