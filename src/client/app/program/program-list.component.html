@@ -23,10 +23,12 @@
 
 <div class="container z-depth-1">
     <ul class="collection">
-        <li class="collection-item avatar valign-wrapper program-item" *ngFor="let program of programs">
-            <i class="material-icons circle valign" *ngIf="!program.endsWith('.blockly')">code</i>
-            <i class="material-icons circle valign" *ngIf="program.endsWith('.blockly')">view_module</i>
+        <li class="collection-item avatar valign-wrapper program-item" *ngFor="let program of programs" (click)="openRoute($event, program)">
+
+            <i class="material-icons circle blue" style="vertical-align: middle;" *ngIf="!program.endsWith('.blockly')">code</i>
+            <i class="material-icons circle red" style="vertical-align: middle;" *ngIf="program.endsWith('.blockly')">view_module</i>
             <span class="title valign">{{ program.replace(".blockly","") }}</span>
+
             <div class="secondary-content">
                 <button class="waves-effect waves-teal btn-flat" *ngIf="!program.endsWith('.blockly')" [routerLink]="['/text-ide', program]"><i class="material-icons">mode_edit</i></button>
                 <button class="waves-effect waves-teal btn-flat" *ngIf="program.endsWith('.blockly')" [routerLink]="['/blockly', program]"><i class="material-icons">mode_edit</i></button>
@@ -39,7 +41,7 @@
 <div id="create-modal" class="modal" materialize="modal" [materializeParams]="[{dismissible: true}]" [materializeActions]="createModalActions">
     <form (submit)="createProgram()">
         <div class="modal-content">
-            <h4>Create New Program</h4>
+            <h4>Create New {{  newProgramType === "blockly" ? 'Visual' : ''}} Program</h4>
             <div class="input-field">
                 <input name="new-program-name" id="new-program-name" type="text" class="validate" [(ngModel)]="newProgramName"/>
                 <label for="new-program-name">Program Name</label>

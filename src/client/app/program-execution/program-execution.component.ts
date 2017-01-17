@@ -1,4 +1,4 @@
-import {Component, Output, EventEmitter} from "@angular/core";
+import {Component, Output, EventEmitter, OnDestroy} from "@angular/core";
 import {HttpProcessManagerService} from "./http-process-manager.service";
 
 @Component({
@@ -7,7 +7,8 @@ import {HttpProcessManagerService} from "./http-process-manager.service";
     templateUrl: 'program-execution.component.html',
     styleUrls: ['program-execution.component.css'],
 })
-export class ProgramExecutionComponent {
+export class ProgramExecutionComponent implements OnDestroy {
+
 
     public isRunning: boolean = false;
     public input: string = '';
@@ -42,6 +43,10 @@ export class ProgramExecutionComponent {
                 this.onExit.emit({});
             }
         });
+    }
+
+    public async ngOnDestroy(): Promise<void> {
+        await this.processManager.kill(this.processPid);
     }
 
     public async run (programName: string, filePath: string, args?: string[]) {

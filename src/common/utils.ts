@@ -73,8 +73,11 @@ export function genericFromBase64(encoded: string): string {
 }
 
 export function genericToBase64(decoded: string): string {
+    console.log(decoded);
     if(typeof(btoa) === 'function') {
-        return btoa(decoded);
+        return btoa(encodeURIComponent(decoded).replace(/%([0-9A-F]{2})/g, function(match, p1) {
+            return String.fromCharCode(Number('0x' + p1));
+        }));
     } else {
         return new Buffer(decoded).toString('base64');
     }
