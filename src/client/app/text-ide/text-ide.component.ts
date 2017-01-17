@@ -1,22 +1,18 @@
 import {Component, ViewChild, OnInit, AfterViewInit, EventEmitter, HostListener} from '@angular/core';
-import {ActivatedRoute} from "@angular/router";
-import {WorkingTreeObjectType} from "../../../common/versioncontrol/WorkingTreeObject";
-import WorkingTreeDirectory from "../../../common/versioncontrol/WorkingTreeDirectory";
-import {TreeComponent} from "angular2-tree-component";
-import {AceEditorComponent} from 'ng2-ace-editor';
-import WorkingTreeFile from "../../../common/versioncontrol/WorkingTreeFile";
-import IProgramStorage from "../../../common/versioncontrol/ProgramStorage";
-import {MaterializeAction} from "angular2-materialize";
-import Program from "../../../common/versioncontrol/Program";
-import {LocalStorageService} from "angular2-localstorage";
-import {HttpProgramService} from "../program/http-program.service";
-import {ProgramExecutionComponent} from "../program-execution/program-execution.component";
-import {genericToHex, genericFromHex} from "../../../common/utils";
-import {LocalStorage} from "angular2-localstorage";
-
-import 'brace';
-import 'brace/theme/textmate';
-import 'brace/mode/python';
+import {ActivatedRoute} from '@angular/router';
+import {WorkingTreeObjectType} from '../../../common/versioncontrol/WorkingTreeObject';
+import WorkingTreeDirectory from '../../../common/versioncontrol/WorkingTreeDirectory';
+import {TreeComponent} from 'angular2-tree-component';
+import {AceEditorComponent} from './ace-editor.component';
+import WorkingTreeFile from '../../../common/versioncontrol/WorkingTreeFile';
+import IProgramStorage from '../../../common/versioncontrol/ProgramStorage';
+import {MaterializeAction} from 'angular2-materialize';
+import Program from '../../../common/versioncontrol/Program';
+import {LocalStorageService} from 'angular2-localstorage';
+import {HttpProgramService} from '../program/http-program.service';
+import {ProgramExecutionComponent} from '../program-execution/program-execution.component';
+import {genericToHex, genericFromHex} from '../../../common/utils';
+import {LocalStorage} from 'angular2-localstorage';
 
 declare var $: JQueryStatic;
 declare var Materialize: any;

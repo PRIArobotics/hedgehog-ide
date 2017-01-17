@@ -24,9 +24,8 @@
 <div class="container z-depth-1">
     <ul class="collection">
         <li class="collection-item avatar valign-wrapper program-item" *ngFor="let program of programs" (click)="openRoute($event, program)">
-
-            <i class="material-icons circle blue" style="vertical-align: middle;" *ngIf="!program.endsWith('.blockly')">code</i>
-            <i class="material-icons circle red" style="vertical-align: middle;" *ngIf="program.endsWith('.blockly')">view_module</i>
+            <i class="material-icons circle blue" *ngIf="!program.endsWith('.blockly')">code</i>
+            <i class="material-icons circle red" *ngIf="program.endsWith('.blockly')">view_module</i>
             <span class="title valign">{{ program.replace(".blockly","") }}</span>
 
             <div class="secondary-content">
@@ -58,7 +57,7 @@
     <form (submit)="deleteProgram()">
         <div class="modal-content">
             <h4>Delete Program</h4>
-            <p>Do you want to delete the program {{ deleteProgramName }}? <br />
+            <p>Do you want to delete the {{ deleteProgramName.endsWith('.blockly') ? 'visual' : ''}} program <strong>{{ deleteProgramName.replace(".blockly","") }}</strong>? <br />
             This operation cannot be undone.</p>
         </div>
         <div class="modal-footer">

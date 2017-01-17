@@ -38,7 +38,6 @@
             'rxjs':                      'npm:rxjs',
             'angular-in-memory-web-api': 'npm:angular-in-memory-web-api',
 
-            'ng2-ace-editor': 'npm:ng2-ace-editor',
             'brace': 'npm:brace',
             'w3c-blob': 'npm:w3c-blob/index.js',
             'buffer': 'npm:buffer/index.js',
@@ -47,7 +46,6 @@
 
             'angular2-tree-component': 'npm:angular2-tree-component',
             'lodash': 'npm:lodash',
-            'angular2-localstorage-circular': 'npm:angular2-localstorage',
 
             'socket.io-client': 'npm:socket.io-client/dist/socket.io.min.js'
         },
@@ -92,10 +90,6 @@
             },
             'angular2-localstorage': {
                 main: './dist/index',
-                defaultExtension: 'js'
-            },
-            'ng2-ace-editor': {
-                main: './ng2-ace-editor',
                 defaultExtension: 'js'
             }
         }

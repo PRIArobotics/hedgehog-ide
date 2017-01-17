@@ -21,7 +21,7 @@ export class ProgramListComponent implements OnInit {
     private programs: string[];
 
     private newProgramName: string;
-    private deleteProgramName: string;
+    private deleteProgramName: string = '';
     private newProgramType: string;
 
     public constructor(private router: Router, storageService: HttpProgramService) {
