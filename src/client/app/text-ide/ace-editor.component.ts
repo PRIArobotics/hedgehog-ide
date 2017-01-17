@@ -12,6 +12,8 @@ declare var ace: any;
  * changed theme and mode
  */
 
+/* tslint:disable */
+
 @Component({
     selector: 'ace-editor',
     template: '',
