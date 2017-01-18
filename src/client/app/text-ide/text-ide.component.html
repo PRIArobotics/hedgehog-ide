@@ -1,7 +1,7 @@
 <div class="app-content row">
     <nav class="hedgehog-green-light">
         <div class="nav-wrapper">
-            <a href="#" class="brand-logo"> {{ programName }} </a>
+            <a class="brand-logo"> {{ programName }} </a>
             <ul id="nav-mobile" class="right hide-on-med-and-down">
                 <li>
                     <a (click)="run()" [ngClass]="{ 'disabled': !openId }" materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="execute open file"><i *ngIf="!programIsRunning" class="material-icons">play_arrow</i></a>
