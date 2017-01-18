@@ -29,8 +29,8 @@
             <span class="title valign">{{ program.replace(".blockly","") }}</span>
 
             <div class="secondary-content">
-                <button class="waves-effect waves-teal btn-flat" *ngIf="!program.endsWith('.blockly')" [routerLink]="['/text-ide', program]"><i class="material-icons">mode_edit</i></button>
-                <button class="waves-effect waves-teal btn-flat" *ngIf="program.endsWith('.blockly')" [routerLink]="['/blockly', program]"><i class="material-icons">mode_edit</i></button>
+                <button class="waves-effect waves-teal btn-flat" *ngIf="!program.endsWith('.blockly')" (click)="openRenameModal(program)"><i class="material-icons">mode_edit</i></button>
+                <button class="waves-effect waves-teal btn-flat" *ngIf="program.endsWith('.blockly')" (click)="openRenameModal(program)"><i class="material-icons">mode_edit</i></button>
                 <button class="waves-effect waves-teal btn-flat" (click)="openDeleteModal(program)"><i class="material-icons">delete</i></button>
             </div>
         </li>
@@ -63,6 +63,23 @@
         <div class="modal-footer">
             <button class="waves-effect waves-green btn-flat" type="reset" (click)="closeDeleteModal()">Close</button>
             <button class="modal-action modal-close waves-effect waves-green btn-flat" type="submit">Delete</button>
+        </div>
+    </form>
+</div>
+
+<div id="rename-modal" class="modal" materialize="modal" [materializeParams]="[{dismissible: true}]" [materializeActions]="renameModalActions">
+
+    <form (submit)="renameProgram()">
+        <div class="modal-content">
+            <h4>Rename Program <strong>{{renameProgramData.oldName.replace(".blockly","")}}</strong></h4>
+            <div class="input-field">
+                <input name="rename-new-name" id="rename-new-name" type="text" class="validate" [(ngModel)]="renameProgramData.newName" />
+                <label for="rename-new-name">Program Name</label>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="waves-effect waves-green btn-flat" type="reset" (click)="closeRenameModal()">Close</button>
+            <button class="modal-action modal-close waves-effect waves-green btn-flat" type="submit">Rename</button>
         </div>
     </form>
 </div>
