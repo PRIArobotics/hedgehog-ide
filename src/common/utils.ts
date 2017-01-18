@@ -1,6 +1,4 @@
 
-import utf8 = require('utf8');
-
 export function wrapCallbackAsPromise(func: (...args: any[]) => any, ...args: any[]): Promise<any> {
     return new Promise<any>((resolve, reject) => {
         args.push((err, ...returnArgs: any[]) => {
