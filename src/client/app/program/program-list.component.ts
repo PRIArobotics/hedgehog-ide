@@ -90,9 +90,8 @@ export class ProgramListComponent implements OnInit {
     }
 
     public async renameProgram() {
-
         if (this.renameProgramData.oldName.endsWith('.blockly')) {
-            this.renameProgramData.newName = this.renameProgramData.newName + '.blockly'
+            this.renameProgramData.newName = this.renameProgramData.newName + '.blockly';
         }
 
         await this.storage.renameProgram(this.renameProgramData.oldName, this.renameProgramData.newName);

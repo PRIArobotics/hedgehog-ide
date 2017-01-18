@@ -12,10 +12,10 @@
         <i class="material-icons">add</i>
     </a>
     <ul>
-        <li><a (click)="openCreateModal('python')" class="btn-floating blue">
+        <li><a materialize="tooltip" (click)="openCreateModal('python')" class="btn-floating blue tooltipped" data-position="left" data-delay="50" data-tooltip="Python Project">
             <i class="material-icons">code</i>
         </a></li>
-        <li><a (click)="openCreateModal('blockly')" class="btn-floating red">
+        <li><a materialize="tooltip" (click)="openCreateModal('blockly')" class="btn-floating red tooltipped" data-position="left" data-delay="50" data-tooltip="Blockly Project">
             <i class="material-icons">view_module</i>
         </a></li>
     </ul>
@@ -31,7 +31,7 @@
             <div class="secondary-content">
                 <button class="waves-effect waves-teal btn-flat" *ngIf="!program.endsWith('.blockly')" (click)="openRenameModal(program)"><i class="material-icons">mode_edit</i></button>
                 <button class="waves-effect waves-teal btn-flat" *ngIf="program.endsWith('.blockly')" (click)="openRenameModal(program)"><i class="material-icons">mode_edit</i></button>
-                <button class="waves-effect waves-teal btn-flat" (click)="openDeleteModal(program)"><i class="material-icons">delete</i></button>
+                <button materialize="tooltip" class="waves-effect waves-teal btn-flat tooltipped" (click)="openDeleteModal(program)" data-position="bottom" data-delay="50" data-tooltip="delete project"><i class="material-icons">delete</i></button>
             </div>
         </li>
     </ul>
