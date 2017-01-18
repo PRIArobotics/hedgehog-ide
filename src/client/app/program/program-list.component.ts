@@ -16,6 +16,7 @@ import {Router} from "@angular/router";
 export class ProgramListComponent implements OnInit {
     public createModalActions = new EventEmitter<string|MaterializeAction>();
     public deleteModalActions = new EventEmitter<string|MaterializeAction>();
+    public renameModalActions = new EventEmitter<string|MaterializeAction>();
 
     private storage: IProgramStorage;
     private programs: string[];
@@ -23,6 +24,10 @@ export class ProgramListComponent implements OnInit {
     private newProgramName: string;
     private deleteProgramName: string = '';
     private newProgramType: string;
+    private renameProgramData: {oldName: string, newName: string} = {
+        oldName: '',
+        newName: ''
+    };
 
     public constructor(private router: Router, storageService: HttpProgramService) {
         this.storage = storageService.getStorage();
@@ -73,9 +78,35 @@ export class ProgramListComponent implements OnInit {
         this.deleteProgramName = '';
     }
 
+    public openRenameModal(programName: string) {
+        this.renameProgramData.oldName = programName;
+        this.renameModalActions.emit({action:"modal", params:['open']});
+        this.fixModalOverlay();
+    }
+
+    public closeRenameModal() {
+        this.renameProgramData.oldName = '';
+        this.renameModalActions.emit({action:"modal", params:['close']});
+    }
+
+    public async renameProgram() {
+        if (this.renameProgramData.oldName.endsWith('.blockly')) {
+            this.renameProgramData.newName = this.renameProgramData.newName + '.blockly';
+        }
+
+        await this.storage.renameProgram(this.renameProgramData.oldName, this.renameProgramData.newName);
+        await this.reloadProgramList();
+        this.renameProgramData.oldName = '';
+        this.renameProgramData.newName = '';
+    }
+
     public openRoute(event, program) {
         if (event.target.type !== 'submit' && event.target.parentNode.type !== 'submit') {
-            this.router.navigate(['/text-ide', program]);
+            if (program.endsWith('.blockly')) {
+                this.router.navigate(['/blockly', program]);
+            } else {
+                this.router.navigate(['/text-ide', program]);
+            }
         }
     }
 

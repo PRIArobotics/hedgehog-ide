@@ -1,4 +1,4 @@
-import {Component, ViewChild, OnInit, AfterViewInit, EventEmitter, HostListener} from '@angular/core';
+import {Component, ViewChild, OnInit, AfterViewInit, EventEmitter, HostListener, OnDestroy} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {WorkingTreeObjectType} from '../../../common/versioncontrol/WorkingTreeObject';
 import WorkingTreeDirectory from '../../../common/versioncontrol/WorkingTreeDirectory';
@@ -38,7 +38,7 @@ export class File {
     ]
 })
 
-export class TextIdeComponent implements OnInit, AfterViewInit {
+export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
     public fileTreeOptions = {
         allowDrag: true,
         allowDrop: (element, to) => {
@@ -254,6 +254,12 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
         });
     }
 
+    public async ngOnDestroy(): Promise<void> {
+        if (this.programIsRunning) {
+            this.programExecution.stop();
+        }
+    }
+
     /**
      * Populate the file tree is first called with the root directory
      * and then called recursively for each directory found
@@ -400,6 +406,21 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
         }
 
         this.tree.treeModel.update();
+    }
+
+    public toggleTheme() {
+        if (this.editor.getEditor().getTheme() === 'ace/theme/textmate') {
+            $('body').css('background-color', '1d1f21');
+            $('#sortable-tabs').css('background-color', '1d1f21');
+            $('#sidebar').css('color', 'fff');
+            this.editor.getEditor().setTheme('ace/theme/tomorrow_night');
+        } else {
+            $('body').css('background-color', 'fff');
+            $('#sortable-tabs').css('background-color', 'fff');
+            $('#sidebar').css('color', '000');
+            this.editor.getEditor().setTheme('ace/theme/textmate');
+        }
+
     }
 
     public increaseFileIterator(fileName: string, parentArray: any[]) {
