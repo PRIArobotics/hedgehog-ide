@@ -47,7 +47,8 @@
             'angular2-tree-component': 'npm:angular2-tree-component',
             'lodash': 'npm:lodash',
 
-            'socket.io-client': 'npm:socket.io-client/dist/socket.io.min.js'
+            'socket.io-client': 'npm:socket.io-client/dist/socket.io.min.js',
+            'utf8': 'npm:utf8/utf8.js'
         },
         // packages tells the System loader how to load when no filename and/or no extension
         packages: {

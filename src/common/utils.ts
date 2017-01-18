@@ -1,4 +1,6 @@
 
+import utf8 = require('utf8');
+
 export function wrapCallbackAsPromise(func: (...args: any[]) => any, ...args: any[]): Promise<any> {
     return new Promise<any>((resolve, reject) => {
         args.push((err, ...returnArgs: any[]) => {
@@ -66,7 +68,9 @@ export function applyMixins(derivedCtor: any, baseCtors: any[]) {
 
 export function genericFromBase64(encoded: string): string {
     if(typeof(atob) === 'function') {
-        return atob(encoded);
+        return decodeURIComponent(Array.prototype.map.call(atob(encoded), (c) => {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
     } else {
         return new Buffer(encoded, 'base64').toString();
     }
@@ -82,25 +86,10 @@ export function genericToBase64(decoded: string): string {
     }
 }
 
-export function genericToHex(decoded: string): string {
-    let hex;
-    let encoded = "";
-
-    for (let i = 0; i < decoded.length; i++) {
-        hex = decoded.charCodeAt(i).toString(16);
-        encoded += (hex).slice(-4);
-    }
-
-    return encoded;
+export function genericToBase64IdSafe(decoded: string): string {
+    return genericToBase64(decoded).split('+').join('-').split('=').join('_').split('/').join('.');
 }
 
-export function genericFromHex(encoded: string) {
-    let hexes = encoded.match(/.{1,2}/g) || [];
-    let decoded = "";
-
-    for(let j = 0; j < hexes.length; j++) {
-        decoded += String.fromCharCode(parseInt(hexes[j], 16));
-    }
-
-    return decoded;
+export function genericFromBase64IdSafe(encoded: string) {
+    return genericFromBase64(encoded.split('-').join('+').split('_').join('=').split('.').join('/'));
 }

@@ -3,6 +3,10 @@ import IProgramStorage from "../../../common/versioncontrol/ProgramStorage";
 import {MaterializeAction} from "angular2-materialize";
 import {HttpProgramService} from "./http-program.service";
 import {Router} from "@angular/router";
+import {
+    genericToBase64, genericFromBase64,
+    genericToBase64IdSafe, genericFromBase64IdSafe
+} from "../../../common/utils";
 
 @Component({
     moduleId: module.id,
