@@ -3,8 +3,15 @@
         <div class="nav-wrapper">
             <a class="brand-logo"> {{ programName.replace(".blockly","") }} </a>
             <ul id="nav-mobile" class="right hide-on-med-and-down">
-                <li (click)="saveWorkspace()"><a><i class="material-icons">save</i></a></li>
-                <li (click)="clearWorkspace()"><a><i class="material-icons">delete</i></a></li>
+                <li (click)="saveWorkspace()"><a materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="save changes">
+                    <i class="material-icons">save</i>
+                </a></li>
+                <li (click)="clearWorkspace()"><a materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="delete project">
+                    <i class="material-icons">delete</i>
+                </a></li>
+                <li><a materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="run project">
+                    <i class="material-icons">play_arrow</i>
+                </a></li>
             </ul>
         </div>
     </nav>
