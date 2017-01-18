@@ -22,7 +22,7 @@ export default class HttpProgramStorage implements IProgramStorage {
         // create program data object
         let programData = {
             data: {
-                type: "program",
+                type: 'program',
                 attributes: {
                     name
                 }
@@ -89,7 +89,24 @@ export default class HttpProgramStorage implements IProgramStorage {
     }
 
     public renameProgram(oldName: string, newName: string): Promise<void> {
-        return undefined;
+        // create file data object using the given parameters
+        let programData = {
+            data: {
+                id: `/api/programs/${genericToBase64(oldName)}`,
+                type: 'program',
+                attributes: {
+                    name: newName
+                }
+            }
+        };
+
+        // send post request with headers (json) and the stringifyed data object
+        return this.http
+            .patch(`/api/programs/${genericToBase64(oldName)}`,
+                JSON.stringify(programData),
+                {headers: this.headers})
+            .toPromise()
+            .then(() => Promise.resolve());
     }
 
     public resetProgram(programName: string, versionId: string): Promise<void> {
@@ -142,9 +159,9 @@ export default class HttpProgramStorage implements IProgramStorage {
 
                     // check if the type of the item is a directory or file
                     // and save it to the types map accordingly
-                    if (item.type === "directory") {
+                    if (item.type === 'directory') {
                         types[name] = WorkingTreeObjectType.Directory;
-                    } else if (item.type === "file") {
+                    } else if (item.type === 'file') {
                         types[name] = WorkingTreeObjectType.File;
                     }
                 }
@@ -184,7 +201,7 @@ export default class HttpProgramStorage implements IProgramStorage {
         // create directory data object using the given parameters
         let directoryData = {
             data: {
-                type: "directory",
+                type: 'directory',
                 attributes: {
                     path,
                     mode
@@ -210,7 +227,7 @@ export default class HttpProgramStorage implements IProgramStorage {
         // create file data object using the given parameters
         let fileData = {
             data: {
-                type: "file",
+                type: 'file',
                 attributes: {
                     path,
                     mode,
@@ -231,16 +248,16 @@ export default class HttpProgramStorage implements IProgramStorage {
 
     public updateWorkingTreeObject(programName: string,
                                    currentPath: string,
-                                   options: {mode?: number; newPath?: string}): Promise<void> {
+                                   options: {mode?: number; newPath?: string; directory: boolean}): Promise<void> {
         // create file data object using the given parameters
         let fileData = {
             data: {
                     id: genericToBase64(currentPath),
-                    type: "file",
+                    type: options.directory ? 'directories' : 'files',
                     attributes: {
                         path: options.newPath,
                         mode: options.mode || 0o100644,
-                        encoding: "utf-8"
+                        encoding: 'utf-8'
                     }
 
             }
@@ -248,17 +265,19 @@ export default class HttpProgramStorage implements IProgramStorage {
 
         // send post request with headers (json) and the stringifyed data object
         return this.http
-            .patch(`/api/files/${genericToBase64(programName)}/${genericToBase64(currentPath)}`,
+            .patch(`/api/${options.directory ? 'directories' : 'files'}/
+                    ${genericToBase64(programName)}/${genericToBase64(currentPath)}`,
                 JSON.stringify(fileData),
                 {headers: this.headers})
             .toPromise()
             .then(() => Promise.resolve());
     }
 
-    public deleteWorkingTreeObject(programName: string, objectPath: string): Promise<void> {
+    public deleteWorkingTreeObject(programName: string, objectPath: string, directory?: boolean): Promise<void> {
         // send delete request
         return this.http
-            .delete(`/api/files/${genericToBase64(programName)}/${genericToBase64(objectPath)}`)
+            .delete(
+            `/api/${directory? 'directories' : 'files'}/${genericToBase64(programName)}/${genericToBase64(objectPath)}`)
             .toPromise()
             .then(response => Promise.resolve());
     }

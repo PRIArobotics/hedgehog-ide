@@ -65,7 +65,6 @@ treenode:last-child > .tree-node > .tree-children::after {
 
 .toggle-children {
     z-index: 1;
-    margin-top: 5px;
 }
 
 /* context menu */

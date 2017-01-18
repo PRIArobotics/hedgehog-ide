@@ -2,6 +2,7 @@ import {Component, OnInit, EventEmitter} from '@angular/core';
 import IProgramStorage from "../../../common/versioncontrol/ProgramStorage";
 import {MaterializeAction} from "angular2-materialize";
 import {HttpProgramService} from "./http-program.service";
+import {Router} from "@angular/router";
 
 @Component({
     moduleId: module.id,
@@ -20,10 +21,10 @@ export class ProgramListComponent implements OnInit {
     private programs: string[];
 
     private newProgramName: string;
-    private deleteProgramName: string;
+    private deleteProgramName: string = '';
     private newProgramType: string;
 
-    public constructor(storageService: HttpProgramService) {
+    public constructor(private router: Router, storageService: HttpProgramService) {
         this.storage = storageService.getStorage();
     }
 
@@ -70,6 +71,12 @@ export class ProgramListComponent implements OnInit {
         await this.storage.deleteProgram(this.deleteProgramName);
         await this.reloadProgramList();
         this.deleteProgramName = '';
+    }
+
+    public openRoute(event, program) {
+        if (event.target.type !== 'submit' && event.target.parentNode.type !== 'submit') {
+            this.router.navigate(['/text-ide', program]);
+        }
     }
 
     private fixModalOverlay() {

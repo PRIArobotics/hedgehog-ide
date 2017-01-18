@@ -19,8 +19,7 @@
             'materialize-css': 'node_modules/materialize-css',
             'angular2-materialize': 'node_modules/angular2-materialize',
             'angular2-contextmenu': 'node_modules/angular2-contextmenu',
-            'angular2-localstorage': 'node_modules/angular2-localstorage',
-            'ng2-ace-editor': 'node_modules/ng2-ace-editor'
+            'angular2-localstorage': 'node_modules/angular2-localstorage'
         },
         // map tells the System loader where to look for things
         map: {
@@ -44,13 +43,12 @@
             'buffer': 'npm:buffer/index.js',
             'base64-js': 'npm:base64-js/index.js',
             'ieee754': 'npm:ieee754/index.js',
-            'ng2-ace-editor': 'node_modules/ng2-ace-editor',
 
             'angular2-tree-component': 'npm:angular2-tree-component',
             'lodash': 'npm:lodash',
-            'angular2-localstorage-circular': 'npm:angular2-localstorage',
 
-            'socket.io-client': 'npm:socket.io-client/dist/socket.io.min.js'
+            'socket.io-client': 'npm:socket.io-client/dist/socket.io.min.js',
+            'utf8': 'npm:utf8/utf8.js'
         },
         // packages tells the System loader how to load when no filename and/or no extension
         packages: {
@@ -84,19 +82,15 @@
                 defaultExtension: 'js'
             },
             'lodash': {
-                main: './lodash.js',
+                main: './lodash',
                 defaultExtension: 'js'
             },
             'angular2-contextmenu': {
-                main: './angular2-contextmenu.js',
+                main: './angular2-contextmenu',
                 defaultExtension: 'js'
             },
             'angular2-localstorage': {
-                main: './dist/index.js',
-                defaultExtension: 'js'
-            },
-            'ng2-ace-editor': {
-                main: './ng2-ace-editor.js',
+                main: './dist/index',
                 defaultExtension: 'js'
             }
         }

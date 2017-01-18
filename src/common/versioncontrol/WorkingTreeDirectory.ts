@@ -51,8 +51,8 @@ export default class WorkingTreeDirectory extends WorkingTreeObject {
         }
     }
 
-    public async deleteFile(name: string): Promise<void> {
-        await this.storage.deleteWorkingTreeObject(this.programName, this.getItemPath(name));
+    public async deleteFile(name: string, directory: boolean = false): Promise<void> {
+        await this.storage.deleteWorkingTreeObject(this.programName, this.getItemPath(name), directory);
 
         // only delete the item if it has not already been done by the program storage
         if(this.items.indexOf(name) !== -1) {
@@ -72,7 +72,7 @@ export default class WorkingTreeDirectory extends WorkingTreeObject {
     }
 
     public deleteDirectory(name: string): Promise<void> {
-        return this.deleteFile(name);
+        return this.deleteFile(name, true);
     }
 
     public getItemPath(item: string): string {
@@ -81,5 +81,9 @@ export default class WorkingTreeDirectory extends WorkingTreeObject {
 
     public reload(): Promise<WorkingTreeDirectory> {
         return this.storage.getWorkingTreeDirectory(this.programName, this.path);
+    }
+
+    public rename(newName: string, isAbsolute = false, directory = false): Promise<void> {
+        return super.rename(newName, isAbsolute, directory);
     }
 }

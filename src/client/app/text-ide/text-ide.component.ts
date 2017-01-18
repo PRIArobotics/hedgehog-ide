@@ -1,19 +1,18 @@
 import {Component, ViewChild, OnInit, AfterViewInit, EventEmitter, HostListener} from '@angular/core';
-import {ActivatedRoute} from "@angular/router";
-import {DummyProgramService} from "../program/dummy-program.service";
-import {WorkingTreeObjectType} from "../../../common/versioncontrol/WorkingTreeObject";
-import WorkingTreeDirectory from "../../../common/versioncontrol/WorkingTreeDirectory";
-import {TreeComponent} from "angular2-tree-component";
-import {AceEditorComponent} from 'ng2-ace-editor';
-import WorkingTreeFile from "../../../common/versioncontrol/WorkingTreeFile";
-import IProgramStorage from "../../../common/versioncontrol/ProgramStorage";
-import {MaterializeAction} from "angular2-materialize";
-import Program from "../../../common/versioncontrol/Program";
-import {LocalStorageService} from "angular2-localstorage";
-import {HttpProgramService} from "../program/http-program.service";
-import {ProgramExecutionComponent} from "../program-execution/program-execution.component";
-import {genericToHex, genericFromHex} from "../../../common/utils";
-import {LocalStorage} from "angular2-localstorage";
+import {ActivatedRoute} from '@angular/router';
+import {WorkingTreeObjectType} from '../../../common/versioncontrol/WorkingTreeObject';
+import WorkingTreeDirectory from '../../../common/versioncontrol/WorkingTreeDirectory';
+import {TreeComponent} from 'angular2-tree-component';
+import {AceEditorComponent} from './ace-editor.component';
+import WorkingTreeFile from '../../../common/versioncontrol/WorkingTreeFile';
+import IProgramStorage from '../../../common/versioncontrol/ProgramStorage';
+import {MaterializeAction} from 'angular2-materialize';
+import Program from '../../../common/versioncontrol/Program';
+import {LocalStorageService} from 'angular2-localstorage';
+import {HttpProgramService} from '../program/http-program.service';
+import {ProgramExecutionComponent} from '../program-execution/program-execution.component';
+import {genericFromBase64IdSafe, genericToBase64IdSafe} from '../../../common/utils';
+import {LocalStorage} from 'angular2-localstorage';
 
 declare var $: JQueryStatic;
 declare var Materialize: any;
@@ -34,7 +33,6 @@ export class File {
     templateUrl: 'text-ide.component.html',
     styleUrls: ['text-ide.component.css'],
     providers: [
-        DummyProgramService,
         LocalStorageService,
         HttpProgramService
     ]
@@ -44,7 +42,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
     public fileTreeOptions = {
         allowDrag: true,
         allowDrop: (element, to) => {
-            if (to.parent.children && element.data.name) {
+            if (to.parent.children && element.data) {
                 // check if it would be a duplicate
                 return to.parent.children && !this.checkDuplicate(element.data.name, to.parent.children);
             }
@@ -204,12 +202,16 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
         await this.populateFiletree(rootDir, childArray);
 
         for (let fileId of this.openFiles[this.programName]) {
-            await this.openFileTab(fileId);
+            if (this.files.get(fileId)) {
+                await this.openFileTab(fileId);
+            }
         }
 
         if (this.openFileId[this.programName] !== null) {
-            await this.openFile(this.openFileId[this.programName]);
-            this.updateIndicator($('#tab' + this.openFileId[this.programName]));
+            if (this.files.get(this.openFileId[this.programName])) {
+                await this.openFile(this.openFileId[this.programName]);
+                this.updateIndicator($('#tab' + this.openFileId[this.programName]));
+            }
         }
 
         // update the tree model after file tree has been populated
@@ -268,7 +270,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
             // check whether it is a file or directory
             if (type === WorkingTreeObjectType.File) {
                 // generate file id as Hex code form the file path
-                let fileId = genericToHex(directory.getItemPath(itemName));
+                let fileId = genericToBase64IdSafe(directory.getItemPath(itemName));
 
                 // add file to children of the directory
                 childArray.push(
@@ -380,7 +382,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
 
 
             // update the fileId
-            let newFileId = genericToHex(parentDirectory.getItemPath(newName));
+            let newFileId = genericToBase64IdSafe(parentDirectory.getItemPath(newName));
 
             parentArray.push({
                 fileId: newFileId,
@@ -499,7 +501,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
         if (!node.children) {
             // update the indexed file map id
             this.files.delete(node.fileId);
-            this.files.set(genericToHex(newItemPath), node);
+            this.files.set(genericToBase64IdSafe(newItemPath), node);
         }
     }
 
@@ -558,7 +560,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
             // add file with no content to the Working Tree Directory
             await directory.addFile(name, '');
             let newFile: WorkingTreeFile = await directory.getFile(name);
-            let fileId = genericToHex(directory.getItemPath(name));
+            let fileId = genericToBase64IdSafe(directory.getItemPath(name));
 
             // add file to parent child array
             this.newData.arrayToAddFileTo.push({
@@ -742,7 +744,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
         if (fileId) {
             let file = this.files.get(fileId);
 
-            let newFileId = genericToHex(file.parentDirectory.getItemPath(newName));
+            let newFileId = genericToBase64IdSafe(file.parentDirectory.getItemPath(newName));
             this.renameFileData.currentItem.fileId = newFileId;
 
             this.files.delete(fileId);
@@ -766,7 +768,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
 
     public async run () {
         await this.saveOpenFile();
-        await this.programExecution.run(this.programName, genericFromHex(this.openId));
+        await this.programExecution.run(this.programName, genericFromBase64IdSafe(this.openId));
         this.programIsRunning = true;
     }
 

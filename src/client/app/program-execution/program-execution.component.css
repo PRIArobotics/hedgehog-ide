@@ -1,10 +1,10 @@
 #program-execution {
-    resize: vertical;
     position: absolute;
     bottom: 0;
     width: 100%;
     height: 20%;
     display: flex;
+    resize: vertical;
 }
 
 #program-execution-sidebar {
@@ -22,7 +22,7 @@
 
 #stdin {
     position: absolute;
-    bottom: -5px;
+    bottom: -30px;
     width: 100%;
     background-color: white;
 }
@@ -30,8 +30,9 @@
 #output {
     width: 100%;
     overflow-y: auto;
-    position:relative;
     height: 100%;
+    position: absolute;
+    top: 0;
 }
 
 .stdin {
