@@ -1,4 +1,4 @@
-import {Component, ViewChild, OnInit, AfterViewInit, EventEmitter, HostListener} from '@angular/core';
+import {Component, ViewChild, OnInit, AfterViewInit, EventEmitter, HostListener, OnDestroy} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {WorkingTreeObjectType} from '../../../common/versioncontrol/WorkingTreeObject';
 import WorkingTreeDirectory from '../../../common/versioncontrol/WorkingTreeDirectory';
@@ -38,7 +38,7 @@ export class File {
     ]
 })
 
-export class TextIdeComponent implements OnInit, AfterViewInit {
+export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
     public fileTreeOptions = {
         allowDrag: true,
         allowDrop: (element, to) => {
@@ -252,6 +252,12 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
             enableSnippets: true,
             enableLiveAutocompletion: true
         });
+    }
+
+    public async ngOnDestroy(): Promise<void> {
+        if (this.programIsRunning) {
+            this.programExecution.stop();
+        }
     }
 
     /**
