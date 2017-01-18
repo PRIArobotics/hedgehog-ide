@@ -402,6 +402,21 @@ export class TextIdeComponent implements OnInit, AfterViewInit {
         this.tree.treeModel.update();
     }
 
+    public toggleTheme() {
+        if (this.editor.getEditor().getTheme() === 'ace/theme/textmate') {
+            $('body').css('background-color', '1d1f21');
+            $('#sortable-tabs').css('background-color', '1d1f21');
+            $('#sidebar').css('color', 'fff');
+            this.editor.getEditor().setTheme('ace/theme/tomorrow_night');
+        } else {
+            $('body').css('background-color', 'fff');
+            $('#sortable-tabs').css('background-color', 'fff');
+            $('#sidebar').css('color', '000');
+            this.editor.getEditor().setTheme('ace/theme/textmate');
+        }
+
+    }
+
     public increaseFileIterator(fileName: string, parentArray: any[]) {
         if (this.checkDuplicate(fileName, parentArray)) {
             let splitFileName: string[] = fileName.split(".");

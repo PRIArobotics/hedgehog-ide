@@ -102,7 +102,11 @@ export class ProgramListComponent implements OnInit {
 
     public openRoute(event, program) {
         if (event.target.type !== 'submit' && event.target.parentNode.type !== 'submit') {
-            this.router.navigate(['/text-ide', program]);
+            if (program.endsWith('.blockly')) {
+                this.router.navigate(['/blockly', program]);
+            } else {
+                this.router.navigate(['/text-ide', program]);
+            }
         }
     }
 
