@@ -6,11 +6,9 @@
     </div>
 
     <div id="program-execution-terminal" style="background: #fff">
-
-        <a class="btn-floating waves-effect waves-light red right" (click)="showPanel = false; stop()">
-            <i class="material-icons">close</i>
-        </a>
-
+        <div id="close-button">
+            <i class="small material-icons" (click)="showPanel = false; stop()">close</i>
+        </div>
         <div id="output">
             <pre *ngFor="let output of outputList" class="{{output.type}}">{{ output.data }}</pre>
         </div>
