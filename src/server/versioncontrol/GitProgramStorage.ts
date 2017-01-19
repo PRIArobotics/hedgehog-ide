@@ -253,7 +253,11 @@ export default class GitProgramStorage implements IProgramStorage {
     }
 
     private getProgramPath(name: string) {
-        return path.resolve(this.storagePath, name);
+        const absolutePath = path.resolve(this.storagePath, name);
+
+        if(!absolutePath.startsWith(path.resolve(this.storagePath)))
+            throw new Error(`Target '${name}' is outside of the storage directory.`);
+        return absolutePath;
     }
 
     private getRepository(programName: string) {
