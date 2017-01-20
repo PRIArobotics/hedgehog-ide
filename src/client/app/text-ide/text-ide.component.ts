@@ -50,6 +50,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
             // return false by default
             return false;
         },
+        // action mapping for CTRL - C, CTRL - V, DEL
         actionMapping: {
             keys: {
                 [67]: (tree, node, $event) => {
@@ -160,16 +161,19 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
         this.programName = route.snapshot.params['programName'];
         this.files = new Map<string, File>();
 
+        // init openFiles at program name if it is not initialized
         if (!this.openFiles[this.programName]) {
             this.openFiles[this.programName] = [];
         }
 
+        // init openFileId at program name if it is not initialized
         if (!this.openFileId[this.programName]) {
             this.openFileId[this.programName] = null;
         }
 
         this.storage = storageService.getStorage();
 
+        // add root node as program name and set it to be expanded
         this.fileTree[0] = {
             name: this.programName,
             isExpanded: true
@@ -201,12 +205,14 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
         // populate file tree and give it the root directory and it's childArray
         await this.populateFiletree(rootDir, childArray);
 
+        // open all previously opened files
         for (let fileId of this.openFiles[this.programName]) {
             if (this.files.get(fileId)) {
                 await this.openFileTab(fileId);
             }
         }
 
+        // focus on the most previously opened file if it exists
         if (this.openFileId[this.programName] !== null) {
             if (this.files.get(this.openFileId[this.programName])) {
                 await this.openFile(this.openFileId[this.programName]);
@@ -246,7 +252,10 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
         // hide the editor since no files are open
         $('#ace-editor').hide();
 
+        // fixes error in the code
         this.editor.getEditor().$blockScrolling = Infinity;
+
+        // add auto completion options
         this.editor.getEditor().setOptions({
             enableBasicAutocompletion: true,
             enableSnippets: true,
@@ -255,6 +264,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     public async ngOnDestroy(): Promise<void> {
+        // stop the program if it is running
         if (this.programIsRunning) {
             this.programExecution.stop();
         }
@@ -328,40 +338,50 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     public async saveOpenFile() {
+        // get the currently opened file
         let file = this.files.get(this.openId);
 
+        // check if it has changed
         if (file.changed) {
-
             // though this should never happen load the file before saving it's if not defined
             if (!file.storageObject) {
                 file.storageObject = await file.parentDirectory.getFile(file.name);
             }
 
-            file.storageObject.writeContent(file.content);
+            // write the content and set changed to false
+            await file.storageObject.writeContent(file.content);
             file.changed = false;
         }
     }
 
     public async paste(itemToAddTo, copyData) {
+        // new parentArray/Directory
         let parentArray: Array<Object>;
         let parentDirectory: WorkingTreeDirectory;
 
+        // save the new name
         let newName: string = copyData.name;
 
+        // check if the paste is on a directory or a file
         if (itemToAddTo.children) {
+            // if it is a directory use it's children and storage Object
             parentArray = itemToAddTo.children;
             parentDirectory = itemToAddTo.storageObject;
         } else {
+            // if it is a file use the indexed file for the parentArray/Directory
             parentArray = this.files.get(itemToAddTo.fileId).parentArray;
             parentDirectory = this.files.get(itemToAddTo.fileId).parentDirectory;
         }
 
+        // increase the file iterator name based on the new parentArray
         newName = this.increaseFileIterator(newName, parentArray);
 
+        // check whether to copy a file or directory
         if (copyData.children) {
-            // change itemname if it is a duplicate
+            // if it is a directory create the directory on the disk
             await parentDirectory.addDirectory(newName);
 
+            // create new item for the file tree and further pasting
             let newDirectoryItem = {
                 name: newName,
                 children: [],
@@ -370,31 +390,36 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
                 parentDirectory
             };
 
+            // push the item into the filetree
             parentArray.push(newDirectoryItem);
 
+            // iterate through each each children of the copy
             for (let item of copyData.children) {
                 // check if the item is the current directory to prevent infinite recursion
                 if (newDirectoryItem !== item) {
+                    // paste every directory item into the newly created directory
                     this.paste(newDirectoryItem, item);
                 }
             }
 
         } else {
-            newName = this.increaseFileIterator(newName, parentArray);
-
+            // receive the file to copy from the indexed file array
             let copyFile: File = this.files.get(copyData.fileId);
 
+            // create the file on the diesk
             await parentDirectory.addFile(newName, copyFile.content);
 
 
             // update the fileId
             let newFileId = genericToBase64IdSafe(parentDirectory.getItemPath(newName));
 
+            // add file to file tree
             parentArray.push({
                 fileId: newFileId,
                 name: newName,
             });
 
+            // add newly indexed file
             this.files.set(newFileId, {
                 name: newName,
                 content: copyFile.content,
@@ -405,10 +430,59 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
             });
         }
 
+        // update the file tree
         this.tree.treeModel.update();
     }
 
-    public toggleTheme() {
+    /**
+     * Increase the given filename's indicator if it exists based on all other files in the directory
+     * so file.py if another one exists will be file-0.py and file-1.py and so on
+     *
+     * @param fileName given file name
+     * @param parentArray items array with all other directory and file names to check against
+     * @returns {string} the new file name
+     */
+    public increaseFileIterator(fileName: string, parentArray: any[]) {
+        // check if filename is a duplicate
+        if (this.checkDuplicate(fileName, parentArray)) {
+            // split the filename so it doesn't create file.py-0
+            let splitFileName: string[] = fileName.split(".");
+
+            // find iterator in the file
+            let iterator = splitFileName[0].match(/\d+$/);
+
+            // check if there is an iterator in the file name
+            if (iterator) {
+                // if there is add 1 to the iterator and replace it
+                splitFileName[0] = splitFileName[0].replace(iterator[0], String(+iterator[0] + 1));
+            } else {
+                // if not add -0 to the file name
+                splitFileName[0] = splitFileName[0] + '-0';
+            }
+
+            // join the file name from the split file name array
+            let newName: string = splitFileName.join('.');
+
+            // check if the new file name is a duplicate
+            if (this.checkDuplicate(newName, parentArray)) {
+                // and if it is recursively increase the file iterator again
+                newName = this.increaseFileIterator(newName, parentArray);
+            }
+
+            return newName;
+        } else {
+            // if not the given file name can be used
+            return fileName;
+        }
+    }
+
+    /**
+     * Toggle light and dark theme
+     *
+     * This includes changing the background color, text color
+     * and editor theme
+     */
+    public toggleTheme(): void {
         if (this.editor.getEditor().getTheme() === 'ace/theme/textmate') {
             $('body').css('background-color', '1d1f21');
             $('#sortable-tabs').css('background-color', '1d1f21');
@@ -419,30 +493,6 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
             $('#sortable-tabs').css('background-color', 'fff');
             $('#sidebar').css('color', '000');
             this.editor.getEditor().setTheme('ace/theme/textmate');
-        }
-
-    }
-
-    public increaseFileIterator(fileName: string, parentArray: any[]) {
-        if (this.checkDuplicate(fileName, parentArray)) {
-            let splitFileName: string[] = fileName.split(".");
-            let iterator = splitFileName[0].match(/\d+$/);
-
-            if (iterator) {
-                splitFileName[0] = splitFileName[0].replace(iterator[0], String(+iterator[0] + 1));
-            } else {
-                splitFileName[0] = splitFileName[0] + '-0';
-            }
-
-            let newName: string = splitFileName.join('.');
-
-            if (this.checkDuplicate(newName, parentArray)) {
-                newName = this.increaseFileIterator(newName, parentArray);
-            }
-
-            return newName;
-        } else {
-            return fileName;
         }
     }
 
@@ -730,11 +780,11 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
      * @param event TreeNode object with the file tree object data
      */
     public openRenameModal(event) {
-        // save data (either file or directory) to deleteFileData
+        // save data (either file or directory) to the currentItem of renameFileData
         this.renameFileData.currentItem = event.item.data;
 
         // check if there is no parentArray and if the type of fileId is undefined
-        // this means it is the root directory and therefore cannot be deleted
+        // this means it is the root directory and therefore cannot be renamed here
         if (!this.renameFileData.currentItem.parentArray && !this.renameFileData.currentItem.fileId) {
             Materialize.toast('<i class="material-icons">close</i>Cannot rename project here', 3000);
             return;
@@ -756,31 +806,47 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
      * Rename a file or directory using the data given from the modal
      */
     public async renameAction() {
-        let newName = this.renameFileData.newName;
-
-        this.renameFileData.currentItem.name = newName;
-
         let fileId = this.renameFileData.currentItem.fileId;
 
         if (fileId) {
+            // close the tab if it exists
+            let tab: JQuery = $('#tab' + fileId);
+            if (tab) {
+                this.closeTab(tab);
+            }
+
+            // receive indexed file
             let file = this.files.get(fileId);
 
-            let newFileId = genericToBase64IdSafe(file.parentDirectory.getItemPath(newName));
-            this.renameFileData.currentItem.fileId = newFileId;
-
-            this.files.delete(fileId);
-            this.files.set(newFileId, file);
-
+            // check if the storage object exists and receive it if it doesn't exist
             if (!file.storageObject) {
                 file.storageObject = await file.parentDirectory.getFile(file.name);
             }
 
+            // update the file name
+            let newName = this.increaseFileIterator(this.renameFileData.newName, file.parentArray);
+            this.renameFileData.currentItem.name = newName;
+
+            // update the fileId
+            let newFileId = genericToBase64IdSafe(file.parentDirectory.getItemPath(newName));
+            this.renameFileData.currentItem.fileId = newFileId;
+
+            // update the indexed file
+            this.files.delete(fileId);
+            this.files.set(newFileId, file);
+
+            // rename the file on the disk
             file.storageObject.rename(newName);
         } else {
+            // update the directory name
+            let newName = this.increaseFileIterator(this.renameFileData.newName, this.renameFileData.currentItem.parentArray);
+            this.renameFileData.currentItem.name = newName;
+
+            // rename the directory on the disk
             this.renameFileData.currentItem.storageObject.rename(newName);
         }
 
-        // reset deleteFileData
+        // reset renameFileData
         this.renameFileData = {
             currentItem: {},
             newName: ''
@@ -815,15 +881,20 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
      */
     // tslint:disable-next-line
     private async saveAllFiles () {
-        for (let fileName of this.files.keys()) {
-            let file = this.files.get(fileName);
+        // loop through all indexed files
+        for (let fileId of this.files.keys()) {
+            // receive file
+            let file = this.files.get(fileId);
 
+            // check if it has changed
             if (file.changed) {
+                // check if the storage object is undefined and receive it if it is
                 if (!file.storageObject) {
-                    file.storageObject = await file.parentDirectory.getFile(fileName);
+                    file.storageObject = await file.parentDirectory.getFile(fileId);
                 }
 
-                file.storageObject.writeContent(file.content);
+                // write the content of the files and set changed to false
+                await file.storageObject.writeContent(file.content);
                 file.changed = false;
             }
         }
