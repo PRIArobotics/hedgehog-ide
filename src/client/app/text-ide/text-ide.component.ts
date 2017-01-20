@@ -839,7 +839,8 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
             file.storageObject.rename(newName);
         } else {
             // update the directory name
-            let newName = this.increaseFileIterator(this.renameFileData.newName, this.renameFileData.currentItem.parentArray);
+            let newName = this.increaseFileIterator(this.renameFileData.newName,
+                this.renameFileData.currentItem.parentArray);
             this.renameFileData.currentItem.name = newName;
 
             // rename the directory on the disk
