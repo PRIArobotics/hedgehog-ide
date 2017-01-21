@@ -3,6 +3,9 @@
 
 Hedgehog IDE and Deployment Protocol
 
+## Installation
+See [INSTALL.md](INSTALL.md) for installation instructions.
+
 ## Development
 ### Tools
 For following tools are used for development the Hedgehog IDE.
