@@ -5,7 +5,7 @@
             <ul id="nav-mobile" class="right hide-on-med-and-down">
                 <li>
                     <a (click)="run()" [ngClass]="{ 'disabled': !openId }" materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="execute open file"><i *ngIf="!programIsRunning" class="material-icons">play_arrow</i></a>
-                    <a><i *ngIf="programIsRunning" (click)="programExecution.stop()" class="material-icons tooltipped" data-position="bottom" data-delay="50" data-tooltip="stop program">stop</i></a>
+                    <a materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="stop program"><i *ngIf="programIsRunning" (click)="programExecution.stop()" class="material-icons">stop</i></a>
                 </li>
                 <li><a (click)="saveAllFiles()"><i materialize="tooltip" class="material-icons tooltipped" data-position="bottom" data-delay="50" data-tooltip="save files">save</i></a></li>
                 <li><a (click)="toggleTheme()"><i materialize="tooltip" class="material-icons tooltipped" data-position="bottom" data-delay="50" data-tooltip="toggle dark theme">invert_colors</i></a></li>
