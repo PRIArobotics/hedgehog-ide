@@ -2,11 +2,11 @@ import "babel-polyfill";
 import assert = require('assert');
 import fs = require('fs');
 import NodeGit = require('nodegit');
+import rimraf = require("rimraf");
 
 import GitProgramStorage from "../../../src/server/versioncontrol/GitProgramStorage";
 import Program from "../../../src/common/versioncontrol/Program";
 import {wrapCallbackAsPromise} from '../../../src/common/utils';
-import rimraf = require("rimraf");
 import {TreeItemType} from "../../../src/common/versioncontrol/Tree";
 import {WorkingTreeObjectType} from "../../../src/common/versioncontrol/WorkingTreeObject";
 
@@ -717,6 +717,40 @@ describe('GitProgramStorage', () => {
             } catch(err) {
                 assert.equal(err.code, 'ENOENT');
             }
+        });
+    });
+
+    describe('resetProgram', () => {
+        it('should reset a program to a previous version', async () => {
+            const programName = getProgramName();
+            let repository = await NodeGit.Repository.init(`tmp/${programName}`, 0);
+
+            await wrapCallbackAsPromise(fs.writeFile, `tmp/${programName}/test1`, 'test');
+            let initalCommit = await repository.createCommitOnHead(
+                ['test1'],
+                GitProgramStorage.signature,
+                GitProgramStorage.signature,
+                'initial commit'
+            );
+
+            await wrapCallbackAsPromise(fs.writeFile, `tmp/${programName}/test1`, 'testtest');
+            await wrapCallbackAsPromise(fs.writeFile, `tmp/${programName}/test2`, 'test');
+            await repository.createCommitOnHead(
+                ['test1', 'test2'],
+                GitProgramStorage.signature,
+                GitProgramStorage.signature,
+                'second commit'
+            );
+
+            await programStorage.resetProgram(programName, initalCommit.tostrS());
+            try {
+                await wrapCallbackAsPromise(fs.stat, `tmp/${programName}/test2`);
+                throw Error('New file still exists.');
+            } catch(err) {
+                assert.equal(err.code, 'ENOENT');
+            }
+
+            assert.equal('test', await wrapCallbackAsPromise(fs.readFile, `tmp/${programName}/test1`));
         });
     });
 });

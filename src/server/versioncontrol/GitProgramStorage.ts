@@ -73,8 +73,13 @@ export default class GitProgramStorage implements IProgramStorage {
         }
     }
 
-    public resetProgram(programName: string, versionId: string): Promise<void> {
-        return undefined;
+    public async resetProgram(programName: string, versionId: string): Promise<void> {
+        let repository = await NodeGit.Repository.open(this.getProgramPath(programName));
+        let commit = await repository.getCommit(versionId);
+
+        // for whatever reason, TS does not recognize that Commit has all properties of Object as well
+        await NodeGit.Reset.reset(repository, <any> commit, NodeGit.Reset.TYPE.HARD, { });
+        return Promise.resolve();
     }
 
     public async getBlob(programName: string, blobId: string): Promise<Blob> {
