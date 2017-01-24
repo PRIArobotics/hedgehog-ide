@@ -16,6 +16,7 @@ import ProcessResource from "./api/resource/ProcessResource";
 import SocketIoProcessAdapter from "./process/SocketIoProcessAdapter";
 import NodeProcessManager from "./process/NodeProcessManager";
 import BlobResource from "./api/resource/versioncontrol/BlobResource";
+import TreeResource from "./api/resource/versioncontrol/TreeResource";
 
 // Return external module as the file is outside of the
 // TypeScript compile output
@@ -71,6 +72,7 @@ hedgehogApi.registerEndpoint(new ProgramResource(programStorage, modelRegistry))
 hedgehogApi.registerEndpoint(new WorkingTreeFileResource(programStorage, modelRegistry));
 hedgehogApi.registerEndpoint(new WorkingTreeDirectoryResource(programStorage, modelRegistry));
 hedgehogApi.registerEndpoint(new BlobResource(programStorage, modelRegistry));
+hedgehogApi.registerEndpoint(new TreeResource(programStorage, modelRegistry));
 hedgehogApi.registerEndpoint(new ProcessResource(processManager, modelRegistry));
 
 /**

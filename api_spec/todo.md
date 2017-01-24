@@ -34,8 +34,8 @@
 - [x] `GET /programs/{program_id}`
 - [x] `PATCH /programs/{program_id}`
 
-- [ ] `GET /blobs/{program_id}/{blob_id}`
-- [ ] `GET /trees/{program_id}/{tree_id}`
+- [x] `GET /blobs/{program_id}/{blob_id}`
+- [x] `GET /trees/{program_id}/{tree_id}`
 - [ ] `GET /versions/{program_id}`
 - [ ] `POST /versions/{program_id}`
 - [ ] `GET /versions/{program_id}/{version_id}`

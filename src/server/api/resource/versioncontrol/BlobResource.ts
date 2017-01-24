@@ -22,7 +22,7 @@ export default class BlobResource extends ApiResource {
 
         let blob: Blob;
         try {
-            blob = await this.programStorage.getBlob(programName, req.params['blobId']);
+            blob = await this.programStorage.getBlob(programName, blobId);
         } catch (err) {
             winston.error(err);
             return reply({
