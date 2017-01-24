@@ -28,3 +28,45 @@
 
 
 # implementation
+- [x] `GET /programs`
+- [x] `POST /programs`
+- [x] `DELETE /programs/{program_id}`
+- [x] `GET /programs/{program_id}`
+- [x] `PATCH /programs/{program_id}`
+
+- [ ] `GET /blobs/{program_id}/{blob_id}`
+- [ ] `GET /trees/{program_id}/{tree_id}`
+- [ ] `GET /versions/{program_id}`
+- [ ] `POST /versions/{program_id}`
+- [ ] `GET /versions/{program_id}/{version_id}`
+- [ ] `GET /versions/{program_id}/{version_id}/parents`
+
+- [x] `POST /directories/{program_id}`
+- [x] `DELETE /directories/{program_id}/{directory_id}`
+- [x] `GET /directories/{program_id}/{directory_id}`
+- [x] `PATCH /directories/{program_id}/{directory_id}`
+
+- [x] `POST /files/{program_id}`
+- [x] `DELETE /files/{program_id}/{file_id}`
+- [x] `GET /files/{program_id}/{file_id}`
+- [x] `PATCH /files/{program_id}/{file_id}`
+- [x] `GET /files/{program_id}/{file_id}/content`
+
+- [ ] `GET /sensors`
+- [ ] `GET /sensors/{sensor_id}`
+- [ ] `PATCH /sensors/{sensor_id}`
+
+- [ ] `GET /servos`
+- [ ] `GET /servos/{servo_id}`
+- [ ] `PATCH /sensors/{servo_id}`
+
+- [ ] `GET /motors`
+- [ ] `GET /motors/{motor_id}`
+- [ ] `PATCH /motors/{motor_id}`
+
+- [x] `POST /processes`
+- [x] `DELETE /processes/{pid}`
+- [x] `GET /processes/{pid}`
+- [x] `GET /processes/{pid}/stdout`
+- [x] `GET /processes/{pid}/stderr`
+- [x] `PATCH /processes/{pid}/stdin`
