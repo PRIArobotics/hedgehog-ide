@@ -64,3 +64,6 @@ tmp
 
 # tscommand tmp files
 tscommand-*.tmp.txt
+
+# Active configuration
+config/server.config.js

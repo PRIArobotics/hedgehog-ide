@@ -14,14 +14,14 @@ export default class NodeProcessManager implements IProcessManager {
     private processes: Map<number, NodeProcess> = new Map();
 
     // GitProgramStorage is required here as we need the program to be physically stored on the system
-    constructor (private processDir: string, private storage: GitProgramStorage) { }
+    constructor (private processDir: string, private pythonPath: string, private storage: GitProgramStorage) { }
 
     public run (programName: string, filePath: string, args: string[] = []): Promise<NodeProcess> {
         let process: NodeProcess = new NodeProcess(
             programName,
             filePath,
             args,
-            spawn(`python3`, [this.storage.getWorkingTreePath(programName, filePath), ...args])
+            spawn(this.pythonPath, [this.storage.getWorkingTreePath(programName, filePath), ...args])
         );
 
         this.processes.set(process.nodeProcess.pid, process);

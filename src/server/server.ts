@@ -15,6 +15,7 @@ import WorkingTreeDirectoryResource from "./api/resource/versioncontrol/WorkingT
 import ProcessResource from "./api/resource/ProcessResource";
 import SocketIoProcessAdapter from "./process/SocketIoProcessAdapter";
 import NodeProcessManager from "./process/NodeProcessManager";
+import serverConfig = require("../../config/server.config");
 
 
 console.log(chalk.green(figlet.textSync('Hedgehog IDE')));
@@ -47,16 +48,18 @@ const server = new Hapi.Server({
         }
     }
 });
-server.connection({
-    host: 'localhost',
-    port: 8000
-});
+
+server.connection(serverConfig.connection);
 
 /**
  * API setup
  */
-let programStorage = new GitProgramStorage('tmp');
-let processManager = new NodeProcessManager('tmp_proc', programStorage);
+let programStorage = new GitProgramStorage(serverConfig.programStorageDirectory);
+let processManager = new NodeProcessManager(
+    serverConfig.process.temporaryStorageDirectory,
+    serverConfig.process.pythonPath,
+    programStorage
+);
 
 let hedgehogApi = new Api(server, '/api');
 hedgehogApi.registerEndpoint(new ProgramResource(programStorage, modelRegistry));
