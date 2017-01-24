@@ -15,7 +15,12 @@ import WorkingTreeDirectoryResource from "./api/resource/versioncontrol/WorkingT
 import ProcessResource from "./api/resource/ProcessResource";
 import SocketIoProcessAdapter from "./process/SocketIoProcessAdapter";
 import NodeProcessManager from "./process/NodeProcessManager";
-import serverConfig = require("../../config/server.config");
+import BlobResource from "./api/resource/versioncontrol/BlobResource";
+
+// Return external module as the file is outside of the
+// TypeScript compile output
+// tslint:disable-next-line
+let serverConfig = require('../../../config/server.config');
 
 
 console.log(chalk.green(figlet.textSync('Hedgehog IDE')));
@@ -65,6 +70,7 @@ let hedgehogApi = new Api(server, '/api');
 hedgehogApi.registerEndpoint(new ProgramResource(programStorage, modelRegistry));
 hedgehogApi.registerEndpoint(new WorkingTreeFileResource(programStorage, modelRegistry));
 hedgehogApi.registerEndpoint(new WorkingTreeDirectoryResource(programStorage, modelRegistry));
+hedgehogApi.registerEndpoint(new BlobResource(programStorage, modelRegistry));
 hedgehogApi.registerEndpoint(new ProcessResource(processManager, modelRegistry));
 
 /**
