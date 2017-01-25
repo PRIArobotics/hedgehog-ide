@@ -36,9 +36,9 @@
 
 - [x] `GET /blobs/{program_id}/{blob_id}`
 - [x] `GET /trees/{program_id}/{tree_id}`
-- [ ] `GET /versions/{program_id}`
-- [ ] `POST /versions/{program_id}`
-- [ ] `GET /versions/{program_id}/{version_id}`
+- [x] `GET /versions/{program_id}`
+- [x] `POST /versions/{program_id}`
+- [x] `GET /versions/{program_id}/{version_id}`
 - [ ] `GET /versions/{program_id}/{version_id}/parents`
 
 - [x] `POST /directories/{program_id}`
