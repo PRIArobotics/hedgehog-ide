@@ -1,4 +1,4 @@
-exports = modules.exports = {
+exports = module.exports = {
     programStorageDirectory: 'tmp',
     process: {
         temporaryStorageDirectory: 'tmp_proc',
