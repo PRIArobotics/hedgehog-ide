@@ -100,28 +100,53 @@ server.route({
     }
 });
 
-server.route({
-    method: 'GET',
-    path: '/common/{param*}',
-    handler: {
-        directory: {
-            path: 'common',
-            redirectToSlash: true
+if (serverConfig.environment === 'production') {
+    server.route({
+        method: 'GET',
+        path: '/assets/{param*}',
+        handler: {
+            directory: {
+                path: 'client/assets',
+                redirectToSlash: true
+            }
         }
-    }
-});
+    });
 
-server.route({
-    method: 'GET',
-    path: '/{param*}',
-    handler: {
-        directory: {
-            path: 'client',
-            redirectToSlash: true,
-            index: true
+    server.route({
+        method: 'GET',
+        path: '/{param*}',
+        handler: {
+            directory: {
+                path: '../dist',
+                redirectToSlash: true,
+                index: true
+            }
         }
-    }
-});
+    });
+} else {
+    server.route({
+        method: 'GET',
+        path: '/common/{param*}',
+        handler: {
+            directory: {
+                path: 'common',
+                redirectToSlash: true
+            }
+        }
+    });
+
+    server.route({
+        method: 'GET',
+        path: '/{param*}',
+        handler: {
+            directory: {
+                path: 'client',
+                redirectToSlash: true,
+                index: true
+            }
+        }
+    });
+}
 
 /**
  * Handler for 404 which also serves the Angular webapp
@@ -130,7 +155,13 @@ server.route({
 server.ext('onPreResponse', (request, reply) => {
     let response = <any> request.response;
     if (request.response.isBoom && (response.output.statusCode === 404)) {
-        return reply.file(path.join(__dirname, '../client/index.html'));
+        let indexFile: string;
+        if (serverConfig.environment === 'production') {
+            indexFile = path.join(__dirname, '../../dist/index.html');
+        } else {
+            indexFile = path.join(__dirname, '../client/index.html');
+        }
+        return reply.file(indexFile);
     }
 
     return reply.continue();

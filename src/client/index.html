@@ -9,31 +9,14 @@
     <link href="node_modules/materialize-css/dist/css/materialize.min.css" rel="stylesheet">
     <link href="node_modules/jquery-ui-dist/jquery-ui.min.css" rel="stylesheet">
 
-    <!-- 1. Load libraries -->
-    <!-- Polyfill(s) for older browsers -->
-    <script src="node_modules/babel-polyfill/dist/polyfill.min.js"></script>
-    <script src="node_modules/zone.js/dist/zone.js"></script>
-    <script src="node_modules/reflect-metadata/Reflect.js"></script>
-    <script src="node_modules/systemjs/dist/system.src.js"></script>
-    <!-- 2. Configure SystemJS -->
-    <script src="systemjs.config.js"></script>
-
-    <!-- 3. User Libraries -->
-    <script src="node_modules/jquery/dist/jquery.min.js"></script>
-    <script src="node_modules/jquery-ui-dist/jquery-ui.min.js"></script>
-    <script src="node_modules/ace-builds/src/ace.js"></script>
-    <script src="node_modules/ace-builds/src-min/ext-language_tools.js"></script>
-
-    <!-- 4. Blockly Libraries -->
     <script src="app/blockly/lib/blockly_compressed.js"></script>
     <script src="app/blockly/lib/blocks_compressed.js"></script>
     <script src="app/blockly/lib/blocks/hedgehog.js"></script>
     <script src="app/blockly/lib/python_compressed.js"></script>
     <script src="app/blockly/lib/msg/js/en.js"></script>
 
-    <script>
-        System.import('app').catch(function(err){ console.error(err); });
-    </script>
+    <!-- injector:js -->
+    <!-- endinjector -->
 </head>
     <body>
         <!-- 5. Display the application -->

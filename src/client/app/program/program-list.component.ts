@@ -5,10 +5,9 @@ import {HttpProgramService} from "./http-program.service";
 import {Router} from "@angular/router";
 
 @Component({
-    moduleId: module.id,
     selector: 'program-list',
-    templateUrl: 'program-list.component.html',
-    styleUrls: ['program-list.component.css'],
+    template: require('./program-list.component.html'),
+    styles: [require('./program-list.component.css')],
     providers: [
         HttpProgramService
     ]

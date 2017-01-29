@@ -4,94 +4,68 @@
  */
 (function (global) {
     System.config({
-        defaultJSExtensions: true,
+        packageConfigPaths: [
+            './node_modules/*/package.json',
+            './node_modules/@angular/*/package.json'
+        ],
         paths: {
-            // paths serve as alias
-            'npm:': 'node_modules/',
-
-            'brace': 'npm:brace@0.8.0',
-            'w3c-blob': 'npm:w3c-blob/index.js',
-            'buffer': 'npm:buffer/index.js',
-            'base64-js': 'npm:base64-js/index.js',
-            'ieee754': 'npm:ieee754/index.js',
-
-            rxjs: 'node_modules/rxjs',
-            'materialize-css': 'node_modules/materialize-css',
-            'angular2-materialize': 'node_modules/angular2-materialize',
-            'angular2-contextmenu': 'node_modules/angular2-contextmenu',
-            'angular2-localstorage': 'node_modules/angular2-localstorage'
+            '*': 'node_modules/*',
+            'app': 'app',
+            'app/*': 'app/*',
+            'common': 'common',
+            'common/*': 'common/*',
         },
-        // map tells the System loader where to look for things
         map: {
-            // our app is within the app folder
-            app: 'app',
-            // angular bundles
-            '@angular/core': 'npm:@angular/core/bundles/core.umd.js',
-            '@angular/common': 'npm:@angular/common/bundles/common.umd.js',
-            '@angular/compiler': 'npm:@angular/compiler/bundles/compiler.umd.js',
-            '@angular/platform-browser': 'npm:@angular/platform-browser/bundles/platform-browser.umd.js',
-            '@angular/platform-browser-dynamic': 'npm:@angular/platform-browser-dynamic/bundles/platform-browser-dynamic.umd.js',
-            '@angular/http': 'npm:@angular/http/bundles/http.umd.js',
-            '@angular/router': 'npm:@angular/router/bundles/router.umd.js',
-            '@angular/forms': 'npm:@angular/forms/bundles/forms.umd.js',
-            // other libraries
-            'rxjs':                      'npm:rxjs',
-            'angular-in-memory-web-api': 'npm:angular-in-memory-web-api',
-
-            'brace': 'npm:brace',
-            'w3c-blob': 'npm:w3c-blob/index.js',
-            'buffer': 'npm:buffer/index.js',
-            'base64-js': 'npm:base64-js/index.js',
-            'ieee754': 'npm:ieee754/index.js',
-
-            'angular2-tree-component': 'npm:angular2-tree-component',
-            'lodash': 'npm:lodash',
-
-            'socket.io-client': 'npm:socket.io-client/dist/socket.io.min.js',
-            'utf8': 'npm:utf8/utf8.js'
+            'socket.io-client': './node_modules/socket.io-client/dist/socket.io.min.js',
+            'materialize-css': './node_modules/materialize-css/dist/js/materialize.js',
+            'text': './systemjs-text-plugin.js'
         },
-        // packages tells the System loader how to load when no filename and/or no extension
         packages: {
-            app: {
+            'app': {
                 main: './main.js',
                 defaultExtension: 'js'
             },
-            rxjs: {
-                main: './Rx.js',
+            'common': {
                 defaultExtension: 'js'
             },
-            'angular-in-memory-web-api': {
-                main: './index.js',
-                defaultExtension: 'js'
+            'app/*.html': {
+                defaultExtension: false
+            }
+        },
+        meta: {
+            'materialize-css': { format: 'global' },
+            'babel-polyfill/dist/polyfill.js': { format: 'global' },
+            'zone.js/dist/zone.js': { format: 'global' },
+            'reflect-metadata/Reflect.js': { format: 'global' },
+            'jquery': { format: 'global' },
+            'jquery-ui-dist/jquery-ui.js': { format: 'global' },
+            'ace-builds/src-noconflict/ace.js': {
+                format: 'global'
             },
-            brace: {
-                main: './index.js',
-                defaultExtension: 'js'
+            'ace-builds/src-noconflict/ext-language_tools.js': {
+                format: 'global',
+                deps: ['ace-builds/src-noconflict/ace.js']
             },
-            'materialize-css': {
-                format: "global",
-                main: "./dist/js/materialize",
-                defaultExtension: "js"
+            'app/*.html': {
+                loader: 'text'
             },
-            'angular2-materialize': {
-                main: "dist/index",
-                defaultExtension: "js"
+            'app/*.css': {
+                loader: 'text'
             },
-            'angular2-tree-component': {
-                main: './dist/angular2-tree-component.js',
-                defaultExtension: 'js'
+            'app/blockly/lib/blockly_compressed.js': {
+                format: 'global'
             },
-            'lodash': {
-                main: './lodash',
-                defaultExtension: 'js'
+            'app/blockly/lib/blocks_compressed.js': {
+                format: 'global',
+                deps: ['./blocks_compressed.js']
             },
-            'angular2-contextmenu': {
-                main: './angular2-contextmenu',
-                defaultExtension: 'js'
+            'app/blockly/lib/python_compressed.js': {
+                format: 'global',
+                deps: ['./blocks_compressed.js']
             },
-            'angular2-localstorage': {
-                main: './dist/index',
-                defaultExtension: 'js'
+            'app/blockly/lib/blocks/hedgehog.js': {
+                format: 'global',
+                deps: ['../blocks_compressed.js']
             }
         }
     });

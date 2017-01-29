@@ -1,4 +1,5 @@
 interface IServerConfig {
+    environment: string;
     programStorageDirectory: string;
     process: IProcessConfig;
     connection: IConnectionConfig;
