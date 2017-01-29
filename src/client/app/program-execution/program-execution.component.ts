@@ -2,10 +2,9 @@ import {Component, Output, EventEmitter, OnDestroy} from "@angular/core";
 import {HttpProcessManagerService} from "./http-process-manager.service";
 
 @Component({
-    moduleId: module.id,
     selector: 'program-execution',
-    templateUrl: 'program-execution.component.html',
-    styleUrls: ['program-execution.component.css'],
+    template: require('./program-execution.component.html'),
+    styles: [require('./program-execution.component.css')],
 })
 export class ProgramExecutionComponent implements OnDestroy {
 

@@ -12,7 +12,7 @@ declare var Blockly: any;
 
 @Component({
     selector: 'my-app',
-    templateUrl: 'app/blockly/editor.component.html',
+    template: require('./editor.component.html'),
     providers: [
         HttpProgramService
     ]

@@ -8,11 +8,9 @@ import WorkingTreeFile from '../../../common/versioncontrol/WorkingTreeFile';
 import IProgramStorage from '../../../common/versioncontrol/ProgramStorage';
 import {MaterializeAction} from 'angular2-materialize';
 import Program from '../../../common/versioncontrol/Program';
-import {LocalStorageService} from 'angular2-localstorage';
 import {HttpProgramService} from '../program/http-program.service';
 import {ProgramExecutionComponent} from '../program-execution/program-execution.component';
 import {genericFromBase64IdSafe, genericToBase64IdSafe} from '../../../common/utils';
-import {LocalStorage} from 'angular2-localstorage';
 
 declare var $: JQueryStatic;
 declare var Materialize: any;
@@ -28,12 +26,10 @@ export class File {
 
 
 @Component({
-    moduleId: module.id,
     selector: 'hedgehog-ide',
-    templateUrl: 'text-ide.component.html',
-    styleUrls: ['text-ide.component.css'],
+    template: require('./text-ide.component.html'),
+    styles: [require('./text-ide.component.css')],
     providers: [
-        LocalStorageService,
         HttpProgramService
     ]
 })
@@ -98,13 +94,13 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
     private fileTree: Object[] = [];
 
     // local storage Object as programName: { fileId: string }
-    @LocalStorage('files') private localStorageFiles: {[programName: string]: {[fileId: string]: string}} = {};
+    private localStorageFiles: {[programName: string]: {[fileId: string]: string}} = {};
 
     // local storage Object as programName: string[]
-    @LocalStorage('openFiles') private openFiles: {[programName: string]: string[]} = {};
+    private openFiles: {[programName: string]: string[]} = {};
 
     // local storage Object as programName: string
-    @LocalStorage('openFileId') private openFileId: {[programName: string]: string} = {};
+    private openFileId: {[programName: string]: string} = {};
 
     // indexed files from the file tree
     private files: Map<string, File>;
