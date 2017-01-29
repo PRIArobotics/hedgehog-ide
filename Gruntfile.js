@@ -54,8 +54,7 @@ module.exports = function(grunt) {
                             '**/*.html',
                             '**/*.css',
                             '**/*.svg',
-                            'client/systemjs.config.js',
-                            'client/systemjs-text-plugin'
+                            'client/systemjs*.js',
                         ],
                         dest: 'build/src'
                     },
@@ -66,6 +65,13 @@ module.exports = function(grunt) {
                         cwd: 'src/client/app/blockly/lib',
                         src: ['**'],
                         dest: 'build/src/client/app/blockly/lib'
+                    },
+
+                    {
+                        expand: true,
+                        cwd: 'src/client/app/blockly/lib',
+                        src: ['**'],
+                        dest: 'build/dist/app/blockly/lib'
                     },
 
                     //google material files
@@ -108,6 +114,25 @@ module.exports = function(grunt) {
                     interrupt: true
                 }
             }
+        },
+        injector: {
+            options: {
+                addRootSlash: false,
+                ignorePath: 'build/src/client',
+                transform: function (filepath) {
+                    console.log(filepath);
+                    return `<script src="${filepath}"></script>`;
+                }
+            },
+            src: {
+                files: {
+                    'build/src/client/index.html': [
+                        'node_modules/systemjs/dist/system.src.js',
+                        'build/src/client/systemjs.config.js',
+                        'build/src/client/systemjs-bootstrap.js'
+                    ]
+                }
+            }
         }
     });
 
@@ -118,6 +143,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-concurrent');
     grunt.loadNpmTasks('grunt-babel');
+    grunt.loadNpmTasks('grunt-injector');
 
     grunt.registerTask('swagger-validate', function() {
         var done = this.async();
@@ -174,6 +200,6 @@ module.exports = function(grunt) {
     });
 
     grunt.registerTask('compile', ['ts', 'babel']);
-    grunt.registerTask('build', ['clean', 'compile', 'copy']);
+    grunt.registerTask('build', ['clean', 'compile', 'copy', 'injector']);
     grunt.registerTask('default', ['concurrent:run']);
 };

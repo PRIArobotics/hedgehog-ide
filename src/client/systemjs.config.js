@@ -4,7 +4,6 @@
  */
 (function (global) {
     System.config({
-        defaultExtension: 'js',
         packageConfigPaths: [
             './node_modules/*/package.json',
             './node_modules/@angular/*/package.json'
@@ -43,12 +42,30 @@
             'ace-builds/src-noconflict/ace.js': {
                 format: 'global'
             },
-            'ace-builds/src-noconflict/ext-language_tools.js': { format: 'global', deps: ['ace-builds/src-noconflict/ace.js'] },
+            'ace-builds/src-noconflict/ext-language_tools.js': {
+                format: 'global',
+                deps: ['ace-builds/src-noconflict/ace.js']
+            },
             'app/*.html': {
                 loader: 'text'
             },
             'app/*.css': {
                 loader: 'text'
+            },
+            'app/blockly/lib/blockly_compressed.js': {
+                format: 'global'
+            },
+            'app/blockly/lib/blocks_compressed.js': {
+                format: 'global',
+                deps: ['./blocks_compressed.js']
+            },
+            'app/blockly/lib/python_compressed.js': {
+                format: 'global',
+                deps: ['./blocks_compressed.js']
+            },
+            'app/blockly/lib/blocks/hedgehog.js': {
+                format: 'global',
+                deps: ['../blocks_compressed.js']
             }
         }
     });
