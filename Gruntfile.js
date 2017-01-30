@@ -107,7 +107,7 @@ module.exports = function(grunt) {
         watch: {
             copy: {
                 files: ['src/**/*.html', 'src/**/*.css'],
-                tasks: ['copy'],
+                tasks: ['copy', 'injector'],
                 options: {
                     interrupt: true
                 }
