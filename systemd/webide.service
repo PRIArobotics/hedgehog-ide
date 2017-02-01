@@ -1,0 +1,13 @@
+# file has to be located int:
+# /etc/systemd/system/ghost.service
+[Unit]
+Description=Hedgehog Web IDE
+After=network.target
+
+[Service]
+WorkingDirectory=/home/pi/hedgehog-ide
+ExecStart=/usr/bin/npm start --production /home/pi/hedgehog-ide
+User=pi
+
+[Install]
+WantedBy=multi-user.target
