@@ -50,7 +50,7 @@ const server = new Hapi.Server({
     connections: {
         routes: {
             files: {
-                relativeTo: path.join(__dirname, '..')
+                relativeTo: path.join(__dirname, '../..')
             }
         }
     }
@@ -94,7 +94,7 @@ server.route({
     path: '/node_modules/{param*}',
     handler: {
         directory: {
-            path: '../../node_modules',
+            path: '../node_modules',
             redirectToSlash: true
         }
     }
@@ -106,7 +106,7 @@ if (serverConfig.environment === 'production') {
         path: '/assets/{param*}',
         handler: {
             directory: {
-                path: 'client/assets',
+                path: 'src/client/assets',
                 redirectToSlash: true
             }
         }
@@ -117,7 +117,7 @@ if (serverConfig.environment === 'production') {
         path: '/{param*}',
         handler: {
             directory: {
-                path: '../dist',
+                path: 'dist',
                 redirectToSlash: true,
                 index: true
             }
@@ -129,7 +129,7 @@ if (serverConfig.environment === 'production') {
         path: '/common/{param*}',
         handler: {
             directory: {
-                path: 'common',
+                path: 'src/common',
                 redirectToSlash: true
             }
         }
@@ -140,7 +140,7 @@ if (serverConfig.environment === 'production') {
         path: '/{param*}',
         handler: {
             directory: {
-                path: 'client',
+                path: 'src/client',
                 redirectToSlash: true,
                 index: true
             }
