@@ -114,7 +114,7 @@ module.exports = function(grunt) {
             },
             compile: {
                 files: 'src/**/*.ts',
-                tasks: ['build'],
+                tasks: ['compile'],
                 options: {
                     interrupt: true
                 }

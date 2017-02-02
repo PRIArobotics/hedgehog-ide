@@ -257,7 +257,6 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
         // add auto completion options
         this.editor.getEditor().setOptions({
             enableBasicAutocompletion: true,
-            enableSnippets: true,
             enableLiveAutocompletion: true
         });
     }
@@ -497,14 +496,14 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
 
     @HostListener('window:keydown', ['$event'])
     public async keyDownEvent(e) {
-        // check if the user pressed CTRL - S to save all files
+        // check if the user pressed CTRL - S to save the open file
         if ((e.keyCode === 115 || e.keyCode === 83 ) && (e.ctrlKey || e.metaKey) && this.openId) {
+            e.preventDefault();
+
             await this.saveOpenFile();
 
             Materialize.toast('<i class="material-icons">done</i>' +
                 'Successfully saved ' + this.files.get(this.openId).name, 3000);
-
-            e.preventDefault();
         }
     }
 
@@ -514,6 +513,8 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
      * @param editorContent string that is the whole editor content
      */
     public async onEditorContentChange (editorContent) {
+        console.log(editorContent);
+
         // save editorContent to the local file and currentFileContent
         this.currentFileContent = editorContent;
 

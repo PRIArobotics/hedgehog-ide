@@ -54,7 +54,7 @@ export class AceEditorComponent {
     initEvents() {
         let me = this;
 
-        me._editor.on('change', () => {
+        function update() {
             let newVal = me._editor.getValue();
             if (newVal === me.oldText) return;
             if (typeof me.oldText !== 'undefined') {
@@ -71,7 +71,15 @@ export class AceEditorComponent {
                 }
             }
             me.oldText = newVal;
+        }
+
+        me._editor.on('change', () => {
+            update();
         });
+
+        me._editor.on('paste', () => {
+            update();
+        })
     }
 
     @Input() set options(options: any) {
