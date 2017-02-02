@@ -224,6 +224,10 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
      * This method is called after the view is initialized so it can access frontend items
      */
     public async ngAfterViewInit(): Promise<void> {
+        $.isReady = true;
+        const tabs = <any> $('#sortable-tabs');
+        tabs.tabs();
+
         // reset indicator from the tabs
         this.resetIndicator();
 
@@ -231,7 +235,6 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
         $('.tab').first().remove();
 
         // allow the tabs to be draggable
-        let tabs = <any>$("#sortable-tabs");
         tabs.sortable({
             items: "li",
             axis: "x",
