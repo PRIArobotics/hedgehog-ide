@@ -99,6 +99,16 @@ server.route({
         }
     }
 });
+server.route({
+    method: 'GET',
+    path: '/ace/{param*}',
+    handler: {
+        directory: {
+            path: '../node_modules/ace-builds/src-min-noconflict',
+            redirectToSlash: true
+        }
+    }
+});
 
 if (serverConfig.environment === 'production') {
     server.route({
