@@ -6,14 +6,15 @@
                 <li (click)="saveWorkspace()"><a materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="save changes">
                     <i class="material-icons">save</i>
                 </a></li>
-                <li (click)="clearWorkspace()"><a materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="delete project">
+                <li (click)="clearWorkspace()"><a materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="clear workspace">
                     <i class="material-icons">delete</i>
                 </a></li>
-                <li><a materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="run project">
+                <li (click)="run()"><a materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="run project">
                     <i class="material-icons">play_arrow</i>
                 </a></li>
             </ul>
         </div>
     </nav>
     <div id="blocklyDiv"></div>
+    <program-execution></program-execution>
 </div>

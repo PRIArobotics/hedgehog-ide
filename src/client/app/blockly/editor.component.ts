@@ -1,9 +1,10 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 
 import IProgramStorage from "../../../common/versioncontrol/ProgramStorage";
 import {HttpProgramService} from "../program/http-program.service";
 import Program from "../../../common/versioncontrol/Program";
+import {ProgramExecutionComponent} from '../program-execution/program-execution.component';
 
 /*
  * TODO: add toast notifications, run programs, split code view
@@ -32,9 +33,17 @@ export class BlocklyComponent implements OnInit, OnDestroy {
     // store the last time the workspace was saved
     private lastSave: number;
 
+    @ViewChild(ProgramExecutionComponent)
+    private programExecution: ProgramExecutionComponent;
+
     constructor(route: ActivatedRoute, storageService: HttpProgramService) {
         this.programName = route.snapshot.params['programName'];
         this.storage = storageService.getStorage();
+    }
+
+    public async run () {
+        await this.rootDir.addFile("code.py", this.toPython());
+        await this.programExecution.run(this.programName, "code.py");
     }
 
     public clearWorkspace(): void {
