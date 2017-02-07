@@ -9,7 +9,8 @@ goog.require('Blockly.Blocks');
 /**
  * Common HSV hue for all blocks in this category.
  */
-Blockly.Blocks.hedgehog.HUE = 60;
+Blockly.Blocks.hedgehog.HUE = 120;
+Blockly.Blocks.loops.HUE = 60;
 
 // Common Help URL for all blocks in this category
 Blockly.Blocks.hedgehog.HELPURL = "http://hedgehog.pria.at/";
