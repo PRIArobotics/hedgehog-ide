@@ -936,8 +936,6 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
         // search for tab
         let tab = $('#tab' + fileId);
 
-        console.log($('#sortable-tabs').children('.tab'))
-
         // check if tab was found
         if (tab.length > 0) {
             // update the indicator to be under the tab
