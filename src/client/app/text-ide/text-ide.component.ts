@@ -248,9 +248,6 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
             }
         });
 
-        // hide the editor since no files are open
-        $('#ace-editor').hide();
-
         // fixes error in the code
         this.editor.getEditor().$blockScrolling = Infinity;
 
@@ -939,6 +936,8 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
         // search for tab
         let tab = $('#tab' + fileId);
 
+        console.log($('#sortable-tabs').children('.tab'))
+
         // check if tab was found
         if (tab.length > 0) {
             // update the indicator to be under the tab
@@ -946,9 +945,6 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
 
             // end method here
             return;
-        } else if ($('#sortable-tabs').children().length === 1) {
-            // if no files are opened show the editor
-            $('#ace-editor').show();
         }
 
         // create new tab element if the file was not found as
@@ -1076,7 +1072,6 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
                     this.resetIndicator();
                     this.editorContent = '';
                     this.openId = null;
-                    $('#ace-editor').hide();
                 }
             }
         }

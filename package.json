@@ -30,6 +30,7 @@
     "@angular/upgrade": "~2.2.0",
     "ace-builds": "^1.2.5",
     "angular-in-memory-web-api": "~0.1.5",
+    "angular-split": "PRIArobotics/angular-split",
     "angular2-contextmenu": "^0.5.2",
     "angular2-localstorage": "github:jgiunti/angular2-localstorage",
     "angular2-materialize": "^6.2.0",

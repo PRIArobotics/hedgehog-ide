@@ -12,6 +12,7 @@ import {ProgramExecutionModule} from '../program-execution/program-execution.mod
 
 import {TextIdeComponent} from './text-ide.component';
 import 'brace';
+import {AngularSplitModule} from "angular-split";
 
 @NgModule({
     imports: [
@@ -22,6 +23,7 @@ import 'brace';
         FormsModule,
         HttpModule,
         ProgramExecutionModule,
+        AngularSplitModule,
     ],
     declarations: [
         TextIdeComponent,

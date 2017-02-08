@@ -9,3 +9,26 @@
 #rename-modal {
     width: 400px;
 }
+
+#sortable-tabs {
+    z-index: 0;
+    margin-top: 10px;
+}
+
+div > ul > li > a {
+    text-transform: none;
+}
+
+#ace-editor {
+    display: block;
+    height: calc(100% - 58px);
+    width: 100%;
+}
+
+.editor-wrapper {
+    margin-bottom: 0 !important;
+}
+
+.editor-wrapper .col {
+    padding: 0;
+}
