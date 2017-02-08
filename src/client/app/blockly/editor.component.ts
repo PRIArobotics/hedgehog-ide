@@ -7,7 +7,7 @@ import Program from "../../../common/versioncontrol/Program";
 import {ProgramExecutionComponent} from '../program-execution/program-execution.component';
 
 /*
- * TODO: add toast notifications, run programs, split code view
+ * TODO: add toast notifications, split code view, stop program
  */
 declare var Blockly: any;
 
@@ -35,6 +35,7 @@ export class BlocklyComponent implements OnInit, OnDestroy {
 
     @ViewChild(ProgramExecutionComponent)
     private programExecution: ProgramExecutionComponent;
+    private programIsRunning: boolean = false;
 
     constructor(route: ActivatedRoute, storageService: HttpProgramService) {
         this.programName = route.snapshot.params['programName'];
@@ -42,8 +43,15 @@ export class BlocklyComponent implements OnInit, OnDestroy {
     }
 
     public async run () {
+        this.saveWorkspace();
+        this.programIsRunning = true;
         await this.rootDir.addFile("code.py", this.toPython());
         await this.programExecution.run(this.programName, "code.py");
+    }
+
+    public async stop () {
+        this.programIsRunning = false;
+        this.programExecution.stop();
     }
 
     public clearWorkspace(): void {
