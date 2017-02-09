@@ -74,18 +74,19 @@ export class BlocklyComponent implements OnInit, OnDestroy {
 
         let toolbox: any = {toolbox: this.getToolbox(),
             zoom: {controls: true,
-                wheel: true,
-                startScale: 1.0,
-                maxScale: 2,
-                minScale: 0.8,
-                scaleSpeed: 1.05},
-                grid: {spacing: 20,
-                    length: 3,
-                    colour: '#ccc',
-                    snap: true},
-                    trashcan: true,
-                    maxBlocks: 100,
-                    media: 'app/blockly/lib/media/'
+                   wheel: true,
+                   startScale: 1.0,
+                   maxScale: 2,
+                   minScale: 0.8,
+                   scaleSpeed: 1.05},
+            grid: {spacing: 20,
+                   length: 3,
+                   colour: '#ccc',
+                   snap: true},
+            trashcan: true,
+            maxBlocks: 100,
+            scrollbars: true,
+            media: 'app/blockly/lib/media/'
         };
 
         this.workspace = Blockly.inject('blocklyDiv', toolbox);
