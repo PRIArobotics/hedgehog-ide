@@ -8,9 +8,9 @@ env:
 addons:
   apt:
     sources:
-    - ubuntu-toolchain-r-test
+      - ubuntu-toolchain-r-test
     packages:
-    - g++-4.8
+      - libstdc++-4.9-dev
 before_install:
 - if [[ `npm -v` != 3* ]]; then npm i -g npm@3; fi
 install:
