@@ -33,6 +33,9 @@ export class BlocklyComponent implements OnInit, OnDestroy {
     // store the last time the workspace was saved
     private lastSave: number;
 
+    // save generated python code for access in the view
+    private pyCode: string;
+
     @ViewChild(ProgramExecutionComponent)
     private programExecution: ProgramExecutionComponent;
     private programIsRunning: boolean = false;
@@ -106,6 +109,7 @@ export class BlocklyComponent implements OnInit, OnDestroy {
     }
 
     private onWorkspaceChange() {
+        this.pyCode = this.toPython();
         let currentDate = new Date().getTime();
         if((currentDate - this.lastSave) > 10000) {
             this.saveWorkspace();
