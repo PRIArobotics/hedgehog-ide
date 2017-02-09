@@ -72,6 +72,19 @@ export class BlocklyComponent implements OnInit, OnDestroy {
         this.program = await this.storage.getProgram(this.programName);
         this.rootDir = await this.program.getWorkingTreeRoot();
 
+        await this.injectBlockly();
+
+        // load workspace from remote storage if it exists
+        if (this.rootDir.items.includes("workspace.xml")) {
+            this.toWorkspace(await (await this.rootDir.getFile("workspace.xml")).readContent());
+        }
+
+        // add change listener
+        this.workspace.addChangeListener(e => this.onWorkspaceChange());
+        this.lastSave = new Date().getTime();
+    }
+
+    private injectBlockly() {
         let toolbox: any = {toolbox: this.getToolbox(),
             zoom: {controls: true,
                    wheel: true,
@@ -90,15 +103,6 @@ export class BlocklyComponent implements OnInit, OnDestroy {
         };
 
         this.workspace = Blockly.inject('blocklyDiv', toolbox);
-
-        // load workspace from remote storage if it exists
-        if (this.rootDir.items.includes("workspace.xml")) {
-            this.toWorkspace(await (await this.rootDir.getFile("workspace.xml")).readContent());
-        }
-
-        // add change listener
-        this.workspace.addChangeListener(e => this.onWorkspaceChange());
-        this.lastSave = new Date().getTime();
     }
 
     private onWorkspaceChange() {
