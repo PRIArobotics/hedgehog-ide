@@ -16,6 +16,10 @@
             </ul>
         </div>
     </nav>
-    <div id="blocklyDiv"></div>
+    <div>
+    <div class="row">
+        <div style="padding-left: 0px;" class="col s8" id="blocklyDiv"></div>
+        <div class="col s4"><pre>{{ pyCode }}</pre></div>
+    </div>
     <program-execution (onExit)="stop()"></program-execution>
 </div>
