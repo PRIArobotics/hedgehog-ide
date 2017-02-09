@@ -479,16 +479,40 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
      */
     public toggleTheme(): void {
         if (this.editor.getEditor().getTheme() === 'ace/theme/textmate') {
-            $('body').css('background-color', '1d1f21');
-            $('#sortable-tabs').css('background-color', '1d1f21');
-            $('#sidebar').css('color', 'fff');
-            this.editor.getEditor().setTheme('ace/theme/tomorrow_night');
+            let rule = this.getStyleRule('.toggleTheme');
+            if (rule) {
+                rule.color = 'fff';
+                rule.backgroundColor = '1d1f21';
+                this.editor.getEditor().setTheme('ace/theme/tomorrow_night');
+            }
         } else {
-            $('body').css('background-color', 'fff');
-            $('#sortable-tabs').css('background-color', 'fff');
-            $('#sidebar').css('color', '000');
-            this.editor.getEditor().setTheme('ace/theme/textmate');
+            let rule = this.getStyleRule('.toggleTheme');
+            if (rule) {
+                rule.color = '000';
+                rule.backgroundColor = 'fff';
+                this.editor.getEditor().setTheme('ace/theme/textmate');
+            }
         }
+    }
+
+    /**
+     * This Method will return a css style that can then be changed.
+     *
+     * Thanks to DaveInMaine for his answer on stackoverflow
+     * http://stackoverflow.com/questions/14477746/jquery-css-dynamically-change-attributes-of-a-class
+     *
+     * @param name of the style
+     * @returns {any} either the style or null
+     */
+    public getStyleRule(name) {
+        for(let i: number = 0; i < document.styleSheets.length; i++) {
+            let sheet: any = document.styleSheets[i];
+            for (let j = 0; j < sheet.cssRules.length; j++) {
+                if (sheet.cssRules[j].selectorText === name)
+                    return sheet.cssRules[j].style;
+            }
+        }
+        return null;
     }
 
     @HostListener('window:keydown', ['$event'])

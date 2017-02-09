@@ -119,7 +119,12 @@ div > ul > li > a {
 }
 
 #ace-editor {
-    display:block;
+    display: block;
     height: 88vh;
-    width:100%;
+    width: 100%;
+}
+
+.toggleTheme {
+    color: #000;
+    background-color: #fff;
 }
