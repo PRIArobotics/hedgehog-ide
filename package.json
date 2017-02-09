@@ -78,7 +78,7 @@
     "sinon": "^1.17.6",
     "style-loader": "^0.13.1",
     "tslint": "^4.4.2",
-    "typescript": "^2.0.3",
+    "typescript": "^2.1.6",
     "typings": "^2.1.0",
     "webpack": "^2.2.0"
   }
