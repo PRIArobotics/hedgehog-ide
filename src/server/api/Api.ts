@@ -12,7 +12,7 @@ export default class Api {
             this.server.route({
                 path: path.join(this.prefix, endpoint.path),
                 method: endpoint.method,
-                handler: (<ISessionHandler>endpoint.handler).bind(resource)
+                handler: (endpoint.handler as ISessionHandler).bind(resource)
             });
         }
     }

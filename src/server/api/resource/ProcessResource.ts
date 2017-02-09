@@ -48,7 +48,7 @@ export default class ProcessResource extends ApiResource {
 
         let requestData: JsonApiResource;
         try {
-            requestData = <JsonApiResource> parser.parse(req.payload).data;
+            requestData = parser.parse(req.payload).data as JsonApiResource;
         } catch (err) {
             winston.error(err);
             return reply({

@@ -17,7 +17,7 @@ export function createBlob(storage, programName: string, gitBlob: NodeGit.Blob):
 export function createTree(storage, programName: string, gitTree: NodeGit.Tree): Tree {
     let items = new Map<string, TreeItem>();
     // cast to any is required as nodegit typing seem to have an error here
-    for (const entry of <any[]>gitTree.entries()) {
+    for (const entry of gitTree.entries() as any[]) {
         items.set(entry.name(), new TreeItem(
             entry.isBlob() ? TreeItemType.Blob : TreeItemType.Tree,
             entry.id().tostrS(),
@@ -35,7 +35,7 @@ export function createVersion(storage, programName: string, gitTag: NodeGit.Tag,
         gitTag ? gitTag.name() : null,
         gitCommit.message(),
         gitCommit.date(),
-        gitCommit.parents(null).map((parent) => {return parent.tostrS();}),
+        gitCommit.parents(null).map(parent => parent.tostrS()),
         gitCommit.treeId().tostrS()
     );
 }

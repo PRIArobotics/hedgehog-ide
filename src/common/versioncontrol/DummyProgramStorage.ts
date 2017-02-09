@@ -207,12 +207,12 @@ export default class DummyProgramStorage implements IProgramStorage {
     private addToParentDirectory(programName: string, filePath: string, type: WorkingTreeObjectType): void {
         let parentDirectory = this.workingTreeDirectories.get(programName).get(dirname(filePath));
         parentDirectory.items.push(basename(filePath));
-        (<any> parentDirectory).types[basename(filePath)] = type;
+        (parentDirectory as any).types[basename(filePath)] = type;
     }
 
     private removeFromParentDirectory(programName: string, filePath: string): void {
         let parentDirectory = this.workingTreeDirectories.get(programName).get(dirname(filePath));
         parentDirectory.items.splice(parentDirectory.items.indexOf(basename(filePath)));
-        delete (<any> parentDirectory).types[basename(filePath)];
+        delete (parentDirectory as any).types[basename(filePath)];
     }
 }
