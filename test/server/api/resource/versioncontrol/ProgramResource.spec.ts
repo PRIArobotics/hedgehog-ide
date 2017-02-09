@@ -57,11 +57,11 @@ describe('ProgramResource', () => {
     beforeEach(() => {
         storage = new GitProgramStorage(null);
         mock = sinon.mock(storage);
-        (<any>programResource).programStorage = storage;
+        (programResource as any).programStorage = storage;
     });
 
     describe('createProgram', () => {
-        it('should create a new program', (done) => {
+        it('should create a new program', done => {
             const creationDate = new Date();
             let program = new Program(storage, 'program', 'version1', true);
 
@@ -86,7 +86,7 @@ describe('ProgramResource', () => {
                         }
                     }
                 }
-            }, (res) => {
+            }, res => {
                 mock.verify();
                 assert.equal(res.statusCode, 201);
                 assert.deepEqual(JSON.parse(res.payload), {
@@ -104,7 +104,7 @@ describe('ProgramResource', () => {
     });
 
     describe('getProgram', () => {
-        it('should load and return an existing program', (done) => {
+        it('should load and return an existing program', done => {
             const creationDate = new Date();
             let program = new Program(storage, 'program1', 'version1', true);
 
@@ -122,7 +122,7 @@ describe('ProgramResource', () => {
             server.inject({
                 url: '/api/programs/cHJvZ3JhbTE=',
                 method: 'GET'
-            }, (res) => {
+            }, res => {
                 mock.verify();
                 assert.equal(res.statusCode, 200);
                 assert.deepEqual(JSON.parse(res.payload), {
@@ -140,7 +140,7 @@ describe('ProgramResource', () => {
     });
 
     describe('getProgramList', () => {
-        it('should return a list containing all programs stored on the controller', (done) => {
+        it('should return a list containing all programs stored on the controller', done => {
             const creationDate = new Date();
             let program1 = new Program(storage, 'program1', 'version1', true);
             let program2 = new Program(storage, 'program2', 'version2', true);
@@ -174,7 +174,7 @@ describe('ProgramResource', () => {
             server.inject({
                 url: '/api/programs',
                 method: 'GET'
-            }, (res) => {
+            }, res => {
                 mock.verify();
                 assert.equal(res.statusCode, 200);
                 assert.deepEqual(JSON.parse(res.payload),{
@@ -195,7 +195,7 @@ describe('ProgramResource', () => {
     });
 
     describe('deleteProgram', () => {
-        it('should delete a program', (done) => {
+        it('should delete a program', done => {
             mock.expects('deleteProgram')
                 .once()
                 .withExactArgs('program1')
@@ -204,7 +204,7 @@ describe('ProgramResource', () => {
             server.inject({
                 url: '/api/programs/cHJvZ3JhbTE=',
                 method: 'DELETE'
-            }, (res) => {
+            }, res => {
                 mock.verify();
                 assert.equal(res.statusCode, 204);
                 done();
@@ -213,7 +213,7 @@ describe('ProgramResource', () => {
     });
 
     describe('updateProgram', () => {
-        it('should rename a program', (done) => {
+        it('should rename a program', done => {
             const creationDate = new Date();
             let program = new Program(storage, 'program2', 'version1', true);
 
@@ -244,7 +244,7 @@ describe('ProgramResource', () => {
                         }
                     }
                 }
-            }, (res) => {
+            }, res => {
                 mock.verify();
                 assert.equal(res.statusCode, 200);
                 assert.deepEqual(JSON.parse(res.payload), {
@@ -260,7 +260,7 @@ describe('ProgramResource', () => {
             });
         });
 
-        it('should reset a programs working tree', (done) => {
+        it('should reset a programs working tree', done => {
             const creationDate = new Date();
             let program = new Program(storage, 'program1', 'version1', false);
 
@@ -291,7 +291,7 @@ describe('ProgramResource', () => {
                         }
                     }
                 }
-            }, (res) => {
+            }, res => {
                 mock.verify();
                 assert.equal(res.statusCode, 200);
                 assert.deepEqual(JSON.parse(res.payload), {
@@ -307,7 +307,7 @@ describe('ProgramResource', () => {
             });
         });
 
-        it('should reset the program', (done) => {
+        it('should reset the program', done => {
             const creationDate = new Date();
             let program = new Program(storage, 'program1', 'version2', true);
 
@@ -338,7 +338,7 @@ describe('ProgramResource', () => {
                         }
                     }
                 }
-            }, (res) => {
+            }, res => {
                 mock.verify();
                 assert.equal(res.statusCode, 200);
                 program.latestVersionId = 'version1';
