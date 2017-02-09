@@ -12,6 +12,7 @@ addons:
       - ubuntu-toolchain-r-test
     packages:
       - libstdc++-4.9-dev
+      - libssl-dev
 before_install:
 - if [[ `npm -v` != 3* ]]; then npm i -g npm@3; fi
 install:
