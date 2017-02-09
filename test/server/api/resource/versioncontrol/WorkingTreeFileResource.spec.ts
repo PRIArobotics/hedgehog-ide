@@ -24,11 +24,11 @@ describe('WorkingTreeFileResource', () => {
     beforeEach(() => {
         storage = new GitProgramStorage(null);
         mock = sinon.mock(storage);
-        (<any>workingTreeFileResource).programStorage = storage;
+        (workingTreeFileResource as any).programStorage = storage;
     });
 
     describe('createFile', () => {
-        it('should create and return the newly created file', (done) => {
+        it('should create and return the newly created file', done => {
             mock.expects('createOrUpdateWorkingTreeFile')
                 .withArgs('program1', 'testfile', 'Hello World!')
                 .once()
@@ -54,7 +54,7 @@ describe('WorkingTreeFileResource', () => {
                         }
                     }
                 }
-            }, (res) => {
+            }, res => {
                 mock.verify();
                 assert.equal(res.statusCode, 201);
                 assert.deepEqual(JSON.parse(res.payload), {
@@ -89,7 +89,7 @@ describe('WorkingTreeFileResource', () => {
     });
 
     describe('getFile', () => {
-        it('should return the requests working tree file', (done) => {
+        it('should return the requests working tree file', done => {
             mock.expects('getWorkingTreeFile')
                 .withExactArgs('program1', 'testfile')
                 .once()
@@ -103,7 +103,7 @@ describe('WorkingTreeFileResource', () => {
             server.inject({
                 url: 'http://localhost:61749/api/files/cHJvZ3JhbTE=/dGVzdGZpbGU=',
                 method: 'GET'
-            }, (res) => {
+            }, res => {
                 mock.verify();
                 assert.equal(res.statusCode, 200);
                 assert.deepEqual(JSON.parse(res.payload), {
@@ -138,7 +138,7 @@ describe('WorkingTreeFileResource', () => {
     });
 
     describe('deleteFile', () => {
-        it('should delete an existing working tree file', (done) => {
+        it('should delete an existing working tree file', done => {
             mock.expects('deleteWorkingTreeObject')
                 .withExactArgs('program1', 'testfile')
                 .once()
@@ -147,7 +147,7 @@ describe('WorkingTreeFileResource', () => {
             server.inject({
                 url: 'http://localhost:61749/api/files/cHJvZ3JhbTE=/dGVzdGZpbGU=',
                 method: 'delete'
-            }, (res) => {
+            }, res => {
                 mock.verify();
                 assert.equal(res.statusCode, 204);
                 done();
@@ -156,7 +156,7 @@ describe('WorkingTreeFileResource', () => {
     });
 
     describe('updateFile', () => {
-        it('should rename a file', (done) => {
+        it('should rename a file', done => {
             mock.expects('updateWorkingTreeObject')
                 .once()
                 .withExactArgs('program1', 'testfile', {
@@ -185,7 +185,7 @@ describe('WorkingTreeFileResource', () => {
                         }
                     }
                 }
-            }, (res) => {
+            }, res => {
                 mock.verify();
                 assert.equal(res.statusCode, 200);
                 assert.deepEqual(JSON.parse(res.payload), {
@@ -218,7 +218,7 @@ describe('WorkingTreeFileResource', () => {
             });
         });
 
-        it('should update the file\'s content', (done) => {
+        it('should update the file\'s content', done => {
             mock.expects('createOrUpdateWorkingTreeFile')
                 .withArgs('program1', 'testfile', 'Knock knock.')
                 .once()
@@ -244,7 +244,7 @@ describe('WorkingTreeFileResource', () => {
                         }
                     }
                 }
-            }, (res) => {
+            }, res => {
                 mock.verify();
                 assert.equal(res.statusCode, 200);
                 assert.deepEqual(JSON.parse(res.payload), {
@@ -277,7 +277,7 @@ describe('WorkingTreeFileResource', () => {
             });
         });
 
-        it('should chmod the file', (done) => {
+        it('should chmod the file', done => {
             mock.expects('updateWorkingTreeObject')
                 .once()
                 .withExactArgs('program1', 'testfile', {
@@ -306,7 +306,7 @@ describe('WorkingTreeFileResource', () => {
                         }
                     }
                 }
-            }, (res) => {
+            }, res => {
                 mock.verify();
                 assert.equal(res.statusCode, 200);
                 assert.deepEqual(JSON.parse(res.payload), {

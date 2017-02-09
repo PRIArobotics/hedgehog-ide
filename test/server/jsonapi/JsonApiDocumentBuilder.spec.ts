@@ -39,7 +39,7 @@ describe('JsonApiDocumentBuilder', () => {
         it('should return a JsonApiResourceBuilder with the given document builder', () => {
             let resourceBuilder = documentBuilder.getResourceBuilder();
             assert.ok(resourceBuilder instanceof JsonApiResourceBuilder);
-            assert.equal((<any> resourceBuilder).documentBuilder, documentBuilder);
+            assert.equal((resourceBuilder as any).documentBuilder, documentBuilder);
         });
     });
 

@@ -225,7 +225,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
      */
     public async ngAfterViewInit(): Promise<void> {
         $.isReady = true;
-        const tabs = <any> $('#sortable-tabs');
+        const tabs = $('#sortable-tabs') as any;
         tabs.tabs();
 
         // reset indicator from the tabs
@@ -247,9 +247,6 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.openFile(tab.attr('id').substr(3));
             }
         });
-
-        // hide the editor since no files are open
-        $('#ace-editor').hide();
 
         // fixes error in the code
         this.editor.getEditor().$blockScrolling = Infinity;
@@ -354,7 +351,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
 
     public async paste(itemToAddTo, copyData) {
         // new parentArray/Directory
-        let parentArray: Array<Object>;
+        let parentArray: Object[];
         let parentDirectory: WorkingTreeDirectory;
 
         // save the new name
@@ -946,9 +943,6 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
 
             // end method here
             return;
-        } else if ($('#sortable-tabs').children().length === 1) {
-            // if no files are opened show the editor
-            $('#ace-editor').show();
         }
 
         // create new tab element if the file was not found as
@@ -982,7 +976,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
         newTab.appendChild(linkToEditor);
 
         // create click event for text node to open the file with it's id
-        newTab.addEventListener('click', async (clickEvent) => {
+        newTab.addEventListener('click', async clickEvent => {
             // check whether the target was <i> meaning the close button
             if (!$(clickEvent.target).is('i')) {
                 // update the openFileId for the local storage
@@ -1000,7 +994,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
         this.updateIndicator(newTab);
 
         // load new li as tab
-        (<any>$('div.tabs')).tabs();
+        ($('div.tabs') as any).tabs();
     }
 
     private fixModalOverlay() {
@@ -1076,7 +1070,6 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
                     this.resetIndicator();
                     this.editorContent = '';
                     this.openId = null;
-                    $('#ace-editor').hide();
                 }
             }
         }

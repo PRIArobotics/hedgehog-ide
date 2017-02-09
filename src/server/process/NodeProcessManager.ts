@@ -98,7 +98,7 @@ export default class NodeProcessManager implements IProcessManager {
     }
 
     private registerErrorHandler (process: NodeProcess) {
-        process.nodeProcess['stderr'].on('error', (err) => {
+        process.nodeProcess['stderr'].on('error', err => {
             this.eventEmitter.emit('error', process, err);
             winston.error(err.toString());
         });

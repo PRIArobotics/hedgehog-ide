@@ -88,7 +88,7 @@ export class JsonApiResourceBuilder implements IBuilder<JsonApiResource>, LinkBu
         let relationship = new JsonApiManyRelationships();
 
         if(relatedResources instanceof Array) {
-            relationship.data = relatedResources.map((relatedResource) => {
+            relationship.data = relatedResources.map(relatedResource => {
                 this.documentBuilder.addIncludedResource(relatedResource);
                 return relatedResource.getIdentifier();
             });

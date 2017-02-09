@@ -54,7 +54,7 @@ export default class ProgramResource extends ApiResource {
 
         let program: Program;
         try {
-            program = await this.programStorage.createProgram((<JsonApiResource>document.data).attributes.name);
+            program = await this.programStorage.createProgram((document.data as JsonApiResource).attributes.name);
         } catch(err) {
             winston.error(err);
             return reply({
@@ -127,7 +127,7 @@ export default class ProgramResource extends ApiResource {
     public async updateProgram(req, reply) {
         let requestData: JsonApiResource;
         try {
-            requestData = (<JsonApiResource> ProgramResource.programParser.parse(req.payload).data);
+            requestData = ProgramResource.programParser.parse(req.payload).data as JsonApiResource;
         } catch(err) {
             winston.error(err);
             return reply({

@@ -163,7 +163,7 @@ if (serverConfig.environment === 'production') {
  * (This enables routing within the real path section)
  */
 server.ext('onPreResponse', (request, reply) => {
-    let response = <any> request.response;
+    let response = request.response as any;
     if (request.response.isBoom && (response.output.statusCode === 404)) {
         let indexFile: string;
         if (serverConfig.environment === 'production') {
@@ -181,14 +181,14 @@ server.ext('onPreResponse', (request, reply) => {
  * Print routes for debugging
  */
 winston.debug(chalk.underline.cyan('Routes'));
-for(const route of (<any>server.connections[0]).table()) {
+for(const route of (server.connections[0] as any).table()) {
     winston.debug(`- ${route.method} ${route.path}`);
 }
 
 /**
  * Run server
  */
-server.start((err) => {
+server.start(err => {
 
     if (err)
         throw err;

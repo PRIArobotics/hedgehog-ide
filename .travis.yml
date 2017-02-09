@@ -1,16 +1,21 @@
 language: node_js
 node_js:
+- 7
 - 6
 - 5
 - 4
 env:
-- CXX=g++-4.8
+  - CC=clang CXX=clang++
 addons:
   apt:
     sources:
-    - ubuntu-toolchain-r-test
+      - ubuntu-toolchain-r-test
     packages:
-    - g++-4.8
+      - build-essential
+      - libssl-dev
+      - gcc-4.9-multilib
+      - g++-4.9-multilib
+      - lcov
 before_install:
 - if [[ `npm -v` != 3* ]]; then npm i -g npm@3; fi
 install:
