@@ -13,13 +13,13 @@ export class JsonApiDocument extends JsonApiObject implements IJsonApiLinkable {
         let parser = new ObjectParser(() => new JsonApiDocument(),
             {
                 name: 'data',
-                required: (object) => !object.hasOwnProperty('meta')
+                required: object => !object.hasOwnProperty('meta')
                     ? RequirementType.Required
                     : RequirementType.Allowed,
             },
             {
                 name: 'meta',
-                required: (object) => !object.hasOwnProperty('data')
+                required: object => !object.hasOwnProperty('data')
                     ? RequirementType.Required
                     : RequirementType.Allowed,
             },
@@ -49,13 +49,13 @@ export class JsonApiLinks extends JsonApiObject {
         parser.addProperties(
             {
                 name: 'self',
-                required: (object) => !object.hasOwnProperty('related')
+                required: object => !object.hasOwnProperty('related')
                     ? RequirementType.Required
                     : RequirementType.Allowed,
             },
             {
                 name: 'related',
-                required: (object) => !object.hasOwnProperty('self')
+                required: object => !object.hasOwnProperty('self')
                     ? RequirementType.Required
                     : RequirementType.Allowed,
             }

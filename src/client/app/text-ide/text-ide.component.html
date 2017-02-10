@@ -13,120 +13,129 @@
         </div>
     </nav>
 
-    <div class="col s2" id="sidebar">
+    <split direction="horizontal">
+        <split-area [size]="30">
+            <Tree #tree
+                  id="file-tree"
+                  [nodes]="fileTree"
+                  [options]="fileTreeOptions"
+                  [focused]="true"
+                  (onActivate)="fileTreeEvent($event)"
+                  (onMoveNode)="onMoveNode($event)">
 
-        <Tree #tree
-              id="file-tree"
-              [nodes]="fileTree"
-              [options]="fileTreeOptions"
-              [focused]="true"
-              (onActivate)="fileTreeEvent($event)"
-              (onMoveNode)="onMoveNode($event)">
-
-            <template #treeNodeTemplate let-node>
-                <div [contextMenu]="fileTreeActions" [contextMenuSubject]="node">
-                    <i *ngIf="node.data.children && !node.isExpanded" class="material-icons"> folder </i>
-                    <i *ngIf="node.isExpanded" class="material-icons"> folder_open </i>
-                    <i *ngIf="!node.data.children" class="material-icons"> insert_drive_file </i>
-                    <span> {{ node.data.name }} </span>
-                </div>
-            </template>
-
-        </Tree>
-
-        <context-menu #treeContextMenu>
-            <template contextMenuItem let-node (execute)="newData.file = true; openNewFileOrDirectoryModal($event)">
-                <i class="material-icons"> insert_drive_file </i> New File
-            </template>
-            <template contextMenuItem let-node (execute)="newData.file = false; openNewFileOrDirectoryModal($event)">
-                <i class="material-icons"> folder </i> New Directory
-            </template>
-            <template contextMenuItem let-node (execute)="openDeleteModal($event)">
-                <i class="material-icons"> delete </i> Delete
-            </template>
-            <template contextMenuItem let-node (execute)="openRenameModal($event)">
-                <i class="material-icons"> mode_edit </i> Rename
-            </template>
-        </context-menu>
-
-        <div id="create-modal" class="modal" materialize="modal" [materializeParams]="[{dismissible: true}]" [materializeActions]="newFileOrDirectoryModalActions">
-            <form (submit)="newFileOrDirectory()">
-                <div class="modal-content">
-                    <h4 *ngIf="newData.file">Create New File</h4>
-                    <h4 *ngIf="!newData.file">Create New Directory</h4>
-                    <div class="input-field">
-                        <input name="new-name" id="new-name" type="text" class="validate" [(ngModel)]="newData.name"/>
-                        <label for="new-name" *ngIf="newData.file">do_stuff.py</label>
-                        <label for="new-name" *ngIf="!newData.file">Directory Name</label>
+                <template #treeNodeTemplate let-node>
+                    <div [contextMenu]="fileTreeActions" [contextMenuSubject]="node">
+                        <i *ngIf="node.data.children && !node.isExpanded" class="material-icons"> folder </i>
+                        <i *ngIf="node.isExpanded" class="material-icons"> folder_open </i>
+                        <i *ngIf="!node.data.children" class="material-icons"> insert_drive_file </i>
+                        <span> {{ node.data.name }} </span>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button class="waves-effect waves-green btn-flat" type="reset" (click)="closeNewFileOrDirectoryModal()">Close</button>
-                    <button class="modal-action modal-close waves-effect waves-green btn-flat" type="submit">Create</button>
-                </div>
-            </form>
-        </div>
+                </template>
 
-        <div id="delete-modal" class="modal" materialize="modal" [materializeParams]="[{dismissible: true}]" [materializeActions]="deleteModalActions">
+            </Tree>
 
-            <form (submit)="deleteAction()">
-                <div class="modal-content">
-                    <h4>Delete File</h4>
-                    <p *ngIf="!deleteFileData.children">Do you want to delete the File <strong>{{ deleteFileData.name }}</strong>? <br />
-                        This operation cannot be undone.</p>
+            <context-menu #treeContextMenu>
+                <template contextMenuItem let-node (execute)="newData.file = true; openNewFileOrDirectoryModal($event)">
+                    <i class="material-icons"> insert_drive_file </i> New File
+                </template>
+                <template contextMenuItem let-node (execute)="newData.file = false; openNewFileOrDirectoryModal($event)">
+                    <i class="material-icons"> folder </i> New Directory
+                </template>
+                <template contextMenuItem let-node (execute)="openDeleteModal($event)">
+                    <i class="material-icons"> delete </i> Delete
+                </template>
+                <template contextMenuItem let-node (execute)="openRenameModal($event)">
+                    <i class="material-icons"> mode_edit </i> Rename
+                </template>
+            </context-menu>
+        </split-area>
+        <split-area [size]="70">
+            <split direction="vertical">
+                <split-area [size]="70">
+                    <div class="editor-wrapper row">
+                        <div class="col s12">
+                            <ul class="tabs toggleTheme" materialize="tabs" id="sortable-tabs">
+                                <li class="tab"><a></a></li>
+                            </ul>
+                        </div>
 
-                    <p *ngIf="deleteFileData.children">Do you want to delete the whole Folder <strong>{{ deleteFileData.name }}</strong>? <br />
-                        This operation cannot be undone.</p>
-                </div>
-                <div class="modal-footer">
-                    <button class="waves-effect waves-green btn-flat" type="reset" (click)="closeDeleteModal()">Close</button>
-                    <button class="modal-action modal-close waves-effect waves-green btn-flat" type="submit">Delete</button>
-                </div>
-            </form>
-        </div>
-
-        <div id="rename-modal" class="modal" materialize="modal" [materializeParams]="[{dismissible: true}]" [materializeActions]="renameModalActions">
-
-            <form (submit)="renameAction()">
-                <div class="modal-content">
-                    <h4 *ngIf="renameFileData.currentItem.children">Rename Directory <strong>{{renameFileData.currentItem.name}}</strong></h4>
-                    <h4 *ngIf="!renameFileData.currentItem.children">Rename File <strong>{{renameFileData.currentItem.name}}</strong></h4>
-                    <div class="input-field">
-                        <input name="rename-new-name" id="rename-new-name" type="text" class="validate" [(ngModel)]="renameFileData.newName" />
-                        <label for="rename-new-name" *ngIf="renameFileData.currentItem.children">Directory Name</label>
-                        <label for="rename-new-name" *ngIf="!renameFileData.currentItem.children">do_stuff.py</label>
+                        <div class="col s12">
+                            <ace-editor
+                                    #editor
+                                    [hidden]="!openId"
+                                    id="ace-editor"
+                                    [text]="editorContent"
+                                    (textChanged)="onEditorContentChange($event)"
+                                    [mode]="'python'"
+                                    [theme]="'textmate'"
+                                    [readOnly]="false"></ace-editor>
+                        </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button class="waves-effect waves-green btn-flat" type="reset" (click)="closeRenameModal()">Close</button>
-                    <button class="modal-action modal-close waves-effect waves-green btn-flat" type="submit">Rename</button>
+                </split-area>
+                <split-area [size]="30">
+                    <program-execution (onExit)="onExecutionExit($event)" id="split-execute"></program-execution>
 
-                </div>
-            </form>
-        </div>
-    </div>
+                </split-area>
+            </split>
+        </split-area>
+    </split>
+</div>
 
-    <div class="col s10">
-        <div class="row">
-            <div class="col s12">
-                <ul class="tabs toggleTheme" materialize="tabs" id="sortable-tabs">
-                    <li class="tab"><a></a></li>
-                </ul>
-            </div>
-
-            <div class="col s12">
-                <ace-editor
-                        #editor
-                        id="ace-editor"
-                        [text]="editorContent"
-                        (textChanged)="onEditorContentChange($event)"
-                        [mode]="'python'"
-                        [theme]="'textmate'"
-                        [readOnly]="false"></ace-editor>
+<!-- Modals -->
+<div id="create-modal" class="modal" materialize="modal" [materializeParams]="[{dismissible: true}]" [materializeActions]="newFileOrDirectoryModalActions">
+    <form (submit)="newFileOrDirectory()">
+        <div class="modal-content">
+            <h4 *ngIf="newData.file">Create New File</h4>
+            <h4 *ngIf="!newData.file">Create New Directory</h4>
+            <div class="input-field">
+                <input name="new-name" id="new-name" type="text" class="validate" [(ngModel)]="newData.name"/>
+                <label for="new-name" *ngIf="newData.file">do_stuff.py</label>
+                <label for="new-name" *ngIf="!newData.file">Directory Name</label>
             </div>
         </div>
-    </div>
+        <div class="modal-footer">
+            <button class="waves-effect waves-green btn-flat" type="reset" (click)="closeNewFileOrDirectoryModal()">Close</button>
+            <button class="modal-action modal-close waves-effect waves-green btn-flat" type="submit">Create</button>
+        </div>
+    </form>
+</div>
 
-    <program-execution (onExit)="onExecutionExit($event)"></program-execution>
+<div id="delete-modal" class="modal" materialize="modal" [materializeParams]="[{dismissible: true}]" [materializeActions]="deleteModalActions">
+
+    <form (submit)="deleteAction()">
+        <div class="modal-content">
+            <h4>Delete File</h4>
+            <p *ngIf="!deleteFileData.children">Do you want to delete the File <strong>{{ deleteFileData.name }}</strong>? <br />
+                This operation cannot be undone.</p>
+
+            <p *ngIf="deleteFileData.children">Do you want to delete the whole Folder <strong>{{ deleteFileData.name }}</strong>? <br />
+                This operation cannot be undone.</p>
+        </div>
+
+        <div class="modal-footer">
+            <button class="waves-effect waves-green btn-flat" type="reset" (click)="closeDeleteModal()">Close</button>
+            <button class="modal-action modal-close waves-effect waves-green btn-flat" type="submit">Delete</button>
+        </div>
+    </form>
+</div>
+
+<div id="rename-modal" class="modal" materialize="modal" [materializeParams]="[{dismissible: true}]" [materializeActions]="renameModalActions">
+
+    <form (submit)="renameAction()">
+        <div class="modal-content">
+            <h4 *ngIf="renameFileData.currentItem.children">Rename Directory <strong>{{renameFileData.currentItem.name}}</strong></h4>
+            <h4 *ngIf="!renameFileData.currentItem.children">Rename File <strong>{{renameFileData.currentItem.name}}</strong></h4>
+            <div class="input-field">
+                <input name="rename-new-name" id="rename-new-name" type="text" class="validate" [(ngModel)]="renameFileData.newName" />
+                <label for="rename-new-name" *ngIf="renameFileData.currentItem.children">Directory Name</label>
+                <label for="rename-new-name" *ngIf="!renameFileData.currentItem.children">do_stuff.py</label>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="waves-effect waves-green btn-flat" type="reset" (click)="closeRenameModal()">Close</button>
+            <button class="modal-action modal-close waves-effect waves-green btn-flat" type="submit">Rename</button>
+
+        </div>
+    </form>
 </div>
 

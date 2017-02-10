@@ -18,7 +18,7 @@ abstract class ApiResource {
     }
 
     public getEndpoints() {
-        return this.endpoints.map((endpoint) => {
+        return this.endpoints.map(endpoint => {
             return {
                 path: path.join(this.pathPrefix, endpoint.path),
                 method: endpoint.method,

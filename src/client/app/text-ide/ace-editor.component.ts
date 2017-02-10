@@ -35,6 +35,8 @@ export class AceEditorComponent {
     timeoutSaving: any;
 
     constructor(elementRef: ElementRef) {
+        ace.config.set("basePath", "/ace");
+
         let el = elementRef.nativeElement;
         this._editor = ace["edit"](el);
 

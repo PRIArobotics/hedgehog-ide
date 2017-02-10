@@ -6,14 +6,16 @@
                 <li (click)="saveWorkspace()"><a materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="save changes">
                     <i class="material-icons">save</i>
                 </a></li>
-                <li (click)="clearWorkspace()"><a materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="delete project">
+                <li (click)="clearWorkspace()"><a materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="clear workspace">
                     <i class="material-icons">delete</i>
                 </a></li>
-                <li><a materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="run project">
-                    <i class="material-icons">play_arrow</i>
-                </a></li>
+                <li>
+                    <a (click)="run()" materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="run program"><i *ngIf="!programIsRunning" class="material-icons">play_arrow</i></a>
+                    <a materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="stop program"><i *ngIf="programIsRunning" (click)="stop()" class="material-icons">stop</i></a>
+                </li>
             </ul>
         </div>
     </nav>
     <div id="blocklyDiv"></div>
+    <program-execution (onExit)="stop()"></program-execution>
 </div>

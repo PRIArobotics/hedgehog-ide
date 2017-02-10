@@ -53,8 +53,8 @@ export default class VersionResource extends ApiResource {
                     error: 'Error while parsing the request.'
                 }).code(400);
             }
-            message = (<JsonApiResource>document.data).attributes.message;
-            tag = (<JsonApiResource>document.data).attributes.tag;
+            message = (document.data as JsonApiResource).attributes.message;
+            tag = (document.data as JsonApiResource).attributes.tag;
         }
 
         let versionId: string;

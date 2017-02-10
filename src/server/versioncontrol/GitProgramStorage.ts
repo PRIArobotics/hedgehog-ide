@@ -78,7 +78,7 @@ export default class GitProgramStorage implements IProgramStorage {
         let commit = await repository.getCommit(versionId);
 
         // for whatever reason, TS does not recognize that Commit has all properties of Object as well
-        await NodeGit.Reset.reset(repository, <any> commit, NodeGit.Reset.TYPE.HARD, { });
+        await NodeGit.Reset.reset(repository, commit as any, NodeGit.Reset.TYPE.HARD, { });
         return Promise.resolve();
     }
 
@@ -107,7 +107,7 @@ export default class GitProgramStorage implements IProgramStorage {
             let eventEmitter = branchCommit.history();
 
             eventEmitter.on('end', (commits: NodeGit.Commit[]) => {
-                resolve(commits.map((commit) => {return commit.id().tostrS();}));
+                resolve(commits.map(commit => commit.id().tostrS()));
             });
 
             eventEmitter.on('error', reject);
@@ -217,12 +217,12 @@ export default class GitProgramStorage implements IProgramStorage {
 
         await NodeGit.Reset.reset(
             repository,
-            <any>headCommit,
+            headCommit as any,
             NodeGit.Reset.TYPE.HARD,
             null);
 
         // basically, this does the same thing as git clean would do
-        for(const file of <any[]> await repository.getStatus(null)) {
+        for(const file of await repository.getStatus(null) as any[]) {
             if(!file.inIndex())
                 await wrapCallbackAsPromise(rimraf, this.getWorkingTreePath(programName, file.path()));
         }

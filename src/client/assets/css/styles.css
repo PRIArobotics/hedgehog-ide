@@ -1,4 +1,11 @@
 /* Master Styles */
+/* Solves issue as described here:
+ * http://stackoverflow.com/questions/35578083/what-is-the-equivalent-of-ngshow-and-nghide-in-angular2
+ */
+[hidden] {
+    display: none !important;
+}
+
 nav .disabled {
     pointer-events: none;
     box-shadow: none;

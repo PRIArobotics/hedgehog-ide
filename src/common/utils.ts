@@ -66,7 +66,7 @@ export function applyMixins(derivedCtor: any, baseCtors: any[]) {
 
 export function genericFromBase64(encoded: string): string {
     if(typeof(atob) === 'function') {
-        return decodeURIComponent(Array.prototype.map.call(atob(encoded), (c) => {
+        return decodeURIComponent(Array.prototype.map.call(atob(encoded), c => {
             return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
         }).join(''));
     } else {
