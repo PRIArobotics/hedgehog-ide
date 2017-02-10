@@ -1,0 +1,29 @@
+<div class="col s12 m4">
+    <div class="card">
+        <div class="card-content">
+            <div class="card-title">
+                <span>Motor 1</span>
+                <div class="switch right">
+                    <label>
+                        Off
+                        <input type="checkbox">
+                        <span class="lever"></span>
+                        On
+                    </label>
+                </div>
+            </div>
+
+            <div>
+                <div class="valign-wrapper current-value-wrapper">
+                    <h5 class="center-align center-align current-value">{{ value }}</h5>
+                </div>
+            </div>
+
+            <div>
+                <p class="range-field">
+                    <input type="range" min="0" max="100" [(ngModel)]="value"/>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

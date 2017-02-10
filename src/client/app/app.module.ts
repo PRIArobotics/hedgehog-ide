@@ -9,6 +9,8 @@ import {ProgramListComponent} from "./program/program-list.component";
 import {ProgramModule} from "./program/program.module";
 import {BlocklyModule} from "./blockly/editor.module";
 import {BlocklyComponent} from "./blockly/editor.component";
+import {HedgehogControlModule} from "./hedgehog-control/hedgehog-control.module";
+import HedgehogControlComponent from "./hedgehog-control/hedgehog-control.component";
 
 const appRoutes: Routes = [
     {
@@ -26,6 +28,10 @@ const appRoutes: Routes = [
     {
         path: 'blockly/:programName',
         component: BlocklyComponent
+    },
+    {
+        path: 'hedgehog-control',
+        component: HedgehogControlComponent
     }
 ];
 
@@ -35,6 +41,7 @@ const appRoutes: Routes = [
         ProgramModule,
         TextIdeModule,
         BlocklyModule,
+        HedgehogControlModule,
         RouterModule.forRoot(appRoutes)
     ],
     declarations: [
