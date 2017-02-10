@@ -4,20 +4,21 @@
  */
 (function (global) {
     System.config({
+        baseURL: 'node_modules',
         packageConfigPaths: [
             './node_modules/*/package.json',
             './node_modules/@angular/*/package.json'
         ],
         paths: {
-            '*': 'node_modules/*',
-            'app': 'app',
-            'app/*': 'app/*',
-            'common': 'common',
-            'common/*': 'common/*',
+            'app/': './app/',
+            'common/': './common/'
         },
         map: {
             'socket.io-client': './node_modules/socket.io-client/dist/socket.io.min.js',
             'materialize-css': './node_modules/materialize-css/dist/js/materialize.js',
+            'babel-polyfill/dist/polyfill.js': './node_modules/babel-polyfill/dist/polyfill.js',
+            'zone.js/dist/zone.js': './node_modules/zone.js/dist/zone.js',
+            'reflect-metadata/Reflect.js': './node_modules/reflect-metadata/Reflect.js',
             'text': './systemjs-text-plugin.js'
         },
         packages: {
