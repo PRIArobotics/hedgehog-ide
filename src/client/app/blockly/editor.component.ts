@@ -33,6 +33,9 @@ export class BlocklyComponent implements OnInit, OnDestroy {
     // store the last time the workspace was saved
     private lastSave: number;
 
+    // save generated python code for access in the view
+    private pyCode: string;
+
     @ViewChild(ProgramExecutionComponent)
     private programExecution: ProgramExecutionComponent;
     private programIsRunning: boolean = false;
@@ -72,23 +75,7 @@ export class BlocklyComponent implements OnInit, OnDestroy {
         this.program = await this.storage.getProgram(this.programName);
         this.rootDir = await this.program.getWorkingTreeRoot();
 
-        let toolbox: any = {toolbox: this.getToolbox(),
-            zoom: {controls: true,
-                wheel: true,
-                startScale: 1.0,
-                maxScale: 2,
-                minScale: 0.8,
-                scaleSpeed: 1.05},
-                grid: {spacing: 20,
-                    length: 3,
-                    colour: '#ccc',
-                    snap: true},
-                    trashcan: true,
-                    maxBlocks: 100,
-                    media: 'app/blockly/lib/media/'
-        };
-
-        this.workspace = Blockly.inject('blocklyDiv', toolbox);
+        await this.injectBlockly();
 
         // load workspace from remote storage if it exists
         if (this.rootDir.items.includes("workspace.xml")) {
@@ -100,7 +87,29 @@ export class BlocklyComponent implements OnInit, OnDestroy {
         this.lastSave = new Date().getTime();
     }
 
+    private injectBlockly() {
+        let toolbox: any = {toolbox: this.getToolbox(),
+            zoom: {controls: true,
+                   wheel: true,
+                   startScale: 1.0,
+                   maxScale: 2,
+                   minScale: 0.8,
+                   scaleSpeed: 1.05},
+            grid: {spacing: 20,
+                   length: 3,
+                   colour: '#ccc',
+                   snap: true},
+            trashcan: true,
+            maxBlocks: 100,
+            scrollbars: true,
+            media: 'app/blockly/lib/media/'
+        };
+
+        this.workspace = Blockly.inject('blocklyDiv', toolbox);
+    }
+
     private onWorkspaceChange() {
+        this.pyCode = this.toPython();
         let currentDate = new Date().getTime();
         if((currentDate - this.lastSave) > 10000) {
             this.saveWorkspace();

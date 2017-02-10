@@ -7,7 +7,7 @@ describe('JsonApiResourceBuilder', () => {
     let resourceBuilder: JsonApiResourceBuilder;
 
     beforeEach(() => {
-        resourceBuilder = new JsonApiResourceBuilder(<any>{ });
+        resourceBuilder = new JsonApiResourceBuilder({ } as any);
     });
 
     describe('getProduct', () => {
@@ -46,7 +46,7 @@ describe('JsonApiResourceBuilder', () => {
                     this.included.push(resource);
                 }
             };
-            (<any>resourceBuilder).documentBuilder = documentBuilder;
+            (resourceBuilder as any).documentBuilder = documentBuilder;
 
             let resource = new JsonApiResource();
             resource.id = 'testid';
@@ -91,7 +91,7 @@ describe('JsonApiResourceBuilder', () => {
                     this.included.push(resource);
                 }
             };
-            (<any>resourceBuilder).documentBuilder = documentBuilder;
+            (resourceBuilder as any).documentBuilder = documentBuilder;
 
             let resource1 = new JsonApiResource();
             resource1.id = 'testid1';

@@ -258,7 +258,7 @@ describe('GitProgramStorage', () => {
 
             let tree = await programStorage.getTree(programName, treeId.tostrS());
             assert.equal(tree.id, treeId.tostrS());
-            assert.equal((<any> tree).programName, programName);
+            assert.equal((tree as any).programName, programName);
 
             const expectedTreeItem = {
                 type: TreeItemType.Blob,
