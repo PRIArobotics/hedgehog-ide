@@ -4,6 +4,7 @@ import {ProgramListComponent} from "./program-list.component";
 import {MaterializeModule} from "angular2-materialize";
 import {FormsModule} from "@angular/forms";
 import {RouterModule} from "@angular/router";
+import VersionListComponent from "./version-list.component";
 
 @NgModule({
     imports: [
@@ -13,7 +14,8 @@ import {RouterModule} from "@angular/router";
         RouterModule
     ],
     declarations: [
-        ProgramListComponent
+        ProgramListComponent,
+        VersionListComponent
     ]
 })
 export class ProgramModule { }

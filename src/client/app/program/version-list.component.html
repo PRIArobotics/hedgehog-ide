@@ -1,0 +1,21 @@
+<nav class="hedgehog-green-light">
+    <div class="nav-wrapper">
+        <ul class="right">
+            <li><a><i class="material-icons">replay</i></a></li>
+        </ul>
+        <a href="#" class="brand-logo">{{ programName }}</a>
+        <a href="#!" class="breadcrumb">Versions</a>
+    </div>
+</nav>
+
+<div class="container z-depth-1">
+    <ul class="collection">
+        <li class="collection-item valign-wrapper rich-collection-item waves-effect" *ngFor="let version of versions">
+            <div class="row">
+                <span class="col valign" [ngClass]="{ 'm8': version.tag, 'm10': !version.tag }"> <strong>{{ version.message }}</strong></span>
+                <span class="col m2 valign"><i class="material-icons">code</i> {{ version.id.substr(0, 6) }}</span>
+                <span class="col m2 valign" *ngIf="version.tag"><i class="material-icons">label</i> {{ version.tag }}</span>
+            </div>
+        </li>
+    </ul>
+</div>
