@@ -505,11 +505,10 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
      * @returns {any} either the style or null
      */
     public getStyleRule(name) {
-        for(let i: number = 0; i < document.styleSheets.length; i++) {
-            let sheet: any = document.styleSheets[i];
-            for (let j = 0; j < sheet.cssRules.length; j++) {
-                if (sheet.cssRules[j].selectorText === name)
-                    return sheet.cssRules[j].style;
+        for (const sheet of document.styleSheets as any) {
+            for (const rule of sheet.cssRules) {
+                if (rule.selectorText === name)
+                    return rule.style;
             }
         }
         return null;
