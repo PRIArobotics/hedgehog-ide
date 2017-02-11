@@ -104,7 +104,7 @@ treenode:last-child > .tree-node > .tree-children::after {
 
 /* all other styles */
 
-/*#sidebar {
+#sidebar {
     height: 100%;
     overflow-y: auto;
     margin-top: 10px;
@@ -114,4 +114,24 @@ treenode:last-child > .tree-node > .tree-children::after {
 .tree {
     margin-left: 5%;
     margin-top: 10%;
-}*/
+}
+
+#sortable-tabs {
+    z-index: 0;
+    margin-top: 10px;
+}
+
+div > ul > li > a {
+    text-transform: none;
+}
+
+#ace-editor {
+    display: block;
+    height: 88vh;
+    width: 100%;
+}
+
+.toggleTheme {
+    color: #000;
+    background-color: #fff;
+}

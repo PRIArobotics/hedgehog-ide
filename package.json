@@ -46,7 +46,7 @@
     "jquery-ui-dist": "^1.12.1",
     "js-yaml": "^3.6.1",
     "materialize-css": "^0.98.0",
-    "nodegit": "^0.17.0",
+    "nodegit": "^0.16.0",
     "reflect-metadata": "^0.1.8",
     "rimraf": "^2.5.4",
     "rxjs": "^5.1.0",

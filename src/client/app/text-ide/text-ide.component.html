@@ -1,4 +1,4 @@
-<div class="app-content row">
+<div id="ide-content" class="app-content row toggleTheme">
     <nav class="hedgehog-green-light">
         <div class="nav-wrapper">
             <a class="brand-logo"> {{ programName }} </a>
@@ -55,7 +55,7 @@
                 <split-area [size]="70">
                     <div class="editor-wrapper row">
                         <div class="col s12">
-                            <ul class="tabs" materialize="tabs" id="sortable-tabs">
+                            <ul class="tabs toggleTheme" materialize="tabs" id="sortable-tabs">
                                 <li class="tab"><a></a></li>
                             </ul>
                         </div>
@@ -112,6 +112,7 @@
             <p *ngIf="deleteFileData.children">Do you want to delete the whole Folder <strong>{{ deleteFileData.name }}</strong>? <br />
                 This operation cannot be undone.</p>
         </div>
+
         <div class="modal-footer">
             <button class="waves-effect waves-green btn-flat" type="reset" (click)="closeDeleteModal()">Close</button>
             <button class="modal-action modal-close waves-effect waves-green btn-flat" type="submit">Delete</button>
