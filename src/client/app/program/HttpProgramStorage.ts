@@ -89,10 +89,12 @@ export default class HttpProgramStorage implements IProgramStorage {
     }
 
     public renameProgram(oldName: string, newName: string): Promise<void> {
+        let currentId = genericToBase64(oldName);
+
         // create file data object using the given parameters
         let programData = {
             data: {
-                id: `/api/programs/${genericToBase64(oldName)}`,
+                id: `/api/programs/${currentId}`,
                 type: 'program',
                 attributes: {
                     name: newName
@@ -102,7 +104,7 @@ export default class HttpProgramStorage implements IProgramStorage {
 
         // send post request with headers (json) and the stringifyed data object
         return this.http
-            .patch(`/api/programs/${genericToBase64(oldName)}`,
+            .patch(`/api/programs/${currentId}`,
                 JSON.stringify(programData),
                 {headers: this.headers})
             .toPromise()
@@ -114,27 +116,107 @@ export default class HttpProgramStorage implements IProgramStorage {
     }
 
     public getBlob(programName: string, blobId: string): Promise<Blob> {
-        return undefined;
+        // send get request for a specific program for the blob
+        return this.http
+            .get(`/api/blobs/${genericToBase64(programName)}/${blobId}`)
+            .toPromise()
+            .then(response => {
+                // parse json response
+                let res = response.json().data;
+
+                // create new Blob Instance
+                return new Blob(this, programName, blobId, res.attributes.size);
+            });
     }
 
     public getBlobContent(programName: string, blobId: string, encoding): Promise<string> {
-        return undefined;
+        // send get request for a specific program for the blob
+        return this.http
+            .get(`/api/blobs/${genericToBase64(programName)}/${blobId}`)
+            .toPromise()
+            .then(response => {
+                // parse json response
+                let res = response.json().data;
+
+                // retrieve the content from the attributes
+                return res.attributes.content;
+            });
     }
 
     public getTree(programName: string, treeId: string): Promise<Tree> {
-        return undefined;
+        // send get request for a specific program for the tree
+        return this.http
+            .get(`/api/trees/${genericToBase64(programName)}/${treeId}`)
+            .toPromise()
+            .then(response => {
+                // parse json response
+                let res = response.json().data;
+
+                // create new Tree Instance
+                return new Tree(this, programName, treeId, res.relationships.items);
+            });
     }
 
     public getVersionIds(programName: string): Promise<string[]> {
-        return undefined;
+        // send get request for the version ids
+        return this.http
+            .get(`/api/versions/${genericToBase64(programName)}`)
+            .toPromise()
+            .then(response => {
+                // parse json response
+                let res = response.json().data;
+
+                let versionIds: string[] = [];
+                for (let item of res) {
+
+                    // add name to the versionIds array
+                    versionIds.push(item.id);
+                }
+
+                // create new Tree Instance
+                return versionIds;
+            });
     }
 
     public getVersion(programName: string, versionId: string): Promise<Version> {
-        return undefined;
+        // send get request for the version of a program
+        return this.http
+            .get(`/api/versions/${genericToBase64(programName)}/${versionId}`)
+            .toPromise()
+            .then(response => {
+                // parse json response
+                let res = response.json().data;
+
+                // create new Version Instance
+                return new Version(this, programName, res.id, res.attributes.tag, res.attributes.messsage,
+                    res.creationDate, res.parendIds, res.treeId);
+            });
     }
 
     public createVersionFromWorkingTree(programName: string, message: string, tag?: string): Promise<string> {
-        return undefined;
+        let programId = genericToBase64(programName);
+
+        // create version data object using the given parameters
+        let versionData = {
+            data: {
+                id: programId,
+                type: 'version',
+                attributes: {
+                    tag,
+                    message
+                }
+            }
+        };
+
+        // send post request with headers (json) and the stringifyed data object
+        return this.http
+            .post(`/versions/${programId}`,
+                JSON.stringify(versionData),
+                {headers: this.headers})
+            .toPromise()
+            .then(response => {
+                return response.json().data.relationships.tree.id;
+            });
     }
 
     public getWorkingTreeDirectory(programName: string, path: string): Promise<WorkingTreeDirectory> {
@@ -249,10 +331,12 @@ export default class HttpProgramStorage implements IProgramStorage {
     public updateWorkingTreeObject(programName: string,
                                    currentPath: string,
                                    options: {mode?: number; newPath?: string; directory: boolean}): Promise<void> {
+        let pathId = genericToBase64(currentPath);
+
         // create file data object using the given parameters
         let fileData = {
             data: {
-                    id: genericToBase64(currentPath),
+                    id: pathId,
                     type: options.directory ? 'directories' : 'files',
                     attributes: {
                         path: options.newPath,
@@ -266,7 +350,7 @@ export default class HttpProgramStorage implements IProgramStorage {
         // send post request with headers (json) and the stringifyed data object
         return this.http
             .patch(`/api/${options.directory ? 'directories' : 'files'}/
-                    ${genericToBase64(programName)}/${genericToBase64(currentPath)}`,
+                    ${genericToBase64(programName)}/${pathId}`,
                 JSON.stringify(fileData),
                 {headers: this.headers})
             .toPromise()
@@ -283,6 +367,24 @@ export default class HttpProgramStorage implements IProgramStorage {
     }
 
     public resetWorkingTree(programName: string): Promise<void> {
-        return undefined;
+        let programId = genericToBase64(programName);
+        // create file data object using the given parameters
+        let programData = {
+            data: {
+                id: `/api/programs/${programId}`,
+                type: 'program',
+                attributes: {
+                    workingTreeClean: true
+                }
+            }
+        };
+
+        // send post request with headers (json) and the stringifyed data object
+        return this.http
+            .patch(`/api/programs/${programId}`,
+                JSON.stringify(programData),
+                {headers: this.headers})
+            .toPromise()
+            .then(() => Promise.resolve());
     }
 }
