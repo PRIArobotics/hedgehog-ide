@@ -1,4 +1,4 @@
-<div class="col s12 m4">
+<div class="col s12 m6 l3">
     <div class="card">
         <div class="card-content">
             <div class="card-title">
@@ -6,7 +6,7 @@
                 <div class="switch right">
                     <label>
                         Off
-                        <input type="checkbox">
+                        <input type="checkbox" [ngModel]="state" (ngModelChange)="updateState($event)">
                         <span class="lever"></span>
                         On
                     </label>
@@ -21,7 +21,7 @@
 
             <div>
                 <p class="range-field">
-                    <input type="range" min="0" max="100" [(ngModel)]="value"/>
+                    <input type="range" min="0" max="100" [ngModel]="value" (ngModelChange)="updateValue($event)"/>
                 </p>
             </div>
         </div>
