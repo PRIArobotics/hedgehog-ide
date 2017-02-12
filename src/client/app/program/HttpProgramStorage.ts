@@ -210,7 +210,7 @@ export default class HttpProgramStorage implements IProgramStorage {
 
         // send post request with headers (json) and the stringifyed data object
         return this.http
-            .post(`/versions/${programId}`,
+            .post(`/api/versions/${programId}`,
                 JSON.stringify(versionData),
                 {headers: this.headers})
             .toPromise()

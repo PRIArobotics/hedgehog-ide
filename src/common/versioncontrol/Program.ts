@@ -38,6 +38,10 @@ export default class Program {
         return versions;
     }
 
+    public createVersionFromWorkingTree (message: string, tag?: string) {
+        return this.storage.createVersionFromWorkingTree(this.name, message, tag);
+    }
+
     public getVersion(versionId: string): Promise<Version> {
         return this.storage.getVersion(this.name, versionId);
     }

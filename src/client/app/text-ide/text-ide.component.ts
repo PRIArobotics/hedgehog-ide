@@ -90,6 +90,8 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
     // modal action for deleting file
     private renameModalActions = new EventEmitter<string|MaterializeAction>();
 
+    private saveVersionModalActions = new EventEmitter<string|MaterializeAction>();
+
     // fileTree array containing TreeComponent compatible Objects
     private fileTree: Object[] = [];
 
@@ -142,6 +144,11 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
     private renameFileData: any = {
         currentItem: {},
         newName: ''
+    };
+
+    private saveVersionData = {
+        tag: '',
+        message: ''
     };
 
     private copyData: any = {};
@@ -630,6 +637,15 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
         this.fixModalOverlay();
     }
 
+    public openSaveVersionModal() {
+        this.saveVersionModalActions.emit({action:"modal", params:['open']});
+        this.fixModalOverlay();
+    }
+
+    public closeSaveVersionModal () {
+        this.saveVersionModalActions.emit({action:"modal", params:['close']});
+    }
+
     /**
      * Close the new file modal
      */
@@ -882,6 +898,12 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
 
     public onExecutionExit () {
         this.programIsRunning = false;
+    }
+
+    public async saveVersionAction () {
+        await this.program.createVersionFromWorkingTree(this.saveVersionData.message, this.saveVersionData.tag);
+        this.saveVersionData.message = '';
+        this.saveVersionData.tag = '';
     }
 
     /**
