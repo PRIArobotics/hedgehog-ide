@@ -36,6 +36,9 @@ export class BlocklyComponent implements OnInit, OnDestroy {
     // save generated python code for access in the view
     private pyCode: string;
 
+    // show/hide the resulting python code in the view
+    private showCode: boolean = false;
+
     @ViewChild(ProgramExecutionComponent)
     private programExecution: ProgramExecutionComponent;
     private programIsRunning: boolean = false;
@@ -59,6 +62,10 @@ export class BlocklyComponent implements OnInit, OnDestroy {
 
     public clearWorkspace(): void {
         this.workspace.clear();
+    }
+
+    public toggleShowCode(): void {
+        this.showCode = ! this.showCode;
     }
 
     public async saveWorkspace() {
