@@ -533,8 +533,6 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
      * @param editorContent string that is the whole editor content
      */
     public async onEditorContentChange (editorContent) {
-        console.log(editorContent);
-
         // save editorContent to the local file and currentFileContent
         this.currentFileContent = editorContent;
 

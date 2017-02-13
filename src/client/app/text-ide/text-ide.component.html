@@ -14,8 +14,11 @@
         </div>
     </nav>
 
-    <split direction="horizontal">
-        <split-area [size]="30">
+    <split
+            direction="horizontal"
+            (dragProgress)="updateIndicator('#tab' + openId)">
+        <split-area
+                [size]="30">
             <Tree #tree
                   id="file-tree"
                   [nodes]="fileTree"
