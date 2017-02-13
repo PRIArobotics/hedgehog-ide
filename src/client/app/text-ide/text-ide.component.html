@@ -8,7 +8,7 @@
                     <a materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="stop program"><i *ngIf="programIsRunning" (click)="programExecution.stop()" class="material-icons">stop</i></a>
                 </li>
                 <li><a (click)="saveAllFiles()"><i materialize="tooltip" class="material-icons tooltipped" data-position="bottom" data-delay="50" data-tooltip="save files">save</i></a></li>
-                <li><a ><i materialize="tooltip" class="material-icons tooltipped" data-position="bottom" data-delay="50" data-tooltip="save as version">note_add</i></a></li>
+                <li><a (click)="openSaveVersionModal()"><i materialize="tooltip" class="material-icons tooltipped" data-position="bottom" data-delay="50" data-tooltip="save as version">note_add</i></a></li>
                 <li><a (click)="toggleTheme()"><i materialize="tooltip" class="material-icons tooltipped" data-position="bottom" data-delay="50" data-tooltip="toggle dark theme">invert_colors</i></a></li>
             </ul>
         </div>
@@ -124,7 +124,6 @@
 </div>
 
 <div id="rename-modal" class="modal" materialize="modal" [materializeParams]="[{dismissible: true}]" [materializeActions]="renameModalActions">
-
     <form (submit)="renameAction()">
         <div class="modal-content">
             <h4 *ngIf="renameFileData.currentItem.children">Rename Directory <strong>{{renameFileData.currentItem.name}}</strong></h4>
@@ -138,7 +137,32 @@
         <div class="modal-footer">
             <button class="waves-effect waves-green btn-flat" type="reset" (click)="closeRenameModal()">Close</button>
             <button class="modal-action modal-close waves-effect waves-green btn-flat" type="submit">Rename</button>
+        </div>
+    </form>
+</div>
 
+<div id="save-version-modal" class="modal" materialize="modal" [materializeParams]="[{dismissible: true}]" [materializeActions]="saveVersionModalActions">
+    <form (submit)="saveVersionAction()">
+        <div class="modal-content">
+            <h4>Create a version</h4>
+            <div class="row">
+                <div class="input-field col s4">
+                    <i class="material-icons prefix">label</i>
+                    <input name="save-version-tag" id="save-version-tag" type="text" class="validate" [(ngModel)]="saveVersionData.tag">
+                    <label for="save-version-tag">Tag</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12">
+                    <i class="material-icons prefix">message</i>
+                    <input name="save-version-message" id="save-version-message" type="text" class="validate" [(ngModel)]="saveVersionData.message">
+                    <label for="save-version-message">Message</label>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="waves-effect waves-green btn-flat" type="reset" (click)="closeSaveVersionModal()">Close</button>
+            <button class="modal-action modal-close waves-effect waves-green btn-flat" type="submit">Create version</button>
         </div>
     </form>
 </div>

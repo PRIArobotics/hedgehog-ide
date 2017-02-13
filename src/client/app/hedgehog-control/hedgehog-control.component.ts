@@ -4,9 +4,6 @@ import { Component, OnInit } from '@angular/core';
     selector: 'hedgehog-control',
     template: require('./hedgehog-control.component.html')
 })
-export default class HedgehogControlComponent implements OnInit {
-    constructor() { }
+export default class HedgehogControlComponent {
 
-    public ngOnInit() { }
-    
 }

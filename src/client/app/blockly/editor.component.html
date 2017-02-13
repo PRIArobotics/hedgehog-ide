@@ -9,6 +9,9 @@
                 <li (click)="clearWorkspace()"><a materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="clear workspace">
                     <i class="material-icons">delete</i>
                 </a></li>
+                <li (click)="toggleShowCode()"><a materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="show code">
+                    <i class="material-icons">code</i>
+                </a></li>
                 <li>
                     <a (click)="run()" materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="run program"><i *ngIf="!programIsRunning" class="material-icons">play_arrow</i></a>
                     <a materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="stop program"><i *ngIf="programIsRunning" (click)="stop()" class="material-icons">stop</i></a>
@@ -18,8 +21,10 @@
     </nav>
     <div>
     <div class="row">
-        <div style="padding-left: 0px;" class="col s8" id="blocklyDiv"></div>
-        <div class="col s4"><pre>{{ pyCode }}</pre></div>
+        <div style="padding-left: 0px; padding-right: 0px" [ngClass]="{'col': true, 's8': showCode, 's12': !showCode}" id="blocklyDiv"></div>
+        <div [ngClass]="{'col': true, 's4': showCode, 's0': !showCode}"><pre>{{ pyCode }}</pre></div>
     </div>
-    <program-execution (onExit)="stop()"></program-execution>
+    <div class="row">
+        <program-execution (onExit)="stop()"></program-execution>
+    </div>
 </div>

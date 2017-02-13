@@ -11,6 +11,7 @@ import {BlocklyModule} from "./blockly/editor.module";
 import {BlocklyComponent} from "./blockly/editor.component";
 import {HedgehogControlModule} from "./hedgehog-control/hedgehog-control.module";
 import HedgehogControlComponent from "./hedgehog-control/hedgehog-control.component";
+import VersionListComponent from "./program/version-list.component";
 
 const appRoutes: Routes = [
     {
@@ -32,6 +33,10 @@ const appRoutes: Routes = [
     {
         path: 'hedgehog-control',
         component: HedgehogControlComponent
+    },
+    {
+        path: 'versions/:programName',
+        component: VersionListComponent
     }
 ];
 
