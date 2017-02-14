@@ -13,15 +13,15 @@
     "url": "git+https://github.com/kleiinnn/hedgehog-ide.git"
   },
   "author": "",
-  "license": "",
+  "license": "AGPLv3+",
   "bugs": {
     "url": "https://github.com/kleiinnn/hedgehog-ide/issues"
   },
   "homepage": "https://github.com/kleiinnn/hedgehog-ide#readme",
   "dependencies": {
-    "@angular/core": "~2.4.0",
-    "@angular/compiler": "~2.4.0",
     "@angular/common": "~2.4.0",
+    "@angular/compiler": "~2.4.0",
+    "@angular/core": "~2.4.0",
     "@angular/forms": "~2.4.0",
     "@angular/http": "~2.4.0",
     "@angular/platform-browser": "~2.4.0",
@@ -42,11 +42,12 @@
     "core-js": "^2.4.1",
     "figlet": "^1.2.0",
     "hapi": "^16.0.1",
+    "hedgehog-client": "^0.1.3",
     "inert": "^4.0.2",
     "jquery-ui-dist": "^1.12.1",
     "js-yaml": "^3.6.1",
     "materialize-css": "^0.98.0",
-    "nodegit": "^0.16.0",
+    "nodegit": "^0.17.0",
     "reflect-metadata": "^0.1.8",
     "rimraf": "^2.5.4",
     "rxjs": "^5.1.0",
@@ -78,7 +79,7 @@
     "sinon": "^1.17.6",
     "style-loader": "^0.13.1",
     "tslint": "^4.4.2",
-    "typescript": "^2.1.6",
+    "typescript": "~2.1.6",
     "typings": "^2.1.0",
     "webpack": "^2.2.0"
   }
