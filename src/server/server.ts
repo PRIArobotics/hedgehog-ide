@@ -6,6 +6,8 @@ import winston = require("winston");
 import chalk = require('chalk');
 import figlet = require('figlet');
 
+import {HedgehogClient} from 'hedgehog-client';
+
 import Api from "./api/Api";
 import ProgramResource from "./api/resource/versioncontrol/ProgramResource";
 import GitProgramStorage from "./versioncontrol/GitProgramStorage";
@@ -18,6 +20,7 @@ import NodeProcessManager from "./process/NodeProcessManager";
 import BlobResource from "./api/resource/versioncontrol/BlobResource";
 import TreeResource from "./api/resource/versioncontrol/TreeResource";
 import VersionResource from "./api/resource/versioncontrol/VersionResource";
+import MotorResource from "./api/resource/hedgehog-io/MotorResource";
 
 // Return external module as the file is outside of the
 // TypeScript compile output
@@ -67,6 +70,7 @@ let processManager = new NodeProcessManager(
     serverConfig.process.pythonPath,
     programStorage
 );
+let hedgehog = new HedgehogClient(serverConfig.hedgehogConnection);
 
 let hedgehogApi = new Api(server, '/api');
 hedgehogApi.registerEndpoint(new ProgramResource(programStorage, modelRegistry));
@@ -76,6 +80,7 @@ hedgehogApi.registerEndpoint(new BlobResource(programStorage, modelRegistry));
 hedgehogApi.registerEndpoint(new TreeResource(programStorage, modelRegistry));
 hedgehogApi.registerEndpoint(new VersionResource(programStorage, modelRegistry));
 hedgehogApi.registerEndpoint(new ProcessResource(processManager, modelRegistry));
+hedgehogApi.registerEndpoint(new MotorResource(hedgehog, modelRegistry));
 
 /**
  * Socket.io setup

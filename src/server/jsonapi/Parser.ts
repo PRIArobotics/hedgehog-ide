@@ -49,13 +49,13 @@ export class ObjectParser<T> {
             const requirementType = requiredProperties[property.name]
                 ? getRequirementType(requiredProperties[property.name], property.name)
                 : getRequirementType(property.required, property.name);
-            if(requirementType === RequirementType.Required && !object[property.name]) {
+            if(requirementType === RequirementType.Required && !object.hasOwnProperty(property.name)) {
                 throw new Error(`Missing property: ${property.name}`);
-            } else if(requirementType === RequirementType.Forbidden && object[property.name]) {
+            } else if(requirementType === RequirementType.Forbidden && object.hasOwnProperty(property.name)) {
                 throw new Error(`Forbidden property: ${property.name}`);
             }
 
-            if(object[property.name]) {
+            if(object.hasOwnProperty(property.name)) {
                 if(property.handler instanceof ObjectParser) {
                     if(target[property.name] instanceof Array) {
                         target[property.name] = property.handler.parseArray(

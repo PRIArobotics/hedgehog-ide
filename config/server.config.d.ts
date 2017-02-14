@@ -1,6 +1,7 @@
 interface IServerConfig {
     environment: string;
     programStorageDirectory: string;
+    hedgehogConnection: string;
     process: IProcessConfig;
     connection: IConnectionConfig;
 }
