@@ -52,17 +52,13 @@ export default class MotorResource extends ApiResource {
         }
 
         let velocity: number;
-        console.log(typeof(requestData.attributes.power))
         if (typeof(requestData.attributes.power) === 'number') {
             velocity = requestData.attributes.power * 10;
         } else {
             velocity = requestData.attributes.velocity;
         }
 
-        console.log('velo', velocity)
         if (velocity === 0) {
-            console.log('hello')
-            console.log(MotorState.BRAKE)
             this.hedgehog.setMotor(motorPort, MotorState.BRAKE);
         } else {
             this.hedgehog.move(motorPort, velocity);
