@@ -1060,15 +1060,21 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
     private updateIndicator(tabToIndicate) {
         // get indicator array
         let indicatorDiv = $('.indicator').first();
+        let tabToIndicateJquery = $(tabToIndicate);
 
-        // update css left and right position
-        indicatorDiv.css(
-            {
-                left: $(tabToIndicate).position().left,
-                right: $(tabToIndicate).parent().width() -
-                ($(tabToIndicate).position().left + $(tabToIndicate).width())
-            }
-        );
+        // check if the tabToIndicate exists
+        if (tabToIndicateJquery.length > 0) {
+            // update css left and right position
+            indicatorDiv.css(
+                {
+                    left: tabToIndicateJquery.position().left,
+                    right: tabToIndicateJquery.parent().width() -
+                    (tabToIndicateJquery.position().left + tabToIndicateJquery.width())
+                }
+            );
+        } else {
+            this.resetIndicator();
+        }
     }
 
     /**

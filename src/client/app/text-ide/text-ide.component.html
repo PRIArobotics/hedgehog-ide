@@ -18,7 +18,7 @@
             direction="horizontal"
             (dragProgress)="updateIndicator('#tab' + openId)">
         <split-area
-                [size]="30">
+                [size]="20">
             <Tree #tree
                   id="file-tree"
                   [nodes]="fileTree"
@@ -53,7 +53,7 @@
                 </template>
             </context-menu>
         </split-area>
-        <split-area [size]="70">
+        <split-area [size]="80">
             <split direction="vertical">
                 <split-area [size]="70">
                     <div class="editor-wrapper row">
