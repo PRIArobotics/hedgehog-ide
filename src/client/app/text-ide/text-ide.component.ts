@@ -899,6 +899,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     public async saveVersionAction () {
+        await this.saveAllFiles();
         await this.program.createVersionFromWorkingTree(this.saveVersionData.message, this.saveVersionData.tag);
         this.saveVersionData.message = '';
         this.saveVersionData.tag = '';
@@ -920,7 +921,6 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
     /**
      * Save all files that have changed and are in the current project
      */
-    // tslint:disable-next-line
     private async saveAllFiles () {
         // loop through all indexed files
         for (let fileId of this.files.keys()) {

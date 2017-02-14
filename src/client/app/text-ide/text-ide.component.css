@@ -10,6 +10,10 @@
     width: 400px;
 }
 
+#save-version-modal {
+    width: 500px;
+}
+
 #sortable-tabs {
     z-index: 0;
     margin-top: 10px;
