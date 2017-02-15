@@ -14,7 +14,9 @@ export default class NodeProcessManager implements IProcessManager {
     private processes: Map<number, NodeProcess> = new Map();
 
     // GitProgramStorage is required here as we need the program to be physically stored on the system
-    constructor (private processDir: string, private pythonPath: string, private storage: GitProgramStorage) { }
+    constructor (private processDir: string,
+                 private pythonPath: string,
+                 private storage: GitProgramStorage) { }
 
     public run (programName: string, filePath: string, args: string[] = []): Promise<NodeProcess> {
         let process: NodeProcess = new NodeProcess(
@@ -37,7 +39,7 @@ export default class NodeProcessManager implements IProcessManager {
     }
 
     public kill (pid: number): Promise<void> {
-        this.processes.get(pid).nodeProcess.kill();
+        this.processes.get(pid).nodeProcess.kill('SIGINT');
         return Promise.resolve();
     }
 

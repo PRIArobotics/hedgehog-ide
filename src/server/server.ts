@@ -65,12 +65,12 @@ server.connection(serverConfig.connection);
  * API setup
  */
 let programStorage = new GitProgramStorage(serverConfig.programStorageDirectory);
+let hedgehog = new HedgehogClient(serverConfig.hedgehogConnection);
 let processManager = new NodeProcessManager(
     serverConfig.process.temporaryStorageDirectory,
     serverConfig.process.pythonPath,
     programStorage
 );
-let hedgehog = new HedgehogClient(serverConfig.hedgehogConnection);
 
 let hedgehogApi = new Api(server, '/api');
 hedgehogApi.registerEndpoint(new ProgramResource(programStorage, modelRegistry));
