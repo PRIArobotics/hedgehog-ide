@@ -31,8 +31,6 @@ export class HttpHedgehogClientService {
             }
         };
 
-        console.log(port, power)
-
         // send post request with headers (json) and the stringifyed data object
         return this.http
             .patch(`/api/motors/${port}`,

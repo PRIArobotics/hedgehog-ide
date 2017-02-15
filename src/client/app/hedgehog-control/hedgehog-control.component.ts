@@ -7,8 +7,8 @@ import {HttpHedgehogClientService} from "./http-hedgehog-client.service";
 })
 
 export default class HedgehogControlComponent {
-    public motorControls: {value: number, state: boolean}[] = [];
-    public servoControls: {value: number, state: boolean}[] = [];
+    public motorControls: Array<{value: number, state: boolean}> = [];
+    public servoControls: Array<{value: number, state: boolean}> = [];
 
     constructor (private hedgehogClient: HttpHedgehogClientService) {
         [0,1,2,3].forEach(() => {
@@ -28,10 +28,8 @@ export default class HedgehogControlComponent {
 
     private updateMotorValue(port: number, value: number) {
         this.motorControls[port].value = value;
-        console.log(this.motorControls[port])
 
         if (this.motorControls[port].state) {
-            console.log("sending request")
             this.hedgehogClient.setMotor(port, value);
         }
     }
@@ -41,6 +39,8 @@ export default class HedgehogControlComponent {
 
         if (state) {
             this.hedgehogClient.setMotor(port, this.motorControls[port].value);
+        } else {
+            this.hedgehogClient.setMotor(port, 0);
         }
     }
 
@@ -57,6 +57,8 @@ export default class HedgehogControlComponent {
 
         if (state) {
             this.hedgehogClient.setMotor(port, this.servoControls[port].value);
+        } else {
+            this.hedgehogClient.setMotor(port, 0);
         }
     }
 }
