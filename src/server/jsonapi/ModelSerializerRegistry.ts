@@ -13,6 +13,8 @@ import serializeProcess from "../serializer/ProcessSerializer";
 import serializeTree from "../serializer/TreeSerializer";
 import serializeBlob from "../serializer/BlobSerializer";
 import serializeVersion from "../serializer/VersionSerializer";
+import serializeSensor from "../serializer/SensorSerializer";
+import Sensor from "../../common/Sensor";
 
 let modelRegistry = new SerializerRegisty();
 modelRegistry.registerSerializer(Program, serializeProgram);
@@ -25,5 +27,6 @@ modelRegistry.registerSerializer(Version, serializeVersion);
 // We need a class so we cannot use the IProcess interface here
 // Instead, use NodeProcess
 modelRegistry.registerSerializer(NodeProcess, serializeProcess);
+modelRegistry.registerSerializer(Sensor, serializeSensor);
 
 export default modelRegistry;
