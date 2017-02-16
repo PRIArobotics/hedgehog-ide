@@ -6,6 +6,7 @@ import {Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
     styles: [require('./output-control.component.css')]
 })
 export default class OutputControlComponent {
+    @Input() public name: string;
     @Input() public value: number;
     @Input() public state: boolean;
 
@@ -19,6 +20,6 @@ export default class OutputControlComponent {
 
     private updateState (state) {
         this.state = state;
-        this.valueChanged.emit(state);
+        this.stateChanged.emit(state);
     }
 }

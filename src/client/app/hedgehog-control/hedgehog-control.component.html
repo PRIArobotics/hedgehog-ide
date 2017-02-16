@@ -1,4 +1,18 @@
 <div class="app-content row">
-    <output-control></output-control>
-    <output-control></output-control>
+
+    <output-control
+            *ngFor="let motor of motorControls; let i = index;"
+            [name]="'Motor ' + i"
+            (valueChanged)="updateMotorValue(i, $event)"
+            (stateChanged)="updateMotorState(i, $event)">
+    </output-control>
+
+    <output-control
+            *ngFor="let motor of servoControls; let i = index;"
+            [name]="'Servo ' + i"
+            (valueChanged)="updateServoValue(i, $event)"
+            (stateChanged)="updateServoState(i, $event)">
+    </output-control>
+
+
 </div>
