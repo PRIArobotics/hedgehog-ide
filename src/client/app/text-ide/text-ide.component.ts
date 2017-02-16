@@ -92,6 +92,8 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
 
     private saveVersionModalActions = new EventEmitter<string|MaterializeAction>();
 
+    private settingsModalActions = new EventEmitter<string|MaterializeAction>();
+
     // fileTree array containing TreeComponent compatible Objects
     private fileTree: Object[] = [];
 
@@ -152,6 +154,13 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
     };
 
     private copyData: any = {};
+
+    private editorOptions: Object = {
+        enableBasicAutocompletion: true,
+        enableLiveAutocompletion: true,
+        fontSize: 12,
+        wrapBehavioursEnabled: false
+    };
 
     /**
      * Constructor that sets the programName from the router
@@ -255,14 +264,16 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
             }
         });
 
+        ($('select') as any).material_select();
+
         // fixes error in the code
         this.editor.getEditor().$blockScrolling = Infinity;
 
-        // add auto completion options
-        this.editor.getEditor().setOptions({
-            enableBasicAutocompletion: true,
-            enableLiveAutocompletion: true
-        });
+        this.updateEditorSettings();
+    }
+
+    public updateEditorSettings () {
+        this.editor.getEditor().setOptions(this.editorOptions);
     }
 
     public async ngOnDestroy(): Promise<void> {
@@ -635,15 +646,6 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
         this.fixModalOverlay();
     }
 
-    public openSaveVersionModal() {
-        this.saveVersionModalActions.emit({action:"modal", params:['open']});
-        this.fixModalOverlay();
-    }
-
-    public closeSaveVersionModal () {
-        this.saveVersionModalActions.emit({action:"modal", params:['close']});
-    }
-
     /**
      * Close the new file modal
      */
@@ -886,6 +888,25 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
             currentItem: {},
             newName: ''
         };
+    }
+
+    public openSaveVersionModal() {
+        this.saveVersionModalActions.emit({action:"modal", params:['open']});
+        this.fixModalOverlay();
+    }
+
+    public closeSaveVersionModal () {
+        this.saveVersionModalActions.emit({action:"modal", params:['close']});
+    }
+
+    public openSettingsModal() {
+        this.settingsModalActions.emit({action:"modal", params:['open']});
+        this.fixModalOverlay();
+    }
+
+    public closeSettingsModal () {
+        this.updateEditorSettings();
+        this.settingsModalActions.emit({action:"modal", params:['close']});
     }
 
     public async run () {

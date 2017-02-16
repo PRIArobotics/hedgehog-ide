@@ -9,7 +9,7 @@
                 </li>
                 <li><a (click)="saveAllFiles()"><i materialize="tooltip" class="material-icons tooltipped" data-position="bottom" data-delay="50" data-tooltip="save files">save</i></a></li>
                 <li><a (click)="openSaveVersionModal()"><i materialize="tooltip" class="material-icons tooltipped" data-position="bottom" data-delay="50" data-tooltip="save as version">note_add</i></a></li>
-                <li><a (click)="toggleTheme()"><i materialize="tooltip" class="material-icons tooltipped" data-position="bottom" data-delay="50" data-tooltip="toggle dark theme">invert_colors</i></a></li>
+                <li><a (click)="openSettingsModal()"><i materialize="tooltip" class="material-icons tooltipped" data-position="bottom" data-delay="50" data-tooltip="settings">settings</i></a></li>
             </ul>
         </div>
     </nav>
@@ -163,6 +163,30 @@
         <div class="modal-footer">
             <button class="waves-effect waves-green btn-flat" type="reset" (click)="closeSaveVersionModal()">Close</button>
             <button class="modal-action modal-close waves-effect waves-green btn-flat" type="submit">Create version</button>
+        </div>
+    </form>
+</div>
+
+<div id="settings-modal" class="modal" materialize="modal" [materializeParams]="[{dismissible: true}]" [materializeActions]="settingsModalActions">
+    <form (submit)="closeSettingsModal()">
+        <div class="modal-content">
+            <h4>Settings</h4>
+            <div class="row">
+                <p>
+                    <input type="checkbox" class="filled-in" id="settings-dark-theme" (change)="toggleTheme()"/>
+                    <label for="settings-dark-theme">Dark Theme</label>
+                </p>
+                <p>
+                    <input type="checkbox" class="filled-in" id="settings-line-wrap" name="settings-line-wrap" [(ngModel)]="editorOptions.wrapBehavioursEnabled"/>
+                    <label for="settings-line-wrap">Line Wrap</label>
+                </p>
+
+                <div class="input-field col s12">
+                    <input id="settings-fontsize" type="number" name="settings-fontsize" [(ngModel)]="editorOptions.fontSize" value="0" (change)="updateEditorSettings()">
+                    <label for="settings-fontsize">Font Size</label>
+                </div>
+
+            </div>
         </div>
     </form>
 </div>
