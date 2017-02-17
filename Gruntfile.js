@@ -106,7 +106,7 @@ module.exports = function(grunt) {
         },
         watch: {
             copy: {
-                files: ['src/**/*.html', 'src/**/*.css'],
+                files: ['src/**/*.html', 'src/**/*.css','src/client/app/blockly/lib/**'],
                 tasks: ['copy', 'injector'],
                 options: {
                     interrupt: true
