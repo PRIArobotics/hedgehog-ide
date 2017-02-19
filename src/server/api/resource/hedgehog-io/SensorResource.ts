@@ -1,4 +1,3 @@
-///<reference path="../../../jsonapi/Parser.ts"/>
 import Hapi = require('hapi');
 import winston = require("winston");
 import {HedgehogClient} from 'hedgehog-client';
