@@ -63,6 +63,6 @@ export default class MotorResource extends ApiResource {
         } else {
             this.hedgehog.move(motorPort, velocity);
         }
-        return reply('').code(200);
+        return reply('');
     }
 }

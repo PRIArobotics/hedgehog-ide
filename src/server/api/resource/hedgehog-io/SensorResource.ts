@@ -91,6 +91,6 @@ export default class SensorResource extends ApiResource {
             }).code(400);
         }
         await this.hedgehog.setInputState(sensorPort, pullup);
-        return reply('');
+        return this.getSensor(req, reply);
     }
 }
