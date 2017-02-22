@@ -23,7 +23,7 @@
                 <span class="col m2 valign" *ngIf="version.tag"><i class="material-icons">label</i> {{ version.tag }}</span>
                 -->
             </div>
-            <div class="row" *ngIf="item.value.type == TreeItemType.Blob">
+            <div class="row" [routerLink]="['/versions/' + programName + '/blobs/' + item.value.id]" *ngIf="item.value.type == TreeItemType.Blob">
                 <span class="col valign">
                     <i class="material-icons">insert_drive_file</i>
                     <strong>{{ item.key }}</strong>

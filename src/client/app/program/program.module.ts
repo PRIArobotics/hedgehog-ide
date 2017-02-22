@@ -7,6 +7,7 @@ import {RouterModule} from "@angular/router";
 import VersionListComponent from "./version-list.component";
 import DirectoryViewComponent from "./directory-view.component";
 import {KeysPipe} from "./directory-view.component";
+import FileViewComponent from "./file-view.component";
 
 @NgModule({
     imports: [
@@ -19,7 +20,8 @@ import {KeysPipe} from "./directory-view.component";
         ProgramListComponent,
         VersionListComponent,
         DirectoryViewComponent,
-        KeysPipe
+        KeysPipe,
+        FileViewComponent
     ]
 })
 export class ProgramModule { }

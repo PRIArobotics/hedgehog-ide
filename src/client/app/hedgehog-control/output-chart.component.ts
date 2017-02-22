@@ -1,4 +1,4 @@
-import {Component, Input, ViewChild, OnInit} from '@angular/core';
+import {Component, Input, ViewChild, OnInit, SimpleChanges, OnChanges, DoCheck, IterableDiffers} from '@angular/core';
 import {BaseChartDirective} from "ng2-charts/ng2-charts";
 
 @Component({
@@ -6,7 +6,7 @@ import {BaseChartDirective} from "ng2-charts/ng2-charts";
     template: require('./output-chart.component.html'),
     styles: [require('./output-chart.component.css')]
 })
-export default class OutputChartComponent implements OnInit {
+export default class OutputChartComponent implements DoCheck {
 
     @ViewChild(BaseChartDirective) public chart: BaseChartDirective;
 
@@ -22,6 +22,9 @@ export default class OutputChartComponent implements OnInit {
                 ticks: {
                     beginAtZero:true
                 }
+            }],
+            xAxes: [{
+                display: false
             }]
         }
     };
@@ -37,15 +40,32 @@ export default class OutputChartComponent implements OnInit {
         }
     ];
 
+    private differ: any;
+
+    public constructor (differs: IterableDiffers) {
+        this.differ = differs.find([]).create(null);
+    }
+
 
     public ngOnInit(): void {
-        setInterval(() => {
+        /*setInterval(() => {
             this.updateChart();
-        }, 1000);
+        }, 1000);*/
+    }
+
+    /*public ngOnChanges(changes: SimpleChanges) {
+         console.log(changes['lineData']);
+    }*/
+
+    public ngDoCheck () {
+        if (this.differ.diff(this.lineData)) {
+            console.log('update');
+            console.log(this.lineData);
+            this.chart.ngOnChanges({});
+        }
     }
 
     private updateChart() {
-        this.chart.ngOnChanges({});
-
+        //this.chart.ngOnChanges({});
     }
 }

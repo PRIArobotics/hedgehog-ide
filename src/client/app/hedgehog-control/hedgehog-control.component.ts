@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import {Component, ChangeDetectorRef} from '@angular/core';
 import {HttpHedgehogClientService} from "./http-hedgehog-client.service";
+import {Observable} from "rxjs";
 
 @Component({
     selector: 'hedgehog-control',
@@ -14,7 +15,7 @@ export default class HedgehogControlComponent {
     public analogSensors: Array<{dataset: number[], labels: string[]}> = [];
     public digitalSensors: Array<{dataset: number[], labels: string[]}> = [];
 
-    constructor (private hedgehogClient: HttpHedgehogClientService) {
+    constructor (private hedgehogClient: HttpHedgehogClientService, ref: ChangeDetectorRef) {
         [0, 1, 2, 3].forEach(() => {
             this.motorControls.push({
                 value: 0,
@@ -31,30 +32,47 @@ export default class HedgehogControlComponent {
 
         [0, 1, 2, 3, 4, 5, 6, 7].forEach(() => {
             this.analogSensors.push({
-                dataset: [0],
+                dataset: [],
                 labels: []
             });
         });
 
         [0, 1, 2 , 3, 4, 5, 6, 7].forEach(() => {
             this.digitalSensors.push({
-                dataset: [0],
+                dataset: [],
                 labels: []
             });
         });
 
-        setInterval(async () => {
-            let sensorList = await this.hedgehogClient.getSensorList();
+        Observable.interval(1000)
+            .subscribe(async () => {
+                let sensorList = await this.hedgehogClient.getSensorList();
 
-            for (let sensorData of sensorList.data) {
-                if (sensorData.attributes.type === "analog") {
-                    this.analogSensors[+sensorData.id % 8].dataset.push(sensorData.attributes.value);
-                } else if (sensorData.attributes.type === "digital") {
-                    this.digitalSensors[+sensorData.id % 8].dataset.push(sensorData.attributes.value ? 1 : 0);
+                for (let sensorData of sensorList.data) {
+                    let dataset: any[];
+                    let labels: string[];
+
+                    let value = sensorData.attributes.value;
+
+                    if (sensorData.attributes.type === "analog") {
+                        dataset = this.analogSensors[+sensorData.id % 8].dataset;
+                        labels = this.analogSensors[+sensorData.id % 8].labels;
+                    } else if (sensorData.attributes.type === "digital") {
+                        dataset = this.digitalSensors[+sensorData.id % 8].dataset;
+                        labels = this.digitalSensors[+sensorData.id % 8].labels;
+                        value = value ? 1 : 0;
+                    }
+
+                    dataset.push(value);
+                    labels.push('');
+
+                    if (dataset.length > 10) {
+                        dataset.shift();
+                        labels.shift();
+                    }
                 }
-            }
-
-        }, 1000);
+                ref.markForCheck();
+            });
     }
 
     private updateMotorValue(port: number, value: number) {
