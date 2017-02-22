@@ -59,14 +59,14 @@ export class HttpHedgehogClientService {
             .then(() => Promise.resolve());
     }
 
-    public async setServo (port: number, position: number) {
+    public async setServo (port: number, position: number, enabled: boolean = true) {
         // create sensor data object using the given parameters
         let sensorData = {
             data: {
                 id: port,
                 type: 'servo',
                 attributes: {
-                    enabled: true,
+                    enabled,
                     position,
                 }
             }
