@@ -1,0 +1,29 @@
+<div class="col s12 m6 l3">
+    <div class="card">
+        <div class="card-content">
+            <div class="card-title">
+                <span>{{ name }}</span>
+                <div class="switch right">
+                    <label>
+                        Off
+                        <input type="checkbox" [ngModel]="state" (ngModelChange)="updateState($event)">
+                        <span class="lever"></span>
+                        On
+                    </label>
+                </div>
+            </div>
+
+            <div>
+                <div class="valign-wrapper current-value-wrapper">
+                    <h5 class="center-align center-align current-value">{{ value }}</h5>
+                </div>
+            </div>
+
+            <div>
+                <p class="range-field">
+                    <input type="range" min="0" max="100" [ngModel]="value" (ngModelChange)="updateValue($event)"/>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
