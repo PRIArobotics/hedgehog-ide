@@ -5,6 +5,8 @@ import {MaterializeModule} from "angular2-materialize";
 import {FormsModule} from "@angular/forms";
 import {RouterModule} from "@angular/router";
 import VersionListComponent from "./version-list.component";
+import DirectoryViewComponent from "./directory-view.component";
+import {KeysPipe} from "./directory-view.component";
 
 @NgModule({
     imports: [
@@ -15,7 +17,9 @@ import VersionListComponent from "./version-list.component";
     ],
     declarations: [
         ProgramListComponent,
-        VersionListComponent
+        VersionListComponent,
+        DirectoryViewComponent,
+        KeysPipe
     ]
 })
 export class ProgramModule { }
