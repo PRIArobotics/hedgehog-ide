@@ -1,25 +1,51 @@
-import {Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
+import {Component, Input, ViewChild, OnInit} from '@angular/core';
+import {BaseChartDirective} from "ng2-charts/ng2-charts";
 
 @Component({
-    selector: 'output-control',
-    template: require('./output-control.component.html'),
-    styles: [require('./output-control.component.css')]
+    selector: 'output-chart',
+    template: require('./output-chart.component.html'),
+    styles: [require('./output-chart.component.css')]
 })
-export default class OutputControlComponent {
+export default class OutputChartComponent implements OnInit {
+
+    @ViewChild(BaseChartDirective) public chart: BaseChartDirective;
+
     @Input() public name: string;
-    @Input() public value: number;
-    @Input() public state: boolean;
+    @Input() public lineData: number[] = [0];
+    @Input() public lineLabels: string[] = [];
 
-    @Output() private stateChanged = new EventEmitter();
-    @Output() private valueChanged = new EventEmitter();
+    public lineOptions = {
+        responsive: true,
+        animation: false,
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero:true
+                }
+            }]
+        }
+    };
 
-    private updateValue (value) {
-        this.value = value;
-        this.valueChanged.emit(value);
+    public lineChartColors = [
+        { // grey
+            backgroundColor: 'rgba(148,159,177,0.2)',
+            borderColor: 'rgba(148,159,177,1)',
+            pointBackgroundColor: 'rgba(148,159,177,1)',
+            pointBorderColor: '#fff',
+            pointHoverBackgroundColor: '#fff',
+            pointHoverBorderColor: 'rgba(148,159,177,0.8)'
+        }
+    ];
+
+
+    public ngOnInit(): void {
+        setInterval(() => {
+            this.updateChart();
+        }, 1000);
     }
 
-    private updateState (state) {
-        this.state = state;
-        this.stateChanged.emit(state);
+    private updateChart() {
+        this.chart.ngOnChanges({});
+
     }
 }

@@ -3,26 +3,16 @@
         <div class="card-content">
             <div class="card-title">
                 <span>{{ name }}</span>
-                <div class="switch right">
-                    <label>
-                        Off
-                        <input type="checkbox" [ngModel]="state" (ngModelChange)="updateState($event)">
-                        <span class="lever"></span>
-                        On
-                    </label>
-                </div>
             </div>
 
-            <div>
-                <div class="valign-wrapper current-value-wrapper">
-                    <h5 class="center-align center-align current-value">{{ value }}</h5>
-                </div>
-            </div>
-
-            <div>
-                <p class="range-field">
-                    <input type="range" min="0" max="100" [ngModel]="value" (ngModelChange)="updateValue($event)"/>
-                </p>
+            <div style="display: block;">
+                <canvas baseChart
+                        [data]="lineData"
+                        [labels]="lineLabels"
+                        [options]="lineOptions"
+                        [colors]="lineChartColors"
+                        [legend]="false"
+                        [chartType]="'line'"></canvas>
             </div>
         </div>
     </div>

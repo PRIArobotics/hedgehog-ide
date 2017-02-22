@@ -3,16 +3,31 @@
     <output-control
             *ngFor="let motor of motorControls; let i = index;"
             [name]="'Motor ' + i"
+            [minValue]="-100"
             (valueChanged)="updateMotorValue(i, $event)"
             (stateChanged)="updateMotorState(i, $event)">
     </output-control>
 
     <output-control
-            *ngFor="let motor of servoControls; let i = index;"
+            *ngFor="let servo of servoControls; let i = index;"
             [name]="'Servo ' + i"
+            [maxValue]="2047"
             (valueChanged)="updateServoValue(i, $event)"
             (stateChanged)="updateServoState(i, $event)">
     </output-control>
 
+    <output-chart
+            *ngFor="let analog of analogSensors; let i = index;"
+            [name]="'Analog ' + i"
+            [lineData]="analogSensors[i].dataset"
+            [lineLabels]="analogSensors[i].labels">
+    </output-chart>
+
+    <output-chart
+            *ngFor="let digital of digitalSensors; let i = index;"
+            [name]="'Digital ' + (i + 8)"
+            [lineData]="digitalSensors[i].dataset"
+            [lineLabels]="digitalSensors[i].labels">
+    </output-chart>
 
 </div>

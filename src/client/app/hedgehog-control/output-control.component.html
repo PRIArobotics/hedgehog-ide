@@ -21,7 +21,7 @@
 
             <div>
                 <p class="range-field">
-                    <input type="range" min="0" max="100" [ngModel]="value" (ngModelChange)="updateValue($event)"/>
+                    <input type="range" min="{{ minValue }}" max="{{ maxValue }}" [ngModel]="value" (ngModelChange)="updateValue($event)"/>
                 </p>
             </div>
         </div>
