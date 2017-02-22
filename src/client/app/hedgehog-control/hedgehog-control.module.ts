@@ -8,7 +8,7 @@ import HedgehogControlComponent from "./hedgehog-control.component";
 import OutputControlComponent from "./output-control.component";
 import {HttpHedgehogClientService} from "./http-hedgehog-client.service";
 import OutputChartComponent from "./output-chart.component";
-require("chart.js");
+import "chart.js";
 
 @NgModule({
     imports: [
