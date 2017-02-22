@@ -37,7 +37,7 @@ export class BlocklyComponent implements OnInit, OnDestroy {
     private pyCode: string;
 
     // show/hide the resulting python code in the view
-    private showCode: boolean = false;
+    private showCode: boolean = true;
 
     @ViewChild(ProgramExecutionComponent)
     private programExecution: ProgramExecutionComponent;

@@ -1,6 +1,6 @@
 import Hapi = require('hapi');
 import winston = require("winston");
-import {HedgehogClient, MotorState} from 'hedgehog-client';
+import {HedgehogClient} from 'hedgehog-client';
 
 import ApiResource from "../../ApiResource";
 import SerializerRegistry from "../../../serializer/SerializerRegistry";
@@ -9,14 +9,14 @@ import {JsonApiDocument, JsonApiResource} from "../../../jsonapi/JsonApiObjects"
 import {RequirementType, ObjectParser} from "../../../jsonapi/Parser";
 import ApiEndpoint from "../../ApiEndpoint";
 
-export default class MotorResource extends ApiResource {
+export default class ServoResource extends ApiResource {
     public constructor (private hedgehog: HedgehogClient, private serializerRegistry: SerializerRegistry) {
-        super('/motors');
+        super('/servos');
     }
 
-    @ApiEndpoint('PATCH', '/{motorId}')
-    public setMotor (req: Hapi.Request, reply: IReply) {
-        const motorPort = Number(req.params['motorId']);
+    @ApiEndpoint('PATCH', '/{servoId}')
+    public setServo (req: Hapi.Request, reply: IReply) {
+        const servoPort = Number(req.params['servoId']);
 
         let parser = JsonApiDocument.getParser().addProperties({
             name: 'data',
@@ -26,16 +26,12 @@ export default class MotorResource extends ApiResource {
                 required: RequirementType.Required,
                 handler: new ObjectParser(() => ({}),
                     {
-                        name: 'power',
-                        required: object => !object.hasOwnProperty('velocity')
-                            ? RequirementType.Required
-                            : RequirementType.Forbidden
+                        name: 'enabled',
+                        required: RequirementType.Required
                     },
                     {
-                        name: 'velocity',
-                        required: object => !object.hasOwnProperty('power')
-                            ? RequirementType.Required
-                            : RequirementType.Forbidden
+                        name: 'position',
+                        required: RequirementType.Required
                     }
                 )
             })
@@ -51,18 +47,8 @@ export default class MotorResource extends ApiResource {
             }).code(400);
         }
 
-        let velocity: number;
-        if (typeof(requestData.attributes.power) === 'number') {
-            velocity = requestData.attributes.power * 10;
-        } else {
-            velocity = requestData.attributes.velocity;
-        }
 
-        if (velocity === 0) {
-            this.hedgehog.setMotor(motorPort, MotorState.BRAKE);
-        } else {
-            this.hedgehog.move(motorPort, velocity);
-        }
+        this.hedgehog.setServo(servoPort, requestData.attributes.enabled, Number(requestData.attributes.position));
         return reply('');
     }
 }

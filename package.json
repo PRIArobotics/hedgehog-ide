@@ -34,7 +34,7 @@
     "angular2-contextmenu": "^0.7.6",
     "angular2-localstorage": "github:jgiunti/angular2-localstorage",
     "angular2-materialize": "^6.2.0",
-    "angular2-tree-component": "~2.8.0",
+    "angular2-tree-component": "^2.8.2",
     "babel-polyfill": "^6.16.0",
     "brace": "^0.9.1",
     "buffer": "^5.0.0",
