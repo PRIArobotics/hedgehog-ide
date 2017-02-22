@@ -28,6 +28,9 @@ import {AngularSplitModule} from "angular-split";
     declarations: [
         TextIdeComponent,
         AceEditorComponent
+    ],
+    exports: [
+        AceEditorComponent
     ]
 })
 
