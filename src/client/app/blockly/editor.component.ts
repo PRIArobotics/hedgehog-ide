@@ -142,10 +142,30 @@ export class BlocklyComponent implements OnInit, OnDestroy {
     private getToolbox(): string {
         return `<xml id="toolbox" style="display: none">
       <category name="Hedgehog" colour="120">
-        <block type="hedgehog_move"></block>
+        <block type="hedgehog_move">
+          <value name="SPEED">
+            <shadow type="hedgehog_speed">
+              <field name="SPEED">-100</field>
+            </shadow>
+          </value>
+          <value name="TIME">
+            <shadow type="math_number">
+              <field name="NUM">10</field>
+            </shadow>
+          </value>
+        </block>
+        <block type="hedgehog_turn">
+          <value name="NUM">
+            <shadow type="math_number">
+              <field name="NUM">3</field>
+            </shadow>
+          </value>
+        </block>
         <block type="hedgehog_read_analog"></block>
         <block type="hedgehog_read_digital"></block>
       </category>
+
+      <!-- Standard Blocks -->
       <category name="Logic" colour="210">
         <block type="controls_if"></block>
         <block type="logic_compare"></block>
