@@ -24,7 +24,6 @@ export class HttpProcessManagerService implements IProcessManager {
     private io: SocketIOClient.Socket;
 
     public constructor (private http: Http, @Inject(DOCUMENT) private document) {
-        console.log(`${document.location.protocol}//${document.location.hostname}:${document.location.port}`);
         this.io = io(`${document.location.protocol}//${document.location.hostname}:${document.location.port}`);
         this.socketIoRegisterNewProcessHandler();
         this.socketIoRegisterStreamDataHandler('stdout');
