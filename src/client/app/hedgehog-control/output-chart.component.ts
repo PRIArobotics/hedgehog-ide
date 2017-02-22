@@ -1,4 +1,4 @@
-import {Component, Input, ViewChild, OnInit, SimpleChanges, OnChanges, DoCheck, IterableDiffers} from '@angular/core';
+import {Component, Input, ViewChild, DoCheck, IterableDiffers} from '@angular/core';
 import {BaseChartDirective} from "ng2-charts/ng2-charts";
 
 @Component({
@@ -40,32 +40,15 @@ export default class OutputChartComponent implements DoCheck {
         }
     ];
 
+    // From: http://stackoverflow.com/questions/36247016/angular2-refreshing-view-on-array-push
     private differ: any;
 
     public constructor (differs: IterableDiffers) {
         this.differ = differs.find([]).create(null);
     }
 
-
-    public ngOnInit(): void {
-        /*setInterval(() => {
-            this.updateChart();
-        }, 1000);*/
-    }
-
-    /*public ngOnChanges(changes: SimpleChanges) {
-         console.log(changes['lineData']);
-    }*/
-
     public ngDoCheck () {
-        if (this.differ.diff(this.lineData)) {
-            console.log('update');
-            console.log(this.lineData);
+        if (this.differ.diff(this.lineData))
             this.chart.ngOnChanges({});
-        }
-    }
-
-    private updateChart() {
-        //this.chart.ngOnChanges({});
     }
 }
