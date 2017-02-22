@@ -5,7 +5,7 @@ import {ActivatedRoute} from "@angular/router";
 @Component({
     selector: 'file-view',
     template: require('./file-view.component.html'),
-    //styles: [require('./directory-view.component.css')],
+    styles: [require('./file-view.component.css')],
     providers: [
         HttpProgramService
     ]
@@ -19,7 +19,7 @@ export default class FileViewComponent implements OnInit {
 
     public constructor (private route: ActivatedRoute, private storageService: HttpProgramService) {
         this.programName = route.snapshot.params['programName'];
-        this.blobId = route.snapshot.params['treeId'];
+        this.blobId = route.snapshot.params['blobId'];
     }
 
     public async ngOnInit() {
