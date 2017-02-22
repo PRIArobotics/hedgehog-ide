@@ -52,17 +52,17 @@
 - [x] `PATCH /files/{program_id}/{file_id}`
 - [x] `GET /files/{program_id}/{file_id}/content`
 
-- [ ] `GET /sensors`
-- [ ] `GET /sensors/{sensor_id}`
-- [ ] `PATCH /sensors/{sensor_id}`
+- [x] `GET /sensors`
+- [x] `GET /sensors/{sensor_id}`
+- [x] `PATCH /sensors/{sensor_id}`
 
 - [ ] `GET /servos`
 - [ ] `GET /servos/{servo_id}`
-- [ ] `PATCH /sensors/{servo_id}`
+- [x] `PATCH /sensors/{servo_id}`
 
 - [ ] `GET /motors`
 - [ ] `GET /motors/{motor_id}`
-- [ ] `PATCH /motors/{motor_id}`
+- [x] `PATCH /motors/{motor_id}`
 
 - [x] `POST /processes`
 - [x] `DELETE /processes/{pid}`

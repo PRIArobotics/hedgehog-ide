@@ -22,6 +22,7 @@ import TreeResource from "./api/resource/versioncontrol/TreeResource";
 import VersionResource from "./api/resource/versioncontrol/VersionResource";
 import MotorResource from "./api/resource/hedgehog-io/MotorResource";
 import SensorResource from "./api/resource/hedgehog-io/SensorResource";
+import ServoResource from "./api/resource/hedgehog-io/ServoResource";
 
 // Return external module as the file is outside of the
 // TypeScript compile output
@@ -82,6 +83,7 @@ hedgehogApi.registerEndpoint(new TreeResource(programStorage, modelRegistry));
 hedgehogApi.registerEndpoint(new VersionResource(programStorage, modelRegistry));
 hedgehogApi.registerEndpoint(new ProcessResource(processManager, modelRegistry));
 hedgehogApi.registerEndpoint(new MotorResource(hedgehog, modelRegistry));
+hedgehogApi.registerEndpoint(new ServoResource(hedgehog, modelRegistry));
 hedgehogApi.registerEndpoint(new SensorResource(hedgehog, modelRegistry));
 
 /**

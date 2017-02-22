@@ -1,0 +1,20 @@
+<nav class="hedgehog-green-light">
+    <div class="nav-wrapper">
+        <ul class="right">
+            <li><a><i class="material-icons">replay</i></a></li>
+        </ul>
+        <a [routerLink]="['/']"  class="brand-logo">{{ programName }}</a>
+        <a [routerLink]="['/versions/' + programName]" class="breadcrumb">Versions</a>
+        <a href="#!" class="breadcrumb">{{ blobId }}</a>
+    </div>
+</nav>
+
+<div class="container z-depth-1">
+    <ace-editor
+            #editor
+            id="ace-editor"
+            [text]="blobContent"
+            [mode]="'python'"
+            [theme]="'textmate'"
+            [readOnly]="true"></ace-editor>
+</div>

@@ -11,6 +11,8 @@ import WorkingTreeFile from '../../../common/versioncontrol/WorkingTreeFile';
 import {Http, Headers} from '@angular/http';
 import {genericToBase64, genericFromBase64, basename} from "../../../common/utils";
 import {WorkingTreeObjectType} from "../../../common/versioncontrol/WorkingTreeObject";
+import {TreeItem} from "../../../common/versioncontrol/Tree";
+import {TreeItemType} from "../../../common/versioncontrol/Tree";
 
 export default class HttpProgramStorage implements IProgramStorage {
 
@@ -150,10 +152,30 @@ export default class HttpProgramStorage implements IProgramStorage {
             .toPromise()
             .then(response => {
                 // parse json response
-                let res = response.json().data;
+                let res = response.json();
+
+                let items: Map<string, TreeItem> = new Map<string, TreeItem>();
+
+                // loop through all items
+                for (let item of res.data.relationships.items.data) {
+                    for (let includedItem of res.included ) {
+                        // check if included id and the data item id match up
+                        if (includedItem.id === item.id) {
+                            // check if the type of the item is a blob (file) or tree (directory)
+                            // and save it to the types map accordingly
+                            if (includedItem.attributes.type === 'blob') {
+                                items.set(includedItem.attributes.path,
+                                    new TreeItem(TreeItemType.Blob, includedItem.id, includedItem.attributes.mode));
+                            } else if (includedItem.attributes.type === 'tree') {
+                                items.set(includedItem.attributes.path,
+                                    new TreeItem(TreeItemType.Tree, includedItem.id, includedItem.attributes.mode));
+                            }
+                        }
+                    }
+                }
 
                 // create new Tree Instance
-                return new Tree(this, programName, treeId, res.relationships.items);
+                return new Tree(this, programName, treeId, items);
             });
     }
 
@@ -189,7 +211,7 @@ export default class HttpProgramStorage implements IProgramStorage {
 
                 // create new Version Instance
                 return new Version(this, programName, res.id, res.attributes.tag, res.attributes.message,
-                    res.creationDate, res.parentIds, res.treeId);
+                    res.creationDate, res.parentIds, res.attributes.treeId);
             });
     }
 

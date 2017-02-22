@@ -10,7 +10,7 @@
 
 <div class="container z-depth-1">
     <ul class="collection">
-        <li class="collection-item valign-wrapper rich-collection-item waves-effect" *ngFor="let version of versions">
+        <li class="collection-item valign-wrapper rich-collection-item waves-effect" *ngFor="let version of versions" [routerLink]="['/versions/' + programName + '/' + version.treeId]">
             <div class="row">
                 <span class="col valign" [ngClass]="{ 'm8': version.tag, 'm10': !version.tag }"> <strong>{{ version.message }}</strong></span>
                 <span class="col m2 valign"><i class="material-icons">code</i> {{ version.id.substr(0, 6) }}</span>

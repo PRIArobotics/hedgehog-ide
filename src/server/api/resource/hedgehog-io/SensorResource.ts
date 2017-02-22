@@ -46,7 +46,7 @@ export default class SensorResource extends ApiResource {
         documentBuilder.setLinks(getRequestUrl(req), null);
         documentBuilder.setDataType(DataType.Many);
 
-        for (let i = 0; i < 15; i++) {
+        for (let i = 0; i < 16; i++) {
             let sensor = new Sensor();
             sensor.port = i;
 

@@ -1,0 +1,38 @@
+<nav class="hedgehog-green-light">
+    <div class="nav-wrapper">
+        <ul class="right">
+            <li><a><i class="material-icons">replay</i></a></li>
+        </ul>
+        <a [routerLink]="['/']"  class="brand-logo">{{ programName }}</a>
+        <a [routerLink]="['/versions/' + programName]" class="breadcrumb">Versions</a>
+        <a href="#!" class="breadcrumb">{{ treeId }}</a>
+    </div>
+</nav>
+
+<div *ngIf="tree" class="container z-depth-1">
+    <ul class="collection">
+        <li class="collection-item valign-wrapper rich-collection-item waves-effect" *ngFor="let item of tree.items | keys">
+            <div class="row" [routerLink]="['/versions/' + programName + '/' + item.value.id]" *ngIf="item.value.type == TreeItemType.Tree">
+                <span class="col valign">
+
+                    <i class="material-icons">folder</i>
+                    <strong>{{ item.key }}</strong>
+                </span>
+                <!--
+                <span class="col m2 valign"><i class="material-icons">code</i> item.value.type</span>
+                <span class="col m2 valign" *ngIf="version.tag"><i class="material-icons">label</i> {{ version.tag }}</span>
+                -->
+            </div>
+            <div class="row" [routerLink]="['/versions/' + programName + '/blobs/' + item.value.id]" *ngIf="item.value.type == TreeItemType.Blob">
+                <span class="col valign">
+                    <i class="material-icons">insert_drive_file</i>
+                    <strong>{{ item.key }}</strong>
+                </span>
+                <!--
+                <span class="col m2 valign"><i class="material-icons">code</i> item.value.type</span>
+                <span class="col m2 valign" *ngIf="version.tag"><i class="material-icons">label</i> {{ version.tag }}</span>
+                -->
+            </div>
+        </li>
+    </ul>
+</div>

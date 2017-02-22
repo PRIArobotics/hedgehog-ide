@@ -1,0 +1,19 @@
+<div class="col s12 m6 l3">
+    <div class="card">
+        <div class="card-content">
+            <div class="card-title">
+                <span>{{ name }}</span>
+            </div>
+
+            <div style="display: block;">
+                <canvas baseChart
+                        [data]="lineData"
+                        [labels]="lineLabels"
+                        [options]="lineOptions"
+                        [colors]="lineChartColors"
+                        [legend]="false"
+                        [chartType]="'line'"></canvas>
+            </div>
+        </div>
+    </div>
+</div>

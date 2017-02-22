@@ -9,14 +9,33 @@ export class HttpHedgehogClientService {
     public constructor (private http: Http) { }
 
     public async getSensorValue (port: number) {
-        // send get request for the version ids
+        // send get request for specific sensor value
         return this.http
             .get(`/api/sensors/${port}`)
             .toPromise()
             .then(response => {
-                // create new Tree Instance
                 return response.json().data.attributes.value;
             });
+    }
+
+    public async getSensorList () {
+        // send get request for a list of all sensors containing their values
+        return this.http
+            .get(`/api/sensors`)
+            .toPromise()
+            .then(response => {
+                return response.json();
+            });
+    }
+
+    public async getSensorValues () {
+        let values: number[] = [];
+        let sensorlist = await this.getSensorList();
+        for (let sensor of sensorlist.data) {
+            values.push(sensor.attributes.value);
+        }
+
+        return values;
     }
 
     public async setMotor (port: number, power: number) {
@@ -40,22 +59,23 @@ export class HttpHedgehogClientService {
             .then(() => Promise.resolve());
     }
 
-    public async setServo (port: number, power: number) {
-        // create motor data object using the given parameters
-        let motorData = {
+    public async setServo (port: number, position: number, enabled: boolean = true) {
+        // create sensor data object using the given parameters
+        let sensorData = {
             data: {
                 id: port,
                 type: 'servo',
                 attributes: {
-                    power,
+                    enabled,
+                    position,
                 }
             }
         };
 
         // send post request with headers (json) and the stringifyed data object
         return this.http
-            .patch(`/api/motors/${port}`,
-                JSON.stringify(motorData),
+            .patch(`/api/servos/${port}`,
+                JSON.stringify(sensorData),
                 {headers: this.headers})
             .toPromise()
             .then(() => Promise.resolve());

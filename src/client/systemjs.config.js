@@ -19,7 +19,9 @@
             'babel-polyfill/dist/polyfill.js': './node_modules/babel-polyfill/dist/polyfill.js',
             'zone.js/dist/zone.js': './node_modules/zone.js/dist/zone.js',
             'reflect-metadata/Reflect.js': './node_modules/reflect-metadata/Reflect.js',
-            'text': './systemjs-text-plugin.js'
+            'text': './systemjs-text-plugin.js',
+            'chartjs-color': './node_modules/chartjs-color/index.js',
+            'color-convert': './node_modules/color-convert/index.js'
         },
         packages: {
             'app': {

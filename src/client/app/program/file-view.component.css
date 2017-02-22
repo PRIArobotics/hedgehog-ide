@@ -1,0 +1,11 @@
+.container {
+    margin-top: 30px;
+}
+
+.brand-logo {
+    position: inherit !important;
+}
+
+.breadcrumb {
+    vertical-align: top;
+}

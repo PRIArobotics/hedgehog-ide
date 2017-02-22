@@ -9,6 +9,8 @@ export default class OutputControlComponent {
     @Input() public name: string;
     @Input() public value: number;
     @Input() public state: boolean;
+    @Input() public maxValue: number = 100;
+    @Input() public minValue: number = 0;
 
     @Output() private stateChanged = new EventEmitter();
     @Output() private valueChanged = new EventEmitter();

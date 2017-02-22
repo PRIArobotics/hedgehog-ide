@@ -5,17 +5,25 @@ import {MaterializeModule} from "angular2-materialize";
 import {FormsModule} from "@angular/forms";
 import {RouterModule} from "@angular/router";
 import VersionListComponent from "./version-list.component";
+import DirectoryViewComponent from "./directory-view.component";
+import {KeysPipe} from "./directory-view.component";
+import FileViewComponent from "./file-view.component";
+import {TextIdeModule} from "../text-ide/text-ide.module";
 
 @NgModule({
     imports: [
         MaterializeModule,
         CommonModule,
         FormsModule,
-        RouterModule
+        RouterModule,
+        TextIdeModule
     ],
     declarations: [
         ProgramListComponent,
-        VersionListComponent
+        VersionListComponent,
+        DirectoryViewComponent,
+        KeysPipe,
+        FileViewComponent
     ]
 })
 export class ProgramModule { }
