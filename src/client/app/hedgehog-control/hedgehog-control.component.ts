@@ -68,11 +68,8 @@ export default class HedgehogControlComponent {
     private updateMotorState(port: number, state) {
         this.motorControls[port].state = state;
 
-        if (state) {
-            this.hedgehogClient.setMotor(port, this.motorControls[port].value);
-        } else {
-            this.hedgehogClient.setMotor(port, 0);
-        }
+
+        this.hedgehogClient.setMotor(port, state ? this.motorControls[port].value : 0);
     }
 
     private updateServoValue(port: number, value: number) {
@@ -85,11 +82,6 @@ export default class HedgehogControlComponent {
 
     private updateServoState(port: number, state) {
         this.servoControls[port].state = state;
-
-        if (state) {
-            this.hedgehogClient.setServo(port, this.servoControls[port].value);
-        } else {
-            this.hedgehogClient.setServo(port, 0);
-        }
+        this.hedgehogClient.setServo(port, this.servoControls[port].value, state);
     }
 }
