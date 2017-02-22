@@ -8,13 +8,15 @@ import VersionListComponent from "./version-list.component";
 import DirectoryViewComponent from "./directory-view.component";
 import {KeysPipe} from "./directory-view.component";
 import FileViewComponent from "./file-view.component";
+import {TextIdeModule} from "../text-ide/text-ide.module";
 
 @NgModule({
     imports: [
         MaterializeModule,
         CommonModule,
         FormsModule,
-        RouterModule
+        RouterModule,
+        TextIdeModule
     ],
     declarations: [
         ProgramListComponent,
