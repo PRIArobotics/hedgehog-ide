@@ -1,30 +1,36 @@
-<div>
-    <nav class="hedgehog-green-light">
-        <div class="nav-wrapper">
-            <a class="brand-logo"> {{ programName.replace(".blockly","") }} </a>
-            <ul id="nav-mobile" class="right hide-on-med-and-down">
-                <li (click)="saveWorkspace()"><a materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="save changes">
+<nav class="hedgehog-green-light">
+    <div class="nav-wrapper">
+        <a class="brand-logo"> {{ programName.replace(".blockly","") }} </a>
+        <ul id="nav-mobile" class="right hide-on-med-and-down">
+            <li (click)="saveWorkspace()"><a materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="save changes">
                     <i class="material-icons">save</i>
-                </a></li>
-                <li (click)="clearWorkspace()"><a materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="clear workspace">
+            </a></li>
+            <li (click)="clearWorkspace()"><a materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="clear workspace">
                     <i class="material-icons">delete</i>
-                </a></li>
-                <li (click)="toggleShowCode()"><a materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="show code">
+            </a></li>
+            <li (click)="toggleShowCode()"><a materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="show code">
                     <i class="material-icons">code</i>
-                </a></li>
-                <li>
-                    <a (click)="run()" materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="run program"><i *ngIf="!programIsRunning" class="material-icons">play_arrow</i></a>
-                    <a materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="stop program"><i *ngIf="programIsRunning" (click)="stop()" class="material-icons">stop</i></a>
-                </li>
-            </ul>
-        </div>
-    </nav>
-    <div>
-    <div class="row">
-        <div style="padding-left: 0px; padding-right: 0px" [ngClass]="{'col': true, 's8': showCode, 's12': !showCode}" id="blocklyDiv"></div>
-        <div [ngClass]="{'col': true, 's4': showCode, 's0': !showCode}"><pre>{{ pyCode }}</pre></div>
+            </a></li>
+            <li>
+                <a (click)="run()" materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="run program"><i *ngIf="!programIsRunning" class="material-icons">play_arrow</i></a>
+                <a materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="stop program"><i *ngIf="programIsRunning" (click)="stop()" class="material-icons">stop</i></a>
+            </li>
+        </ul>
     </div>
-    <div class="row">
-        <program-execution (onExit)="stop()"></program-execution>
-    </div>
+</nav>
+<div>
+    <split direction="horizontal">
+        <split-area [size]="70">
+            <div id="blocklyDiv"></div>
+        </split-area>
+        <split-area [size]="30" [visible]="showCode">
+            <ace-editor
+                #editor
+                id="ace-editor"
+                [text]="pyCode"
+                [mode]="'python'"
+                [theme]="'textmate'"
+                [readOnly]="true"></ace-editor> 
+        </split-area>
+    </split>
 </div>
