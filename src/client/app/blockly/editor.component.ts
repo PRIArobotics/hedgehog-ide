@@ -142,6 +142,7 @@ export class BlocklyComponent implements OnInit, OnDestroy {
     private getToolbox(): string {
         return `<xml id="toolbox" style="display: none">
       <category name="Hedgehog" colour="120">
+        <block type="hedgehog_scope"></block>
         <block type="hedgehog_move">
           <value name="SPEED">
             <shadow type="hedgehog_speed">
