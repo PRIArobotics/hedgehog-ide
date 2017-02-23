@@ -1,4 +1,4 @@
-import {Component, ChangeDetectorRef} from '@angular/core';
+import {Component, ChangeDetectorRef, AfterViewInit} from '@angular/core';
 import {HttpHedgehogClientService} from "./http-hedgehog-client.service";
 import {Observable} from "rxjs";
 
@@ -8,7 +8,7 @@ import {Observable} from "rxjs";
     styles: [require('./hedgehog-control.component.css')]
 })
 
-export default class HedgehogControlComponent {
+export default class HedgehogControlComponent implements AfterViewInit {
     public motorControls: Array<{value: number, state: boolean}> = [];
     public servoControls: Array<{value: number, state: boolean}> = [];
 
@@ -73,6 +73,10 @@ export default class HedgehogControlComponent {
                 }
                 ref.markForCheck();
             });
+    }
+
+    public ngAfterViewInit(): void {
+        ($('#tabs') as any).tabs();
     }
 
     private updateMotorValue(port: number, value: number) {

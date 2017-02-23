@@ -1,33 +1,50 @@
-<div class="app-content row">
+<nav class="nav-extended hedgehog-green-light">
+    <div class="nav-wrapper">
+        <span class="brand-logo">Hedgehog Control</span>
+    </div>
+    <div class="nav-content">
+        <ul class="tabs tabs-transparent" id="tabs">
+            <li class="tab col s3"><a href="#motors" class="active">Motors</a></li>
+            <li class="tab col s3"><a href="#servos">Servos</a></li>
+            <li class="tab col s3"><a href="#sensors">Sensors</a></li>
+        </ul>
+    </div>
+</nav>
 
-    <output-control
-            *ngFor="let motor of motorControls; let i = index;"
-            [name]="'Motor ' + i"
-            [minValue]="-100"
-            (valueChanged)="updateMotorValue(i, $event)"
-            (stateChanged)="updateMotorState(i, $event)">
-    </output-control>
+<div class="app-content row container">
+    <div id="motors" class="col s12">
+        <output-control
+                *ngFor="let motor of motorControls; let i = index;"
+                [name]="'Motor ' + i"
+                [minValue]="-100"
+                (valueChanged)="updateMotorValue(i, $event)"
+                (stateChanged)="updateMotorState(i, $event)">
+        </output-control>
+    </div>
 
-    <output-control
-            *ngFor="let servo of servoControls; let i = index;"
-            [name]="'Servo ' + i"
-            [maxValue]="2047"
-            (valueChanged)="updateServoValue(i, $event)"
-            (stateChanged)="updateServoState(i, $event)">
-    </output-control>
+    <div id="servos" class="col s12">
+        <output-control
+                *ngFor="let servo of servoControls; let i = index;"
+                [name]="'Servo ' + i"
+                [maxValue]="2047"
+                (valueChanged)="updateServoValue(i, $event)"
+                (stateChanged)="updateServoState(i, $event)">
+        </output-control>
+    </div>
 
-    <output-chart
-            *ngFor="let analog of analogSensors; let i = index;"
-            [name]="'Analog ' + i"
-            [lineData]="analogSensors[i].dataset"
-            [lineLabels]="analogSensors[i].labels">
-    </output-chart>
+    <div id="sensors" class="col s12">
+        <output-chart
+                *ngFor="let analog of analogSensors; let i = index;"
+                [name]="'Analog ' + i"
+                [lineData]="analogSensors[i].dataset"
+                [lineLabels]="analogSensors[i].labels">
+        </output-chart>
 
-    <output-chart
-            *ngFor="let digital of digitalSensors; let i = index;"
-            [name]="'Digital ' + (i + 8)"
-            [lineData]="digitalSensors[i].dataset"
-            [lineLabels]="digitalSensors[i].labels">
-    </output-chart>
-
+        <output-chart
+                *ngFor="let digital of digitalSensors; let i = index;"
+                [name]="'Digital ' + (i + 8)"
+                [lineData]="digitalSensors[i].dataset"
+                [lineLabels]="digitalSensors[i].labels">
+        </output-chart>
+    </div>
 </div>
