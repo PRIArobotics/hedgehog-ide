@@ -1,5 +1,5 @@
 .app-content {
     padding-top: 30px;
     overflow: auto;
-    height: 100vh;
+    height: calc(100% - 112px);
 }
