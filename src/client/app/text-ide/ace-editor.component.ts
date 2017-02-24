@@ -42,6 +42,8 @@ export class AceEditorComponent {
 
         this.init();
         this.initEvents();
+
+        this._editor.$blockScrolling = Infinity
     }
 
     init() {
