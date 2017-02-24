@@ -27,7 +27,7 @@ nav .disabled {
 
 /* indicator color */
 
-.tabs .indicator {
+.tabs:not(.tabs-transparent) .indicator {
     background-color: #38b449 !important;
 }
 
