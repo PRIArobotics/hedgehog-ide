@@ -99,7 +99,8 @@ export class BlocklyComponent implements OnInit, OnDestroy {
 
         // ace editor settings
         this.editor.getEditor().setOptions({
-            fontSize: 14,
+            fontSize: 16,
+            fontFamily: "Roboto Mono",
             wrapBehavioursEnabled: false,
             highlightActiveLine: false,
             showGutter: false,
