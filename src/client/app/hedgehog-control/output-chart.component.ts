@@ -1,4 +1,4 @@
-import {Component, Input, ViewChild, DoCheck, IterableDiffers} from '@angular/core';
+import {Component, Input, ViewChild, DoCheck, IterableDiffers, OnInit} from '@angular/core';
 import {BaseChartDirective} from "ng2-charts/ng2-charts";
 
 @Component({
@@ -6,15 +6,17 @@ import {BaseChartDirective} from "ng2-charts/ng2-charts";
     template: require('./output-chart.component.html'),
     styles: [require('./output-chart.component.css')]
 })
-export default class OutputChartComponent implements DoCheck {
+export default class OutputChartComponent implements DoCheck, OnInit {
 
-    @ViewChild(BaseChartDirective) public chart: BaseChartDirective;
+    @ViewChild(BaseChartDirective)
+    public chart: BaseChartDirective;
 
     @Input() public name: string;
     @Input() public lineData: number[] = [0];
     @Input() public lineLabels: string[] = [];
+    @Input() public type: string;
 
-    public lineOptions = {
+    public lineOptions: any = {
         responsive: true,
         animation: false,
         scales: {
@@ -48,7 +50,16 @@ export default class OutputChartComponent implements DoCheck {
     }
 
     public ngDoCheck () {
-        if (this.differ.diff(this.lineData))
-            this.chart.ngOnChanges({});
+        if (this.differ.diff(this.lineData)){
+            // this.chart.ngOnChanges({});
+            this.chart.chart.update();
+        }
+    }
+
+
+    public ngOnInit(): void {
+        if (this.type === "digital") {
+            this.lineOptions.scales.yAxes[0].ticks.stepSize = 1;
+        }
     }
 }
