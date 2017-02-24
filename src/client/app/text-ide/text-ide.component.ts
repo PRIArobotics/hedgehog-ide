@@ -266,9 +266,6 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
 
         ($('select') as any).material_select();
 
-        // fixes error in the code
-        this.editor.getEditor().$blockScrolling = Infinity;
-
         this.updateEditorSettings();
     }
 

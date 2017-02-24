@@ -1,6 +1,6 @@
-import {Component, ChangeDetectorRef} from '@angular/core';
+import {Component, ChangeDetectorRef, AfterViewInit, OnDestroy} from '@angular/core';
 import {HttpHedgehogClientService} from "./http-hedgehog-client.service";
-import {Observable} from "rxjs";
+import {Subscription} from "rxjs";
 
 @Component({
     selector: 'hedgehog-control',
@@ -8,12 +8,14 @@ import {Observable} from "rxjs";
     styles: [require('./hedgehog-control.component.css')]
 })
 
-export default class HedgehogControlComponent {
+export default class HedgehogControlComponent implements AfterViewInit, OnDestroy {
     public motorControls: Array<{value: number, state: boolean}> = [];
     public servoControls: Array<{value: number, state: boolean}> = [];
 
     public analogSensors: Array<{dataset: number[], labels: string[]}> = [];
     public digitalSensors: Array<{dataset: number[], labels: string[]}> = [];
+
+    private sensorSubscription: Subscription;
 
     constructor (private hedgehogClient: HttpHedgehogClientService, ref: ChangeDetectorRef) {
         [0, 1, 2, 3].forEach(() => {
@@ -37,42 +39,48 @@ export default class HedgehogControlComponent {
             });
         });
 
-        [0, 1, 2 , 3, 4, 5, 6, 7].forEach(() => {
+        [0, 1, 2, 3, 4, 5, 6, 7].forEach(() => {
             this.digitalSensors.push({
                 dataset: [],
                 labels: []
             });
         });
 
-        Observable.interval(1000)
-            .subscribe(async () => {
-                let sensorList = await this.hedgehogClient.getSensorList();
-
-                for (let sensorData of sensorList.data) {
+        this.sensorSubscription = this.hedgehogClient.onSensorValues()
+            .subscribe(async sensorData => {
+                for (let sensor of sensorData) {
                     let dataset: any[];
                     let labels: string[];
 
-                    let value = sensorData.attributes.value;
+                    let value = sensor.value;
 
-                    if (sensorData.attributes.type === "analog") {
-                        dataset = this.analogSensors[+sensorData.id % 8].dataset;
-                        labels = this.analogSensors[+sensorData.id % 8].labels;
-                    } else if (sensorData.attributes.type === "digital") {
-                        dataset = this.digitalSensors[+sensorData.id % 8].dataset;
-                        labels = this.digitalSensors[+sensorData.id % 8].labels;
+                    if (sensor.type === "analog") {
+                        dataset = this.analogSensors[sensor.id % 8].dataset;
+                        labels = this.analogSensors[sensor.id % 8].labels;
+                    } else if (sensor.type === "digital") {
+                        dataset = this.digitalSensors[sensor.id % 8].dataset;
+                        labels = this.digitalSensors[sensor.id % 8].labels;
                         value = value ? 1 : 0;
                     }
 
                     dataset.push(value);
                     labels.push('');
 
-                    if (dataset.length > 10) {
+                    if (dataset.length > 50) {
                         dataset.shift();
                         labels.shift();
                     }
                 }
                 ref.markForCheck();
             });
+    }
+
+    public ngOnDestroy(): void {
+        this.sensorSubscription.unsubscribe();
+    }
+
+    public ngAfterViewInit(): void {
+        ($('#tabs') as any).tabs();
     }
 
     private updateMotorValue(port: number, value: number) {

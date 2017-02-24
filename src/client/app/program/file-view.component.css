@@ -9,3 +9,7 @@
 .breadcrumb {
     vertical-align: top;
 }
+
+#ace-editor {
+    height: calc(100% - 124px) !important;
+}

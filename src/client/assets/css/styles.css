@@ -27,7 +27,7 @@ nav .disabled {
 
 /* indicator color */
 
-.tabs .indicator {
+.tabs:not(.tabs-transparent) .indicator {
     background-color: #38b449 !important;
 }
 
@@ -130,7 +130,11 @@ div > ul > li > a {
     width: 100%;
 }
 
-.toggleTheme {
+.toggle-theme {
     color: #000;
     background-color: #fff;
+}
+
+.no-break {
+    white-space: nowrap
 }
