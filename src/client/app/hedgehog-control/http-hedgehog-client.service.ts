@@ -28,6 +28,27 @@ export class HttpHedgehogClientService {
             });
     }
 
+    public async setSensorPullup (port: number, pullup: boolean) {
+        // create sensor data object using the given parameters
+        let sensorData = {
+            data: {
+                id: port,
+                type: 'sensor',
+                attributes: {
+                    pullup
+                }
+            }
+        };
+
+        // send post request with headers (json) and the stringifyed data object
+        return this.http
+            .patch(`/api/sensor/${port}`,
+                JSON.stringify(sensorData),
+                {headers: this.headers})
+            .toPromise()
+            .then(() => Promise.resolve());
+    }
+
     public async getSensorValues () {
         let values: number[] = [];
         let sensorlist = await this.getSensorList();
@@ -61,7 +82,7 @@ export class HttpHedgehogClientService {
 
     public async setServo (port: number, position: number, enabled: boolean = true) {
         // create sensor data object using the given parameters
-        let sensorData = {
+        let servoData = {
             data: {
                 id: port,
                 type: 'servo',
@@ -75,7 +96,7 @@ export class HttpHedgehogClientService {
         // send post request with headers (json) and the stringifyed data object
         return this.http
             .patch(`/api/servos/${port}`,
-                JSON.stringify(sensorData),
+                JSON.stringify(servoData),
                 {headers: this.headers})
             .toPromise()
             .then(() => Promise.resolve());
