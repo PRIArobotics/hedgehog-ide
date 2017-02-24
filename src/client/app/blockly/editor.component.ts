@@ -1,10 +1,11 @@
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import {Component, OnInit, OnDestroy, ViewChild} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 
 import IProgramStorage from "../../../common/versioncontrol/ProgramStorage";
 import {HttpProgramService} from "../program/http-program.service";
 import Program from "../../../common/versioncontrol/Program";
 import {ProgramExecutionComponent} from '../program-execution/program-execution.component';
+import {AceEditorComponent} from '../text-ide/ace-editor.component';
 
 /*
  * TODO: add toast notifications, split code view, stop program
@@ -42,6 +43,9 @@ export class BlocklyComponent implements OnInit, OnDestroy {
     @ViewChild(ProgramExecutionComponent)
     private programExecution: ProgramExecutionComponent;
     private programIsRunning: boolean = false;
+
+    @ViewChild('editor')
+    private editor: AceEditorComponent;
 
     constructor(route: ActivatedRoute, storageService: HttpProgramService) {
         this.programName = route.snapshot.params['programName'];
@@ -92,6 +96,15 @@ export class BlocklyComponent implements OnInit, OnDestroy {
         // add change listener
         this.workspace.addChangeListener(e => this.onWorkspaceChange());
         this.lastSave = new Date().getTime();
+
+        // ace editor settings
+        this.editor.getEditor().setOptions({
+            fontSize: 14,
+            wrapBehavioursEnabled: false,
+            highlightActiveLine: false,
+            showGutter: false,
+        });
+        this.editor.getEditor().renderer.$cursorLayer.element.style.display = "none";
     }
 
     private injectBlockly() {
