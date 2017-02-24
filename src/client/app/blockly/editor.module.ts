@@ -1,4 +1,4 @@
-import {NgModule, CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
+import {NgModule, NO_ERRORS_SCHEMA} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {BlocklyComponent} from './editor.component';
 import {MaterializeModule} from "angular2-materialize";
@@ -20,6 +20,6 @@ import {TextIdeModule} from "../text-ide/text-ide.module";
     exports: [
         BlocklyComponent,
     ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    schemas: [NO_ERRORS_SCHEMA]
 })
 export class BlocklyModule { }
