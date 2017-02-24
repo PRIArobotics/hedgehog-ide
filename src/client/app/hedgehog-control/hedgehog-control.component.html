@@ -37,14 +37,16 @@
                 *ngFor="let analog of analogSensors; let i = index;"
                 [name]="'Analog ' + i"
                 [lineData]="analogSensors[i].dataset"
-                [lineLabels]="analogSensors[i].labels">
+                [lineLabels]="analogSensors[i].labels"
+                [type]="'analog'">
         </output-chart>
 
         <output-chart
                 *ngFor="let digital of digitalSensors; let i = index;"
                 [name]="'Digital ' + (i + 8)"
                 [lineData]="digitalSensors[i].dataset"
-                [lineLabels]="digitalSensors[i].labels">
+                [lineLabels]="digitalSensors[i].labels"
+                [type]="'digital'">
         </output-chart>
     </div>
 </div>
