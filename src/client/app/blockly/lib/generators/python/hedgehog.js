@@ -50,13 +50,13 @@ Blockly.Python['hedgehog_speed'] = function(block) {
 Blockly.Python['hedgehog_read_analog'] = function(block) {
     var port = block.getFieldValue('PORT');
 
-    var code = 'get_analog(' + port + ')';
+    var code = 'hedgehog.get_analog(' + port + ')';
     return [code, Blockly.Python.ORDER_NONE];
 };
 
 Blockly.Python['hedgehog_read_digital'] = function(block) {
     var port = block.getFieldValue('PORT');
 
-    var code = 'get_digital(' + port + ')';
+    var code = 'hedgeho.get_digital(' + port + ')';
     return [code, Blockly.Python.ORDER_NONE];
 };
