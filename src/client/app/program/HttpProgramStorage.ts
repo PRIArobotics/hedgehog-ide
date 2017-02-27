@@ -104,7 +104,7 @@ export default class HttpProgramStorage implements IProgramStorage {
             }
         };
 
-        // send post request with headers (json) and the stringifyed data object
+        // send patch request with headers (json) and the stringifyed data object
         return this.http
             .patch(`/api/programs/${currentId}`,
                 JSON.stringify(programData),
@@ -114,7 +114,26 @@ export default class HttpProgramStorage implements IProgramStorage {
     }
 
     public resetProgram(programName: string, versionId: string): Promise<void> {
-        return undefined;
+        let programId = genericToBase64(programName);
+
+        // create file data object using the given parameters
+        let programData = {
+            data: {
+                id: `/api/programs/${programId}`,
+                type: 'program',
+                attributes: {
+                    latestVersionId: versionId
+                }
+            }
+        };
+
+        // send patch request with headers (json) and the stringifyed data object
+        return this.http
+            .patch(`/api/programs/${programId}`,
+                JSON.stringify(programData),
+                {headers: this.headers})
+            .toPromise()
+            .then(() => Promise.resolve());
     }
 
     public getBlob(programName: string, blobId: string): Promise<Blob> {
