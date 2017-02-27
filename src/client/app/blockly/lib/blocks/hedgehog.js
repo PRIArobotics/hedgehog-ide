@@ -98,6 +98,41 @@ Blockly.Blocks['hedgehog_read_analog'] = {
     }
 };
 
+Blockly.Blocks['hedgehog_servo'] = {
+    init: function() {
+        this.setColour(Blockly.Blocks.hedgehog.HUE);
+        this.setHelpUrl(Blockly.Blocks.hedgehog.HELPURL);
+
+        this.appendDummyInput()
+            .appendField("set servo")
+            .appendField(new Blockly.FieldNumber(8, 8, 15, 1), "PORT")
+            .appendField("to");
+        this.appendValueInput("ANGLE")
+            .setCheck("Number");
+        this.appendDummyInput()
+            .appendField("degrees");
+        this.setInputsInline(true);
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+        this.setTooltip('');
+    }
+};
+
+Blockly.Blocks['hedgehog_degrees'] = {
+    init: function() {
+        this.setColour(Blockly.Blocks.hedgehog.HUE);
+        this.setHelpUrl(Blockly.Blocks.hedgehog.HELPURL);
+
+        Blockly.FieldAngle.ROUND = 5;
+        Blockly.FieldAngle.CLOCKWISE = true;
+        Blockly.FieldAngle.OFFSET = 90;
+        this.appendDummyInput()
+            .appendField(new Blockly.FieldAngle(45), "ANGLE");
+        this.setOutput(true, "Number");
+        this.setTooltip('');
+    }
+};
+
 Blockly.Blocks['hedgehog_read_digital'] = {
     init: function() {
         this.setColour(Blockly.Blocks.hedgehog.HUE);
