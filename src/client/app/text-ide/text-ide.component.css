@@ -29,13 +29,27 @@ div > ul > li > a {
 
 #ace-editor {
     display: block;
-    height: calc(100% - 58px);
+    position: absolute;
     width: 100%;
+    height: 100%;
 }
 
 .editor-wrapper {
     margin-bottom: 0 !important;
+    display: flex;
+    flex-flow: column;
+    height: 100%;
 }
+
+.editor-wrapper .editor-tabs {
+    flex: 0 1 auto;
+}
+
+.editor-wrapper .editor-content {
+    flex: 1 1 auto;
+    position: relative;
+}
+
 
 .editor-wrapper .col {
     padding: 0;
