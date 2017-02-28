@@ -60,13 +60,13 @@
             <split direction="vertical">
                 <split-area [size]="70">
                     <div class="editor-wrapper row">
-                        <div class="col s12">
+                        <div class="col s12 editor-tabs">
                             <ul class="tabs toggle-theme" materialize="tabs" id="sortable-tabs">
                                 <li class="tab"><a></a></li>
                             </ul>
                         </div>
 
-                        <div class="col s12">
+                        <div class="col s12 editor-content">
                             <ace-editor
                                     #editor
                                     [hidden]="!openId"

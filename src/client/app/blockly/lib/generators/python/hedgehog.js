@@ -47,16 +47,36 @@ Blockly.Python['hedgehog_speed'] = function(block) {
     return [speed, Blockly.Python.ORDER_NONE];
 };
 
+Blockly.Python['hedgehog_servo'] = function(block) {
+    var port = block.getFieldValue('PORT');
+    var angle = Blockly.Python.valueToCode(block, 'ANGLE', Blockly.Python.ORDER_ATOMIC);
+
+    // imports
+    Blockly.Python.definitions_['import_hedgehog'] = 'from hedgehog.client import connect';
+
+    var code = 'hedgehog.set_servo(' + port + ', ' + angle + '*22' + ')\n';
+    return code;
+};
+
+Blockly.Python['hedgehog_degrees'] = function(block) {
+    var angle = block.getFieldValue('ANGLE');
+
+    // imports
+    Blockly.Python.definitions_['import_hedgehog'] = 'from hedgehog.client import connect';
+
+    return [angle, Blockly.Python.ORDER_NONE];
+};
+
 Blockly.Python['hedgehog_read_analog'] = function(block) {
     var port = block.getFieldValue('PORT');
 
-    var code = 'get_analog(' + port + ')';
+    var code = 'hedgehog.get_analog(' + port + ')';
     return [code, Blockly.Python.ORDER_NONE];
 };
 
 Blockly.Python['hedgehog_read_digital'] = function(block) {
     var port = block.getFieldValue('PORT');
 
-    var code = 'get_digital(' + port + ')';
+    var code = 'hedgeho.get_digital(' + port + ')';
     return [code, Blockly.Python.ORDER_NONE];
 };

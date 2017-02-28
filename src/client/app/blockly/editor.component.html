@@ -18,23 +18,30 @@
         </ul>
     </div>
 </nav>
-<div>
-    <split direction="horizontal">
-        <split-area [size]="70">
-            <div id="blocklyDiv"></div>
-        </split-area>
-        <split-area [size]="30" [visible]="showCode">
-            <ace-editor
-                #editor
-                id="ace-editor"
-                [text]="pyCode"
-                [mode]="'python'"
-                [theme]="'textmate'"
-                [readOnly]="true"></ace-editor> 
-        </split-area>
-    </split>
-</div>
 
+<split direction="vertical">
+    <split-area [size]="70">
+        <split direction="horizontal">
+            <split-area [size]="70">
+                <div id="blocklyDiv"></div>
+            </split-area>
+            <split-area [size]="30" [visible]="showCode">
+                <ace-editor
+                    #editor
+                    id="ace-editor"
+                    [text]="pyCode"
+                    [mode]="'python'"
+                    [theme]="'textmate'"
+                    [readOnly]="true"></ace-editor> 
+            </split-area>
+        </split>
+    </split-area>
+    <split-area [size]="30" [visible]="programIsRunning">
+        <program-execution (onExit)="stop()" id="split-execute"></program-execution>
+    </split-area>
+</split>
+
+<!-- blockly toolbox -->
 <xml id="toolbox" style="display: none">
     <category name="Hedgehog" colour="120">
         <block type="hedgehog_scope"></block>
@@ -54,6 +61,13 @@
             <value name="NUM">
                 <shadow type="math_number">
                     <field name="NUM">3</field>
+                </shadow>
+            </value>
+        </block>
+        <block type="hedgehog_servo">
+            <value name="ANGLE">
+                <shadow type="hedgehog_degrees">
+                    <field name="ANGLE"></field>
                 </shadow>
             </value>
         </block>
