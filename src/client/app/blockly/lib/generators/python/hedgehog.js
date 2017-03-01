@@ -16,11 +16,10 @@ Blockly.Python['hedgehog_scope'] = function(block) {
 };
 
 Blockly.Python['hedgehog_turn'] = function(block) {
-    var number_motor1 = block.getFieldValue('MOTOR1');
-    var number_motor2 = block.getFieldValue('MOTOR2');
-    var dropdown_dir = block.getFieldValue('DIR');
-    var value_num = Blockly.Python.valueToCode(block, 'NUM', Blockly.Python.ORDER_ATOMIC);
-    var dropdown_unit = block.getFieldValue('UNIT');
+    var port1 = block.getFieldValue('MOTOR1');
+    var port2 = block.getFieldValue('MOTOR2');
+    var dir = block.getFieldValue('DIR');
+    var time = Blockly.Python.valueToCode(block, 'TIME', Blockly.Python.ORDER_ATOMIC);
 
     // imports
     Blockly.Python.definitions_['import_sleep'] = 'from time import sleep';
