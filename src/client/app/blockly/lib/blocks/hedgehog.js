@@ -61,7 +61,7 @@ Blockly.Blocks['hedgehog_turn'] = {
             .appendField(new Blockly.FieldNumber(1, 0, 3, 1), "MOTOR2")
             .appendField(new Blockly.FieldDropdown([["right", "RIGHT"], ["left", "LEFT"]]), "DIR")
             .appendField("for");
-        this.appendValueInput("NUM")
+        this.appendValueInput("TIME")
             .setCheck("Number")
             .setAlign(Blockly.ALIGN_CENTRE);
         this.appendDummyInput()
