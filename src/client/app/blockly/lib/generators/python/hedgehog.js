@@ -40,8 +40,7 @@ Blockly.Python['hedgehog_move'] = function(block) {
     Blockly.Python.definitions_['import_sleep'] = 'from time import sleep';
     Blockly.Python.definitions_['import_hedgehog'] = 'from hedgehog.client import connect';
 
-    var code = 'hedgehog.move(' + port + ', ' + speed + ')' + '; sleep(' + time + ')\n';
-    // return [code, Blockly.Python.ORDER_FUNCTION];
+    var code = 'hedgehog.move(' + port + ', ' + speed + ')' + '\nsleep(' + time + ')\n\n';
     return code;
 };
 
