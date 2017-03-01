@@ -33,7 +33,7 @@ Blockly.Python['hedgehog_turn'] = function(block) {
 
 Blockly.Python['hedgehog_move'] = function(block) {
     var port = block.getFieldValue('PORT');
-    var speed = Blockly.Python.valueToCode(block, 'SPEED', Blockly.Python.ORDER_ATOMIC);
+    var speed = Blockly.Python.valueToCode(block, 'SPEED', Blockly.Python.ORDER_NONE);
     var time = Blockly.Python.valueToCode(block, 'TIME', Blockly.Python.ORDER_ATOMIC);
 
     // imports
