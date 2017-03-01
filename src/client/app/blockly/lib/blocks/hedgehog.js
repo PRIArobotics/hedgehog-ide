@@ -65,7 +65,7 @@ Blockly.Blocks['hedgehog_turn'] = {
             .setCheck("Number")
             .setAlign(Blockly.ALIGN_CENTRE);
         this.appendDummyInput()
-            .appendField(new Blockly.FieldDropdown([["rounds", "RND"], ["seconds", "SEC"]]), "UNIT");
+            .appendField("seconds");
         this.setInputsInline(true);
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
