@@ -25,8 +25,10 @@ Blockly.Python['hedgehog_turn'] = function(block) {
     Blockly.Python.definitions_['import_sleep'] = 'from time import sleep';
     Blockly.Python.definitions_['import_hedgehog'] = 'from hedgehog.client import connect';
 
-    // TODO: Assemble Python into code variable.
-    var code = 'blub\n';
+    var code = 'hedgehog.move(' + port1 + ', ' + (dir === 'RIGHT' ? '' : '-') + '1000)\n';
+    code += 'hedgehog.move(' + port2 + ', ' + (dir === 'LEFT' ? '' : '-') + '1000)\n';
+    code += 'sleep(' + time + ')\n\n';
+
     return code;
 };
 
