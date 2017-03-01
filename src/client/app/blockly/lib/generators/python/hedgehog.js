@@ -4,6 +4,9 @@ goog.provide('Blockly.Python.hedgehog');
 
 goog.require('Blockly.Python');
 
+// set indentaion to 4 spaces
+Blockly.Python.INDENT = '    ';
+
 Blockly.Python['hedgehog_scope'] = function(block) {
     var statements = Blockly.Python.statementToCode(block, 'IN');
     Blockly.Python.definitions_['import_hedgehog'] = 'from hedgehog.client import connect';
