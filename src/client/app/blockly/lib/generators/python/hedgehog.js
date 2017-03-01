@@ -52,7 +52,7 @@ Blockly.Python['hedgehog_speed'] = function(block) {
 
 Blockly.Python['hedgehog_servo'] = function(block) {
     var port = block.getFieldValue('PORT');
-    var angle = Blockly.Python.valueToCode(block, 'ANGLE', Blockly.Python.ORDER_ATOMIC);
+    var angle = Blockly.Python.valueToCode(block, 'ANGLE', Blockly.Python.ORDER_NONE);
 
     // imports
     Blockly.Python.definitions_['import_hedgehog'] = 'from hedgehog.client import connect';
