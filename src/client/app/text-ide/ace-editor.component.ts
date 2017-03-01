@@ -54,7 +54,7 @@ export class AceEditorComponent {
     }
 
     initEvents() {
-        function update() {
+        const update = () => {
             let newVal = this._editor.getValue();
             if (newVal === this.oldText) return;
             if (typeof this.oldText !== 'undefined') {
@@ -71,7 +71,7 @@ export class AceEditorComponent {
                 }
             }
             this.oldText = newVal;
-        }
+        };
 
         this._editor.on('change', () => {
             update();
