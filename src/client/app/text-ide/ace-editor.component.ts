@@ -54,32 +54,30 @@ export class AceEditorComponent {
     }
 
     initEvents() {
-        let me = this;
-
         function update() {
-            let newVal = me._editor.getValue();
-            if (newVal === me.oldText) return;
-            if (typeof me.oldText !== 'undefined') {
-                if (me._durationBeforeCallback == 0)
-                    me.textChanged.emit(newVal);
+            let newVal = this._editor.getValue();
+            if (newVal === this.oldText) return;
+            if (typeof this.oldText !== 'undefined') {
+                if (this._durationBeforeCallback == 0)
+                    this.textChanged.emit(newVal);
                 else {
-                    if (me.timeoutSaving != null)
-                        clearTimeout(me.timeoutSaving);
+                    if (this.timeoutSaving != null)
+                        clearTimeout(this.timeoutSaving);
 
-                    me.timeoutSaving = setTimeout(function () {
-                        me.textChanged.emit(newVal);
-                        me.timeoutSaving = null;
-                    }, me._durationBeforeCallback);
+                    this.timeoutSaving = setTimeout(function () {
+                        this.textChanged.emit(newVal);
+                        this.timeoutSaving = null;
+                    }, this._durationBeforeCallback);
                 }
             }
-            me.oldText = newVal;
+            this.oldText = newVal;
         }
 
-        me._editor.on('change', () => {
+        this._editor.on('change', () => {
             update();
         });
 
-        me._editor.on('paste', () => {
+        this._editor.on('paste', () => {
             update();
         })
     }
