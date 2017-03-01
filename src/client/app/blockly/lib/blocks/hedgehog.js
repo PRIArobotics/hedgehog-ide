@@ -79,7 +79,7 @@ Blockly.Blocks['hedgehog_speed'] = {
         this.setHelpUrl(Blockly.Blocks.hedgehog.HELPURL);
 
         this.appendDummyInput()
-            .appendField(new Blockly.FieldDropdown([["forward", "100"], ["backward", "-100"]]), "SPEED");
+            .appendField(new Blockly.FieldDropdown([["forward", "1000"], ["backward", "-1000"]]), "SPEED");
         this.setOutput(true, "Number");
         this.setTooltip('');
     }
