@@ -5,7 +5,7 @@
 }
 
 .side-bar .side-bar-item {
-    margin: 6px;
+    margin: 6px 6px 15px;
     width: 52px;
 }
 
@@ -15,4 +15,21 @@
     right: 0;
     top: 0;
     bottom: 0;
+}
+
+/* Animation */
+.hvr-forward {
+    display: inline-block;
+    vertical-align: middle;
+    -webkit-transform: perspective(1px) translateZ(0);
+    transform: perspective(1px) translateZ(0);
+    box-shadow: 0 0 1px transparent;
+    -webkit-transition-duration: 0.3s;
+    transition-duration: 0.3s;
+    -webkit-transition-property: transform;
+    transition-property: transform;
+}
+.hvr-forward:hover, .hvr-forward:focus, .hvr-forward:active {
+    -webkit-transform: translateX(3px);
+    transform: translateX(3px);
 }
