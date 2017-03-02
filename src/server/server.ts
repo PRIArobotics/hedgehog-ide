@@ -45,7 +45,7 @@ winston.configure({
         })
     ]
 });
-winston.level = 'debug';
+winston.level = serverConfig.logging.level;
 
 
 /**
@@ -189,11 +189,21 @@ server.ext('onPreResponse', (request, reply) => {
 });
 
 /**
+ * Request logging
+ */
+server.ext('onPreResponse', (request: Hapi.Request, reply: Hapi.IReply) => {
+    winston.debug(
+        `[${chalk.red(request.id)}] ${chalk.cyan(request.info.remoteAddress)}: ` +
+        `<${chalk.yellow(request.response.statusCode)}> ${chalk.green(request.method)} ${request.path}`);
+    return reply.continue();
+});
+
+/**
  * Print routes for debugging
  */
-winston.debug(chalk.underline.cyan('Routes'));
+winston.info(chalk.underline.cyan('Routes'));
 for(const route of (server.connections[0] as any).table()) {
-    winston.debug(`- ${route.method} ${route.path}`);
+    winston.info(`- ${route.method} ${route.path}`);
 }
 
 /**
@@ -205,4 +215,5 @@ server.start(err => {
         throw err;
 
     winston.info('Server running at:', server.info.uri);
+    winston.info(`Started in ${chalk.cyan(serverConfig.environment)} mode`);
 });

@@ -10,4 +10,7 @@ exports = module.exports = {
         port: 8000,
         host: 'localhost'
     },
+    logging: {
+        level: 'debug'
+    }
 };

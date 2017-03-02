@@ -4,6 +4,7 @@ interface IServerConfig {
     hedgehogConnection: string;
     process: IProcessConfig;
     connection: IConnectionConfig;
+    logging: ILoggingConfig;
 }
 
 interface IProcessConfig {
@@ -14,6 +15,10 @@ interface IProcessConfig {
 interface IConnectionConfig {
     port: number;
     host: string;
+}
+
+interface ILoggingConfig {
+    level: string;
 }
 
 declare let serverConfig: IServerConfig;
