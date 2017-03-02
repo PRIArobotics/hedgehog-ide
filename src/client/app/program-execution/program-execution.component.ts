@@ -16,6 +16,12 @@ export class ProgramExecutionComponent implements OnDestroy, OnInit {
 
     private processPid: number;
 
+    private replay: {
+        programName: string,
+        filePath: string,
+        args?: string[]
+    };
+
     @Output() private onExit = new EventEmitter();
     @Output() private onVisibleChange = new EventEmitter();
 
@@ -61,6 +67,11 @@ export class ProgramExecutionComponent implements OnDestroy, OnInit {
         this.showPanel = true;
         this.outputList = [];
         this.processPid = (await this.processManager.run(programName, filePath, args)).pid;
+        this.replay = {
+            programName,
+            filePath,
+            args
+        }
     }
 
     public async sendInput () {
