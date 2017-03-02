@@ -167,11 +167,11 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
 
     private templateOptions: Array<{name: string, value: string}> = [
         {
-            name: 'none',
+            name: 'None',
             value: ''
         },
         {
-            name: 'simple example',
+            name: 'Python Hello World',
             value: 'from time import sleep\n' +
             'from hedgehog.client import connect\n\n' +
             'with connect(emergency=15) as hedgehog:\n' +
