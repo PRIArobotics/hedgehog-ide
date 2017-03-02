@@ -55,7 +55,9 @@ export class ProgramListComponent implements OnInit {
         if(this.newProgramType === "blockly") {
             await this.storage.createProgram(this.newProgramName + ".blockly");
         } else {
-            await this.storage.createProgram(this.newProgramName);
+            let newProgram = await this.storage.createProgram(this.newProgramName);
+            let root = await newProgram.getWorkingTreeRoot();
+            root.addFile('main.py', 'from time import sleep\nfrom hedgehog.client import connect\n\nwith connect(emergency=15) as hedgehog:\n\tprint("Hello World")')
         }
         this.newProgramName = '';
         await this.reloadProgramList();
