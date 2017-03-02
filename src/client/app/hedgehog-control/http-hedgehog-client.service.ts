@@ -31,7 +31,7 @@ export class HttpHedgehogClientService {
             });
     }
 
-    public async setSensorPullup (port: number, pullup: boolean) {
+    public async setInputState (port: number, pullup: boolean) {
         // create sensor data object using the given parameters
         let sensorData = {
             data: {
@@ -45,7 +45,7 @@ export class HttpHedgehogClientService {
 
         // send post request with headers (json) and the stringifyed data object
         return this.http
-            .patch(`/api/sensor/${port}`,
+            .patch(`/api/sensors/${port}`,
                 JSON.stringify(sensorData),
                 {headers: this.headers})
             .toPromise()

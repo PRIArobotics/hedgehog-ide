@@ -1,4 +1,4 @@
-import {Component, Input, ViewChild, DoCheck, IterableDiffers, OnInit} from '@angular/core';
+import {Component, Input, ViewChild, DoCheck, IterableDiffers, OnInit, EventEmitter, Output} from '@angular/core';
 import {BaseChartDirective} from "ng2-charts/ng2-charts";
 
 @Component({
@@ -42,6 +42,8 @@ export default class OutputChartComponent implements DoCheck, OnInit {
         }
     ];
 
+    @Output() private pullupChanged = new EventEmitter();
+
     // From: http://stackoverflow.com/questions/36247016/angular2-refreshing-view-on-array-push
     private differ: any;
 
@@ -55,9 +57,13 @@ export default class OutputChartComponent implements DoCheck, OnInit {
     }
 
 
-    public ngOnInit(): void {
+    public ngOnInit (): void {
         if (this.type === "digital") {
             this.lineOptions.scales.yAxes[0].ticks.stepSize = 1;
         }
+    }
+
+    private updatePullup (pullup: boolean) {
+        this.pullupChanged.emit(pullup);
     }
 }

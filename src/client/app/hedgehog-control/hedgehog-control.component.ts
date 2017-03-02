@@ -83,31 +83,34 @@ export default class HedgehogControlComponent implements AfterViewInit, OnDestro
         ($('#tabs') as any).tabs();
     }
 
-    private updateMotorValue(port: number, value: number) {
+    private async updateMotorValue(port: number, value: number) {
         this.motorControls[port].value = value;
 
         if (this.motorControls[port].state) {
-            this.hedgehogClient.setMotor(port, value);
+            await this.hedgehogClient.setMotor(port, value);
         }
     }
 
-    private updateMotorState(port: number, state) {
+    private async updateMotorState(port: number, state) {
         this.motorControls[port].state = state;
 
-
-        this.hedgehogClient.setMotor(port, state ? this.motorControls[port].value : 0);
+        await this.hedgehogClient.setMotor(port, state ? this.motorControls[port].value : 0);
     }
 
-    private updateServoValue(port: number, value: number) {
+    private async updateServoValue(port: number, value: number) {
         this.servoControls[port].value = value;
 
         if (this.servoControls[port].state) {
-            this.hedgehogClient.setServo(port, value);
+            await this.hedgehogClient.setServo(port, value);
         }
     }
 
-    private updateServoState(port: number, state) {
+    private async updateServoState(port: number, state) {
         this.servoControls[port].state = state;
-        this.hedgehogClient.setServo(port, this.servoControls[port].value, state);
+        await this.hedgehogClient.setServo(port, this.servoControls[port].value, state);
+    }
+
+    private async updateSensorPullup(port: number, pullup) {
+        await this.hedgehogClient.setInputState(port, pullup);
     }
 }

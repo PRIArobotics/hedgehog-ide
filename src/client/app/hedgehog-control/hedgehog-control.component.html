@@ -38,7 +38,8 @@
                 [name]="'Analog ' + i"
                 [lineData]="analogSensors[i].dataset"
                 [lineLabels]="analogSensors[i].labels"
-                [type]="'analog'">
+                [type]="'analog'"
+                (pullupChanged)="updateSensorPullup(i, $event)">
         </output-chart>
 
         <output-chart
