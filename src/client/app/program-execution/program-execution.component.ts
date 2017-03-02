@@ -71,7 +71,7 @@ export class ProgramExecutionComponent implements OnDestroy, OnInit {
             programName,
             filePath,
             args
-        }
+        };
     }
 
     public async sendInput () {
