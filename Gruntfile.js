@@ -99,7 +99,7 @@ module.exports = function(grunt) {
             test: 'test/**/*.ts'
         },
         concurrent: {
-            run: [['compile', 'copy', 'injector', 'run-server'], 'watch:compile', 'watch:copy'],
+            run: [['compile', 'sass','copy', 'injector', 'run-server'], 'watch:compile', 'watch:copy'],
             options: {
                 logConcurrentOutput: true
             }
@@ -138,7 +138,22 @@ module.exports = function(grunt) {
                     ]
                 }
             }
-        }
+        },
+        sass: {
+            dist: {
+                files: [
+                    {
+                        expand: true,
+                        cwd: 'src/client',
+                        src: ['**/*.scss'],
+                        dest: 'build/src/client',
+                        rename: function(dest, src) {
+                            return path.join(dest, src.replace(/\.scss$/, ".css"));
+                        }
+                    }
+                ]
+            }
+        },
     });
 
     grunt.loadNpmTasks('grunt-ts');
@@ -149,6 +164,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-concurrent');
     grunt.loadNpmTasks('grunt-babel');
     grunt.loadNpmTasks('grunt-injector');
+    grunt.loadNpmTasks('grunt-sass');
 
     grunt.registerTask('swagger-validate', function() {
         var done = this.async();
@@ -205,6 +221,7 @@ module.exports = function(grunt) {
     });
 
     grunt.registerTask('compile', ['ts', 'babel']);
-    grunt.registerTask('build', ['clean', 'compile', 'copy', 'injector']);
+    grunt.registerTask('build-dirty', ['compile', 'sass', 'copy', 'injector']);
+    grunt.registerTask('build', ['clean', 'build-dirty']);
     grunt.registerTask('default', ['concurrent:run']);
 };
