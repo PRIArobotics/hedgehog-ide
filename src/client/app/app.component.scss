@@ -17,6 +17,23 @@
     bottom: 0;
 }
 
+#about-link {
+    bottom: 0px;
+    position: absolute;
+    margin: 6px;
+
+    .material-icons {
+        font-size: 42px;
+        color: #FFFFFF;
+        margin: 5px;
+    }
+}
+
+#about-modal {
+    top: 5% !important;
+    max-height: 90% !important;
+}
+
 /* Animation */
 .hvr-forward {
     display: inline-block;

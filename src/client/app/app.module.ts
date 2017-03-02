@@ -14,6 +14,7 @@ import HedgehogControlComponent from "./hedgehog-control/hedgehog-control.compon
 import VersionListComponent from "./program/version-list.component";
 import DirectoryViewComponent from "./program/directory-view.component";
 import FileViewComponent from "./program/file-view.component";
+import {MaterializeModule} from "angular2-materialize";
 
 const appRoutes: Routes = [
     {
@@ -52,6 +53,7 @@ const appRoutes: Routes = [
 
 @NgModule({
     imports: [
+        MaterializeModule,
         BrowserModule,
         ProgramModule,
         TextIdeModule,

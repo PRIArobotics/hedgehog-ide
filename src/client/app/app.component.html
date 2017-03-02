@@ -5,7 +5,58 @@
     <div class="side-bar-item">
         <a [routerLink]="['/hedgehog-control']" ><img src="/assets/img/hedgehog-control.svg" class="hvr-forward"/></a>
     </div>
+    <div class="side-bar-item" id="about-link">
+        <a (click)="aboutModalActions.emit({action:'modal', params:['open']})" ><i class="material-icons hvr-forward">info</i></a>
+    </div>
 </div>
 <div class="wrapper">
     <router-outlet></router-outlet>
+</div>
+
+<div id="about-modal" class="modal" materialize="modal" [materializeParams]="[{dismissible: true}]" [materializeActions]="aboutModalActions">
+    <form (submit)="closeSettingsModal()">
+        <div class="row">
+            <div class="col m10 offset-m1">
+                <div class="modal-content">
+                    <h4>About Hedgehog IDE</h4>
+                    <img class="responsive-img" src="/assets/img/logo-text.svg">
+                    <span class="right">Version: {{ version }}</span>
+                    <h4>Team</h4>
+                    <ul>
+                        <li><a href="https://mklein.co.at">Markus Klein</a></li>
+                        <li><a href="https://github.com/tfellner-tgm">Thomas Fellner</a></li>
+                        <li><a href="https://github.com/hmohamad">Hassan Mohamad</a></li>
+                    </ul>
+
+                    <h4>Links</h4>
+                    <ul>
+                        <li><a href="https://hedgehog.pria.at">Hedgehog Web Page</a></li>
+                        <li><a href="https://github.com/PRIArobotics/hedgehog-ide">GitHub Repository</a></li>
+                        <li><a href="https://pria.at">Practical Robotics Institute Austria</a></li>
+                    </ul>
+
+                    <h4>Acknowledgement</h4>
+                    <ul>
+                        <li>Clemens Koza</li>
+                        <li>Reinhard Grabler</li>
+                        <li>Gottfried Koppensteiner</li>
+                        <li>and all other PRIA staff</li>
+                    </ul>
+
+                    <h4>Legal</h4>
+                    <ul>
+                        <li>Licensed under <a href="https://github.com/PRIArobotics/hedgehog-ide/blob/master/LICENSE">AGPLv3+</a></li>
+                        <li>Copyright &copy; 2017, Practical Robotics Institute Austria</li>
+                        <li>Copyright &copy; 2017, Markus Klein</li>
+                        <li>Copyright &copy; 2017, Thomas Fellner</li>
+                        <li>Copyright &copy; 2017, Hassan Mohamad</li>
+                        <li>Hedgehog Logo by Martin Krammer</li>
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button class="waves-effect waves-green btn-flat" type="reset" (click)="aboutModalActions.emit({action:'modal', params:['close']})">Close</button>
+                </div>
+            </div>
+        </div>
+    </form>
 </div>
