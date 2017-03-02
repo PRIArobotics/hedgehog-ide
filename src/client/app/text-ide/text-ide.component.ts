@@ -171,11 +171,10 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
         },
         {
             name: 'simple example',
-            value: `from time import sleep
-                    from hedgehog.client import connect
-                    
-                    with connect(emergency=15) as hedgehog:
-                        print("Hello World")`
+            value: 'from time import sleep\n' +
+            'from hedgehog.client import connect\n\n' +
+            'with connect(emergency=15) as hedgehog:\n' +
+            '\tprint("Hello World")\n'
         }
 
     ];
@@ -681,7 +680,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
 
         if (this.newData.file) {
             // add file with no content to the Working Tree Directory
-            await directory.addFile(name, '');
+            await directory.addFile(name, this.newData.template);
             let newFile: WorkingTreeFile = await directory.getFile(name);
             let fileId = genericToBase64IdSafe(directory.getItemPath(name));
 
