@@ -1,4 +1,4 @@
-import {Component, Output, EventEmitter, OnDestroy} from "@angular/core";
+import {Component, Output, EventEmitter, OnDestroy, OnInit} from "@angular/core";
 import {HttpProcessManagerService} from "./http-process-manager.service";
 
 @Component({
@@ -6,9 +6,7 @@ import {HttpProcessManagerService} from "./http-process-manager.service";
     template: require('./program-execution.component.html'),
     styles: [require('./program-execution.component.css')],
 })
-export class ProgramExecutionComponent implements OnDestroy {
-
-
+export class ProgramExecutionComponent implements OnDestroy, OnInit {
     public isRunning: boolean = false;
     public input: string = '';
 
@@ -45,7 +43,14 @@ export class ProgramExecutionComponent implements OnDestroy {
         });
     }
 
-    public async ngOnDestroy(): Promise<void> {
+    public ngOnInit (): void {
+        let outputDiv = document.getElementById("output");
+        $('body').on('DOMSubtreeModified', "#output", () => {
+            outputDiv.scrollTop = outputDiv.scrollHeight;
+        });
+    }
+
+    public async ngOnDestroy (): Promise<void> {
         await this.processManager.kill(this.processPid);
     }
 
