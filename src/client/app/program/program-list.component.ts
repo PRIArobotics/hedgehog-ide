@@ -57,7 +57,12 @@ export class ProgramListComponent implements OnInit {
         } else {
             let newProgram = await this.storage.createProgram(this.newProgramName);
             let root = await newProgram.getWorkingTreeRoot();
-            root.addFile('main.py', 'from time import sleep\nfrom hedgehog.client import connect\n\nwith connect(emergency=15) as hedgehog:\n\tprint("Hello World")')
+            await root.addFile('main.py',
+                'from time import sleep\n' +
+                'from hedgehog.client import connect\n\n' +
+                'with connect(emergency=15) as hedgehog:\n' +
+                '\tprint("Hello World")\n'
+            );
         }
         this.newProgramName = '';
         await this.reloadProgramList();

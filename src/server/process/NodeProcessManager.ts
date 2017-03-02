@@ -85,14 +85,13 @@ export default class NodeProcessManager implements IProcessManager {
                 if (err.code !== 'ENOENT')
                     winston.error(err);
             }
-            // TODO: stop moters and servos here
         });
     }
 
     private registerRedirectOutputHandler (process: NodeProcess, stream: string) {
         process.nodeProcess[stream].on('data', (data: string) => {
             this.eventEmitter.emit('data_' + stream, process, data);
-            fs.appendFile(this.getStreamStorageFile(process.nodeProcess.pid, stream), data, (err: Object) => {
+            fs.appendFile(this.getStreamStorageFile(process.nodeProcess.pid, stream), data, err => {
                 if (err)
                     winston.error(err.toString());
             });
