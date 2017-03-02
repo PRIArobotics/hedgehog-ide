@@ -100,9 +100,15 @@
                 <label for="new-name" *ngIf="!newData.file">Directory Name</label>
             </div>
         </div>
-        <div class="modal-footer">
-            <button class="waves-effect waves-green btn-flat" type="reset" (click)="closeNewFileOrDirectoryModal()">Close</button>
-            <button class="modal-action modal-close waves-effect waves-green btn-flat" type="submit">Create</button>
+        <div class="form-group">
+                <select class="form-control" id="template" required [(ngModel)]="newData.template" name="template" #template="ngModel">
+                    <option *ngFor="let templateOption of templateOptions" [ngValue]="templateOption.value">{{templateOption.name}}</option>
+                </select>
+                <label for="template">Template</label>
+            <div class="modal-footer">
+                <button class="waves-effect waves-green btn-flat" type="reset" (click)="closeNewFileOrDirectoryModal()">Close</button>
+                <button class="modal-action modal-close waves-effect waves-green btn-flat" type="submit">Create</button>
+            </div>
         </div>
     </form>
 </div>
