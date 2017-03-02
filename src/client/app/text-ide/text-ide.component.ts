@@ -132,7 +132,9 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
         name: '',
         arrayToAddFileTo: [],
         storageObject: WorkingTreeDirectory,
-        file: true
+        file: true,
+        template: ''
+
     };
 
     // delete file name
@@ -161,6 +163,22 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
         fontSize: 12,
         wrapBehavioursEnabled: false
     };
+
+    private templateOptions: Array<Object> = [
+        {
+            name: 'none',
+            value: ''
+        },
+        {
+            name: 'simple example',
+            value: `from time import sleep
+                    from hedgehog.client import connect
+                    
+                    with connect(emergency=15) as hedgehog:
+                        print("Hello World")`
+        }
+
+    ];
 
     /**
      * Constructor that sets the programName from the router
@@ -649,6 +667,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
     public closeNewFileOrDirectoryModal() {
         this.newFileOrDirectoryModalActions.emit({action:"modal", params:['close']});
     }
+
 
     public async newFileOrDirectory() {
         // save new filename and Working Tree Directory to save it to
