@@ -11,7 +11,6 @@ import EventEmitter from "./EventEmitter";
 @Injectable()
 export class HttpProcessManagerService implements IProcessManager {
     private static resourceToProcess (resource: any): IProcess {
-        console.log(resource);
         return {
             programName: genericFromBase64(resource.attributes.programId),
             filePath: resource.attributes.file,
