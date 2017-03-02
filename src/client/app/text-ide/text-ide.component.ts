@@ -164,7 +164,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
         wrapBehavioursEnabled: false
     };
 
-    private templateOptions: {name: string, value: string}[] = [
+    private templateOptions: Array<{name: string, value: string}> = [
         {
             name: 'none',
             value: ''
