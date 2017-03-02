@@ -80,6 +80,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
     private programExecution: ProgramExecutionComponent;
 
     private programIsRunning: boolean = false;
+    private executionPanelVisible: boolean = false;
 
     // modal action for creating a new file
     private newFileOrDirectoryModalActions = new EventEmitter<string|MaterializeAction>();
@@ -294,7 +295,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
     public async ngOnDestroy(): Promise<void> {
         // stop the program if it is running
         if (this.programIsRunning) {
-            this.programExecution.stop();
+            await this.programExecution.stop();
         }
     }
 
@@ -929,10 +930,6 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
         await this.saveOpenFile();
         await this.programExecution.run(this.programName, genericFromBase64IdSafe(this.openId));
         this.programIsRunning = true;
-    }
-
-    public onExecutionExit () {
-        this.programIsRunning = false;
     }
 
     public async saveVersionAction () {

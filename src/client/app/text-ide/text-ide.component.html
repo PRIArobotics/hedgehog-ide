@@ -2,7 +2,7 @@
     <nav class="hedgehog-green-light">
         <div class="nav-wrapper">
             <a class="brand-logo"> {{ programName }} </a>
-            <ul class="right hide-on-med-and-down">
+            <ul class="right">
                 <li>
                     <a (click)="run()" [ngClass]="{ 'disabled': !openId }" *ngIf="!programIsRunning" materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="execute open file"><i class="material-icons">play_arrow</i></a>
                     <a (click)="programExecution.stop()" *ngIf="programIsRunning" materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="stop program"><i class="material-icons">stop</i></a>
@@ -79,9 +79,8 @@
                         </div>
                     </div>
                 </split-area>
-                <split-area [size]="30">
-                    <program-execution (onExit)="onExecutionExit($event)" id="split-execute"></program-execution>
-
+                <split-area [size]="30" [visible]="executionPanelVisible">
+                    <program-execution (onExit)="programIsRunning = false" (onVisibleChange)="executionPanelVisible = $event" id="split-execute"></program-execution>
                 </split-area>
             </split>
         </split-area>

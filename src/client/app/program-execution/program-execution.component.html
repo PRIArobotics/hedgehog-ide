@@ -7,7 +7,7 @@
 
     <div id="program-execution-terminal" class="toggle-theme">
         <div id="close-button">
-            <i class="small material-icons" (click)="showPanel = false; stop()">close</i>
+            <i class="small material-icons" (click)="hide()">close</i>
         </div>
         <div id="output">
             <pre *ngFor="let output of outputList" class="{{output.type}}">{{ output.data }}</pre>
