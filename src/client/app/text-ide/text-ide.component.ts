@@ -714,7 +714,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
         let directory: WorkingTreeDirectory = this.newData.storageObject;
 
         if (this.checkDuplicate(name, this.newData.arrayToAddFileTo)) {
-            Materialize.toast('<i class="material-icons">close</i> Duplicate entry: ' + this.newData.name, 3000);
+            Materialize.toast('<i class="material-icons">close</i> Duplicate entry: ' + this.newData.name, 3000, 'red');
             return;
         }
 
@@ -743,7 +743,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
 
             // show toast that file was successfully created
             Materialize.toast(
-                '<i class="material-icons">done</i> Successfully created file ' + this.newData.name, 3000);
+                '<i class="material-icons">done</i> Successfully created file ' + this.newData.name, 20000);
         } else {
             // add directory to the Working Tree Directory
             await directory.addDirectory(name);
@@ -786,7 +786,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
         // check if there is no parentArray and if the type of fileId is undefined
         // this means it is the root directory and therefore cannot be deleted
         if (!this.deleteFileData.parentArray && !this.deleteFileData.fileId) {
-            Materialize.toast('<i class="material-icons">close</i>Cannot delete root directory', 3000);
+            Materialize.toast('<i class="material-icons">close</i>Cannot delete root directory', 3000, 'red');
             return;
         }
 
@@ -877,7 +877,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
         // check if there is no parentArray and if the type of fileId is undefined
         // this means it is the root directory and therefore cannot be renamed here
         if (!this.renameFileData.currentItem.parentArray && !this.renameFileData.currentItem.fileId) {
-            Materialize.toast('<i class="material-icons">close</i>Cannot rename project here', 3000);
+            Materialize.toast('<i class="material-icons">close</i>Cannot rename project here', 3000, 'red');
             return;
         }
 
