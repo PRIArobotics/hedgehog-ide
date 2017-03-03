@@ -253,31 +253,31 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
         let staticWordCompleter = {
             getCompletions: (editor, session, pos, prefix, callback) => {
                 let autocompletionList = [
-                    'set_input_state(self, port, pullup)',
-                    'get_analog(self, port)',
-                    'get_digital(self, port)',
-                    'set_digital_output(self, port, level)',
-                    'set_motor(self, port, state)',
-                    'set_motor(self, port, state, amount=0, reached_state=0,' +
+                    'set_input_state(port, pullup)',
+                    'get_analog(port)',
+                    'get_digital(port)',
+                    'set_digital_output(port, level)',
+                    'set_motor(port, state)',
+                    'set_motor(port, state, amount=0, reached_state=0,' +
                         'relative=None, absolute=None, on_reached=None)',
-                    'move(self, port, amount, state=0)',
+                    'move(port, amount, state=0)',
                     'move(port, value)',
-                    'move_relative_position(self, port, amount, relative, state=0, on_reached=None)',
-                    'move_relative_position(self, port, amount, relative)',
-                    'move_absolute_position(self, port, amount, absolute, state=0, on_reached=None)',
-                    'move_absolute_position(self, port, amount, relative)',
-                    'get_motor(self, port)',
-                    'get_motor_velocity(self, port)',
-                    'get_motor_position(self, port)',
-                    'set_motor_position(self, port, position)',
-                    'set_servo(self, port, active, position)',
+                    'move_relative_position(port, amount, relative, state=0, on_reached=None)',
+                    'move_relative_position(port, amount, relative)',
+                    'move_absolute_position(port, amount, absolute, state=0, on_reached=None)',
+                    'move_absolute_position(port, amount, relative)',
+                    'get_motor(port)',
+                    'get_motor_velocity(port)',
+                    'get_motor_position(port)',
+                    'set_motor_position(port, position)',
+                    'set_servo(port, active, position)',
 
                 ];
                 callback(null, autocompletionList.map(addition => {
                     return {
                         caption: addition,
                         value: 'hedgehog.' + addition,
-                        meta: 'static'
+                        meta: 'hedgehog'
                     };
                 }));
 
@@ -285,9 +285,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
         };
 
         // add autocompletions for hedgehog
-        this.editor.getEditor().completers.push(staticWordCompleter);
-
-        console.log(this.editor.getEditor().completers);
+        this.editor.getEditor().completers.unshift(staticWordCompleter);
 
         // update the tree model after file tree has been populated
         this.tree.treeModel.update();
