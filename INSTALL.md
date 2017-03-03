@@ -6,7 +6,7 @@ To do so, open a terminal connection to your Hedgehog's Raspberry Pi, and type t
 $ wget https://nodejs.org/dist/latest/node-v7.4.0-linux-armv6l.tar.xz
 $ tar -xvf node-v7.4.0-linux-armv6l.tar.xz
 $ sudo cp -R node-v7.4.0-linux-armv6l/* /usr/local/
-$ sudo apt install libssl-dev
+$ sudo apt install libssl-dev libzmq-dev
 ```
 
 Now with Node ready to go, we can move on the environment setup for the Hedgehog IDE.
