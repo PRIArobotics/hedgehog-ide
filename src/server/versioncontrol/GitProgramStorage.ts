@@ -79,6 +79,7 @@ export default class GitProgramStorage implements IProgramStorage {
 
         // for whatever reason, TS does not recognize that Commit has all properties of Object as well
         await NodeGit.Reset.reset(repository, commit as any, NodeGit.Reset.TYPE.HARD, { });
+        await this.cleanWorkingTree(programName, repository);
         return Promise.resolve();
     }
 
@@ -221,11 +222,7 @@ export default class GitProgramStorage implements IProgramStorage {
             NodeGit.Reset.TYPE.HARD,
             null);
 
-        // basically, this does the same thing as git clean would do
-        for(const file of await repository.getStatus(null) as any[]) {
-            if(!file.inIndex())
-                await wrapCallbackAsPromise(rimraf, this.getWorkingTreePath(programName, file.path()));
-        }
+        await this.cleanWorkingTree(programName, repository);
     }
 
     public async updateWorkingTreeObject(programName: string,
@@ -255,6 +252,14 @@ export default class GitProgramStorage implements IProgramStorage {
             throw new Error(`Target '${targetPath}' is outside of working tree.`);
 
         return absolutePath;
+    }
+
+    private async cleanWorkingTree (programName: string, repository: NodeGit.Repository) {
+        // basically, this does the same thing as git clean would do
+        for(const file of await repository.getStatus(null) as any[]) {
+            if(!file.inIndex())
+                await wrapCallbackAsPromise(rimraf, this.getWorkingTreePath(programName, file.path()));
+        }
     }
 
     private getProgramPath(name: string) {
