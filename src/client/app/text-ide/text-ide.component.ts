@@ -251,42 +251,42 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
             }
         }
 
-        let staticWordCompleter = {
-            getCompletions: (editor, session, pos, prefix, callback) => {
-                let autocompletionList = [
-                    'set_input_state(port, pullup)',
-                    'get_analog(port)',
-                    'get_digital(port)',
-                    'set_digital_output(port, level)',
-                    'set_motor(port, state)',
-                    'set_motor(port, state, amount=0, reached_state=0,' +
-                        'relative=None, absolute=None, on_reached=None)',
-                    'move(port, amount, state=0)',
-                    'move(port, value)',
-                    'move_relative_position(port, amount, relative, state=0, on_reached=None)',
-                    'move_relative_position(port, amount, relative)',
-                    'move_absolute_position(port, amount, absolute, state=0, on_reached=None)',
-                    'move_absolute_position(port, amount, relative)',
-                    'get_motor(port)',
-                    'get_motor_velocity(port)',
-                    'get_motor_position(port)',
-                    'set_motor_position(port, position)',
-                    'set_servo(port, active, position)',
+    let hedgehogLibraryAutocomplete = {
+        getCompletions: (editor, session, pos, prefix, callback) => {
+            let autocompletionList = [
+                'set_input_state(port, pullup)',
+                'get_analog(port)',
+                'get_digital(port)',
+                'set_digital_output(port, level)',
+                'set_motor(port, state)',
+                'set_motor(port, state, amount=0, reached_state=0,' +
+                    'relative=None, absolute=None, on_reached=None)',
+                'move(port, amount, state=0)',
+                'move(port, value)',
+                'move_relative_position(port, amount, relative, state=0, on_reached=None)',
+                'move_relative_position(port, amount, relative)',
+                'move_absolute_position(port, amount, absolute, state=0, on_reached=None)',
+                'move_absolute_position(port, amount, relative)',
+                'get_motor(port)',
+                'get_motor_velocity(port)',
+                'get_motor_position(port)',
+                'set_motor_position(port, position)',
+                'set_servo(port, active, position)',
 
-                ];
-                callback(null, autocompletionList.map(addition => {
-                    return {
-                        caption: addition,
-                        value: 'hedgehog.' + addition,
-                        meta: 'hedgehog'
-                    };
-                }));
+            ];
+            callback(null, autocompletionList.map(addition => {
+                return {
+                    caption: addition,
+                    value: 'hedgehog.' + addition,
+                    meta: 'hedgehog'
+                };
+            }));
 
-            }
-        };
+        }
+    };
 
-        // add autocompletions for hedgehog
-        this.editor.getEditor().completers.unshift(staticWordCompleter);
+    // add autocompletions for hedgehog
+    this.editor.getEditor().completers.unshift(hedgehogLibraryAutocomplete);
 
         // update the tree model after file tree has been populated
         this.tree.treeModel.update();
@@ -900,24 +900,28 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
      */
     public async renameAction() {
         let fileId = this.renameFileData.currentItem.fileId;
+        let newName = this.renameFileData.newName;
 
         if (fileId) {
-            // close the tab if it exists
-            let tab: JQuery = $('#tab' + fileId);
-            if (tab) {
-                this.closeTab(tab);
-            }
-
             // receive indexed file
             let file = this.files.get(fileId);
+
+            if (this.checkDuplicate(newName, file.parentArray)) {
+                Materialize.toast(
+                    '<i class="material-icons">close</i>Duplicate entry for "' + newName + '"', 3000, 'red');
+                return;
+            }
+
+            // close the tab if it exists
+            let tab: JQuery = $('#tab' + fileId);
+            if (tab.length > 0) {
+                this.closeTab(tab);
+            }
 
             // check if the storage object exists and receive it if it doesn't exist
             if (!file.storageObject) {
                 file.storageObject = await file.parentDirectory.getFile(file.name);
             }
-
-            // update the file name
-            let newName = this.increaseFileIterator(this.renameFileData.newName, file.parentArray);
             this.renameFileData.currentItem.name = newName;
 
             // update the fileId
@@ -931,9 +935,13 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
             // rename the file on the disk
             file.storageObject.rename(newName);
         } else {
+            if (this.checkDuplicate(newName, this.renameFileData.currentItem.parentArray)) {
+                Materialize.toast(
+                    '<i class="material-icons">close</i>Duplicate entry for "' + newName + '"', 3000, 'red');
+                return;
+            }
+
             // update the directory name
-            let newName = this.increaseFileIterator(this.renameFileData.newName,
-                this.renameFileData.currentItem.parentArray);
             this.renameFileData.currentItem.name = newName;
 
             // rename the directory on the disk
