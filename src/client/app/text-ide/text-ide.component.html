@@ -194,7 +194,7 @@
                 </p>
 
                 <div class="input-field col s12">
-                    <input id="settings-fontsize" type="number" name="settings-fontsize" [(ngModel)]="editorOptions.fontSize" value="0" (ngModelChange)="updateEditorSettings()">
+                    <input id="settings-fontsize" type="number" name="settings-fontsize" [(ngModel)]="editorOptions.fontSize" min="1" value="1" (ngModelChange)="updateEditorSettings()">
                     <label for="settings-fontsize">Font Size</label>
                 </div>
 

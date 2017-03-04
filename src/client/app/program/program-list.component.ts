@@ -3,6 +3,7 @@ import IProgramStorage from "../../../common/versioncontrol/ProgramStorage";
 import {MaterializeAction} from "angular2-materialize";
 import {HttpProgramService} from "./http-program.service";
 import {Router} from "@angular/router";
+import {AppComponent} from "../app.component";
 
 @Component({
     selector: 'program-list',
@@ -44,7 +45,7 @@ export class ProgramListComponent implements OnInit {
     public openCreateModal(type: string) {
         this.newProgramType = type;
         this.createModalActions.emit({action:"modal", params:['open']});
-        this.fixModalOverlay();
+        AppComponent.fixModalOverlay();
     }
 
     public closeCreateModal() {
@@ -71,7 +72,7 @@ export class ProgramListComponent implements OnInit {
     public openDeleteModal(programName: string) {
         this.deleteProgramName = programName;
         this.deleteModalActions.emit({action:"modal", params:['open']});
-        this.fixModalOverlay();
+        AppComponent.fixModalOverlay();
     }
 
     public closeDeleteModal() {
@@ -87,7 +88,7 @@ export class ProgramListComponent implements OnInit {
     public openRenameModal(programName: string) {
         this.renameProgramData.oldName = programName;
         this.renameModalActions.emit({action:"modal", params:['open']});
-        this.fixModalOverlay();
+        AppComponent.fixModalOverlay();
     }
 
     public closeRenameModal() {
@@ -115,16 +116,4 @@ export class ProgramListComponent implements OnInit {
             }
         }
     }
-
-    private fixModalOverlay() {
-        // This is extremely hacky but apparently, there is no other solution.
-        // Move modal to right location as it should fill the whole screen otherwise
-        // See https://github.com/Dogfalo/materialize/issues/1532
-        // grab the dark overlay
-        let overlay = $('.modal-overlay');
-        // remove it
-        overlay.detach();
-        // attach it to the thing you want darkened
-        $('router-outlet').after(overlay);
-    };
 }

@@ -11,6 +11,7 @@ import Program from '../../../common/versioncontrol/Program';
 import {HttpProgramService} from '../program/http-program.service';
 import {ProgramExecutionComponent} from '../program-execution/program-execution.component';
 import {genericFromBase64IdSafe, genericToBase64IdSafe} from '../../../common/utils';
+import {AppComponent} from "../app.component";
 
 declare var $: JQueryStatic;
 declare var Materialize: any;
@@ -697,7 +698,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
 
         // open modal
         this.newFileOrDirectoryModalActions.emit({action:"modal", params:['open']});
-        this.fixModalOverlay();
+        AppComponent.fixModalOverlay();
     }
 
     /**
@@ -793,7 +794,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
 
         // open modal
         this.deleteModalActions.emit({action:"modal", params:['open']});
-        this.fixModalOverlay();
+        AppComponent.fixModalOverlay();
     }
 
     /**
@@ -886,7 +887,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
 
         // open modal
         this.renameModalActions.emit({action:"modal", params:['open']});
-        this.fixModalOverlay();
+        AppComponent.fixModalOverlay();
     }
 
     /**
@@ -950,7 +951,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
 
     public openSaveVersionModal() {
         this.saveVersionModalActions.emit({action:"modal", params:['open']});
-        this.fixModalOverlay();
+        AppComponent.fixModalOverlay();
     }
 
     public closeSaveVersionModal () {
@@ -959,7 +960,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
 
     public openSettingsModal() {
         this.settingsModalActions.emit({action:"modal", params:['open']});
-        this.fixModalOverlay();
+        AppComponent.fixModalOverlay();
     }
 
     public closeSettingsModal () {
@@ -1114,18 +1115,6 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
         // load new li as tab
         ($('div.tabs') as any).tabs();
     }
-
-    private fixModalOverlay() {
-        // This is extremely hacky but apparently, there is no other solution.
-        // Move modal to right location as it should fill the whole screen otherwise
-        // See https://github.com/Dogfalo/materialize/issues/1532
-        // grab the dark overlay
-        let overlay = $('.modal-overlay');
-        // remove it
-        overlay.detach();
-        // attach it to the thing you want darkened
-        $('router-outlet').after(overlay);
-    };
 
     /**
      * Update the indicator div to position under a tab
