@@ -752,5 +752,34 @@ describe('GitProgramStorage', () => {
 
             assert.equal('test', await wrapCallbackAsPromise(fs.readFile, `tmp/${programName}/test1`));
         });
+
+        it('should clean the working tree', async () => {
+            const programName = getProgramName();
+            let repository = await NodeGit.Repository.init(`tmp/${programName}`, 0);
+
+            await wrapCallbackAsPromise(fs.writeFile, `tmp/${programName}/test1`, 'test');
+            let initalCommit = await repository.createCommitOnHead(
+                ['test1'],
+                GitProgramStorage.signature,
+                GitProgramStorage.signature,
+                'initial commit'
+            );
+
+            await wrapCallbackAsPromise(fs.writeFile, `tmp/${programName}/test2`, 'test');
+            await repository.createCommitOnHead(
+                ['test1'],
+                GitProgramStorage.signature,
+                GitProgramStorage.signature,
+                'second commit'
+            );
+
+            await programStorage.resetProgram(programName, initalCommit.tostrS());
+            try {
+                await wrapCallbackAsPromise(fs.stat, `tmp/${programName}/test2`);
+                throw Error('New file still exists.');
+            } catch(err) {
+                assert.equal(err.code, 'ENOENT');
+            }
+        });
     });
 });
