@@ -102,7 +102,7 @@
             </div>
             <div class="row">
                 <div class="input-field col s8">
-                    <select class="form-control" id="template" required [(ngModel)]="newData.template" name="template" materialize="material_select">
+                    <select class="form-control" id="template" [(ngModel)]="newData.template" name="template" materialize="material_select">
                         <option *ngFor="let templateOption of templateOptions" [ngValue]="templateOption.value">{{templateOption.name}}</option>
                     </select>
                     <label for="template">Template</label>
