@@ -551,14 +551,14 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
      */
     public toggleTheme(): void {
         if (this.editor.getEditor().getTheme() === 'ace/theme/textmate') {
-            let rule = this.getStyleRule('.toggleTheme');
+            let rule = this.getStyleRule('.toggle-theme');
             if (rule) {
-                rule.color = 'fff';
-                rule.backgroundColor = '1d1f21';
+                rule.cssText = "color: rgb(255, 255, 255); background-color: rgb(29,31,33) !important;";
+
                 this.editor.getEditor().setTheme('ace/theme/tomorrow_night');
             }
         } else {
-            let rule = this.getStyleRule('.toggleTheme');
+            let rule = this.getStyleRule('.toggle-theme');
             if (rule) {
                 rule.color = '000';
                 rule.backgroundColor = 'fff';
@@ -714,7 +714,8 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
         let directory: WorkingTreeDirectory = this.newData.storageObject;
 
         if (this.checkDuplicate(name, this.newData.arrayToAddFileTo)) {
-            Materialize.toast('<i class="material-icons">close</i> Duplicate entry: ' + this.newData.name, 3000, 'red');
+            Materialize.toast(
+                '<i class="material-icons">close</i> Duplicate entry: "' + this.newData.name + '"', 3000, 'red');
             return;
         }
 
@@ -743,7 +744,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
 
             // show toast that file was successfully created
             Materialize.toast(
-                '<i class="material-icons">done</i> Successfully created file ' + this.newData.name, 20000);
+                '<i class="material-icons">done</i> Successfully created file "' + this.newData.name + '"', 3000);
         } else {
             // add directory to the Working Tree Directory
             await directory.addDirectory(name);
@@ -761,7 +762,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
 
             // show toast that file was successfully created
             Materialize.toast(
-                '<i class="material-icons">done</i> Successfully created directory ' + this.newData.name, 3000);
+                '<i class="material-icons">done</i> Successfully created directory "' + this.newData.name + '"', 3000);
         }
 
 
@@ -854,10 +855,12 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
         // show toast that file or directory was successfully deleted
         if (this.deleteFileData.children) {
             Materialize.toast(
-                '<i class="material-icons">done</i> Successfully deleted directory ' + this.deleteFileData.name, 3000);
+                '<i class="material-icons">done</i> Successfully deleted directory "' + this.deleteFileData.name + '"',
+                3000);
         } else {
             Materialize.toast(
-                '<i class="material-icons">done</i> Successfully deleted file ' + this.deleteFileData.name, 3000);
+                '<i class="material-icons">done</i> Successfully deleted file "' + this.deleteFileData.name + '"',
+                3000);
         }
 
         // reset deleteFileData
