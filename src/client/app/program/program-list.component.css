@@ -2,6 +2,10 @@
     margin-top: 30px;
 }
 
+.program-item {
+    padding-left: 20px !important;
+}
+
 .program-item .title {
     font-size: 1.5em;
 }
@@ -22,3 +26,9 @@
 #rename-modal {
     width: 400px;
 }
+
+.program-icon {
+    position: initial !important;
+    margin-right: 20px;
+}
+
