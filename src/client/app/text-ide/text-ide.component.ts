@@ -984,10 +984,11 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     public async saveVersionAction () {
-        await this.saveAllFiles();
+        await this.saveAllFiles(false);
         await this.program.createVersionFromWorkingTree(this.saveVersionData.message, this.saveVersionData.tag);
         this.saveVersionData.message = '';
         this.saveVersionData.tag = '';
+        Materialize.toast('<i class="material-icons">done</i> Successfully created a new version', 3000);
     }
 
     /**
@@ -1006,7 +1007,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
     /**
      * Save all files that have changed and are in the current project
      */
-    private async saveAllFiles () {
+    private async saveAllFiles (showMessage: boolean) {
         // loop through all indexed files
         for (let fileId of this.files.keys()) {
             // receive file
@@ -1025,8 +1026,10 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
             }
         }
 
-        Materialize.toast('<i class="material-icons">done</i>' +
-            'Successfully saved all changed files ' + this.deleteFileData.name, 3000);
+        if (showMessage) {
+            Materialize.toast('<i class="material-icons">done</i>' +
+                'Successfully saved all changed files ' + this.deleteFileData.name, 3000);
+        }
     }
 
     /**
