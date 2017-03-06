@@ -13,8 +13,8 @@
         <li class="collection-item valign-wrapper rich-collection-item waves-effect" *ngFor="let version of versions" (click)="openRoute($event, version.treeId)">
             <div class="row">
                 <span class="col valign" [ngClass]="{ 'm6': version.tag, 'm8': !version.tag }"> <strong>{{ version.message }}</strong></span>
-                <span class="col m2 valign"><i class="material-icons">code</i> {{ version.id.substr(0, 6) }}</span>
                 <span class="col m2 valign" *ngIf="version.tag"><i class="material-icons">label</i> {{ version.tag }}</span>
+                <span class="col m2 valign"><i class="material-icons">code</i> {{ version.id.substr(0, 6) }}</span>
                 <button (click)="revertToVersion(version)" materialize="tooltip" class="waves-effect waves-teal btn-flat tooltipped" data-position="bottom" data-delay="50" data-tooltip="revert to this version"><i class="material-icons">replay</i></button>
             </div>
         </li>
