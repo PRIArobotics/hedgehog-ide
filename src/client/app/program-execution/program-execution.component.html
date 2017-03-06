@@ -1,7 +1,6 @@
 <div id="program-execution" style="z-index: 100000">
     <div id="program-execution-sidebar">
-        <i class="material-icons" (click)="run(replay.programName, replay.filePath, replay.args)">replay</i>
-        <br/><br/>
+        <i class="material-icons" *ngIf="!isRunning" (click)="run(replay.programName, replay.filePath, replay.args)">replay</i>
         <i class="material-icons" *ngIf="isRunning" (click)="stop()">stop</i>
     </div>
 
