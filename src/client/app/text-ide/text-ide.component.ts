@@ -39,9 +39,14 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
     public fileTreeOptions = {
         allowDrag: true,
         allowDrop: (element, to) => {
-            if (to.parent.children && element.data) {
-                // check if it would be a duplicate
-                return to.parent.children && !this.checkDuplicate(element.data.name, to.parent.children);
+            if (element) {
+                if (to.parent.children) {
+                    // check if the item would be a duplicate
+                    return (to.parent.children) && !this.checkDuplicate(element.data.name, to.parent.children);
+                }  else if (to.children) {
+                    // check if the item would be a duplicate
+                    return !this.checkDuplicate(element.data.name, to.children);
+                }
             }
 
             // return false by default
@@ -76,7 +81,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild(TreeComponent)
     private tree: TreeComponent;
 
-    // TreeComponent for updating the file tree
+    // ProgramExecutionComponent for running programs
     @ViewChild(ProgramExecutionComponent)
     private programExecution: ProgramExecutionComponent;
 
@@ -474,7 +479,6 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
 
             // create the file on the diesk
             await parentDirectory.addFile(newName, copyFile.content);
-
 
             // update the fileId
             let newFileId = genericToBase64IdSafe(parentDirectory.getItemPath(newName));
@@ -950,8 +954,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
 
         // reset renameFileData
         this.renameFileData = {
-            currentItem: {},
-            newName: ''
+            currentItem: {}
         };
     }
 
