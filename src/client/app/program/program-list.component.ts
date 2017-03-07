@@ -1,9 +1,10 @@
-import {Component, OnInit, EventEmitter} from '@angular/core';
+import {Component, OnInit, EventEmitter, ViewChild} from '@angular/core';
 import IProgramStorage from "../../../common/versioncontrol/ProgramStorage";
 import {MaterializeAction} from "angular2-materialize";
 import {HttpProgramService} from "./http-program.service";
 import {Router} from "@angular/router";
 import {AppComponent} from "../app.component";
+import {ContextMenuComponent} from "angular2-contextmenu";
 
 @Component({
     selector: 'program-list',
@@ -28,6 +29,8 @@ export class ProgramListComponent implements OnInit {
         oldName: '',
         newName: ''
     };
+
+    @ViewChild(ContextMenuComponent) public programListContextMenu: ContextMenuComponent;
 
     public constructor(private router: Router, storageService: HttpProgramService) {
         this.storage = storageService.getStorage();

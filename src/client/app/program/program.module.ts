@@ -9,6 +9,7 @@ import DirectoryViewComponent from "./directory-view.component";
 import {KeysPipe} from "./directory-view.component";
 import FileViewComponent from "./file-view.component";
 import {TextIdeModule} from "../text-ide/text-ide.module";
+import {ContextMenuModule} from "angular2-contextmenu";
 
 @NgModule({
     imports: [
@@ -16,6 +17,7 @@ import {TextIdeModule} from "../text-ide/text-ide.module";
         CommonModule,
         FormsModule,
         RouterModule,
+        ContextMenuModule,
         TextIdeModule
     ],
     declarations: [

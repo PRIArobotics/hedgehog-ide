@@ -7,83 +7,94 @@
     </div>
 </nav>
 
-<div class="fixed-action-btn">
-    <a materialize="tooltip" class="btn-floating btn-large waves-effect waves-light green z-depth-4 tooltipped" data-position="left" data-delay="50" data-tooltip="Create Project">
-        <i class="material-icons">add</i>
-    </a>
-    <ul>
-        <li>
-            <a materialize="tooltip" (click)="openCreateModal('python')" class="btn-floating blue tooltipped" data-position="left" data-delay="50" data-tooltip="Python Project">
-                <i class="material-icons">code</i>
-            </a>
-        </li>
-        <li>
-            <a materialize="tooltip" (click)="openCreateModal('blockly')" class="btn-floating red tooltipped" data-position="left" data-delay="50" data-tooltip="Blockly Project">
-                <i class="material-icons">view_module</i>
-            </a>
-        </li>
-    </ul>
-</div>
+<context-menu #programListContextMenu>
+    <template contextMenuItem let-node (execute)="openCreateModal('python')">
+        <i class="material-icons"> code </i> New Python Project
+    </template>
+    <template contextMenuItem let-node (execute)="openCreateModal('blockly')">
+        <i class="material-icons"> view_module </i> New Blockly Project
+    </template>
+</context-menu>
 
-<div class="container z-depth-1">
-    <ul class="collection">
-        <li class="collection-item avatar valign-wrapper waves-effect program-item" *ngFor="let program of programs" (click)="openRoute($event, program)">
-            <i materialize="tooltip" class="material-icons tooltipped circle blue program-icon" data-position="left" data-delay="50" data-tooltip="Python Project" *ngIf="!program.endsWith('.blockly')">code</i>
-            <i materialize="tooltip" class="material-icons tooltipped circle red program-icon" data-position="left" data-delay="50" data-tooltip="Blockly Project" *ngIf="program.endsWith('.blockly')">view_module</i>
-            <span class="title valign">{{ program.replace(".blockly","") }}</span>
+<div [contextMenu]="programListContextMenu" [contextMenuSubject]="this" class="program-list">
+    <div class="fixed-action-btn">
+        <a materialize="tooltip" class="btn-floating btn-large waves-effect waves-light green z-depth-4 tooltipped" data-position="left" data-delay="50" data-tooltip="Create Project">
+            <i class="material-icons">add</i>
+        </a>
+        <ul>
+            <li>
+                <a materialize="tooltip" (click)="openCreateModal('python')" class="btn-floating blue tooltipped" data-position="left" data-delay="50" data-tooltip="Python Project">
+                    <i class="material-icons">code</i>
+                </a>
+            </li>
+            <li>
+                <a materialize="tooltip" (click)="openCreateModal('blockly')" class="btn-floating red tooltipped" data-position="left" data-delay="50" data-tooltip="Blockly Project">
+                    <i class="material-icons">view_module</i>
+                </a>
+            </li>
+        </ul>
+    </div>
 
-            <div class="secondary-content">
-                <button materialize="tooltip" class="waves-effect waves-teal btn-flat tooltipped" *ngIf="!program.endsWith('.blockly')" [routerLink]="['/versions', program]" data-position="bottom" data-delay="50" data-tooltip="show versions"><i class="material-icons">history</i></button>
-                <button materialize="tooltip" class="waves-effect waves-teal btn-flat tooltipped" *ngIf="!program.endsWith('.blockly')" (click)="openRenameModal(program)" data-position="bottom" data-delay="50" data-tooltip="rename project"><i class="material-icons">mode_edit</i></button>
-                <button materialize="tooltip" class="waves-effect waves-teal btn-flat tooltipped" *ngIf="program.endsWith('.blockly')" (click)="openRenameModal(program)" data-position="bottom" data-delay="50" data-tooltip="rename project"><i class="material-icons">mode_edit</i></button>
-                <button materialize="tooltip" class="waves-effect waves-teal btn-flat tooltipped" (click)="openDeleteModal(program)" data-position="bottom" data-delay="50" data-tooltip="delete project"><i class="material-icons">delete</i></button>
+    <div class="container z-depth-1">
+        <ul class="collection">
+            <li class="collection-item avatar valign-wrapper waves-effect program-item" *ngFor="let program of programs" (click)="openRoute($event, program)">
+                <i materialize="tooltip" class="material-icons tooltipped circle blue program-icon" data-position="left" data-delay="50" data-tooltip="Python Project" *ngIf="!program.endsWith('.blockly')">code</i>
+                <i materialize="tooltip" class="material-icons tooltipped circle red program-icon" data-position="left" data-delay="50" data-tooltip="Blockly Project" *ngIf="program.endsWith('.blockly')">view_module</i>
+                <span class="title valign">{{ program.replace(".blockly","") }}</span>
+
+                <div class="secondary-content">
+                    <button materialize="tooltip" class="waves-effect waves-teal btn-flat tooltipped" *ngIf="!program.endsWith('.blockly')" [routerLink]="['/versions', program]" data-position="bottom" data-delay="50" data-tooltip="show versions"><i class="material-icons">history</i></button>
+                    <button materialize="tooltip" class="waves-effect waves-teal btn-flat tooltipped" *ngIf="!program.endsWith('.blockly')" (click)="openRenameModal(program)" data-position="bottom" data-delay="50" data-tooltip="rename project"><i class="material-icons">mode_edit</i></button>
+                    <button materialize="tooltip" class="waves-effect waves-teal btn-flat tooltipped" *ngIf="program.endsWith('.blockly')" (click)="openRenameModal(program)" data-position="bottom" data-delay="50" data-tooltip="rename project"><i class="material-icons">mode_edit</i></button>
+                    <button materialize="tooltip" class="waves-effect waves-teal btn-flat tooltipped" (click)="openDeleteModal(program)" data-position="bottom" data-delay="50" data-tooltip="delete project"><i class="material-icons">delete</i></button>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <div id="create-modal" class="modal" materialize="modal" [materializeParams]="[{dismissible: true}]" [materializeActions]="createModalActions">
+        <form (submit)="createProgram()">
+            <div class="modal-content">
+                <h4>Create New {{  newProgramType === "blockly" ? 'Visual' : ''}} Program</h4>
+                <div class="input-field">
+                    <input name="new-program-name" id="new-program-name" type="text" class="validate" [(ngModel)]="newProgramName"/>
+                    <label for="new-program-name">Program Name</label>
+                </div>
             </div>
-        </li>
-    </ul>
-</div>
-
-<div id="create-modal" class="modal" materialize="modal" [materializeParams]="[{dismissible: true}]" [materializeActions]="createModalActions">
-    <form (submit)="createProgram()">
-        <div class="modal-content">
-            <h4>Create New {{  newProgramType === "blockly" ? 'Visual' : ''}} Program</h4>
-            <div class="input-field">
-                <input name="new-program-name" id="new-program-name" type="text" class="validate" [(ngModel)]="newProgramName"/>
-                <label for="new-program-name">Program Name</label>
+            <div class="modal-footer">
+                <button class="waves-effect waves-green btn-flat" type="reset" (click)="closeCreateModal()">Close</button>
+                <button class="modal-action modal-close waves-effect waves-green btn-flat" type="submit">Create</button>
             </div>
-        </div>
-        <div class="modal-footer">
-            <button class="waves-effect waves-green btn-flat" type="reset" (click)="closeCreateModal()">Close</button>
-            <button class="modal-action modal-close waves-effect waves-green btn-flat" type="submit">Create</button>
-        </div>
-    </form>
-</div>
+        </form>
+    </div>
 
-<div id="delete-modal" class="modal" materialize="modal" [materializeParams]="[{dismissible: true}]" [materializeActions]="deleteModalActions">
-    <form (submit)="deleteProgram()">
-        <div class="modal-content">
-            <h4>Delete Program</h4>
-            <p>Do you want to delete the {{ deleteProgramName.endsWith('.blockly') ? 'visual' : ''}} program <strong>{{ deleteProgramName.replace(".blockly","") }}</strong>? <br />
-            This operation cannot be undone.</p>
-        </div>
-        <div class="modal-footer">
-            <button class="waves-effect waves-green btn-flat" type="reset" (click)="closeDeleteModal()">Close</button>
-            <button class="modal-action modal-close waves-effect waves-green btn-flat" type="submit">Delete</button>
-        </div>
-    </form>
-</div>
-
-<div id="rename-modal" class="modal" materialize="modal" [materializeParams]="[{dismissible: true}]" [materializeActions]="renameModalActions">
-    <form (submit)="renameProgram()">
-        <div class="modal-content">
-            <h4>Rename Program <strong>{{renameProgramData.oldName.replace(".blockly","")}}</strong></h4>
-            <div class="input-field">
-                <input name="rename-new-name" id="rename-new-name" type="text" class="validate" [(ngModel)]="renameProgramData.newName" />
-                <label for="rename-new-name">Program Name</label>
+    <div id="delete-modal" class="modal" materialize="modal" [materializeParams]="[{dismissible: true}]" [materializeActions]="deleteModalActions">
+        <form (submit)="deleteProgram()">
+            <div class="modal-content">
+                <h4>Delete Program</h4>
+                <p>Do you want to delete the {{ deleteProgramName.endsWith('.blockly') ? 'visual' : ''}} program <strong>{{ deleteProgramName.replace(".blockly","") }}</strong>? <br />
+                This operation cannot be undone.</p>
             </div>
-        </div>
-        <div class="modal-footer">
-            <button class="waves-effect waves-green btn-flat" type="reset" (click)="closeRenameModal()">Close</button>
-            <button class="modal-action modal-close waves-effect waves-green btn-flat" type="submit">Rename</button>
-        </div>
-    </form>
+            <div class="modal-footer">
+                <button class="waves-effect waves-green btn-flat" type="reset" (click)="closeDeleteModal()">Close</button>
+                <button class="modal-action modal-close waves-effect waves-green btn-flat" type="submit">Delete</button>
+            </div>
+        </form>
+    </div>
+
+    <div id="rename-modal" class="modal" materialize="modal" [materializeParams]="[{dismissible: true}]" [materializeActions]="renameModalActions">
+        <form (submit)="renameProgram()">
+            <div class="modal-content">
+                <h4>Rename Program <strong>{{renameProgramData.oldName.replace(".blockly","")}}</strong></h4>
+                <div class="input-field">
+                    <input name="rename-new-name" id="rename-new-name" type="text" class="validate" [(ngModel)]="renameProgramData.newName" />
+                    <label for="rename-new-name">Program Name</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="waves-effect waves-green btn-flat" type="reset" (click)="closeRenameModal()">Close</button>
+                <button class="modal-action modal-close waves-effect waves-green btn-flat" type="submit">Rename</button>
+            </div>
+        </form>
+    </div>
 </div>
