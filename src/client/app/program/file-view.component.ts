@@ -17,6 +17,11 @@ export default class FileViewComponent implements OnInit {
 
     private blobContent: string;
 
+    private editorOptions: Object = {
+        fontFamily: "Roboto Mono",
+        fontSize: 13,
+    };
+
     public constructor (private route: ActivatedRoute, private storageService: HttpProgramService) {
         this.programName = route.snapshot.params['programName'];
         this.blobId = route.snapshot.params['blobId'];
