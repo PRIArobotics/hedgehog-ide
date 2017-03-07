@@ -8,6 +8,10 @@
     display: flex;
 }
 
+.program-item:hover {
+    box-shadow: inset 0 0 2px #38b449;
+}
+
 .program-item .title {
     font-size: 1.5em;
 }
