@@ -43,7 +43,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
                 if (to.parent.children) {
                     // check if the item would be a duplicate
                     return (to.parent.children) && !this.checkDuplicate(element.data.name, to.parent.children);
-                }  else if (to.children) {
+                } else if (to.children) {
                     // check if the item would be a duplicate
                     return !this.checkDuplicate(element.data.name, to.children);
                 }
@@ -225,6 +225,9 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
         this.programExecution.isRunning = false;
         this.program = await this.storage.getProgram(this.programName);
 
+        this.openFileId = JSON.parse(localStorage.getItem('openFileId'));
+        this.openFiles = JSON.parse(localStorage.getItem('openFiles'));
+
         let rootDir = await this.program.getWorkingTreeRoot();
 
         let childArray = [];
@@ -237,6 +240,19 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
         if (!this.localStorageFiles[this.programName]) {
             // if not create a new Map with the program name
             this.localStorageFiles[this.programName] = {};
+        }
+
+        if (!this.openFiles) {
+            this.openFiles = {};
+        }
+
+        if (!this.openFiles[this.programName]) {
+            // if not create a new Map with the program name
+            this.openFiles[this.programName] = [];
+        }
+
+        if (!this.openFileId) {
+            this.openFileId = {};
         }
 
         // populate file tree and give it the root directory and it's childArray
@@ -266,7 +282,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
                     'set_digital_output(port, level)',
                     'set_motor(port, state)',
                     'set_motor(port, state, amount=0, reached_state=0,' +
-                        'relative=None, absolute=None, on_reached=None)',
+                    'relative=None, absolute=None, on_reached=None)',
                     'move(port, amount, state=0)',
                     'move(port, value)',
                     'move_relative_position(port, amount, relative, state=0, on_reached=None)',
@@ -331,7 +347,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
         this.updateEditorSettings();
     }
 
-    public updateEditorSettings () {
+    public updateEditorSettings() {
         this.editor.getEditor().setOptions(this.editorOptions);
     }
 
@@ -349,9 +365,9 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
      * @param directory directory to add to the file tree
      * @param childArray child array to add the sub-files and directories too
      */
-    public async populateFiletree (directory: WorkingTreeDirectory, childArray: Object[]) {
+    public async populateFiletree(directory: WorkingTreeDirectory, childArray: Object[]) {
         // loop through all items of the directory
-        for(let itemName of directory.items) {
+        for (let itemName of directory.items) {
             // get type of the item
             let type = directory.getItemType(itemName);
 
@@ -608,7 +624,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
      *
      * @param editorContent string that is the whole editor content
      */
-    public async onEditorContentChange (editorContent) {
+    public async onEditorContentChange(editorContent) {
         // save editorContent to the local file and currentFileContent
         this.currentFileContent = editorContent;
 
@@ -700,7 +716,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
         this.setNewData(event.item.data);
 
         // open modal
-        this.newFileOrDirectoryModalActions.emit({action:"modal", params:['open']});
+        this.newFileOrDirectoryModalActions.emit({action: "modal", params: ['open']});
         AppComponent.fixModalOverlay();
     }
 
@@ -708,7 +724,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
      * Close the new file modal
      */
     public closeNewFileOrDirectoryModal() {
-        this.newFileOrDirectoryModalActions.emit({action:"modal", params:['close']});
+        this.newFileOrDirectoryModalActions.emit({action: "modal", params: ['close']});
     }
 
 
@@ -770,7 +786,6 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
         }
 
 
-
         // update the tree model after file has been added
         this.tree.treeModel.update();
 
@@ -796,7 +811,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
         }
 
         // open modal
-        this.deleteModalActions.emit({action:"modal", params:['open']});
+        this.deleteModalActions.emit({action: "modal", params: ['open']});
         AppComponent.fixModalOverlay();
     }
 
@@ -804,7 +819,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
      * Close the delete file modal
      */
     public closeDeleteModal() {
-        this.deleteModalActions.emit({action:"modal", params:['close']});
+        this.deleteModalActions.emit({action: "modal", params: ['close']});
     }
 
     /**
@@ -889,7 +904,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
         }
 
         // open modal
-        this.renameModalActions.emit({action:"modal", params:['open']});
+        this.renameModalActions.emit({action: "modal", params: ['open']});
         AppComponent.fixModalOverlay();
     }
 
@@ -897,7 +912,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
      * Close the rename file modal
      */
     public closeRenameModal() {
-        this.renameModalActions.emit({action:"modal", params:['close']});
+        this.renameModalActions.emit({action: "modal", params: ['close']});
     }
 
     /**
@@ -960,31 +975,31 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     public openSaveVersionModal() {
-        this.saveVersionModalActions.emit({action:"modal", params:['open']});
+        this.saveVersionModalActions.emit({action: "modal", params: ['open']});
         AppComponent.fixModalOverlay();
     }
 
-    public closeSaveVersionModal () {
-        this.saveVersionModalActions.emit({action:"modal", params:['close']});
+    public closeSaveVersionModal() {
+        this.saveVersionModalActions.emit({action: "modal", params: ['close']});
     }
 
     public openSettingsModal() {
-        this.settingsModalActions.emit({action:"modal", params:['open']});
+        this.settingsModalActions.emit({action: "modal", params: ['open']});
         AppComponent.fixModalOverlay();
     }
 
-    public closeSettingsModal () {
+    public closeSettingsModal() {
         this.updateEditorSettings();
-        this.settingsModalActions.emit({action:"modal", params:['close']});
+        this.settingsModalActions.emit({action: "modal", params: ['close']});
     }
 
-    public async run () {
+    public async run() {
         await this.saveOpenFile();
         await this.programExecution.run(this.programName, genericFromBase64IdSafe(this.openId));
         this.programIsRunning = true;
     }
 
-    public async saveVersionAction () {
+    public async saveVersionAction() {
         await this.saveAllFiles(false);
         await this.program.createVersionFromWorkingTree(this.saveVersionData.message, this.saveVersionData.tag);
         this.saveVersionData.message = '';
@@ -995,7 +1010,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
     /**
      * reset indicator by setting it's left and right coordinate to the same point
      */
-    private resetIndicator () {
+    private resetIndicator() {
         let indicator = $('.indicator').first();
         indicator.css(
             {
@@ -1008,7 +1023,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
     /**
      * Save all files that have changed and are in the current project
      */
-    private async saveAllFiles (showMessage: boolean) {
+    private async saveAllFiles(showMessage: boolean) {
         // loop through all indexed files
         for (let fileId of this.files.keys()) {
             // receive file
@@ -1062,6 +1077,9 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
             this.openFiles[this.programName].push(fileId);
         }
 
+        localStorage.setItem('openFiles', JSON.stringify(this.openFiles));
+        localStorage.setItem('openFileId', JSON.stringify(this.openFileId));
+
         // update the editor content
         await this.openFile(fileId);
 
@@ -1086,7 +1104,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
         // create new a element that has the filename as
         // <a class='green-text lighten-3 waves-effect'> {filename} ... </a>
         let linkToEditor = document.createElement('a');
-        linkToEditor.className =  'green-text lighten-3 waves-effect';
+        linkToEditor.className = 'green-text lighten-3 waves-effect';
 
         // create close button as
         // <i class='material-icons' onclick="..."> close </i>
