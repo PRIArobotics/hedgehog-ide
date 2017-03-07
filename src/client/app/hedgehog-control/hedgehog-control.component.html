@@ -33,6 +33,12 @@
     </div>
 
     <div id="sensors" class="col s12">
+        <div class="col s12">
+            <div class="card-panel amber">
+                  <span>Be aware that sensor ports with no sensor attached might be influenced by other sensors!</span>
+            </div>
+        </div>
+
         <output-chart
                 *ngFor="let analog of analogSensors; let i = index;"
                 [name]="'Analog ' + i"
