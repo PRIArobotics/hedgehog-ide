@@ -27,8 +27,10 @@
 #output {
     width: 100%;
     overflow-y: auto;
-    height: calc(100% - 151px);
-    margin-top: 10px;
+    /*
+    151
+     */
+    height: calc(100% - 45px);
 }
 
 #close-button {

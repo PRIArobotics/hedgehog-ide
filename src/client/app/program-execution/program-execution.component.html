@@ -1,13 +1,15 @@
-<div id="program-execution" style="z-index: 100000">
+<div id="program-execution" style="z-index: 100000" class="toggle-theme">
     <div id="program-execution-sidebar">
+        <i class="small material-icons" (click)="hide()">close</i>
+
+        <br/>
+        <br/>
+
         <i class="material-icons" *ngIf="!isRunning" (click)="run(replay.programName, replay.filePath, replay.args)">replay</i>
         <i class="material-icons" *ngIf="isRunning" (click)="stop()">stop</i>
     </div>
 
-    <div id="program-execution-terminal" class="toggle-theme">
-        <div id="close-button">
-            <i class="small material-icons" (click)="hide()">close</i>
-        </div>
+    <div id="program-execution-terminal">
         <div id="output">
             <pre *ngFor="let output of outputList" class="{{output.type}}">{{ output.data }}</pre>
         </div>
