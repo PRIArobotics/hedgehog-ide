@@ -102,7 +102,7 @@
                     <label for="new-name" *ngIf="!newData.file">Directory Name</label>
                 </div>
             </div>
-            <div class="row">
+            <div class="row" *ngIf="!newData.file">
                 <div class="input-field col s8">
                     <select class="form-control" id="template" [(ngModel)]="newData.template" name="template" materialize="material_select">
                         <option *ngFor="let templateOption of templateOptions" [ngValue]="templateOption.value">{{templateOption.name}}</option>
