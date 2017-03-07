@@ -27,7 +27,7 @@
 
 <div class="container z-depth-1">
     <ul class="collection">
-        <li class="collection-item avatar valign-wrapper program-item" *ngFor="let program of programs" (click)="openRoute($event, program)">
+        <li class="collection-item avatar valign-wrapper waves-effect program-item" *ngFor="let program of programs" (click)="openRoute($event, program)">
             <i materialize="tooltip" class="material-icons tooltipped circle blue program-icon" data-position="left" data-delay="50" data-tooltip="Python Project" *ngIf="!program.endsWith('.blockly')">code</i>
             <i materialize="tooltip" class="material-icons tooltipped circle red program-icon" data-position="left" data-delay="50" data-tooltip="Blockly Project" *ngIf="program.endsWith('.blockly')">view_module</i>
             <span class="title valign">{{ program.replace(".blockly","") }}</span>
