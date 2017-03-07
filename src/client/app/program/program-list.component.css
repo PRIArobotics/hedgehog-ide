@@ -4,6 +4,7 @@
 
 .program-item {
     padding-left: 20px !important;
+    cursor: pointer;
 }
 
 .program-item .title {
