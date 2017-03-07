@@ -58,7 +58,8 @@
             </context-menu>
         </split-area>
         <split-area [size]="80">
-            <split direction="vertical">
+            <split direction="vertical"
+                   (dragEnd)="editor.getEditor().resize()">
                 <split-area [size]="70">
                     <div class="editor-wrapper row">
                         <div class="col s12 editor-tabs">
