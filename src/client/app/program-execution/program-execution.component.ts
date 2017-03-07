@@ -10,11 +10,12 @@ export class ProgramExecutionComponent implements OnDestroy, OnInit {
     public isRunning: boolean = false;
     public input: string = '';
 
-    public outputList: Object[] = [];
+    public outputList: Array<{type: string, data: string}> = [];
 
     private showPanel = false;
 
     private processPid: number;
+    private killedPidBuffer: number[] = [];
 
     private replay: {
         programName: string,
@@ -27,24 +28,28 @@ export class ProgramExecutionComponent implements OnDestroy, OnInit {
 
     public constructor (private processManager: HttpProcessManagerService) {
         processManager.on('stdout', (pid: number, data: string) => {
-            this.outputList.push({
-                type: 'stdout',
-                data
-            });
+            if (pid === this.processPid) {
+                this.outputList.push({
+                    type: 'stdout',
+                    data
+                });
+            }
         });
 
         processManager.on('stderr', (pid: number, data: string) => {
-            this.outputList.push({
-                type: 'stderr',
-                data
-            });
+            if (pid === this.processPid) {
+                this.outputList.push({
+                    type: 'stderr',
+                    data
+                });
+            }
         });
 
         processManager.on('exit', (pid: number) => {
             if (pid === this.processPid) {
-                this.processPid = 0;
-                this.isRunning = false;
-                this.onExit.emit({});
+                this.resetProcess();
+            } else if (!this.processPid && this.isRunning) {
+                this.killedPidBuffer.push(pid);
             }
         });
     }
@@ -54,6 +59,12 @@ export class ProgramExecutionComponent implements OnDestroy, OnInit {
         $('body').on('DOMSubtreeModified', "#output", () => {
             outputDiv.scrollTop = outputDiv.scrollHeight;
         });
+    }
+
+    public resetProcess () {
+        this.processPid = 0;
+        this.isRunning = false;
+        this.onExit.emit({});
     }
 
     public async ngOnDestroy (): Promise<void> {
@@ -72,6 +83,13 @@ export class ProgramExecutionComponent implements OnDestroy, OnInit {
             filePath,
             args
         };
+
+        let index = this.killedPidBuffer.indexOf(this.processPid);
+        if (index !== -1) {
+            this.resetProcess();
+            this.killedPidBuffer.splice(index, 1);
+
+        }
     }
 
     public async sendInput () {
@@ -94,6 +112,7 @@ export class ProgramExecutionComponent implements OnDestroy, OnInit {
                 data: 'program stopped ...'
             });
 
+            this.isRunning = false;
             await this.processManager.kill(this.processPid);
         }
     }
