@@ -167,6 +167,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
     private editorOptions: Object = {
         enableBasicAutocompletion: true,
         enableLiveAutocompletion: true,
+        fontFamily: "Roboto Mono",
         fontSize: 12,
         wrapBehavioursEnabled: false
     };

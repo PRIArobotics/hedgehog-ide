@@ -12,4 +12,7 @@
 
 #ace-editor {
     height: calc(100% - 124px) !important;
+    display: block;
+    position: absolute;
+    width: 100%;
 }

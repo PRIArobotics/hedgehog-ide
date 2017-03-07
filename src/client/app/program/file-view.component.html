@@ -13,6 +13,7 @@
     <ace-editor
             #editor
             id="ace-editor"
+            [options]="editorOptions"
             [text]="blobContent"
             [mode]="'python'"
             [theme]="'textmate'"

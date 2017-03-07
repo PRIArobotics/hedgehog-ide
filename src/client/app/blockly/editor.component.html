@@ -12,8 +12,8 @@
                     <i class="material-icons">code</i>
             </a></li>
             <li>
-                <a (click)="run()" materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="run program"><i *ngIf="!programIsRunning" class="material-icons">play_arrow</i></a>
-                <a materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="stop program"><i *ngIf="programIsRunning" (click)="stop()" class="material-icons">stop</i></a>
+                <a (click)="run()" materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="run program"  *ngIf="!programIsRunning"><i class="material-icons">play_arrow</i></a>
+                <a (click)="stop()" materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="stop program" *ngIf="programIsRunning"><i class="material-icons">stop</i></a>
             </li>
         </ul>
     </div>
@@ -37,7 +37,7 @@
         </split>
     </split-area>
     <split-area [size]="30" [visible]="programIsRunning">
-        <program-execution (onExit)="stop()" id="split-execute"></program-execution>
+        <program-execution (onExit)="programIsRunning = false;" id="split-execute"></program-execution>
     </split-area>
 </split>
 
