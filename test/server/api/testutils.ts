@@ -12,7 +12,7 @@ export function setupApiServer(...resources: ApiResource[]) {
 
     let api = new Api(server, '/api');
     for(const resource of resources) {
-        api.registerEndpoint(resource);
+        api.registerResource(resource);
     }
     return server;
 }
