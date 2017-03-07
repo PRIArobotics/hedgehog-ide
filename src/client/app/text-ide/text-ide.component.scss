@@ -27,6 +27,13 @@ div > ul > li > a {
   text-transform: none;
 }
 
+.ide-split {;
+  position: absolute;
+  top: 64px;
+  bottom: 0;
+  height: initial !important;
+}
+
 #ace-editor {
   display: block;
   position: absolute;
