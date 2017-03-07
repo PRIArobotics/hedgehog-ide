@@ -19,6 +19,8 @@ export class ProgramListComponent implements OnInit {
     public deleteModalActions = new EventEmitter<string|MaterializeAction>();
     public renameModalActions = new EventEmitter<string|MaterializeAction>();
 
+    @ViewChild(ContextMenuComponent) public programListContextMenu: ContextMenuComponent;
+
     private storage: IProgramStorage;
     private programs: string[];
 
@@ -30,7 +32,6 @@ export class ProgramListComponent implements OnInit {
         newName: ''
     };
 
-    @ViewChild(ContextMenuComponent) public programListContextMenu: ContextMenuComponent;
 
     public constructor(private router: Router, storageService: HttpProgramService) {
         this.storage = storageService.getStorage();
