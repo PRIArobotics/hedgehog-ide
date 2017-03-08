@@ -70,11 +70,18 @@ export class BlocklyComponent implements OnInit, OnDestroy {
 
     public toggleShowCode(): void {
         this.showCode = ! this.showCode;
+        setTimeout(() => {
+            this.resizeWindow();
+        }, 50);
     }
 
     public async saveWorkspace() {
         await this.rootDir.addFile("workspace.xml", this.toXML());
         this.lastSave = new Date().getTime();
+    }
+
+    public resizeWindow() {
+        window.dispatchEvent(new Event('resize'));
     }
 
     public ngOnDestroy() {
