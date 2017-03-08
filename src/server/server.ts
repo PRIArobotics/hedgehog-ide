@@ -76,16 +76,16 @@ let processManager = new NodeProcessManager(
 );
 
 let hedgehogApi = new Api(server, '/api');
-hedgehogApi.registerEndpoint(new ProgramResource(programStorage, modelRegistry));
-hedgehogApi.registerEndpoint(new WorkingTreeFileResource(programStorage, modelRegistry));
-hedgehogApi.registerEndpoint(new WorkingTreeDirectoryResource(programStorage, modelRegistry));
-hedgehogApi.registerEndpoint(new BlobResource(programStorage, modelRegistry));
-hedgehogApi.registerEndpoint(new TreeResource(programStorage, modelRegistry));
-hedgehogApi.registerEndpoint(new VersionResource(programStorage, modelRegistry));
-hedgehogApi.registerEndpoint(new ProcessResource(processManager, modelRegistry));
-hedgehogApi.registerEndpoint(new MotorResource(hedgehog, modelRegistry));
-hedgehogApi.registerEndpoint(new ServoResource(hedgehog, modelRegistry));
-hedgehogApi.registerEndpoint(new SensorResource(hedgehog, modelRegistry));
+hedgehogApi.registerResource(new ProgramResource(programStorage, modelRegistry));
+hedgehogApi.registerResource(new WorkingTreeFileResource(programStorage, modelRegistry));
+hedgehogApi.registerResource(new WorkingTreeDirectoryResource(programStorage, modelRegistry));
+hedgehogApi.registerResource(new BlobResource(programStorage, modelRegistry));
+hedgehogApi.registerResource(new TreeResource(programStorage, modelRegistry));
+hedgehogApi.registerResource(new VersionResource(programStorage, modelRegistry));
+hedgehogApi.registerResource(new ProcessResource(processManager, modelRegistry));
+hedgehogApi.registerResource(new MotorResource(hedgehog, modelRegistry));
+hedgehogApi.registerResource(new ServoResource(hedgehog, modelRegistry));
+hedgehogApi.registerResource(new SensorResource(hedgehog, modelRegistry));
 
 /**
  * Socket.io setup
