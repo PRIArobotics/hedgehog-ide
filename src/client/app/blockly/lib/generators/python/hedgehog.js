@@ -82,6 +82,6 @@ Blockly.Python['hedgehog_read_analog'] = function(block) {
 Blockly.Python['hedgehog_read_digital'] = function(block) {
     var port = block.getFieldValue('PORT');
 
-    var code = 'hedgeho.get_digital(' + port + ')';
+    var code = 'hedgehog.get_digital(' + port + ')';
     return [code, Blockly.Python.ORDER_NONE];
 };
