@@ -8,7 +8,7 @@
             <li (click)="clearWorkspace()"><a materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="clear workspace">
                     <i class="material-icons">delete</i>
             </a></li>
-            <li (click)="toggleShowCode()"><a materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="show code">
+            <li (click)="toggleShowCode();"><a materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="show code">
                     <i class="material-icons">code</i>
             </a></li>
             <li>
@@ -21,11 +21,12 @@
 
 <split direction="vertical">
     <split-area [size]="70">
-        <split direction="horizontal">
+        <split direction="horizontal"
+               (dragProgress)="resizeWindow()">
             <split-area [size]="70">
                 <div id="blocklyDiv"></div>
             </split-area>
-            <split-area [size]="30" [visible]="showCode">
+            <split-area [size]="30" [visible]="showCode" >
                 <ace-editor
                     #editor
                     id="ace-editor"

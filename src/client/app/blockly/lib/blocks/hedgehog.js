@@ -92,7 +92,7 @@ Blockly.Blocks['hedgehog_read_analog'] = {
 
         this.appendDummyInput()
             .appendField("read analog pin")
-            .appendField(new Blockly.FieldNumber(8, 8, 15, 1), "PORT");
+            .appendField(new Blockly.FieldNumber(0, 0, 7, 1), "PORT");
         this.setOutput(true, "Number");
         this.setTooltip('');
     }
@@ -105,7 +105,7 @@ Blockly.Blocks['hedgehog_servo'] = {
 
         this.appendDummyInput()
             .appendField("set servo")
-            .appendField(new Blockly.FieldNumber(8, 8, 15, 1), "PORT")
+            .appendField(new Blockly.FieldNumber(0, 0, 3, 1), "PORT")
             .appendField("to");
         this.appendValueInput("ANGLE")
             .setCheck("Number");
@@ -140,7 +140,7 @@ Blockly.Blocks['hedgehog_read_digital'] = {
 
         this.appendDummyInput()
             .appendField("read digital pin")
-            .appendField(new Blockly.FieldNumber(0, 0, 7, 1), "PORT");
+            .appendField(new Blockly.FieldNumber(8, 8, 15, 1), "PORT");
         this.setOutput(true, "Boolean");
         this.setTooltip('');
     }

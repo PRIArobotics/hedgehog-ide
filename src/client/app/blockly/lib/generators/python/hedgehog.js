@@ -55,9 +55,11 @@ Blockly.Python['hedgehog_servo'] = function(block) {
     var angle = Blockly.Python.valueToCode(block, 'ANGLE', Blockly.Python.ORDER_NONE);
 
     // imports
+    Blockly.Python.definitions_['import_sleep'] = 'from time import sleep';
     Blockly.Python.definitions_['import_hedgehog'] = 'from hedgehog.client import connect';
 
-    var code = 'hedgehog.set_servo(' + port + ', ' + angle + '*22' + ')\n';
+    var code = 'hedgehog.set_servo(' + port + ', True, ' + angle + '*22' + ')\n';
+    code += 'sleep(0.1)\n\n';
     return code;
 };
 
@@ -80,6 +82,6 @@ Blockly.Python['hedgehog_read_analog'] = function(block) {
 Blockly.Python['hedgehog_read_digital'] = function(block) {
     var port = block.getFieldValue('PORT');
 
-    var code = 'hedgeho.get_digital(' + port + ')';
+    var code = 'hedgehog.get_digital(' + port + ')';
     return [code, Blockly.Python.ORDER_NONE];
 };
