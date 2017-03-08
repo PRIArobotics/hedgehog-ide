@@ -72,7 +72,7 @@ export class BlocklyComponent implements OnInit, OnDestroy {
         this.showCode = ! this.showCode;
         setTimeout(() => {
             this.resizeWindow();
-        }, 50);
+        }, 0);
     }
 
     public async saveWorkspace() {
