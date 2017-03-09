@@ -85,3 +85,13 @@ Blockly.Python['hedgehog_read_digital'] = function(block) {
     var code = 'hedgehog.get_digital(' + port + ')';
     return [code, Blockly.Python.ORDER_NONE];
 };
+
+Blockly.Python['hedgehog_sleep'] = function(block) {
+    var time = Blockly.Python.valueToCode(block, 'TIME', Blockly.Python.ORDER_ATOMIC);
+
+    // imports
+    Blockly.Python.definitions_['import_sleep'] = 'from time import sleep';
+
+    var code = 'sleep(' + time + ')\n\n';
+    return code;
+};

@@ -133,6 +133,24 @@ Blockly.Blocks['hedgehog_degrees'] = {
     }
 };
 
+
+Blockly.Blocks['hedgehog_sleep'] = {
+    init: function() {
+        this.setColour(Blockly.Blocks.hedgehog.HUE);
+        this.setHelpUrl(Blockly.Blocks.hedgehog.HELPURL);
+
+        this.appendDummyInput()
+            .appendField("sleep for")
+        this.appendValueInput("TIME")
+            .setCheck("Number");
+        this.appendDummyInput()
+            .appendField("seconds");
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+        this.setTooltip('');
+    }
+};
+
 Blockly.Blocks['hedgehog_read_digital'] = {
     init: function() {
         this.setColour(Blockly.Blocks.hedgehog.HUE);
