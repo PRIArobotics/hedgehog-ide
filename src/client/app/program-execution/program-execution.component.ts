@@ -16,6 +16,7 @@ export class ProgramExecutionComponent implements OnDestroy, OnInit {
 
     private processPid: number;
     private killedPidBuffer: number[] = [];
+    private bufferedOutput: Array<{type: string, data: string}>  = [];
 
     private replay: {
         programName: string,
@@ -33,12 +34,22 @@ export class ProgramExecutionComponent implements OnDestroy, OnInit {
                     type: 'stdout',
                     data
                 });
+            } else if (!this.processPid && this.isRunning) {
+                this.bufferedOutput.push({
+                    type: 'stdout',
+                    data
+                });
             }
         });
 
         processManager.on('stderr', (pid: number, data: string) => {
             if (pid === this.processPid) {
                 this.outputList.push({
+                    type: 'stderr',
+                    data
+                });
+            } if (!this.processPid && this.isRunning) {
+                this.bufferedOutput.push({
                     type: 'stderr',
                     data
                 });
@@ -88,7 +99,7 @@ export class ProgramExecutionComponent implements OnDestroy, OnInit {
         if (index !== -1) {
             this.resetProcess();
             this.killedPidBuffer.splice(index, 1);
-
+            this.outputList = this.bufferedOutput;
         }
     }
 
