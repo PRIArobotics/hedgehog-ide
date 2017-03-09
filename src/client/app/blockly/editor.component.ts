@@ -44,6 +44,8 @@ export class BlocklyComponent implements OnInit, OnDestroy {
     private programExecution: ProgramExecutionComponent;
     private programIsRunning: boolean = false;
 
+    private executionPanelVisible: boolean = false;
+
     @ViewChild('editor')
     private editor: AceEditorComponent;
 

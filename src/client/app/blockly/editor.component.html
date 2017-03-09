@@ -36,8 +36,8 @@
             </split-area>
         </split>
     </split-area>
-    <split-area [size]="30" [visible]="programIsRunning">
-        <program-execution (onExit)="programIsRunning = false;" id="split-execute"></program-execution>
+    <split-area [size]="30" [visible]="executionPanelVisible">
+        <program-execution (onExit)="programIsRunning = false" (onVisibleChange)="executionPanelVisible = $event" id="split-execute"></program-execution>
     </split-area>
 </split>
 
