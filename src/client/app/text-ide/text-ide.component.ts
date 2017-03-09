@@ -1256,4 +1256,11 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
         // return false if no item's names match the given
         return false;
     }
+
+    private executionPanelVisibleChanged (visible) {
+        this.executionPanelVisible = visible;
+        setTimeout(() => {
+            this.editor.getEditor().resize();
+        }, 0);
+    }
 }
