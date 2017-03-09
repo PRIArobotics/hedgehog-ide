@@ -79,7 +79,7 @@ Blockly.Python['hedgehog_servo'] = function(block) {
     Blockly.Python.definitions_['import_sleep'] = 'from time import sleep';
     Blockly.Python.definitions_['import_hedgehog'] = 'from hedgehog.client import connect';
 
-    var code = 'hedgehog.set_servo(' + port + ', True, ' + angle + '*22' + ')\n';
+    var code = 'hedgehog.set_servo(' + port + ', True, ' + Math.floor(parseInt(angle)*11.37) + ')\n';
     code += 'sleep(0.1)\n\n';
     return code;
 };
