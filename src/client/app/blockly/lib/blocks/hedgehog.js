@@ -45,7 +45,7 @@ Blockly.Blocks['hedgehog_move'] = {
         this.setInputsInline(true);
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
-        this.setTooltip('');
+        this.setTooltip('move a servo to a specified position');
     }
 };
 
@@ -69,7 +69,7 @@ Blockly.Blocks['hedgehog_turn'] = {
         this.setInputsInline(true);
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
-        this.setTooltip('');
+        this.setTooltip('move one motor for a certain duration');
     }
 };
 
@@ -94,7 +94,7 @@ Blockly.Blocks['hedgehog_read_analog'] = {
             .appendField("read analog pin")
             .appendField(new Blockly.FieldNumber(0, 0, 7, 1), "PORT");
         this.setOutput(true, "Number");
-        this.setTooltip('');
+        this.setTooltip('get the value of an analog pin');
     }
 };
 
@@ -114,7 +114,7 @@ Blockly.Blocks['hedgehog_servo'] = {
         this.setInputsInline(true);
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
-        this.setTooltip('');
+        this.setTooltip('turn the Hedgog for a certain duration');
     }
 };
 
@@ -160,6 +160,6 @@ Blockly.Blocks['hedgehog_read_digital'] = {
             .appendField("read digital pin")
             .appendField(new Blockly.FieldNumber(8, 8, 15, 1), "PORT");
         this.setOutput(true, "Boolean");
-        this.setTooltip('');
+        this.setTooltip('get the value of an analog pin');
     }
 };
