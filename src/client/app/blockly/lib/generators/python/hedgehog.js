@@ -18,15 +18,15 @@ Blockly.Python['hedgehog_scope'] = function(block) {
 Blockly.Python['hedgehog_turn'] = function(block) {
     var port1 = block.getFieldValue('MOTOR1');
     var port2 = block.getFieldValue('MOTOR2');
-    var dir = block.getFieldValue('DIR');
+    var dir = parseInt(Blockly.Python.valueToCode(block, 'DIR', Blockly.Python.ORDER_NONE));
     var time = Blockly.Python.valueToCode(block, 'TIME', Blockly.Python.ORDER_ATOMIC);
 
     // imports
     Blockly.Python.definitions_['import_sleep'] = 'from time import sleep';
     Blockly.Python.definitions_['import_hedgehog'] = 'from hedgehog.client import connect';
 
-    var code = 'hedgehog.move(' + port1 + ', ' + (dir === 'RIGHT' ? '' : '-') + '1000)\n';
-    code += 'hedgehog.move(' + port2 + ', ' + (dir === 'LEFT' ? '' : '-') + '1000)\n';
+    var code = 'hedgehog.move(' + port1 + ', ' + dir + ')\n';
+    code += 'hedgehog.move(' + port2 + ', ' + (-1 * dir) + ')\n';
     code += 'sleep(' + time + ')\n\n';
 
     return code;
@@ -63,6 +63,11 @@ Blockly.Python['hedgehog_move'] = function(block) {
 
 Blockly.Python['hedgehog_speed'] = function(block) {
     var speed = block.getFieldValue('SPEED');
+    return [speed, Blockly.Python.ORDER_NONE];
+};
+
+Blockly.Python['hedgehog_dir'] = function(block) {
+    var speed = block.getFieldValue('DIR');
     return [speed, Blockly.Python.ORDER_NONE];
 };
 
