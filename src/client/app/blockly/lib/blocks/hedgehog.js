@@ -23,7 +23,31 @@ Blockly.Blocks['hedgehog_scope'] = {
             .appendField("hedgehog scope");
         this.appendStatementInput("IN")
             .setCheck(null);
-        this.setTooltip('');
+        this.setTooltip('all Hedgehog blocks have to be inside of this block');
+    }
+};
+
+Blockly.Blocks['hedgehog_move2'] = {
+    init: function() {
+        this.setColour(Blockly.Blocks.hedgehog.HUE);
+        this.setHelpUrl(Blockly.Blocks.hedgehog.HELPURL);
+
+        this.appendDummyInput()
+            .appendField("move motor")
+            .appendField(new Blockly.FieldNumber(0, 0, 3, 1), "MOTOR1")
+            .appendField("and")
+            .appendField(new Blockly.FieldNumber(1, 0, 3, 1), "MOTOR2");
+        this.appendValueInput("SPEED")
+            .setCheck("Number");
+        this.appendValueInput("TIME")
+            .setCheck("Number")
+            .appendField("for");
+        this.appendDummyInput()
+            .appendField("seconds");
+        this.setInputsInline(true);
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+        this.setTooltip('move two motors for a certain duration');
     }
 };
 
