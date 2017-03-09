@@ -100,6 +100,7 @@ export class ProgramExecutionComponent implements OnDestroy, OnInit {
             this.resetProcess();
             this.killedPidBuffer.splice(index, 1);
             this.outputList = this.bufferedOutput;
+            this.bufferedOutput = [];
         }
     }
 
