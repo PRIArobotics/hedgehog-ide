@@ -90,6 +90,10 @@ Blockly.Python['hedgehog_degrees'] = function(block) {
     // imports
     Blockly.Python.definitions_['import_hedgehog'] = 'from hedgehog.client import connect';
 
+    if(parseInt(angle) > 180) {
+        return ["180", Blockly.Python.ORDER_NONE];
+    }
+
     return [angle, Blockly.Python.ORDER_NONE];
 };
 
