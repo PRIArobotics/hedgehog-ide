@@ -48,7 +48,7 @@ export class ProgramExecutionComponent implements OnDestroy, OnInit {
                     type: 'stderr',
                     data
                 });
-            } if (!this.processPid && this.isRunning) {
+            } else if (!this.processPid && this.isRunning) {
                 this.bufferedOutput.push({
                     type: 'stderr',
                     data
