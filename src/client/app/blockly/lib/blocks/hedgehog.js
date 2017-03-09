@@ -45,7 +45,7 @@ Blockly.Blocks['hedgehog_move'] = {
         this.setInputsInline(true);
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
-        this.setTooltip('move a servo to a specified position');
+        this.setTooltip('move one motor for a certain duration');
     }
 };
 
@@ -69,7 +69,7 @@ Blockly.Blocks['hedgehog_turn'] = {
         this.setInputsInline(true);
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
-        this.setTooltip('move one motor for a certain duration');
+        this.setTooltip('turn the Hedgog for a certain duration');
     }
 };
 
@@ -114,7 +114,7 @@ Blockly.Blocks['hedgehog_servo'] = {
         this.setInputsInline(true);
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
-        this.setTooltip('turn the Hedgog for a certain duration');
+        this.setTooltip('move a servo to a specified position');
     }
 };
 
