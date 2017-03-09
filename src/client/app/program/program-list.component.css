@@ -11,7 +11,7 @@
 }
 
 .program-item:hover {
-    box-shadow: inset 0 0 2px #38b449;
+    background-color: rgba(150, 150, 150, 0.05);
 }
 
 .program-item .title {
