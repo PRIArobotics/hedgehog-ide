@@ -32,7 +32,8 @@ export class File {
     template: require('./text-ide.component.html'),
     styles: [require('./text-ide.component.css')],
     providers: [
-        HttpProgramService
+        HttpProgramService,
+        ShareDbClientService
     ]
 })
 
@@ -194,8 +195,11 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
      *
      * @param route for messages sent from another view
      * @param storageService service that controls the ProgramStorage
+     * @param sharedbService service for the shareDB real time synchronisation
      */
-    constructor(route: ActivatedRoute, storageService: HttpProgramService, private sharedbService: ShareDbClientService) {
+    constructor(route: ActivatedRoute,
+                storageService: HttpProgramService,
+                private sharedbService: ShareDbClientService) {
         this.programName = route.snapshot.params['programName'];
         this.files = new Map<string, File>();
 
@@ -216,6 +220,9 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
             name: this.programName,
             isExpanded: true
         };
+
+        // create connection for this program
+        this.sharedbService.createConnection(this.programName);
     }
 
     /**

@@ -1,7 +1,8 @@
-import {Injectable} from '@angular/core';
+import {Injectable, Inject} from '@angular/core';
 
 import sharedb = require('sharedb/lib/client');
 import EventEmitter from "../program-execution/EventEmitter";
+import {DOCUMENT} from "@angular/platform-browser";
 
 @Injectable()
 export class ShareDbClientService {
@@ -10,9 +11,11 @@ export class ShareDbClientService {
     private eventEmitter = new EventEmitter();
     private _ignore: boolean;
 
-    public constructor (programName: string) {
+    constructor (@Inject(DOCUMENT) private document) { }
+
+    public createConnection (programName: string) {
         // Open WebSocket connection to ShareDB server
-        let socket = new WebSocket('ws://' + window.location.host);
+        let socket = new WebSocket('ws://' + this.document.location.hostname + ':8001');
         let connection = new sharedb.Connection(socket);
         this.doc = connection.get('hedgehog-ide', programName);
 
