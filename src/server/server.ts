@@ -24,6 +24,7 @@ import MotorResource from "./api/resource/hedgehog-io/MotorResource";
 import SensorResource from "./api/resource/hedgehog-io/SensorResource";
 import ServoResource from "./api/resource/hedgehog-io/ServoResource";
 import SocketIoSensorAdapter from "./hedgehog-io/SocketIoSensorAdapter";
+import ShareDbService from "./api/ShareDbService";
 
 // Return external module as the file is outside of the
 // TypeScript compile output
@@ -93,6 +94,11 @@ hedgehogApi.registerResource(new SensorResource(hedgehog, modelRegistry));
 let io = Io(server.listener);
 new SocketIoProcessAdapter(processManager, io);
 new SocketIoSensorAdapter(hedgehog, io);
+
+/**
+ * ShareDB backend
+ */
+new ShareDbService(server.listener);
 
 // tslint:disable-next-line
 server.register(require('inert'));
