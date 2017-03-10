@@ -5,6 +5,7 @@ import path = require('path');
 import winston = require("winston");
 import chalk = require('chalk');
 import figlet = require('figlet');
+import http = require('http');
 
 import {HedgehogClient} from 'hedgehog-client';
 
@@ -98,7 +99,11 @@ new SocketIoSensorAdapter(hedgehog, io);
 /**
  * ShareDB backend
  */
-new ShareDbService(server.listener);
+const shareDbServer = http.createServer((req, res) => {
+    res.end();
+});
+new ShareDbService(shareDbServer);
+shareDbServer.listen(8001);
 
 // tslint:disable-next-line
 server.register(require('inert'));
