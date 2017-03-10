@@ -12,6 +12,7 @@ import {HttpProgramService} from '../program/http-program.service';
 import {ProgramExecutionComponent} from '../program-execution/program-execution.component';
 import {genericFromBase64IdSafe, genericToBase64IdSafe} from '../../../common/utils';
 import {AppComponent} from "../app.component";
+import {ShareDbClientService} from "./sharedb.service";
 
 declare var $: JQueryStatic;
 declare var Materialize: any;
@@ -194,7 +195,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
      * @param route for messages sent from another view
      * @param storageService service that controls the ProgramStorage
      */
-    constructor(route: ActivatedRoute, storageService: HttpProgramService) {
+    constructor(route: ActivatedRoute, storageService: HttpProgramService, private sharedbService: ShareDbClientService) {
         this.programName = route.snapshot.params['programName'];
         this.files = new Map<string, File>();
 
@@ -639,6 +640,46 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     /**
+     * Event binding when character is input in the ace editor and a delta object is sent
+     *
+     * @param delta object which contains the information what has been inserted or removed
+     */
+    public async onEditorDelta(delta) {
+        let editorLineSplit: string[] = this.editorContent.split(/\r\n|\r|\n/);
+
+        let startPosition: number = 0;
+        let stringToOperate: string = '';
+
+
+        for (let i = 0; i < delta.start.row; i++) {
+            startPosition += editorLineSplit[i].length;
+        }
+        startPosition += delta.start.column;
+
+
+        let operation: any = {
+            p: [this.openId, startPosition]
+        };
+
+        for (let line of delta.lines) {
+            stringToOperate += line+'\n';
+        }
+
+        // remove last break
+        stringToOperate = stringToOperate.substring(0, stringToOperate.length - 1);
+
+        if (delta.action === 'insert') {
+            operation.si = stringToOperate;
+
+        } else if (delta.action === 'remove') {
+            operation.sd = stringToOperate;
+        }
+
+        this.sharedbService.operation(operation);
+    }
+
+
+    /**
      * Event binding when an element in the file tree is clicked
      *
      * @param event data sent from the event that includes the file
@@ -1064,9 +1105,15 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
             file.content = await file.storageObject.readContent();
         }
 
+        // ignore the changes for shareDB while editorContent is changed
+        this.sharedbService.ignore = true;
+
         // update editorContent, currentFileContent to current files content and openId to this id
         this.editorContent = file.content;
         this.currentFileContent = file.content;
+
+        // do not ignore anymore
+        this.sharedbService.ignore = false;
         this.openId = id;
     }
 

@@ -21,7 +21,9 @@
             'reflect-metadata/Reflect.js': './node_modules/reflect-metadata/Reflect.js',
             'text': './systemjs-text-plugin.js',
             'chartjs-color': './node_modules/chartjs-color/index.js',
-            'color-convert': './node_modules/color-convert/index.js'
+            'color-convert': './node_modules/color-convert/index.js',
+            'sharedb/lib/client': './node_modules/sharedb/lib/client/index.js',
+            'make-error': './node_modules/make-error/index.js'
         },
         packages: {
             'app': {

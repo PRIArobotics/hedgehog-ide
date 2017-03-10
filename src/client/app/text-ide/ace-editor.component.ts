@@ -23,6 +23,7 @@ declare var ace: any;
 })
 export class AceEditorComponent {
     @Output('textChanged') textChanged = new EventEmitter();
+    @Output('changeDelta') changeDelta = new EventEmitter();
     @Input('style') style: any = {};
     _options: any = {};
     _readOnly: boolean = false;
@@ -43,7 +44,7 @@ export class AceEditorComponent {
         this.init();
         this.initEvents();
 
-        this._editor.$blockScrolling = Infinity
+        this._editor.$blockScrolling = Infinity;
     }
 
     init() {
@@ -64,7 +65,7 @@ export class AceEditorComponent {
                     if (this.timeoutSaving != null)
                         clearTimeout(this.timeoutSaving);
 
-                    this.timeoutSaving = setTimeout(function () {
+                    this.timeoutSaving = setTimeout(() => {
                         this.textChanged.emit(newVal);
                         this.timeoutSaving = null;
                     }, this._durationBeforeCallback);
@@ -73,8 +74,9 @@ export class AceEditorComponent {
             this.oldText = newVal;
         };
 
-        this._editor.on('change', () => {
+        this._editor.on('change', delta => {
             update();
+            this.changeDelta.emit(delta);
         });
 
         this._editor.on('paste', () => {

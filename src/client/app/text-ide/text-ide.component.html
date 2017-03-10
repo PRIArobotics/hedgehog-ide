@@ -75,6 +75,7 @@
                                     id="ace-editor"
                                     [text]="editorContent"
                                     (textChanged)="onEditorContentChange($event)"
+                                    (changeDelta)="onEditorDelta($event)"
                                     [mode]="'python'"
                                     [theme]="'textmate'"
                                     [readOnly]="false"></ace-editor>
