@@ -30,7 +30,7 @@ $ ./node_modules/grunt/bin/grunt build
 An example configuration can be found under `config/server.config.example.js`, in order to use that file, just copy it to `config/server.config.js`.
 The IDE will run with this default configuration, nevertheless, all options are documented, making it simple to adapt it for your needs.
 
-**If have downloaded a release make sure the `environment` option is set to `'production'`!**
+**If you have built the IDE from source, make sure the `environment` option is set to `'debug'`!**
 
 That's it! Run the IDE with the following command.
 ```bash
