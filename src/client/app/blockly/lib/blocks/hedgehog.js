@@ -104,7 +104,7 @@ Blockly.Blocks['hedgehog_dir'] = {
         this.setHelpUrl(Blockly.Blocks.hedgehog.HELPURL);
 
         this.appendDummyInput()
-            .appendField(new Blockly.FieldDropdown([["right", "1000"], ["left", "-1000"]]), "DIR");
+            .appendField(new Blockly.FieldDropdown([["right ⟳", "1000"], ["left ⟲", "-1000"]]), "DIR");
         this.setOutput(true, "Number");
         this.setTooltip('');
     }
