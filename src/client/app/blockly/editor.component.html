@@ -19,10 +19,9 @@
     </div>
 </nav>
 
-<split direction="vertical">
+<split direction="vertical" (dragProgress)="resizeWindow()">
     <split-area [size]="70">
-        <split direction="horizontal"
-            (dragProgress)="resizeWindow()">
+        <split direction="horizontal" (dragProgress)="resizeWindow()">
             <split-area [size]="70">
                 <div id="blocklyDiv"></div>
             </split-area>
@@ -71,6 +70,11 @@
             </value>
         </block>
         <block type="hedgehog_turn">
+            <value name="DIR">
+                <shadow type="hedgehog_dir">
+                    <field name="DIR">1000</field>
+                </shadow>
+            </value>
             <value name="TIME">
                 <shadow type="math_number">
                     <field name="NUM">2</field>

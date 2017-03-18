@@ -59,6 +59,7 @@ module.exports = function(grunt) {
                             '**/*.html',
                             '**/*.css',
                             '**/*.svg',
+                            '**/*.ico',
                             'client/systemjs*.js',
                         ],
                         dest: 'build/src'

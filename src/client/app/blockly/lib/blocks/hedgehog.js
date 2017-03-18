@@ -83,9 +83,10 @@ Blockly.Blocks['hedgehog_turn'] = {
             .appendField(new Blockly.FieldNumber(0, 0, 3, 1), "MOTOR1")
             .appendField("and")
             .appendField(new Blockly.FieldNumber(1, 0, 3, 1), "MOTOR2")
-            .appendField(new Blockly.FieldDropdown([["right", "RIGHT"], ["left", "LEFT"]]), "DIR")
-            .appendField("for");
+        this.appendValueInput("DIR")
+            .setCheck("Number");
         this.appendValueInput("TIME")
+            .appendField("for")
             .setCheck("Number")
             .setAlign(Blockly.ALIGN_CENTRE);
         this.appendDummyInput()
@@ -94,6 +95,18 @@ Blockly.Blocks['hedgehog_turn'] = {
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
         this.setTooltip('turn the Hedgog for a certain duration');
+    }
+};
+
+Blockly.Blocks['hedgehog_dir'] = {
+    init: function() {
+        this.setColour(Blockly.Blocks.hedgehog.HUE);
+        this.setHelpUrl(Blockly.Blocks.hedgehog.HELPURL);
+
+        this.appendDummyInput()
+            .appendField(new Blockly.FieldDropdown([["right ⟳", "1000"], ["left ⟲", "-1000"]]), "DIR");
+        this.setOutput(true, "Number");
+        this.setTooltip('');
     }
 };
 
