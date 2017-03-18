@@ -274,8 +274,14 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
                         delta.end.row = rowsLength + deltaRow;
 
                         delta.start.column = stringTillOffset[rowsLength].length;
-                        delta.end.column = stringTillOffset[rowsLength].length +
-                            delta.lines[delta.lines.length - 1].length;
+
+                        if (delta.lines.length > 1) {
+                            delta.end.column = delta.lines[delta.lines.length - 1].length;
+                        } else {
+                            delta.end.column = stringTillOffset[rowsLength].length +
+                                delta.lines[delta.lines.length - 1].length;
+                        }
+
 
                         // ignore the changes for shareDB while editorContent is changed
                         this.sharedbService.ignore = true;
@@ -283,10 +289,8 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
                         // update editorContent, currentFileContent to current files content and openId to this id
                         this.editor.getEditor().getSession().getDocument().applyDeltas([delta]);
 
-                        setTimeout(() => {
-                            // do not ignore anymore
-                            this.sharedbService.ignore = false;
-                        }, 20);
+                        // do not ignore anymore
+                        this.sharedbService.ignore = false;
                     }
                 }
             }
@@ -1188,10 +1192,11 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
         setTimeout(() => {
             // do not ignore anymore
             this.sharedbService.ignore = false;
+
             if (!this.sharedbService.fileExists(this.openId)) {
                 this.sharedbService.operation({p: [this.openId], oi: this.currentFileContent});
             }
-        }, 20);
+        }, 0);
         this.openId = id;
     }
 
@@ -1313,6 +1318,9 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
             this.openFiles[this.programName].splice(index, 1);
         }
 
+        localStorage.setItem('openFiles', JSON.stringify(this.openFiles));
+        localStorage.setItem('openFileId', JSON.stringify(this.openFileId));
+
         // check if the current openId (open tab)
         if (this.openId === id) {
             // if it is first check what comes before
@@ -1346,7 +1354,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
                     setTimeout(() => {
                         // do not ignore anymore
                         this.sharedbService.ignore = false;
-                    }, 20);
+                    }, 0);
                 }
             }
         }
