@@ -49,6 +49,26 @@ winston.configure({
 });
 winston.level = serverConfig.logging.level;
 
+/**
+ * Model setup
+ */
+let programStorage = new GitProgramStorage(serverConfig.programStorageDirectory);
+let hedgehog = new HedgehogClient(serverConfig.hedgehogConnection);
+let processManager = new NodeProcessManager(
+    serverConfig.process.temporaryStorageDirectory,
+    serverConfig.process.pythonPath,
+    programStorage
+);
+
+/**
+ * ShareDB backend
+ */
+const shareDbServer = http.createServer((req, res) => {
+    res.end();
+});
+let shareDbService = new ShareDbService(shareDbServer, programStorage);
+shareDbService.init();
+shareDbServer.listen(8001);
 
 /**
  * Server setup
@@ -69,16 +89,8 @@ server.connection(serverConfig.connection);
 /**
  * API setup
  */
-let programStorage = new GitProgramStorage(serverConfig.programStorageDirectory);
-let hedgehog = new HedgehogClient(serverConfig.hedgehogConnection);
-let processManager = new NodeProcessManager(
-    serverConfig.process.temporaryStorageDirectory,
-    serverConfig.process.pythonPath,
-    programStorage
-);
-
 let hedgehogApi = new Api(server, '/api');
-hedgehogApi.registerResource(new ProgramResource(programStorage, modelRegistry));
+hedgehogApi.registerResource(new ProgramResource(programStorage, modelRegistry, shareDbService));
 hedgehogApi.registerResource(new WorkingTreeFileResource(programStorage, modelRegistry));
 hedgehogApi.registerResource(new WorkingTreeDirectoryResource(programStorage, modelRegistry));
 hedgehogApi.registerResource(new BlobResource(programStorage, modelRegistry));
@@ -95,15 +107,6 @@ hedgehogApi.registerResource(new SensorResource(hedgehog, modelRegistry));
 let io = Io(server.listener);
 new SocketIoProcessAdapter(processManager, io);
 new SocketIoSensorAdapter(hedgehog, io);
-
-/**
- * ShareDB backend
- */
-const shareDbServer = http.createServer((req, res) => {
-    res.end();
-});
-new ShareDbService(shareDbServer);
-shareDbServer.listen(8001);
 
 // tslint:disable-next-line
 server.register(require('inert'));

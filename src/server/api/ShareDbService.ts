@@ -1,40 +1,30 @@
 import WebSocket = require('ws');
 import WebSocketJSONStream = require('websocket-json-stream');
 import ShareDB = require('sharedb');
+import IProgramStorage from "../../common/versioncontrol/ProgramStorage";
 
 export default class ShareDbService {
     private backend;
+    private connection;
 
-    public constructor (server) {
+    public constructor (server, private programStorage: IProgramStorage) {
         this.backend = new ShareDB();
         this.backend.connect();
 
-        let connection = this.backend.connect();
-
-        let doc = connection.get('hedgehog-ide', 'program');
-        doc.create({
-                    'Li90ZXN0LnB5': `import time
-import sys
-
-for i in range(100):
-    print(i)
-    sys.stdout.flush()
-    
-time.sleep(5)`,
-                    'YXNkZmdoL2FnYXNkZmcucHk_': `from time import sleep
-from hedgehog.client import connect
-
-with connect(emergency=15) as hedgehog:
-	print("Hello World")
-
-`,
-                    'YXNkZmdoL2RmYXNnZGY_': ``
-        });
-
+        this.connection = this.backend.connect();
         let wss = new WebSocket.Server({server});
         wss.on('connection', ws => {
             let stream = new WebSocketJSONStream(ws);
             this.backend.listen(stream);
         });
+    }
+
+    public async init () {
+        for (const name of await this.programStorage.getProgramNames())
+            this.initProgramDoc(name);
+    }
+
+    public initProgramDoc (name: string) {
+        this.connection.get('hedgehog-ide', name).create({ });
     }
 }

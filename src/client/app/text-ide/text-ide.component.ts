@@ -715,6 +715,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
      */
     public async onEditorDelta(delta) {
         console.log(delta);
+        console.log(this.openId)
 
         if (!this.sharedbService.ignore) {
             let editorLineSplit: string[] = this.currentFileContent.split(/\r\n|\r|\n/);
@@ -1187,6 +1188,9 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
         setTimeout(() => {
             // do not ignore anymore
             this.sharedbService.ignore = false;
+            if (!this.sharedbService.fileExists(this.openId)) {
+                this.sharedbService.operation({p: [this.openId], oi: this.currentFileContent});
+            }
         }, 20);
         this.openId = id;
     }

@@ -37,6 +37,11 @@ export class ShareDbClientService {
         this.eventEmitter.on(event, handler);
     }
 
+    public fileExists (fileId: string) {
+        console.log(this.doc);
+        return !!this.doc.data[fileId];
+    }
+
     public operation(change) {
         if (!this._ignore) {
             this.doc.submitOp([change], err => {

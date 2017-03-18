@@ -11,6 +11,7 @@ import SerializerRegistry from "../../../serializer/SerializerRegistry";
 import {DataType} from "../../../jsonapi/JsonApiBuilder";
 import {getRequestUrl, getLinkUrl} from "../../../utils";
 import {genericFromBase64, genericToBase64} from "../../../../common/utils";
+import ShareDbService from "../../ShareDbService";
 
 export default class ProgramResource extends ApiResource {
     private static programParser = JsonApiDocument.getParser().addProperties({
@@ -29,7 +30,9 @@ export default class ProgramResource extends ApiResource {
         )
     });
 
-    constructor(private programStorage: IProgramStorage, private serializerRegistry: SerializerRegistry) {
+    constructor(private programStorage: IProgramStorage,
+                private serializerRegistry: SerializerRegistry,
+                private shareDbService: ShareDbService) {
         super('/programs');
     }
 
@@ -55,6 +58,7 @@ export default class ProgramResource extends ApiResource {
         let program: Program;
         try {
             program = await this.programStorage.createProgram((document.data as JsonApiResource).attributes.name);
+            this.shareDbService.initProgramDoc(program.name);
         } catch(err) {
             winston.error(err);
             return reply({
