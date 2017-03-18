@@ -286,7 +286,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
                         setTimeout(() => {
                             // do not ignore anymore
                             this.sharedbService.ignore = false;
-                        }, 20);
+                        }, 0);
                     }
                 }
             }
@@ -714,8 +714,6 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
      * @param delta object which contains the information what has been inserted or removed
      */
     public async onEditorDelta(delta) {
-        console.log(delta);
-
         if (!this.sharedbService.ignore) {
             let editorLineSplit: string[] = this.currentFileContent.split(/\r\n|\r|\n/);
 
@@ -1187,7 +1185,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
         setTimeout(() => {
             // do not ignore anymore
             this.sharedbService.ignore = false;
-        }, 20);
+        }, 0);
         this.openId = id;
     }
 
@@ -1309,6 +1307,9 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
             this.openFiles[this.programName].splice(index, 1);
         }
 
+        localStorage.setItem('openFiles', JSON.stringify(this.openFiles));
+        localStorage.setItem('openFileId', JSON.stringify(this.openFileId));
+
         // check if the current openId (open tab)
         if (this.openId === id) {
             // if it is first check what comes before
@@ -1342,7 +1343,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
                     setTimeout(() => {
                         // do not ignore anymore
                         this.sharedbService.ignore = false;
-                    }, 20);
+                    }, 0);
                 }
             }
         }
