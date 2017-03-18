@@ -220,7 +220,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
 
         // create connection for this program
         this.sharedbService.createConnection(this.programName);
-        this.sharedbService.on('firstData', (data) => {
+        this.sharedbService.on('firstData', data => {
             for (let key in data) {
                 if (data.hasOwnProperty(key)) {
                     this.files.set(key, data[key]);
@@ -228,7 +228,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
             }
         });
 
-        this.sharedbService.on('operations', (op) => {
+        this.sharedbService.on('operations', op => {
             if (!op.source) {
                 for (let operation of op.operations) {
                     let changedFileId = operation.p[0];
@@ -236,7 +236,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
                     this.files.get(changedFileId).content = op.data[changedFileId];
 
                     // check whether the file is currently opened
-                    if (this.openId == changedFileId) {
+                    if (this.openId === changedFileId) {
                         let delta = {
                             action: "",
                             lines: [],
@@ -274,7 +274,8 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
                         delta.end.row = rowsLength + deltaRow;
 
                         delta.start.column = stringTillOffset[rowsLength].length;
-                        delta.end.column = stringTillOffset[rowsLength].length + delta.lines[delta.lines.length - 1].length;
+                        delta.end.column = stringTillOffset[rowsLength].length +
+                            delta.lines[delta.lines.length - 1].length;
 
                         // ignore the changes for shareDB while editorContent is changed
                         this.sharedbService.ignore = true;

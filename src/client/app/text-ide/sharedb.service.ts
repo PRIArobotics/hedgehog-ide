@@ -39,8 +39,8 @@ export class ShareDbClientService {
 
     public operation(change) {
         if (!this._ignore) {
-            this.doc.submitOp([change] , (err) => {
-                if (err) throw err
+            this.doc.submitOp([change], err => {
+                if (err) throw err;
             });
         }
     }
