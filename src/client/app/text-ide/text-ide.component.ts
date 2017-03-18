@@ -274,8 +274,14 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
                         delta.end.row = rowsLength + deltaRow;
 
                         delta.start.column = stringTillOffset[rowsLength].length;
-                        delta.end.column = stringTillOffset[rowsLength].length +
-                            delta.lines[delta.lines.length - 1].length;
+
+                        if (delta.lines.length > 1) {
+                            delta.end.column = delta.lines[delta.lines.length - 1].length;
+                        } else {
+                            delta.end.column = stringTillOffset[rowsLength].length +
+                                delta.lines[delta.lines.length - 1].length;
+                        }
+
 
                         // ignore the changes for shareDB while editorContent is changed
                         this.sharedbService.ignore = true;
@@ -283,10 +289,8 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
                         // update editorContent, currentFileContent to current files content and openId to this id
                         this.editor.getEditor().getSession().getDocument().applyDeltas([delta]);
 
-                        setTimeout(() => {
-                            // do not ignore anymore
-                            this.sharedbService.ignore = false;
-                        }, 0);
+                        // do not ignore anymore
+                        this.sharedbService.ignore = false;
                     }
                 }
             }
