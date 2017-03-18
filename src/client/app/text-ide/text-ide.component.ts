@@ -106,9 +106,6 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
     // fileTree array containing TreeComponent compatible Objects
     private fileTree: Object[] = [];
 
-    // local storage Object as programName: { fileId: string }
-    private localStorageFiles: {[programName: string]: {[fileId: string]: string}} = {};
-
     // local storage Object as programName: string[]
     private openFiles: {[programName: string]: string[]} = {};
 
@@ -223,6 +220,80 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
 
         // create connection for this program
         this.sharedbService.createConnection(this.programName);
+        this.sharedbService.on('firstData', (data) => {
+            for (let key in data) {
+                if (data.hasOwnProperty(key)) {
+                    this.files.set(key, data[key]);
+                }
+            }
+        });
+
+        this.sharedbService.on('operations', (op) => {
+            if (!op.source) {
+                for (let operation of op.operations) {
+                    let changedFileId = operation.p[0];
+
+                    this.files.get(changedFileId).content = op.data[changedFileId];
+
+                    // check whether the file is currently opened
+                    if (this.openId == changedFileId) {
+                        let delta = {
+                            action: "",
+                            lines: [],
+                            start: {
+                                column: 0,
+                                row: 0
+                            },
+                            end: {
+                                column: 0,
+                                row: 0
+                            }
+                        };
+
+                        let lines: string;
+                        let deltaRow: number = -1;
+
+                        if (operation.si) {
+                            delta.action = "insert";
+                            lines = operation.si;
+                        } else if (operation.sd) {
+                            delta.action = "remove";
+                            lines = operation.sd;
+                        } else {
+                            throw TypeError("Unknown operation")
+                        }
+
+                        for (let line of lines.split(/\r\n|\r|\n/)) {
+                            delta.lines.push(line);
+                            deltaRow += 1;
+                        }
+
+                        let stringTillOffset = this.currentFileContent.substr(0, operation.p[1]).split(/\r\n|\r|\n/);
+
+                        let rowsLength = stringTillOffset.length - 1;
+
+                        delta.start.row = rowsLength;
+                        delta.start.column = stringTillOffset[rowsLength].length + 1;
+
+                        console.log(stringTillOffset[rowsLength].length + 1, stringTillOffset[rowsLength].length + 1 + lines[lines.length - 1].length);
+
+                        delta.end.row = rowsLength + deltaRow;
+                        delta.end.column = stringTillOffset[rowsLength].length + 1 + lines[lines.length - 1].length;
+
+                        // ignore the changes for shareDB while editorContent is changed
+                        this.sharedbService.ignore = true;
+
+                        // update editorContent, currentFileContent to current files content and openId to this id
+                        this.editor.getEditor().getSession().getDocument().applyDeltas([delta]);
+
+                        setTimeout(() => {
+                            // do not ignore anymore
+                            this.sharedbService.ignore = false;
+                        }, 20);
+                    }
+                }
+            }
+        });
     }
 
     /**
@@ -243,12 +314,6 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
         // set root element of the file tree and set it to be expanded by default
         this.fileTree[0]['children'] = childArray;
         this.fileTree[0]['storageObject'] = rootDir;
-
-        // check if the local storage already has this program stored
-        if (!this.localStorageFiles[this.programName]) {
-            // if not create a new Map with the program name
-            this.localStorageFiles[this.programName] = {};
-        }
 
         if (!this.openFiles) {
             this.openFiles = {};
@@ -402,13 +467,14 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
                     changed: false
                 };
 
+                if (this.files.get(fileId)) {
+                    indexedFile.content = this.files.get(fileId);
+                }
+
                 // add file to Map using the id
                 this.files.set(fileId, indexedFile);
 
-                if (this.localStorageFiles[this.programName][fileId]) {
-                    // if file is in the local storage  take the content from the local storage
-                    indexedFile.content = this.localStorageFiles[this.programName][fileId];
-                }
+
             } else if (type === WorkingTreeObjectType.Directory && !itemName.startsWith('.')) {
                 // get the directory
                 let newDirectory = await directory.getDirectory(itemName);
@@ -641,7 +707,6 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
         if (this.openId) {
             // save file from the last tab in local content
             this.files.get(this.openId).content = this.currentFileContent;
-            this.localStorageFiles[this.programName][this.openId] = this.currentFileContent;
             this.files.get(this.openId).changed = true;
         }
     }
@@ -652,37 +717,40 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
      * @param delta object which contains the information what has been inserted or removed
      */
     public async onEditorDelta(delta) {
-        let editorLineSplit: string[] = this.editorContent.split(/\r\n|\r|\n/);
+        console.log(delta);
 
-        let startPosition: number = 0;
-        let stringToOperate: string = '';
+        if (!this.sharedbService.ignore) {
+            let editorLineSplit: string[] = this.currentFileContent.split(/\r\n|\r|\n/);
+
+            let startPosition: number = 0;
+            let stringToOperate: string = '';
 
 
-        for (let i = 0; i < delta.start.row; i++) {
-            startPosition += editorLineSplit[i].length;
+            for (let i = 0; i < delta.start.row; i++) {
+                // +1 because of the break at the end
+                startPosition += editorLineSplit[i].length + 1;
+            }
+            startPosition += delta.start.column;
+
+            let operation: any = {
+                p: [this.openId, startPosition]
+            };
+
+            for (let line of delta.lines) {
+                stringToOperate += line+'\n';
+            }
+
+            // remove last break
+            stringToOperate = stringToOperate.substring(0, stringToOperate.length - 1);
+
+            if (delta.action === 'insert') {
+                operation.si = stringToOperate;
+            } else if (delta.action === 'remove') {
+                operation.sd = stringToOperate;
+            }
+
+            this.sharedbService.operation(operation);
         }
-        startPosition += delta.start.column;
-
-
-        let operation: any = {
-            p: [this.openId, startPosition]
-        };
-
-        for (let line of delta.lines) {
-            stringToOperate += line+'\n';
-        }
-
-        // remove last break
-        stringToOperate = stringToOperate.substring(0, stringToOperate.length - 1);
-
-        if (delta.action === 'insert') {
-            operation.si = stringToOperate;
-
-        } else if (delta.action === 'remove') {
-            operation.sd = stringToOperate;
-        }
-
-        this.sharedbService.operation(operation);
     }
 
 
@@ -1119,8 +1187,10 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
         this.editorContent = file.content;
         this.currentFileContent = file.content;
 
-        // do not ignore anymore
-        this.sharedbService.ignore = false;
+        setTimeout(() => {
+            // do not ignore anymore
+            this.sharedbService.ignore = false;
+        }, 20);
         this.openId = id;
     }
 
@@ -1266,8 +1336,16 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
                 } else {
                     // if not reset the indicator and reset editorContent and openId
                     this.resetIndicator();
-                    this.editorContent = '';
                     this.openId = null;
+
+                    this.sharedbService.ignore = true;
+
+                    this.editorContent = '';
+
+                    setTimeout(() => {
+                        // do not ignore anymore
+                        this.sharedbService.ignore = false;
+                    }, 20);
                 }
             }
         }
