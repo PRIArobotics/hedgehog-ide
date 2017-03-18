@@ -259,8 +259,6 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
                         } else if (operation.sd) {
                             delta.action = "remove";
                             lines = operation.sd;
-                        } else {
-                            throw TypeError("Unknown operation")
                         }
 
                         for (let line of lines.split(/\r\n|\r|\n/)) {
@@ -273,12 +271,10 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
                         let rowsLength = stringTillOffset.length - 1;
 
                         delta.start.row = rowsLength;
-                        delta.start.column = stringTillOffset[rowsLength].length + 1;
-
-                        console.log(stringTillOffset[rowsLength].length + 1, stringTillOffset[rowsLength].length + 1 + lines[lines.length - 1].length);
-
                         delta.end.row = rowsLength + deltaRow;
-                        delta.end.column = stringTillOffset[rowsLength].length + 1 + lines[lines.length - 1].length;
+
+                        delta.start.column = stringTillOffset[rowsLength].length;
+                        delta.end.column = stringTillOffset[rowsLength].length + delta.lines[delta.lines.length - 1].length;
 
                         // ignore the changes for shareDB while editorContent is changed
                         this.sharedbService.ignore = true;
