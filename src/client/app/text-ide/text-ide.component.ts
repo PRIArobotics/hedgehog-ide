@@ -328,7 +328,8 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
                                 deltaRow += 1;
                             }
 
-                            let stringTillOffset = this.currentFileContent.substr(0, operation.p[1]).split(/\r\n|\r|\n/);
+                            let stringTillOffset =
+                                this.currentFileContent.substr(0, operation.p[1]).split(/\r\n|\r|\n/);
 
                             let rowsLength = stringTillOffset.length - 1;
 
