@@ -14,6 +14,7 @@ export class ShareDbClientService {
 
     public async createConnection (programName: string) {
         // Open WebSocket connection to ShareDB server
+        // TODO: make port configurable
         let socket = new WebSocket('ws://' + this.document.location.hostname + ':8001');
         let connection = new sharedb.Connection(socket);
 
