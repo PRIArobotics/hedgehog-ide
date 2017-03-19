@@ -19,9 +19,9 @@ export class ShareDbClientService {
 
         this.doc = connection.get('hedgehog-ide', programName);
 
-        await wrapCallbackAsPromise(this.doc.fetch);
+        await wrapCallbackAsPromise(this.doc.fetch.bind(this.doc));
         if (this.doc.type === null) {
-            await wrapCallbackAsPromise(this.doc.create, {}, programName);
+            await wrapCallbackAsPromise(this.doc.create.bind(this.doc), {});
         }
 
         this.doc.subscribe(() => {

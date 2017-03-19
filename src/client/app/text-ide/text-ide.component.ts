@@ -260,7 +260,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
         }
 
         // create connection for this program
-        this.sharedbService.createConnection(this.programName);
+        await this.sharedbService.createConnection(this.programName);
         this.sharedbService.on('firstData', data => {
             console.log('data')
             console.log(data)
