@@ -68,7 +68,7 @@ const shareDbServer = http.createServer((req, res) => {
 });
 let shareDbService = new ShareDbService(shareDbServer, programStorage);
 shareDbService.init();
-shareDbServer.listen(8001);
+shareDbServer.listen(serverConfig.shareDb.port);
 
 /**
  * Server setup
