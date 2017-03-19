@@ -20,11 +20,11 @@ export default class ShareDbService {
     }
 
     public async init () {
-        for (const name of await this.programStorage.getProgramNames())
-            this.initProgramDoc(name);
+        // for (const name of await this.programStorage.getProgramNames())
+        //    this.initProgramDoc(name);
     }
 
     public initProgramDoc (name: string) {
-        this.connection.get('hedgehog-ide', name).create({ });
+        // this.connection.get('hedgehog-ide', name).create({ });
     }
 }
