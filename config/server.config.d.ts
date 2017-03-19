@@ -5,6 +5,7 @@ interface IServerConfig {
     process: IProcessConfig;
     connection: IConnectionConfig;
     logging: ILoggingConfig;
+    shareDb: IShareDbConfig;
 }
 
 interface IProcessConfig {
@@ -19,6 +20,10 @@ interface IConnectionConfig {
 
 interface ILoggingConfig {
     level: string;
+}
+
+interface IShareDbConfig {
+    port: number;
 }
 
 declare let serverConfig: IServerConfig;
