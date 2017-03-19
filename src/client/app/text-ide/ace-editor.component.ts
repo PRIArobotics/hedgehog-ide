@@ -76,7 +76,8 @@ export class AceEditorComponent {
 
         this._editor.on('change', delta => {
             update();
-            this.changeDelta.emit(delta);
+            if (this._editor.curOp && this._editor.curOp.command.name)
+                this.changeDelta.emit(delta);
         });
 
         this._editor.on('paste', () => {

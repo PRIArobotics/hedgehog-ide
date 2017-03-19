@@ -110,7 +110,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
     private openFiles: {[programName: string]: string[]} = {};
 
     // local storage Object as programName: string
-    private openFileId: {[programName: string]: string} = {};
+    private localStorageOpenFileIds: {[programName: string]: string} = {};
 
     // indexed files from the file tree
     private files: Map<string, File>;
@@ -189,8 +189,6 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
 
     ];
 
-    private ignoreNext: number = 0;
-
     /**
      * Constructor that sets the programName from the router
      * and storage from the given storageService
@@ -211,9 +209,9 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
             this.openFiles[this.programName] = [];
         }
 
-        // init openFileId at program name if it is not initialized
-        if (!this.openFileId[this.programName]) {
-            this.openFileId[this.programName] = null;
+        // init localStorageOpenFileIds at program name if it is not initialized
+        if (!this.localStorageOpenFileIds[this.programName]) {
+            this.localStorageOpenFileIds[this.programName] = null;
         }
 
         this.storage = storageService.getStorage();
@@ -233,7 +231,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
         this.programExecution.isRunning = false;
         this.program = await this.storage.getProgram(this.programName);
 
-        this.openFileId = JSON.parse(localStorage.getItem('openFileId'));
+        this.localStorageOpenFileIds = JSON.parse(localStorage.getItem('openFileIds'));
         this.openFiles = JSON.parse(localStorage.getItem('openFiles'));
 
         let rootDir = await this.program.getWorkingTreeRoot();
@@ -253,20 +251,22 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
             this.openFiles[this.programName] = [];
         }
 
-        if (!this.openFileId) {
-            this.openFileId = {};
-        } else if (this.openFileId[this.programName]) {
-            this.openId = this.openFileId[this.programName];
+        if (!this.localStorageOpenFileIds) {
+            this.localStorageOpenFileIds = {};
+        } else if (this.localStorageOpenFileIds[this.programName]) {
+            this.openId = this.localStorageOpenFileIds[this.programName];
         }
 
         // create connection for this program
         await this.sharedbService.createConnection(this.programName);
         this.sharedbService.on('firstData', data => {
-            console.log('data')
-            console.log(data)
             for (let key in data) {
                 if (data.hasOwnProperty(key)) {
                     this.shareDbfileContents.set(key, data[key]);
+
+                    if (this.files.get(key)) {
+                        this.files.get(key).content = data[key];
+                    }
                 }
             }
         });
@@ -277,15 +277,15 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
         // open all previously opened files
         for (let fileId of this.openFiles[this.programName]) {
             if (this.files.get(fileId)) {
-                await this.openFileTab(fileId);
+                await this.openFileTab(fileId, false);
             }
         }
 
         // focus on the most previously opened file if it exists
-        if (this.openFileId[this.programName] !== null) {
-            if (this.files.get(this.openFileId[this.programName])) {
+        if (this.localStorageOpenFileIds[this.programName] !== null) {
+            if (this.files.get(this.localStorageOpenFileIds[this.programName])) {
                 await this.openFile(this.openId, false);
-                this.updateIndicator($('#tab' + this.openFileId[this.programName]));
+                this.updateIndicator($('#tab' + this.localStorageOpenFileIds[this.programName]));
             }
         }
 
@@ -343,10 +343,6 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
                                 delta.end.column = stringTillOffset[rowsLength].length +
                                     delta.lines[delta.lines.length - 1].length;
                             }
-
-
-                            // ignore the next changes for shareDB while the generated delta is applied
-                            this.ignoreNext++;
 
                             // update editorContent, currentFileContent to current files content and openId to this id
                             this.editor.getEditor().getSession().getDocument().applyDeltas([delta]);
@@ -725,45 +721,36 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
      * @param delta object which contains the information what has been inserted or removed
      */
     public async onEditorDelta(delta) {
-        console.log(delta);
-        console.log(this.openId);
-        console.log(this.ignoreNext);
+        let editorLineSplit: string[] = this.currentFileContent.split(/\r\n|\r|\n/);
 
-        if (this.ignoreNext > 0) {
-            this.ignoreNext--;
-            console.log('ignored');
-        } else {
-            let editorLineSplit: string[] = this.currentFileContent.split(/\r\n|\r|\n/);
-
-            let startPosition: number = 0;
-            let stringToOperate: string = '';
+        let startPosition: number = 0;
+        let stringToOperate: string = '';
 
 
-            for (let i = 0; i < delta.start.row; i++) {
-                // +1 because of the break at the end
-                startPosition += editorLineSplit[i].length + 1;
-            }
-            startPosition += delta.start.column;
-
-            let operation: any = {
-                p: [this.openId, startPosition]
-            };
-
-            for (let line of delta.lines) {
-                stringToOperate += line+'\n';
-            }
-
-            // remove last break
-            stringToOperate = stringToOperate.substring(0, stringToOperate.length - 1);
-
-            if (delta.action === 'insert') {
-                operation.si = stringToOperate;
-            } else if (delta.action === 'remove') {
-                operation.sd = stringToOperate;
-            }
-
-            this.sharedbService.operation(operation);
+        for (let i = 0; i < delta.start.row; i++) {
+            // +1 because of the break at the end
+            startPosition += editorLineSplit[i].length + 1;
         }
+        startPosition += delta.start.column;
+
+        let operation: any = {
+            p: [this.openId, startPosition]
+        };
+
+        for (let line of delta.lines) {
+            stringToOperate += line+'\n';
+        }
+
+        // remove last break
+        stringToOperate = stringToOperate.substring(0, stringToOperate.length - 1);
+
+        if (delta.action === 'insert') {
+            operation.si = stringToOperate;
+        } else if (delta.action === 'remove') {
+            operation.sd = stringToOperate;
+        }
+
+        this.sharedbService.operation(operation);
     }
 
 
@@ -1187,24 +1174,19 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
         let file = this.files.get(id);
 
         if (updateOpenId) {
-            // update the openFileId for the local storage
-            this.openFileId[this.programName] = id;
-            localStorage.setItem('openFileId', JSON.stringify(this.openFileId));
+            // update the localStorageOpenFileIds for the local storage
+            this.localStorageOpenFileIds[this.programName] = id;
+            localStorage.setItem('openFileIds', JSON.stringify(this.localStorageOpenFileIds));
             this.openId = id;
         }
-        if (!file.content) {
+
+        if (!file.storageObject) {
             // get the storage file
             file.storageObject = await file.parentDirectory.getFile(file.name);
-
-            // read content of the file form the backend
-            file.content = await file.storageObject.readContent();
         }
 
-        if (this.editorContent != file.content) {
-            console.log('increasing ignoreNext')
-
-            // ignoreNext the changes for shareDB while editorContent is changed
-            this.ignoreNext += 2;
+        if (!file.content) {
+            file.content = await file.storageObject.readContent();
         }
 
         // update editorContent, currentFileContent to current files content and openId to this id
@@ -1212,12 +1194,11 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
         this.currentFileContent = file.content;
 
         if (!this.sharedbService.fileExists(this.openId)) {
-            console.log('file does not exist')
             this.sharedbService.operation({p: [this.openId], oi: this.currentFileContent});
         }
     }
 
-    private async openFileTab(fileId: string) {
+    private async openFileTab(fileId: string, updateOpenId: boolean = true) {
         let index = this.openFiles[this.programName].indexOf(fileId);
 
         if (index < 0) {
@@ -1225,10 +1206,10 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
         }
 
         localStorage.setItem('openFiles', JSON.stringify(this.openFiles));
-        localStorage.setItem('openFileId', JSON.stringify(this.openFileId));
+        localStorage.setItem('openFileIds', JSON.stringify(this.localStorageOpenFileIds));
 
         // update the editor content
-        await this.openFile(fileId);
+        await this.openFile(fileId, updateOpenId);
 
         // search for tab
         let tab = $('#tab' + fileId);
@@ -1334,7 +1315,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
         }
 
         localStorage.setItem('openFiles', JSON.stringify(this.openFiles));
-        localStorage.setItem('openFileId', JSON.stringify(this.openFileId));
+        localStorage.setItem('openFileIds', JSON.stringify(this.localStorageOpenFileIds));
 
         // check if the current openId (open tab)
         if (this.openId === id) {
@@ -1361,9 +1342,6 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
                     // if not reset the indicator and reset editorContent and openId
                     this.resetIndicator();
                     this.openId = null;
-
-                    this.ignoreNext++;
-
                     this.editorContent = '';
                 }
             }

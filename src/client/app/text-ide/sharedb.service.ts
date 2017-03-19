@@ -46,7 +46,6 @@ export class ShareDbClientService {
     }
 
     public operation(change) {
-        console.log(change)
         this.doc.submitOp([change], err => {
             if (err) throw err;
         });
