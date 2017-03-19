@@ -267,16 +267,27 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
             for (let key in data) {
                 if (data.hasOwnProperty(key)) {
                     this.shareDbfileContents.set(key, data[key]);
-
-                    if (key === this.openId) {
-                        this.openFile(key, false);
-                    }
                 }
             }
         });
 
         // populate file tree and give it the root directory and it's childArray
         await this.populateFiletree(rootDir, childArray);
+
+        // open all previously opened files
+        for (let fileId of this.openFiles[this.programName]) {
+            if (this.files.get(fileId)) {
+                await this.openFileTab(fileId);
+            }
+        }
+
+        // focus on the most previously opened file if it exists
+        if (this.openFileId[this.programName] !== null) {
+            if (this.files.get(this.openFileId[this.programName])) {
+                await this.openFile(this.openId, false);
+                this.updateIndicator($('#tab' + this.openFileId[this.programName]));
+            }
+        }
 
         this.sharedbService.on('operations', op => {
             if (!op.source) {
@@ -345,21 +356,6 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
             }
         });
 
-        // open all previously opened files
-        for (let fileId of this.openFiles[this.programName]) {
-            if (this.files.get(fileId)) {
-                await this.openFileTab(fileId);
-            }
-        }
-
-        // focus on the most previously opened file if it exists
-        if (this.openFileId[this.programName] !== null) {
-            if (this.files.get(this.openFileId[this.programName])) {
-                await this.openFile(this.openFileId[this.programName], false);
-                this.updateIndicator($('#tab' + this.openFileId[this.programName]));
-            }
-        }
-
         let hedgehogLibraryAutocomplete = {
             getCompletions: (editor, session, pos, prefix, callback) => {
                 let autocompletionList = [
@@ -405,6 +401,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
      */
     public async ngAfterViewInit(): Promise<void> {
         $.isReady = true;
+
         const tabs = $('#sortable-tabs') as any;
         tabs.tabs();
 
@@ -1194,9 +1191,6 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
             this.openFileId[this.programName] = id;
             localStorage.setItem('openFileId', JSON.stringify(this.openFileId));
             this.openId = id;
-
-            // ignoreNext the changes for shareDB while editorContent is changed
-            this.ignoreNext++;
         }
         if (!file.content) {
             // get the storage file
@@ -1204,6 +1198,13 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
 
             // read content of the file form the backend
             file.content = await file.storageObject.readContent();
+        }
+
+        if (this.editorContent != file.content) {
+            console.log('increasing ignoreNext')
+
+            // ignoreNext the changes for shareDB while editorContent is changed
+            this.ignoreNext += 2;
         }
 
         // update editorContent, currentFileContent to current files content and openId to this id
