@@ -9,8 +9,6 @@ export class ShareDbClientService {
     private doc;
 
     private eventEmitter = new EventEmitter();
-    private _ignore: boolean;
-
     constructor (@Inject(DOCUMENT) private document) { }
 
     public createConnection (programName: string) {
@@ -38,23 +36,13 @@ export class ShareDbClientService {
     }
 
     public fileExists (fileId: string) {
-        console.log(this.doc);
         return !!this.doc.data[fileId];
     }
 
     public operation(change) {
-        if (!this._ignore) {
-            this.doc.submitOp([change], err => {
-                if (err) throw err;
-            });
-        }
-    }
-
-    get ignore(): boolean {
-        return this._ignore;
-    }
-
-    set ignore(value: boolean) {
-        this._ignore = value;
+        console.log(change)
+        this.doc.submitOp([change], err => {
+            if (err) throw err;
+        });
     }
 }

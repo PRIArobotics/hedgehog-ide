@@ -115,6 +115,9 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
     // indexed files from the file tree
     private files: Map<string, File>;
 
+    // the file content which is received before the files are indexed
+    private shareDbfileContents: Map<string, string>;
+
     // last id of the file changed used for saving the file
     private openId: string;
 
@@ -186,6 +189,8 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
 
     ];
 
+    private ignoreNext: number = 0;
+
     /**
      * Constructor that sets the programName from the router
      * and storage from the given storageService
@@ -199,6 +204,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
                 private sharedbService: ShareDbClientService) {
         this.programName = route.snapshot.params['programName'];
         this.files = new Map<string, File>();
+        this.shareDbfileContents = new Map<string, string>();
 
         // init openFiles at program name if it is not initialized
         if (!this.openFiles[this.programName]) {
@@ -217,84 +223,6 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
             name: this.programName,
             isExpanded: true
         };
-
-        // create connection for this program
-        this.sharedbService.createConnection(this.programName);
-        this.sharedbService.on('firstData', data => {
-            for (let key in data) {
-                if (data.hasOwnProperty(key)) {
-                    this.files.set(key, data[key]);
-                }
-            }
-        });
-
-        this.sharedbService.on('operations', op => {
-            if (!op.source) {
-                for (let operation of op.operations) {
-                    let changedFileId = operation.p[0];
-
-                    this.files.get(changedFileId).content = op.data[changedFileId];
-
-                    // check whether the file is currently opened
-                    if (this.openId === changedFileId) {
-                        let delta = {
-                            action: "",
-                            lines: [],
-                            start: {
-                                column: 0,
-                                row: 0
-                            },
-                            end: {
-                                column: 0,
-                                row: 0
-                            }
-                        };
-
-                        let lines: string;
-                        let deltaRow: number = -1;
-
-                        if (operation.si) {
-                            delta.action = "insert";
-                            lines = operation.si;
-                        } else if (operation.sd) {
-                            delta.action = "remove";
-                            lines = operation.sd;
-                        }
-
-                        for (let line of lines.split(/\r\n|\r|\n/)) {
-                            delta.lines.push(line);
-                            deltaRow += 1;
-                        }
-
-                        let stringTillOffset = this.currentFileContent.substr(0, operation.p[1]).split(/\r\n|\r|\n/);
-
-                        let rowsLength = stringTillOffset.length - 1;
-
-                        delta.start.row = rowsLength;
-                        delta.end.row = rowsLength + deltaRow;
-
-                        delta.start.column = stringTillOffset[rowsLength].length;
-
-                        if (delta.lines.length > 1) {
-                            delta.end.column = delta.lines[delta.lines.length - 1].length;
-                        } else {
-                            delta.end.column = stringTillOffset[rowsLength].length +
-                                delta.lines[delta.lines.length - 1].length;
-                        }
-
-
-                        // ignore the changes for shareDB while editorContent is changed
-                        this.sharedbService.ignore = true;
-
-                        // update editorContent, currentFileContent to current files content and openId to this id
-                        this.editor.getEditor().getSession().getDocument().applyDeltas([delta]);
-
-                        // do not ignore anymore
-                        this.sharedbService.ignore = false;
-                    }
-                }
-            }
-        });
     }
 
     /**
@@ -327,10 +255,95 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
 
         if (!this.openFileId) {
             this.openFileId = {};
+        } else if (this.openFileId[this.programName]) {
+            this.openId = this.openFileId[this.programName];
         }
+
+        // create connection for this program
+        this.sharedbService.createConnection(this.programName);
+        this.sharedbService.on('firstData', data => {
+            console.log('data')
+            console.log(data)
+            for (let key in data) {
+                if (data.hasOwnProperty(key)) {
+                    this.shareDbfileContents.set(key, data[key]);
+
+                    if (key === this.openId) {
+                        this.openFile(key, false);
+                    }
+                }
+            }
+        });
 
         // populate file tree and give it the root directory and it's childArray
         await this.populateFiletree(rootDir, childArray);
+
+        this.sharedbService.on('operations', op => {
+            if (!op.source) {
+                for (let operation of op.operations) {
+                    let changedFileId = operation.p[0];
+
+                    if (this.files.get(changedFileId)) {
+                        this.files.get(changedFileId).content = op.data[changedFileId];
+
+                        // check whether the file is currently opened
+                        if (this.openId === changedFileId) {
+                            let delta = {
+                                action: "",
+                                lines: [],
+                                start: {
+                                    column: 0,
+                                    row: 0
+                                },
+                                end: {
+                                    column: 0,
+                                    row: 0
+                                }
+                            };
+
+                            let lines: string;
+                            let deltaRow: number = -1;
+
+                            if (operation.si) {
+                                delta.action = "insert";
+                                lines = operation.si;
+                            } else if (operation.sd) {
+                                delta.action = "remove";
+                                lines = operation.sd;
+                            }
+
+                            for (let line of lines.split(/\r\n|\r|\n/)) {
+                                delta.lines.push(line);
+                                deltaRow += 1;
+                            }
+
+                            let stringTillOffset = this.currentFileContent.substr(0, operation.p[1]).split(/\r\n|\r|\n/);
+
+                            let rowsLength = stringTillOffset.length - 1;
+
+                            delta.start.row = rowsLength;
+                            delta.end.row = rowsLength + deltaRow;
+
+                            delta.start.column = stringTillOffset[rowsLength].length;
+
+                            if (delta.lines.length > 1) {
+                                delta.end.column = delta.lines[delta.lines.length - 1].length;
+                            } else {
+                                delta.end.column = stringTillOffset[rowsLength].length +
+                                    delta.lines[delta.lines.length - 1].length;
+                            }
+
+
+                            // ignore the next changes for shareDB while the generated delta is applied
+                            this.ignoreNext++;
+
+                            // update editorContent, currentFileContent to current files content and openId to this id
+                            this.editor.getEditor().getSession().getDocument().applyDeltas([delta]);
+                        }
+                    }
+                }
+            }
+        });
 
         // open all previously opened files
         for (let fileId of this.openFiles[this.programName]) {
@@ -342,7 +355,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
         // focus on the most previously opened file if it exists
         if (this.openFileId[this.programName] !== null) {
             if (this.files.get(this.openFileId[this.programName])) {
-                await this.openFile(this.openFileId[this.programName]);
+                await this.openFile(this.openFileId[this.programName], false);
                 this.updateIndicator($('#tab' + this.openFileId[this.programName]));
             }
         }
@@ -377,7 +390,6 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
                         meta: 'hedgehog'
                     };
                 }));
-
             }
         };
 
@@ -468,14 +480,12 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
                     changed: false
                 };
 
-                if (this.files.get(fileId)) {
-                    indexedFile.content = this.files.get(fileId);
+                if (this.shareDbfileContents.get(fileId)) {
+                    indexedFile.content = this.shareDbfileContents.get(fileId);
                 }
 
                 // add file to Map using the id
                 this.files.set(fileId, indexedFile);
-
-
             } else if (type === WorkingTreeObjectType.Directory && !itemName.startsWith('.')) {
                 // get the directory
                 let newDirectory = await directory.getDirectory(itemName);
@@ -719,9 +729,13 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
      */
     public async onEditorDelta(delta) {
         console.log(delta);
-        console.log(this.openId)
+        console.log(this.openId);
+        console.log(this.ignoreNext);
 
-        if (!this.sharedbService.ignore) {
+        if (this.ignoreNext > 0) {
+            this.ignoreNext--;
+            console.log('ignored');
+        } else {
             let editorLineSplit: string[] = this.currentFileContent.split(/\r\n|\r|\n/);
 
             let startPosition: number = 0;
@@ -1170,10 +1184,20 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
      * Save the last opened file and set current editorContent file with given id
      *
      * @param id of the file in the files array
+     * @param updateOpenId whether to update the openId. Not done at the beginning
      */
-    private async openFile(id: string) {
+    private async openFile(id: string, updateOpenId: boolean = true) {
         let file = this.files.get(id);
 
+        if (updateOpenId) {
+            // update the openFileId for the local storage
+            this.openFileId[this.programName] = id;
+            localStorage.setItem('openFileId', JSON.stringify(this.openFileId));
+            this.openId = id;
+
+            // ignoreNext the changes for shareDB while editorContent is changed
+            this.ignoreNext++;
+        }
         if (!file.content) {
             // get the storage file
             file.storageObject = await file.parentDirectory.getFile(file.name);
@@ -1182,22 +1206,14 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
             file.content = await file.storageObject.readContent();
         }
 
-        // ignore the changes for shareDB while editorContent is changed
-        this.sharedbService.ignore = true;
-
         // update editorContent, currentFileContent to current files content and openId to this id
         this.editorContent = file.content;
         this.currentFileContent = file.content;
 
-        setTimeout(() => {
-            // do not ignore anymore
-            this.sharedbService.ignore = false;
-
-            if (!this.sharedbService.fileExists(this.openId)) {
-                this.sharedbService.operation({p: [this.openId], oi: this.currentFileContent});
-            }
-        }, 0);
-        this.openId = id;
+        if (!this.sharedbService.fileExists(this.openId)) {
+            console.log('file does not exist')
+            this.sharedbService.operation({p: [this.openId], oi: this.currentFileContent});
+        }
     }
 
     private async openFileTab(fileId: string) {
@@ -1259,8 +1275,6 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
         newTab.addEventListener('click', async clickEvent => {
             // check whether the target was <i> meaning the close button
             if (!$(clickEvent.target).is('i')) {
-                // update the openFileId for the local storage
-                this.openFileId[this.programName] = fileId;
 
                 // if it wasn't it opens the file
                 await this.openFile(fileId);
@@ -1347,14 +1361,9 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
                     this.resetIndicator();
                     this.openId = null;
 
-                    this.sharedbService.ignore = true;
+                    this.ignoreNext++;
 
                     this.editorContent = '';
-
-                    setTimeout(() => {
-                        // do not ignore anymore
-                        this.sharedbService.ignore = false;
-                    }, 0);
                 }
             }
         }
