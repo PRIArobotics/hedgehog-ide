@@ -619,7 +619,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
         if (this.openId) {
             let file = this.files.get(this.openId);
 
-            if (file.content != editorContent) {
+            if (file.content !== editorContent) {
                 file.changed = true;
                 file.content = this.currentFileContent;
             }
