@@ -65,6 +65,21 @@
                         <div class="col s12 editor-tabs">
                             <ul class="tabs toggle-theme" materialize="tabs" id="sortable-tabs">
                                 <li class="tab"><a></a></li>
+                                <template ngFor let-fileId [ngForOf]="openFiles[programName]" >
+                                    <li *ngIf="files.get(fileId)" class="tab" id="tab{{ fileId }}" (click)="openFile(fileId)">
+                                        <a class="green-text lighten-3 waves-effect">
+                                            {{ files.get(fileId).name }}
+                                            <span *ngIf="files.get(fileId).changed">*</span>
+                                            <i class="material-icons" (click)="closeTab(fileId)">close</i>
+                                        </a>
+                                    </li>
+                                </template>
+                                <!--<li *ngFor="let fileId of openFiles[programName]" class="tab" id="tab{{ fileId }}">
+                                    <a class="green-text lighten-3 waves-effect">
+                                        {{ files.get(fileId).name }}
+                                        <i class="material-icons">close</i>
+                                   </a>
+                                </li>-->
                             </ul>
                         </div>
 

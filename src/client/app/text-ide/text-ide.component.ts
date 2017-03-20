@@ -104,9 +104,6 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
     // fileTree array containing TreeComponent compatible Objects
     private fileTree: Object[] = [];
 
-    // local storage Object as programName: { fileId: string }
-    private localStorageFiles: {[programName: string]: {[fileId: string]: string}} = {};
-
     // local storage Object as programName: string[]
     private openFiles: {[programName: string]: string[]} = {};
 
@@ -225,9 +222,6 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
         this.programExecution.isRunning = false;
         this.program = await this.storage.getProgram(this.programName);
 
-        this.openFileId = JSON.parse(localStorage.getItem('openFileId'));
-        this.openFiles = JSON.parse(localStorage.getItem('openFiles'));
-
         let rootDir = await this.program.getWorkingTreeRoot();
 
         let childArray = [];
@@ -236,11 +230,11 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
         this.fileTree[0]['children'] = childArray;
         this.fileTree[0]['storageObject'] = rootDir;
 
-        // check if the local storage already has this program stored
-        if (!this.localStorageFiles[this.programName]) {
-            // if not create a new Map with the program name
-            this.localStorageFiles[this.programName] = {};
-        }
+        // populate file tree and give it the root directory and it's childArray
+        await this.populateFiletree(rootDir, childArray);
+
+        this.openFileId = JSON.parse(localStorage.getItem('openFileId'));
+        this.openFiles = JSON.parse(localStorage.getItem('openFiles'));
 
         if (!this.openFiles) {
             this.openFiles = {};
@@ -254,9 +248,6 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
         if (!this.openFileId) {
             this.openFileId = {};
         }
-
-        // populate file tree and give it the root directory and it's childArray
-        await this.populateFiletree(rootDir, childArray);
 
         // open all previously opened files
         for (let fileId of this.openFiles[this.programName]) {
@@ -396,11 +387,6 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
 
                 // add file to Map using the id
                 this.files.set(fileId, indexedFile);
-
-                if (this.localStorageFiles[this.programName][fileId]) {
-                    // if file is in the local storage  take the content from the local storage
-                    indexedFile.content = this.localStorageFiles[this.programName][fileId];
-                }
             } else if (type === WorkingTreeObjectType.Directory && !itemName.startsWith('.')) {
                 // get the directory
                 let newDirectory = await directory.getDirectory(itemName);
@@ -631,10 +617,12 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
         // if no file has been opened or all have been closed the id is null
         // and you cannot save a file that is does not exist
         if (this.openId) {
-            // save file from the last tab in local content
-            this.files.get(this.openId).content = this.currentFileContent;
-            this.localStorageFiles[this.programName][this.openId] = this.currentFileContent;
-            this.files.get(this.openId).changed = true;
+            let file = this.files.get(this.openId);
+
+            if (file.content != editorContent) {
+                file.changed = true;
+                file.content = this.currentFileContent;
+            }
         }
     }
 
@@ -648,7 +636,12 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
         if (event.node.children == null) {
 
             // set file to the data from the event
-            this.openFileTab(event.node.data.fileId);
+            await this.openFileTab(event.node.data.fileId);
+
+            setTimeout(() => {
+                // update the indicator to this new tab
+                this.updateIndicator($('#tab' + event.node.data.fileId));
+            }, 0);
         }
     }
 
@@ -847,7 +840,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
             // JQuery Object [0] is the item description which only exists if the element exists
             if (fileTab[0]) {
                 // close the tab if the element exists
-                this.closeTab(fileTab);
+                this.closeTab(this.deleteFileData.fileId);
             }
 
             // use the parentArray form the file
@@ -935,7 +928,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
             // close the tab if it exists
             let tab: JQuery = $('#tab' + fileId);
             if (tab.length > 0) {
-                this.closeTab(tab);
+                this.closeTab(fileId);
             }
 
             // check if the storage object exists and receive it if it doesn't exist
@@ -1073,13 +1066,6 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
     private async openFileTab(fileId: string) {
         let index = this.openFiles[this.programName].indexOf(fileId);
 
-        if (index < 0) {
-            this.openFiles[this.programName].push(fileId);
-        }
-
-        localStorage.setItem('openFiles', JSON.stringify(this.openFiles));
-        localStorage.setItem('openFileId', JSON.stringify(this.openFileId));
-
         // update the editor content
         await this.openFile(fileId);
 
@@ -1095,53 +1081,12 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
             return;
         }
 
-        // create new tab element if the file was not found as
-        // <li class='tab' id='tab{id}' draggable> ... <li>
-        let newTab = document.createElement('li');
-        newTab.className = 'tab';
-        newTab.id = 'tab' + fileId;
+        if (index < 0) {
+            this.openFiles[this.programName].push(fileId);
+        }
 
-        // create new a element that has the filename as
-        // <a class='green-text lighten-3 waves-effect'> {filename} ... </a>
-        let linkToEditor = document.createElement('a');
-        linkToEditor.className = 'green-text lighten-3 waves-effect';
-
-        // create close button as
-        // <i class='material-icons' onclick="..."> close </i>
-        let closeButton = document.createElement('i');
-        closeButton.className = 'material-icons';
-        closeButton.addEventListener('click', () => this.closeTab($(newTab)));
-
-        // add close icon to close button
-        closeButton.appendChild(document.createTextNode('close'));
-
-        // create file name text
-        let fileNameElement = document.createTextNode(this.files.get(fileId).name);
-
-        // add filename and close button to the tab content
-        linkToEditor.appendChild(fileNameElement);
-        linkToEditor.appendChild(closeButton);
-
-        // add tab content to the tab ( <a> into <li>
-        newTab.appendChild(linkToEditor);
-
-        // create click event for text node to open the file with it's id
-        newTab.addEventListener('click', async clickEvent => {
-            // check whether the target was <i> meaning the close button
-            if (!$(clickEvent.target).is('i')) {
-                // update the openFileId for the local storage
-                this.openFileId[this.programName] = fileId;
-
-                // if it wasn't it opens the file
-                await this.openFile(fileId);
-            }
-        });
-
-        // add element to the sortable-tabs div
-        document.getElementById('sortable-tabs').appendChild(newTab);
-
-        // update the indicator to this new tab
-        this.updateIndicator(newTab);
+        localStorage.setItem('openFiles', JSON.stringify(this.openFiles));
+        localStorage.setItem('openFileId', JSON.stringify(this.openFileId));
 
         // load new li as tab
         ($('div.tabs') as any).tabs();
@@ -1177,10 +1122,10 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
      * follows the same behaviour as most IDE's.
      * WebStorm's tab management was taken as the guideline
      *
-     * @param tabToClose the tab to close as a JQuery Object
+     * @param id the file id of the tab to close
      */
-    private closeTab(tabToClose: JQuery) {
-        let id: string = tabToClose.attr('id').substr(3);
+    private closeTab(id: string) {
+        let  tabToClose = $('#tab' + id);
 
         let index = this.openFiles[this.programName].indexOf(id);
 
