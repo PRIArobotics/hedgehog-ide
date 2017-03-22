@@ -166,7 +166,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
         enableLiveAutocompletion: true,
         fontFamily: "Roboto Mono",
         fontSize: 12,
-        wrapBehavioursEnabled: false
+        wrap: false
     };
 
     private templateOptions: Array<{name: string, value: string}> = [
