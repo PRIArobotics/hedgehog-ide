@@ -101,11 +101,7 @@ new SocketIoSensorAdapter(hedgehog, io);
 /**
  * ShareDB backend
  */
-let shareDbService = new ShareDbService(programStorage, io);
-/*const shareDbServer = http.createServer((req, res) => {
-    res.end();
-});
-shareDbServer.listen(serverConfig.shareDb.port); */
+new ShareDbService(programStorage, io);
 
 // tslint:disable-next-line
 server.register(require('inert'));
