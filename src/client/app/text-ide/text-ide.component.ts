@@ -397,8 +397,10 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
      * This method is called after the view is initialized so it can access frontend items
      */
     public async ngAfterViewInit(): Promise<void> {
+        // This tweaks jQuery in order to avoid the tabs being initialized with the ready() event
         $.isReady = true;
 
+        // Now initialize them manually
         const tabs = $('#sortable-tabs') as any;
         tabs.tabs();
 

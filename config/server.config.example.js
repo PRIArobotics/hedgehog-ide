@@ -24,12 +24,6 @@ exports = module.exports = {
         host: 'localhost'
     },
 
-    // ShareDB configuration for realtime editor synchronisation support
-    shareDb: {
-        // Since socket.io uses websocket too, another port for
-        port: 8001,
-    },
-
     // Logging configuration
     logging: {
         level: 'debug'
