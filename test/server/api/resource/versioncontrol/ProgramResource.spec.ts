@@ -50,7 +50,7 @@ describe('ProgramResource', () => {
     let mock: Sinon.SinonMock;
 
     before(() => {
-        programResource = new ProgramResource(null, modelRegistry, null);
+        programResource = new ProgramResource(null, modelRegistry);
         server = setupApiServer(programResource);
     });
 
