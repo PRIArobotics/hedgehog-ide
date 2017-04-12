@@ -20,10 +20,58 @@ Blockly.Blocks['hedgehog_scope'] = {
         this.setHelpUrl(Blockly.Blocks.hedgehog.HELPURL);
 
         this.appendDummyInput()
-            .appendField("hedgehog scope");
+            .appendField("Hedgehog scope");
         this.appendStatementInput("IN")
             .setCheck(null);
-        this.setTooltip('all Hedgehog blocks have to be inside of this block');
+        this.setTooltip('All Hedgehog blocks have to be inside of this block');
+    }
+};
+
+Blockly.Blocks['hedgehog_move'] = {
+    init: function() {
+        this.setColour(Blockly.Blocks.hedgehog.HUE);
+        this.setHelpUrl(Blockly.Blocks.hedgehog.HELPURL);
+
+        this.appendDummyInput()
+            .appendField("move motor")
+            .appendField(new Blockly.FieldNumber(0, 0, 3, 1), "PORT");
+        this.appendValueInput("SPEED")
+            .setCheck("Number");
+        this.appendValueInput("TIME")
+            .setCheck("Number")
+            .appendField("for");
+        this.appendDummyInput()
+            .appendField("seconds");
+        this.setInputsInline(true);
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+        this.setTooltip('move one motor for a certain duration');
+    },
+    onchange: function(e) {
+        if (this.workspace.isDragging()) {
+            return;  // Don't change state at the start of a drag.
+        }
+        var legal = false;
+        // Is the block nested in a loop?
+        var block = this;
+        do {
+            if (block.type == 'hedgehog_scope') {
+                legal = true;
+                break;
+            }
+            block = block.getSurroundParent();
+        } while (block);
+        if (legal) {
+            this.setWarningText(null);
+            if (!this.isInFlyout) {
+                this.setDisabled(false);
+            }
+        } else {
+            this.setWarningText("This block needs to be inside a Hedgehog Scope block!");
+            if (!this.isInFlyout && !this.getInheritedDisabled()) {
+                this.setDisabled(true);
+            }
+        }
     }
 };
 
@@ -48,29 +96,8 @@ Blockly.Blocks['hedgehog_move2'] = {
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
         this.setTooltip('move two motors for a certain duration');
-    }
-};
-
-Blockly.Blocks['hedgehog_move'] = {
-    init: function() {
-        this.setColour(Blockly.Blocks.hedgehog.HUE);
-        this.setHelpUrl(Blockly.Blocks.hedgehog.HELPURL);
-
-        this.appendDummyInput()
-            .appendField("move motor")
-            .appendField(new Blockly.FieldNumber(0, 0, 3, 1), "PORT");
-        this.appendValueInput("SPEED")
-            .setCheck("Number");
-        this.appendValueInput("TIME")
-            .setCheck("Number")
-            .appendField("for");
-        this.appendDummyInput()
-            .appendField("seconds");
-        this.setInputsInline(true);
-        this.setPreviousStatement(true, null);
-        this.setNextStatement(true, null);
-        this.setTooltip('move one motor for a certain duration');
-    }
+    },
+    onchange: Blockly.Blocks['hedgehog_move'].onchange
 };
 
 Blockly.Blocks['hedgehog_turn'] = {
@@ -95,7 +122,8 @@ Blockly.Blocks['hedgehog_turn'] = {
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
         this.setTooltip('turn the Hedgog for a certain duration');
-    }
+    },
+    onchange: Blockly.Blocks['hedgehog_move'].onchange
 };
 
 Blockly.Blocks['hedgehog_dir'] = {
@@ -132,7 +160,8 @@ Blockly.Blocks['hedgehog_read_analog'] = {
             .appendField(new Blockly.FieldNumber(0, 0, 7, 1), "PORT");
         this.setOutput(true, "Number");
         this.setTooltip('get the value of an analog pin');
-    }
+    },
+    onchange: Blockly.Blocks['hedgehog_move'].onchange
 };
 
 Blockly.Blocks['hedgehog_servo'] = {
@@ -152,7 +181,8 @@ Blockly.Blocks['hedgehog_servo'] = {
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
         this.setTooltip('move a servo to a specified position');
-    }
+    },
+    onchange: Blockly.Blocks['hedgehog_move'].onchange
 };
 
 Blockly.Blocks['hedgehog_degrees'] = {
@@ -198,5 +228,6 @@ Blockly.Blocks['hedgehog_read_digital'] = {
             .appendField(new Blockly.FieldNumber(8, 8, 15, 1), "PORT");
         this.setOutput(true, "Boolean");
         this.setTooltip('get the value of an analog pin');
-    }
+    },
+    onchange: Blockly.Blocks['hedgehog_move'].onchange
 };
