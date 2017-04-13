@@ -95,6 +95,12 @@ export class BlocklyComponent implements OnInit, OnDestroy {
         this.program = await this.storage.getProgram(this.programName);
         this.rootDir = await this.program.getWorkingTreeRoot();
 
+        if (this.rootDir.items.includes("lang")) {
+            this.loadLang(await (await this.rootDir.getFile("lang")).readContent());
+        } else {
+            this.loadLang("en");
+        }
+
         await this.injectBlockly();
 
         // load workspace from remote storage if it exists
@@ -115,6 +121,20 @@ export class BlocklyComponent implements OnInit, OnDestroy {
             showGutter: false,
         });
         this.editor.getEditor().renderer.$cursorLayer.element.style.display = "none";
+
+    }
+
+    public loadLang(lang: string) {
+        let node = document.createElement('script');
+        node.src = "app/blockly/lib/msg/js/" + lang + ".js";
+        node.type = 'text/javascript';
+        node.charset = 'utf-8';
+        document.getElementsByTagName('head')[0].appendChild(node);
+    }
+
+    public async setLanguage(lang: string) {
+        await this.rootDir.addFile("lang", lang);
+        window.location.reload();
     }
 
     private injectBlockly() {
