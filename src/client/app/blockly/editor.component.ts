@@ -118,8 +118,8 @@ export class BlocklyComponent implements OnInit, OnDestroy {
     }
 
     private injectBlockly() {
-        let toolbox: any = {toolbox: document.getElementById('toolbox'),
-            zoom: {controls: true,
+        let options: any = {toolbox: document.getElementById('toolbox'),
+            zoom: {controls: false,
                    wheel: true,
                    startScale: 1.0,
                    maxScale: 2,
@@ -129,13 +129,13 @@ export class BlocklyComponent implements OnInit, OnDestroy {
                    length: 3,
                    colour: '#ccc',
                    snap: true},
-            trashcan: true,
-            maxBlocks: 100,
+            trashcan: false,
+            maxBlocks: 400,
             scrollbars: true,
             media: 'app/blockly/lib/media/'
         };
 
-        this.workspace = Blockly.inject('blocklyDiv', toolbox);
+        this.workspace = Blockly.inject('blocklyDiv', options);
     }
 
     private onWorkspaceChange() {
@@ -151,7 +151,6 @@ export class BlocklyComponent implements OnInit, OnDestroy {
         Blockly.Xml.domToWorkspace(dom, this.workspace);
     }
 
-    // tslint:disable-next-line
     private toPython(): string {
         Blockly.Python.INFINITE_LOOP_TRAP = null;
         return Blockly.Python.workspaceToCode(this.workspace);
