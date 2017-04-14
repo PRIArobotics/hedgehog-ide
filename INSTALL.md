@@ -1,5 +1,20 @@
 # Installation on the Hedgehog controller
-In order to install the Hedgehog IDE on the Hedgehog controller, you first need to install Node.JS.
+**With version 1.0.0, Hedgehog IDE has been integrated into [HedgehogBundle](https://github.com/PRIArobotics/HedgehogBundle).**
+
+## Automated installation with HedgehogBundle (recommended)
+HedgehogBundle allows a very simple installation of the Hedgehog platform, the IDE can be installed via a single command.
+After cloning or downloading the repository to the controller, simple enter the following two commands in the `HedgehogBundle` directory:
+
+```bash
+$ cd ide
+$ make
+```
+
+Now you are all set! The IDE should be running on port 80 of your controller and will be automatically started on boot.
+
+
+## Manual installation (only for advanced users)
+In order to install the Hedgehog IDE manually on the Hedgehog controller, you first need to install Node.JS.
 To do so, open a terminal connection to your Hedgehog's Raspberry Pi, and type the following.
 ```bash
 $ wget https://nodejs.org/dist/latest/node-v7.4.0-linux-armv6l.tar.xz
