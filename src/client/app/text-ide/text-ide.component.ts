@@ -111,6 +111,9 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
     private openFiles: {[programName: string]: string[]} = {};
 
     // local storage Object as programName: string
+    private openFileId: {[programName: string]: string} = {};
+
+    // local storage Object as programName: string
     private localStorageOpenFileIds: {[programName: string]: string} = {};
 
     // indexed files from the file tree
