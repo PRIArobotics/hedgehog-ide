@@ -62,11 +62,6 @@ describe('ProgramResource', () => {
 
     describe('createProgram', () => {
         it('should create a new program', done => {
-            const shareDbCallback = sinon.spy();
-            (programResource as any).shareDbService = {
-                initProgramDoc: shareDbCallback
-            };
-
             const creationDate = new Date();
             let program = new Program(storage, 'program', 'version1', true);
 
@@ -103,7 +98,6 @@ describe('ProgramResource', () => {
                     },
                     data: getProgramResourceReply(program, creationDate)
                 });
-                assert.equal(shareDbCallback.callCount, 1);
                 done();
             });
         });
