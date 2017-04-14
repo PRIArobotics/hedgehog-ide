@@ -4,7 +4,7 @@ exports = module.exports = {
     environment: 'production',
 
     // Path where the programs will be storage
-    programStorageDirectory: '~/hedgehog-programs',
+    programStorageDirectory: '/home/pi/hedgehog-programs',
 
     // ZMQ connection string for Hedgehog server
     hedgehogConnection: 'tcp://127.0.0.1:10789',
@@ -15,12 +15,12 @@ exports = module.exports = {
         temporaryStorageDirectory: '/tmp',
 
         // Path to python interpreter
-        pythonPath: '~/HedgehogBundle/server/env/bin/python',
+        pythonPath: '/home/pi/HedgehogBundle/server/env/bin/python',
     },
 
     // Server connection definition for the backend
     connection: {
-        port: 8000,
+        port: 80,
         host: '0.0.0.0'
     },
 
