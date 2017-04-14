@@ -664,49 +664,6 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
         }
     }
 
-    /**
-     * Toggle light and dark theme
-     *
-     * This includes changing the background color, text color
-     * and editor theme
-     */
-    public toggleTheme(): void {
-        if (this.editor.getEditor().getTheme() === 'ace/theme/textmate') {
-            let rule = this.getStyleRule('.toggle-theme');
-            if (rule) {
-                rule.cssText = "color: rgb(255, 255, 255); background-color: rgb(29,31,33) !important;";
-
-                this.editor.getEditor().setTheme('ace/theme/tomorrow_night');
-            }
-        } else {
-            let rule = this.getStyleRule('.toggle-theme');
-            if (rule) {
-                rule.color = '000';
-                rule.backgroundColor = 'fff';
-                this.editor.getEditor().setTheme('ace/theme/textmate');
-            }
-        }
-    }
-
-    /**
-     * This Method will return a css style that can then be changed.
-     *
-     * Thanks to DaveInMaine for his answer on stackoverflow
-     * http://stackoverflow.com/questions/14477746/jquery-css-dynamically-change-attributes-of-a-class
-     *
-     * @param name of the style
-     * @returns {any} either the style or null
-     */
-    public getStyleRule(name) {
-        for (const sheet of document.styleSheets as any) {
-            for (const rule of sheet.cssRules) {
-                if (rule.selectorText === name)
-                    return rule.style;
-            }
-        }
-        return null;
-    }
-
     @HostListener('window:keydown', ['$event'])
     public async keyDownEvent(e) {
         // check if the user pressed CTRL - S to save the open file
