@@ -1,5 +1,5 @@
 # file has to be located in:
-# /lib/systemd/system
+# /etc/systemd/system/
 [Unit]
 Description=Hedgehog Web IDE
 After=network.target

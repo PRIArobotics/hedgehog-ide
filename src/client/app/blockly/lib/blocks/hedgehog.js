@@ -20,82 +20,157 @@ Blockly.Blocks['hedgehog_scope'] = {
         this.setHelpUrl(Blockly.Blocks.hedgehog.HELPURL);
 
         this.appendDummyInput()
-            .appendField("hedgehog scope");
+            .appendField(Blockly.Msg.HEDGEHOG_SCOPE);
         this.appendStatementInput("IN")
             .setCheck(null);
-        this.setTooltip('all Hedgehog blocks have to be inside of this block');
-    }
-};
-
-Blockly.Blocks['hedgehog_move2'] = {
-    init: function() {
-        this.setColour(Blockly.Blocks.hedgehog.HUE);
-        this.setHelpUrl(Blockly.Blocks.hedgehog.HELPURL);
-
-        this.appendDummyInput()
-            .appendField("move motor")
-            .appendField(new Blockly.FieldNumber(0, 0, 3, 1), "MOTOR1")
-            .appendField("and")
-            .appendField(new Blockly.FieldNumber(1, 0, 3, 1), "MOTOR2");
-        this.appendValueInput("SPEED")
-            .setCheck("Number");
-        this.appendValueInput("TIME")
-            .setCheck("Number")
-            .appendField("for");
-        this.appendDummyInput()
-            .appendField("seconds");
-        this.setInputsInline(true);
-        this.setPreviousStatement(true, null);
-        this.setNextStatement(true, null);
-        this.setTooltip('move two motors for a certain duration');
+        this.setTooltip(Blockly.Msg.HEDGEHOG_SCOPE_TOOLTIP);
     }
 };
 
 Blockly.Blocks['hedgehog_move'] = {
     init: function() {
-        this.setColour(Blockly.Blocks.hedgehog.HUE);
-        this.setHelpUrl(Blockly.Blocks.hedgehog.HELPURL);
-
-        this.appendDummyInput()
-            .appendField("move motor")
-            .appendField(new Blockly.FieldNumber(0, 0, 3, 1), "PORT");
-        this.appendValueInput("SPEED")
-            .setCheck("Number");
-        this.appendValueInput("TIME")
-            .setCheck("Number")
-            .appendField("for");
-        this.appendDummyInput()
-            .appendField("seconds");
-        this.setInputsInline(true);
-        this.setPreviousStatement(true, null);
-        this.setNextStatement(true, null);
-        this.setTooltip('move one motor for a certain duration');
+        this.jsonInit({
+            "message0": Blockly.Msg.HEDGEHOG_MOVE,
+            "args0": [
+                {
+                    "type": "field_number",
+                    "name": "PORT",
+                    "value": 0,
+                    "min": 0,
+                    "max": 3,
+                    "precision": 1
+                },
+                {
+                    "type": "input_value",
+                    "name": "SPEED",
+                    "check": "Number"
+                },
+                {
+                    "type": "input_value",
+                    "name": "TIME",
+                    "check": "Number"
+                }
+            ],
+            "inputsInline": true,
+            "previousStatement": null,
+            "nextStatement": null,
+            "tooltip": Blockly.Msg.HEDGEHOG_MOVE_TOOLTIP,
+            "colour": Blockly.Blocks.hedgehog.HUE,
+            "helpUrl": Blockly.Blocks.hedgehog.HELPURL
+        });
+    },
+    onchange: function(e) {
+        if (this.workspace.isDragging()) {
+            return;  // Don't change state at the start of a drag.
+        }
+        var legal = false;
+        // Is the block nested in a loop?
+        var block = this;
+        do {
+            if (block.type == 'hedgehog_scope') {
+                legal = true;
+                break;
+            }
+            block = block.getSurroundParent();
+        } while (block);
+        if (legal) {
+            this.setWarningText(null);
+            if (!this.isInFlyout) {
+                this.setDisabled(false);
+            }
+        } else {
+            this.setWarningText(Blockly.Msg.HEDGEHOG_WARN);
+            if (!this.isInFlyout && !this.getInheritedDisabled()) {
+                this.setDisabled(true);
+            }
+        }
     }
+};
+
+Blockly.Blocks['hedgehog_move2'] = {
+    init: function() {
+        this.jsonInit({
+            "message0": Blockly.Msg.HEDGEHOG_MOVE2,
+            "args0": [
+                {
+                    "type": "field_number",
+                    "name": "PORT1",
+                    "value": 0,
+                    "min": 0,
+                    "max": 3,
+                    "precision": 1
+                },
+                {
+                    "type": "field_number",
+                    "name": "PORT2",
+                    "value": 1,
+                    "min": 0,
+                    "max": 3,
+                    "precision": 1
+                },
+                {
+                    "type": "input_value",
+                    "name": "SPEED",
+                    "check": "Number"
+                },
+                {
+                    "type": "input_value",
+                    "name": "TIME",
+                    "check": "Number"
+                }
+            ],
+            "inputsInline": true,
+            "previousStatement": null,
+            "nextStatement": null,
+            "tooltip": Blockly.Msg.HEDGEHOG_MOVE2_TOOLTIP,
+            "colour": Blockly.Blocks.hedgehog.HUE,
+            "helpUrl": Blockly.Blocks.hedgehog.HELPURL
+        });
+    },
+    onchange: Blockly.Blocks['hedgehog_move'].onchange
 };
 
 Blockly.Blocks['hedgehog_turn'] = {
     init: function() {
-        this.setColour(Blockly.Blocks.hedgehog.HUE);
-        this.setHelpUrl(Blockly.Blocks.hedgehog.HELPURL);
-
-        this.appendDummyInput()
-            .appendField("turn motors")
-            .appendField(new Blockly.FieldNumber(0, 0, 3, 1), "MOTOR1")
-            .appendField("and")
-            .appendField(new Blockly.FieldNumber(1, 0, 3, 1), "MOTOR2")
-        this.appendValueInput("DIR")
-            .setCheck("Number");
-        this.appendValueInput("TIME")
-            .appendField("for")
-            .setCheck("Number")
-            .setAlign(Blockly.ALIGN_CENTRE);
-        this.appendDummyInput()
-            .appendField("seconds");
-        this.setInputsInline(true);
-        this.setPreviousStatement(true, null);
-        this.setNextStatement(true, null);
-        this.setTooltip('turn the Hedgog for a certain duration');
-    }
+        this.jsonInit({
+            "message0": Blockly.Msg.HEDGEHOG_TURN,
+            "args0": [
+                {
+                    "type": "field_number",
+                    "name": "PORT1",
+                    "value": 0,
+                    "min": 0,
+                    "max": 3,
+                    "precision": 1
+                },
+                {
+                    "type": "field_number",
+                    "name": "PORT2",
+                    "value": 1,
+                    "min": 0,
+                    "max": 3,
+                    "precision": 1
+                },
+                {
+                    "type": "input_value",
+                    "name": "DIR",
+                    "check": "Number"
+                },
+                {
+                    "type": "input_value",
+                    "name": "TIME",
+                    "check": "Number"
+                }
+            ],
+            "inputsInline": true,
+            "previousStatement": null,
+            "nextStatement": null,
+            "tooltip": Blockly.Msg.HEDGEHOG_TURN_TOOLTIP,
+            "colour": Blockly.Blocks.hedgehog.HUE,
+            "helpUrl": Blockly.Blocks.hedgehog.HELPURL
+        });
+    },
+    onchange: Blockly.Blocks['hedgehog_move'].onchange
 };
 
 Blockly.Blocks['hedgehog_dir'] = {
@@ -104,7 +179,7 @@ Blockly.Blocks['hedgehog_dir'] = {
         this.setHelpUrl(Blockly.Blocks.hedgehog.HELPURL);
 
         this.appendDummyInput()
-            .appendField(new Blockly.FieldDropdown([["right ⟳", "1000"], ["left ⟲", "-1000"]]), "DIR");
+            .appendField(new Blockly.FieldDropdown([[Blockly.Msg.HEDGEHOG_RIGHT, "1000"], [Blockly.Msg.HEDGEHOG_LEFT, "-1000"]]), "DIR");
         this.setOutput(true, "Number");
         this.setTooltip('');
     }
@@ -116,7 +191,7 @@ Blockly.Blocks['hedgehog_speed'] = {
         this.setHelpUrl(Blockly.Blocks.hedgehog.HELPURL);
 
         this.appendDummyInput()
-            .appendField(new Blockly.FieldDropdown([["forward", "1000"], ["backward", "-1000"]]), "SPEED");
+            .appendField(new Blockly.FieldDropdown([[Blockly.Msg.HEDGEHOG_FORWARD, "1000"], [Blockly.Msg.HEDGEHOG_BACKWARD, "-1000"]]), "SPEED");
         this.setOutput(true, "Number");
         this.setTooltip('');
     }
@@ -124,35 +199,55 @@ Blockly.Blocks['hedgehog_speed'] = {
 
 Blockly.Blocks['hedgehog_read_analog'] = {
     init: function() {
-        this.setColour(Blockly.Blocks.hedgehog.HUE);
-        this.setHelpUrl(Blockly.Blocks.hedgehog.HELPURL);
-
-        this.appendDummyInput()
-            .appendField("read analog pin")
-            .appendField(new Blockly.FieldNumber(0, 0, 7, 1), "PORT");
-        this.setOutput(true, "Number");
-        this.setTooltip('get the value of an analog pin');
-    }
+        this.jsonInit({
+            "message0": Blockly.Msg.HEDGEHOG_READ_ANALOG,
+            "args0": [
+                {
+                    "type": "field_number",
+                    "name": "PORT",
+                    "value": 0,
+                    "min": 0,
+                    "max": 7,
+                    "precision": 1
+                }
+            ],
+            "output": "Number",
+            "tooltip": Blockly.Msg.HEDGEHOG_READ_ANALOG_TOOLTIP,
+            "colour": Blockly.Blocks.hedgehog.HUE,
+            "helpUrl": Blockly.Blocks.hedgehog.HELPURL
+        });
+    },
+    onchange: Blockly.Blocks['hedgehog_move'].onchange
 };
 
 Blockly.Blocks['hedgehog_servo'] = {
     init: function() {
-        this.setColour(Blockly.Blocks.hedgehog.HUE);
-        this.setHelpUrl(Blockly.Blocks.hedgehog.HELPURL);
-
-        this.appendDummyInput()
-            .appendField("set servo")
-            .appendField(new Blockly.FieldNumber(0, 0, 3, 1), "PORT")
-            .appendField("to");
-        this.appendValueInput("ANGLE")
-            .setCheck("Number");
-        this.appendDummyInput()
-            .appendField("degrees");
-        this.setInputsInline(true);
-        this.setPreviousStatement(true, null);
-        this.setNextStatement(true, null);
-        this.setTooltip('move a servo to a specified position');
-    }
+        this.jsonInit({
+            "message0": Blockly.Msg.HEDGEHOG_SERVO,
+            "args0": [
+                {
+                    "type": "field_number",
+                    "name": "PORT",
+                    "value": 0,
+                    "min": 0,
+                    "max": 3,
+                    "precision": 1
+                },
+                {
+                    "type": "input_value",
+                    "name": "ANGLE",
+                    "check": "Number"
+                }
+            ],
+            "inputsInline": true,
+            "previousStatement": null,
+            "nextStatement": null,
+            "tooltip": Blockly.Msg.HEDGEHOG_SERVO_TOOLTIP,
+            "colour": Blockly.Blocks.hedgehog.HUE,
+            "helpUrl": Blockly.Blocks.hedgehog.HELPURL
+        });
+    },
+    onchange: Blockly.Blocks['hedgehog_move'].onchange
 };
 
 Blockly.Blocks['hedgehog_degrees'] = {
@@ -170,33 +265,46 @@ Blockly.Blocks['hedgehog_degrees'] = {
     }
 };
 
-
 Blockly.Blocks['hedgehog_sleep'] = {
     init: function() {
-        this.setColour(Blockly.Blocks.hedgehog.HUE);
-        this.setHelpUrl(Blockly.Blocks.hedgehog.HELPURL);
-
-        this.appendDummyInput()
-            .appendField("sleep for")
-        this.appendValueInput("TIME")
-            .setCheck("Number");
-        this.appendDummyInput()
-            .appendField("seconds");
-        this.setPreviousStatement(true, null);
-        this.setNextStatement(true, null);
-        this.setTooltip('');
+        this.jsonInit({
+            "message0": Blockly.Msg.HEDGEHOG_SLEEP,
+            "args0": [
+                {
+                    "type": "input_value",
+                    "name": "TIME",
+                    "check": "Number"
+                }
+            ],
+            "inputsInline": true,
+            "previousStatement": null,
+            "nextStatement": null,
+            "tooltip": Blockly.Msg.HEDGEHOG_SLEEP_TOOLTIP,
+            "colour": Blockly.Blocks.hedgehog.HUE,
+            "helpUrl": Blockly.Blocks.hedgehog.HELPURL
+        });
     }
 };
 
 Blockly.Blocks['hedgehog_read_digital'] = {
     init: function() {
-        this.setColour(Blockly.Blocks.hedgehog.HUE);
-        this.setHelpUrl(Blockly.Blocks.hedgehog.HELPURL);
-
-        this.appendDummyInput()
-            .appendField("read digital pin")
-            .appendField(new Blockly.FieldNumber(8, 8, 15, 1), "PORT");
-        this.setOutput(true, "Boolean");
-        this.setTooltip('get the value of an analog pin');
-    }
+        this.jsonInit({
+            "message0": Blockly.Msg.HEDGEHOG_READ_DIGITAL,
+            "args0": [
+                {
+                    "type": "field_number",
+                    "name": "PORT",
+                    "value": 8,
+                    "min": 8,
+                    "max": 15,
+                    "precision": 1
+                }
+            ],
+            "output": "Boolean",
+            "tooltip": Blockly.Msg.HEDGEHOG_READ_DIGITAL_TOOLTIP,
+            "colour": Blockly.Blocks.hedgehog.HUE,
+            "helpUrl": Blockly.Blocks.hedgehog.HELPURL
+        });
+    },
+    onchange: Blockly.Blocks['hedgehog_move'].onchange
 };

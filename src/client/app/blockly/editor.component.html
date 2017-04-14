@@ -2,9 +2,12 @@
     <div class="nav-wrapper">
         <a class="brand-logo"> {{ programName.replace(".blockly","") }} </a>
         <ul id="nav-mobile" class="right hide-on-med-and-down">
-            <li (click)="saveWorkspace()"><a materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="save changes">
-                    <i class="material-icons">save</i>
+            <li materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="change language"><a materialize="dropdown" class="dropdown-button" data-activates="dropdownLang" >
+                    <i class="material-icons">language</i>
             </a></li>
+            <!-- <li (click)="saveWorkspace()"><a materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="save changes"> -->
+            <!--         <i class="material-icons">save</i> -->
+            <!-- </a></li> -->
             <li (click)="clearWorkspace()"><a materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="clear workspace">
                     <i class="material-icons">delete</i>
             </a></li>
@@ -19,6 +22,11 @@
     </div>
 </nav>
 
+<ul id="dropdownLang" class="dropdown-content">
+    <li><a (click)="setLanguage('en')">English</a></li>
+    <li><a (click)="setLanguage('de')">Deutsch</a></li>
+</ul>
+
 <split direction="vertical" (dragProgress)="resizeWindow()">
     <split-area [size]="70">
         <split direction="horizontal" (dragProgress)="resizeWindow()">
@@ -32,7 +40,7 @@
                     [text]="pyCode"
                     [mode]="'python'"
                     [theme]="'textmate'"
-                    [readOnly]="true"></ace-editor> 
+                    [readOnly]="true"></ace-editor>
             </split-area>
         </split>
     </split-area>
@@ -98,7 +106,7 @@
             </value>
         </block>
     </category>
-
+    <sep gap="32"></sep>
     <!-- Standard Blocks -->
     <category name="Logic" colour="210">
         <block type="controls_if"></block>

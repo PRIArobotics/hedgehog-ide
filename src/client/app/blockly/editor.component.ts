@@ -95,6 +95,12 @@ export class BlocklyComponent implements OnInit, OnDestroy {
         this.program = await this.storage.getProgram(this.programName);
         this.rootDir = await this.program.getWorkingTreeRoot();
 
+        if (this.rootDir.items.includes("lang")) {
+            this.loadLang(await (await this.rootDir.getFile("lang")).readContent());
+        } else {
+            this.loadLang("en");
+        }
+
         await this.injectBlockly();
 
         // load workspace from remote storage if it exists
@@ -115,11 +121,31 @@ export class BlocklyComponent implements OnInit, OnDestroy {
             showGutter: false,
         });
         this.editor.getEditor().renderer.$cursorLayer.element.style.display = "none";
+
+    }
+
+    public loadLang(lang: string) {
+        let node1 = document.createElement('script');
+        node1.src = "app/blockly/lib/msg/js/" + lang + ".js";
+        node1.type = 'text/javascript';
+        node1.charset = 'utf-8';
+        document.getElementsByTagName('head')[0].appendChild(node1);
+
+        let node2 = document.createElement('script');
+        node2.src = "app/blockly/lib/msg/js/" + lang + "-hedgehog.js";
+        node2.type = 'text/javascript';
+        node2.charset = 'utf-8';
+        document.getElementsByTagName('head')[0].appendChild(node2);
+    }
+
+    public async setLanguage(lang: string) {
+        await this.rootDir.addFile("lang", lang);
+        window.location.reload();
     }
 
     private injectBlockly() {
-        let toolbox: any = {toolbox: document.getElementById('toolbox'),
-            zoom: {controls: true,
+        let options: any = {toolbox: document.getElementById('toolbox'),
+            zoom: {controls: false,
                    wheel: true,
                    startScale: 1.0,
                    maxScale: 2,
@@ -129,13 +155,13 @@ export class BlocklyComponent implements OnInit, OnDestroy {
                    length: 3,
                    colour: '#ccc',
                    snap: true},
-            trashcan: true,
-            maxBlocks: 100,
+            trashcan: false,
+            maxBlocks: 400,
             scrollbars: true,
             media: 'app/blockly/lib/media/'
         };
 
-        this.workspace = Blockly.inject('blocklyDiv', toolbox);
+        this.workspace = Blockly.inject('blocklyDiv', options);
     }
 
     private onWorkspaceChange() {
@@ -151,7 +177,6 @@ export class BlocklyComponent implements OnInit, OnDestroy {
         Blockly.Xml.domToWorkspace(dom, this.workspace);
     }
 
-    // tslint:disable-next-line
     private toPython(): string {
         Blockly.Python.INFINITE_LOOP_TRAP = null;
         return Blockly.Python.workspaceToCode(this.workspace);
