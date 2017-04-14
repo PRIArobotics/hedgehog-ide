@@ -43,7 +43,7 @@ Blockly.Python['hedgehog_move2'] = function(block) {
     Blockly.Python.definitions_['import_hedgehog'] = 'from hedgehog.client import connect';
 
     var code = 'hedgehog.move(' + port1 + ', ' + speed + ')\n';
-    var code = 'hedgehog.move(' + port2 + ', ' + speed + ')\n';
+    code += 'hedgehog.move(' + port2 + ', ' + speed + ')\n';
     code += 'sleep(' + time + ')\n\n';
     return code;
 };
