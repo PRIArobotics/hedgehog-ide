@@ -27,7 +27,9 @@ Blockly.Python['hedgehog_turn'] = function(block) {
 
     var code = 'hedgehog.move(' + port1 + ', ' + dir + ')\n';
     code += 'hedgehog.move(' + port2 + ', ' + (-1 * dir) + ')\n';
-    code += 'sleep(' + time + ')\n\n';
+    code += 'sleep(' + time + ')\n';
+    code += 'hedgehog.move(' + port1 + ', 0)\n';
+    code += 'hedgehog.move(' + port2 + ', 0)\n\n';
 
     return code;
 };
@@ -44,7 +46,9 @@ Blockly.Python['hedgehog_move2'] = function(block) {
 
     var code = 'hedgehog.move(' + port1 + ', ' + speed + ')\n';
     code += 'hedgehog.move(' + port2 + ', ' + speed + ')\n';
-    code += 'sleep(' + time + ')\n\n';
+    code += 'sleep(' + time + ')\n';
+    code += 'hedgehog.move(' + port1 + ', 0)\n';
+    code += 'hedgehog.move(' + port2 + ', 0)\n\n';
     return code;
 };
 
@@ -57,7 +61,9 @@ Blockly.Python['hedgehog_move'] = function(block) {
     Blockly.Python.definitions_['import_sleep'] = 'from time import sleep';
     Blockly.Python.definitions_['import_hedgehog'] = 'from hedgehog.client import connect';
 
-    var code = 'hedgehog.move(' + port + ', ' + speed + ')' + '\nsleep(' + time + ')\n\n';
+    var code = 'hedgehog.move(' + port + ', ' + speed + ')\n';
+    code += 'sleep(' + time + ')\n';
+    code += 'hedgehog.move(' + port + ', 0)\n\n';
     return code;
 };
 
