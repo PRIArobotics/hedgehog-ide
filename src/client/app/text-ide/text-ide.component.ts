@@ -249,9 +249,6 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
         this.fileTree[0]['children'] = childArray;
         this.fileTree[0]['storageObject'] = rootDir;
 
-        // populate file tree and give it the root directory and it's childArray
-        await this.populateFiletree(rootDir, childArray);
-
         this.openFileId = JSON.parse(localStorage.getItem('openFileId'));
         this.openFiles = JSON.parse(localStorage.getItem('openFiles'));
 
