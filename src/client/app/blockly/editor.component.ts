@@ -162,6 +162,9 @@ export class BlocklyComponent implements OnInit, OnDestroy {
     }
 
     private onWorkspaceChange() {
+        if(this.workspace.isDragging()) {
+            return;
+        }
         this.pyCode = this.toPython();
         let currentDate = new Date().getTime();
         if((currentDate - this.lastSave) > 1000) {
