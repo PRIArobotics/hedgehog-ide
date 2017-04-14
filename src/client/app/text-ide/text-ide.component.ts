@@ -605,6 +605,11 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
         }
     }
 
+    @HostListener('window:resize')
+    onResize() {
+        this.updateIndicator('#tab' + this.openId);
+    }
+
     /**
      * Event binding when character is input in the ace editor
      *
