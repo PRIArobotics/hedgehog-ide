@@ -125,11 +125,17 @@ export class BlocklyComponent implements OnInit, OnDestroy {
     }
 
     public loadLang(lang: string) {
-        let node = document.createElement('script');
-        node.src = "app/blockly/lib/msg/js/" + lang + ".js";
-        node.type = 'text/javascript';
-        node.charset = 'utf-8';
-        document.getElementsByTagName('head')[0].appendChild(node);
+        let node1 = document.createElement('script');
+        node1.src = "app/blockly/lib/msg/js/" + lang + ".js";
+        node1.type = 'text/javascript';
+        node1.charset = 'utf-8';
+        document.getElementsByTagName('head')[0].appendChild(node1);
+
+        let node2 = document.createElement('script');
+        node2.src = "app/blockly/lib/msg/js/" + lang + "-hedgehog.js";
+        node2.type = 'text/javascript';
+        node2.charset = 'utf-8';
+        document.getElementsByTagName('head')[0].appendChild(node2);
     }
 
     public async setLanguage(lang: string) {
