@@ -29,7 +29,8 @@ export default class ProgramResource extends ApiResource {
         )
     });
 
-    constructor(private programStorage: IProgramStorage, private serializerRegistry: SerializerRegistry) {
+    constructor(private programStorage: IProgramStorage,
+                private serializerRegistry: SerializerRegistry) {
         super('/programs');
     }
 

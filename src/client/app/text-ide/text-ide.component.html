@@ -84,6 +84,7 @@
                                     id="ace-editor"
                                     [text]="editorContent"
                                     (textChanged)="onEditorContentChange($event)"
+                                    (changeDelta)="onEditorDelta($event)"
                                     [mode]="'python'"
                                     [theme]="'textmate'"
                                     [readOnly]="false"></ace-editor>
@@ -202,6 +203,11 @@
                 <p>
                     <input type="checkbox" class="filled-in" id="settings-line-wrap" name="settings-line-wrap" [(ngModel)]="editorOptions.wrap" (change)="updateEditorSettings()"/>
                     <label for="settings-line-wrap">Line Wrap</label>
+                </p>
+
+                <p>
+                    <input type="checkbox" class="filled-in" id="settings-realtime-sync" name="settings-line-wrap" [(ngModel)]="realtimeSync" (change)="updateEditorSettings()"/>
+                    <label for="settings-realtime-sync">Realtime Sync</label>
                 </p>
 
                 <div class="input-field col s12">
