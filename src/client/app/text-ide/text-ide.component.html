@@ -1,4 +1,4 @@
-<div id="ide-content" class="app-content row toggle-theme">
+<div id="ide-content" class="app-content row">
     <nav class="hedgehog-green-light">
         <div class="nav-wrapper">
             <a class="brand-logo"> {{ programName }} </a>
@@ -63,7 +63,7 @@
                 <split-area [size]="70">
                     <div class="editor-wrapper row">
                         <div class="col s12 editor-tabs">
-                            <ul class="tabs toggle-theme" materialize="tabs" id="sortable-tabs">
+                            <ul class="tabs" materialize="tabs" id="sortable-tabs">
                                 <li class="tab"><a></a></li>
                                 <template ngFor let-fileId [ngForOf]="openFiles[programName]" >
                                     <li *ngIf="files.get(fileId)" class="tab" id="tab{{ fileId }}" (click)="openFile(fileId)">
@@ -196,10 +196,6 @@
         <div class="modal-content">
             <h4>Settings</h4>
             <div class="row">
-                <p>
-                    <input type="checkbox" class="filled-in" id="settings-dark-theme" (change)="toggleTheme()"/>
-                    <label for="settings-dark-theme">Dark Theme</label>
-                </p>
                 <p>
                     <input type="checkbox" class="filled-in" id="settings-line-wrap" name="settings-line-wrap" [(ngModel)]="editorOptions.wrap" (change)="updateEditorSettings()"/>
                     <label for="settings-line-wrap">Line Wrap</label>
