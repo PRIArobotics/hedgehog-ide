@@ -144,3 +144,9 @@ div > ul > li > a {
 .no-break {
   white-space: nowrap
 }
+
+/* Fixes blockly inputs */
+.blocklyHtmlInput {
+  height: 100% !important;
+  background-color: #FFFFFF !important;
+}
