@@ -196,6 +196,11 @@
                     <label for="settings-line-wrap">Line Wrap</label>
                 </p>
 
+                <p>
+                    <input type="checkbox" class="filled-in" id="settings-realtime-sync" name="settings-line-wrap" [(ngModel)]="realtimeSync" (change)="updateEditorSettings()"/>
+                    <label for="settings-realtime-sync">Realtime Sync</label>
+                </p>
+
                 <div class="input-field col s12">
                     <input id="settings-fontsize" type="number" name="settings-fontsize" [(ngModel)]="editorOptions.fontSize" min="1" value="1" (ngModelChange)="updateEditorSettings()">
                     <label for="settings-fontsize">Font Size</label>

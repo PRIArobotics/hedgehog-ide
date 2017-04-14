@@ -13,6 +13,7 @@ import {ProgramExecutionComponent} from '../program-execution/program-execution.
 import {genericFromBase64IdSafe, genericToBase64IdSafe} from '../../../common/utils';
 import {AppComponent} from "../app.component";
 import {ShareDbClientService} from "./sharedb.service";
+import {isUndefined} from "util";
 
 declare var $: JQueryStatic;
 declare var Materialize: any;
@@ -166,13 +167,15 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
 
     private copyData: any = {};
 
-    private editorOptions: Object = {
+    private editorOptions = {
         enableBasicAutocompletion: true,
         enableLiveAutocompletion: true,
         fontFamily: "Roboto Mono",
         fontSize: 12,
         wrapBehavioursEnabled: false
     };
+
+    private realtimeSync;
 
     private templateOptions: Array<{name: string, value: string}> = [
         {
@@ -233,6 +236,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
 
         this.localStorageOpenFileIds = JSON.parse(localStorage.getItem('openFileIds'));
         this.openFiles = JSON.parse(localStorage.getItem('openFiles'));
+        this.editorOptions = JSON.parse(localStorage.getItem('editorOptions'));
 
         let rootDir = await this.program.getWorkingTreeRoot();
 
@@ -290,7 +294,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
         }
 
         this.sharedbService.on('operations', op => {
-            if (!op.source) {
+            if (!op.source && this.realtimeSync) {
                 for (let operation of op.operations) {
                     let changedFileId = operation.p[0];
 
@@ -426,10 +430,20 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
 
         ($('select') as any).material_select();
 
+        this.realtimeSync = localStorage.getItem('realtimeSync');
+        if (typeof this.realtimeSync === 'undefined') {
+            this.realtimeSync = true;
+            localStorage.setItem('realtimeSync', this.realtimeSync ? 'true' : 'false');
+        } else {
+            this.realtimeSync = this.realtimeSync === 'true';
+        }
+
         this.updateEditorSettings();
     }
 
     public updateEditorSettings() {
+        localStorage.setItem('realtimeSync', this.realtimeSync ? 'true' : 'false');
+        localStorage.setItem('editorOptions', JSON.stringify(this.editorOptions));
         this.editor.getEditor().setOptions(this.editorOptions);
     }
 
@@ -724,36 +738,38 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
      * @param delta object which contains the information what has been inserted or removed
      */
     public async onEditorDelta(delta) {
-        let editorLineSplit: string[] = this.currentFileContent.split(/\r\n|\r|\n/);
+        if (this.realtimeSync) {
+            let editorLineSplit: string[] = this.currentFileContent.split(/\r\n|\r|\n/);
 
-        let startPosition: number = 0;
-        let stringToOperate: string = '';
+            let startPosition: number = 0;
+            let stringToOperate: string = '';
 
 
-        for (let i = 0; i < delta.start.row; i++) {
-            // +1 because of the break at the end
-            startPosition += editorLineSplit[i].length + 1;
+            for (let i = 0; i < delta.start.row; i++) {
+                // +1 because of the break at the end
+                startPosition += editorLineSplit[i].length + 1;
+            }
+            startPosition += delta.start.column;
+
+            let operation: any = {
+                p: [this.openId, startPosition]
+            };
+
+            for (let line of delta.lines) {
+                stringToOperate += line+'\n';
+            }
+
+            // remove last break
+            stringToOperate = stringToOperate.substring(0, stringToOperate.length - 1);
+
+            if (delta.action === 'insert') {
+                operation.si = stringToOperate;
+            } else if (delta.action === 'remove') {
+                operation.sd = stringToOperate;
+            }
+
+            this.sharedbService.operation(operation);
         }
-        startPosition += delta.start.column;
-
-        let operation: any = {
-            p: [this.openId, startPosition]
-        };
-
-        for (let line of delta.lines) {
-            stringToOperate += line+'\n';
-        }
-
-        // remove last break
-        stringToOperate = stringToOperate.substring(0, stringToOperate.length - 1);
-
-        if (delta.action === 'insert') {
-            operation.si = stringToOperate;
-        } else if (delta.action === 'remove') {
-            operation.sd = stringToOperate;
-        }
-
-        this.sharedbService.operation(operation);
     }
 
 
