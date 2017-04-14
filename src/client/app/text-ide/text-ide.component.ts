@@ -1200,6 +1200,8 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
             this.openFiles[this.programName].push(fileId);
         }
 
+        console.log(this.openFiles);
+
         localStorage.setItem('openFiles', JSON.stringify(this.openFiles));
         localStorage.setItem('openFileIds', JSON.stringify(this.localStorageOpenFileIds));
 
@@ -1270,9 +1272,6 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
             this.openFiles[this.programName].splice(index, 1);
         }
 
-        localStorage.setItem('openFiles', JSON.stringify(this.openFiles));
-        localStorage.setItem('openFileIds', JSON.stringify(this.localStorageOpenFileIds));
-
         // check if the current openId (open tab)
         if (this.openId === id) {
             // if it is first check what comes before
@@ -1299,9 +1298,13 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
                     this.resetIndicator();
                     this.openId = null;
                     this.editorContent = '';
+                    this.localStorageOpenFileIds[this.programName] = null;
                 }
             }
         }
+
+        localStorage.setItem('openFiles', JSON.stringify(this.openFiles));
+        localStorage.setItem('openFileIds', JSON.stringify(this.localStorageOpenFileIds));
 
         // finally remove tab
         tabToClose.remove();
