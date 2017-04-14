@@ -240,7 +240,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
         this.localStorageOpenFileIds = JSON.parse(localStorage.getItem('openFileIds'));
         this.openFiles = JSON.parse(localStorage.getItem('openFiles'));
         this.editorOptions = JSON.parse(localStorage.getItem('editorOptions'));
-      
+
         let rootDir = await this.program.getWorkingTreeRoot();
 
         let childArray = [];
@@ -286,7 +286,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
 
         // populate file tree and give it the root directory and it's childArray
         await this.populateFiletree(rootDir, childArray);
-      
+
         // open all previously opened files
         for (let fileId of this.openFiles[this.programName]) {
             if (this.files.get(fileId)) {
@@ -724,7 +724,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     @HostListener('window:resize')
-    onResize() {
+    public onResize() {
         this.updateIndicator('#tab' + this.openId);
     }
 
