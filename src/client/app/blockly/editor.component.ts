@@ -7,9 +7,6 @@ import Program from "../../../common/versioncontrol/Program";
 import {ProgramExecutionComponent} from '../program-execution/program-execution.component';
 import {AceEditorComponent} from '../text-ide/ace-editor.component';
 
-/*
- * TODO: add toast notifications, split code view, stop program
- */
 declare var Blockly: any;
 
 @Component({
