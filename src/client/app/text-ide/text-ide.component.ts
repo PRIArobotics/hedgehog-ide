@@ -12,6 +12,8 @@ import {HttpProgramService} from '../program/http-program.service';
 import {ProgramExecutionComponent} from '../program-execution/program-execution.component';
 import {genericFromBase64IdSafe, genericToBase64IdSafe} from '../../../common/utils';
 import {AppComponent} from "../app.component";
+import {ShareDbClientService} from "./sharedb.service";
+import {isUndefined} from "util";
 
 declare var $: JQueryStatic;
 declare var Materialize: any;
@@ -31,7 +33,8 @@ export class File {
     template: require('./text-ide.component.html'),
     styles: [require('./text-ide.component.css')],
     providers: [
-        HttpProgramService
+        HttpProgramService,
+        ShareDbClientService
     ]
 })
 
@@ -110,8 +113,14 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
     // local storage Object as programName: string
     private openFileId: {[programName: string]: string} = {};
 
+    // local storage Object as programName: string
+    private localStorageOpenFileIds: {[programName: string]: string} = {};
+
     // indexed files from the file tree
     private files: Map<string, File>;
+
+    // the file content which is received before the files are indexed
+    private shareDbfileContents: Map<string, string>;
 
     // last id of the file changed used for saving the file
     private openId: string;
@@ -161,13 +170,15 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
 
     private copyData: any = {};
 
-    private editorOptions: Object = {
+    private editorOptions = {
         enableBasicAutocompletion: true,
         enableLiveAutocompletion: true,
         fontFamily: "Roboto Mono",
         fontSize: 12,
-        wrapBehavioursEnabled: false
+        wrap: false
     };
+
+    private realtimeSync;
 
     private templateOptions: Array<{name: string, value: string}> = [
         {
@@ -190,19 +201,23 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
      *
      * @param route for messages sent from another view
      * @param storageService service that controls the ProgramStorage
+     * @param sharedbService service for the shareDB real time synchronisation
      */
-    constructor(route: ActivatedRoute, storageService: HttpProgramService) {
+    constructor(route: ActivatedRoute,
+                storageService: HttpProgramService,
+                private sharedbService: ShareDbClientService) {
         this.programName = route.snapshot.params['programName'];
         this.files = new Map<string, File>();
+        this.shareDbfileContents = new Map<string, string>();
 
         // init openFiles at program name if it is not initialized
         if (!this.openFiles[this.programName]) {
             this.openFiles[this.programName] = [];
         }
 
-        // init openFileId at program name if it is not initialized
-        if (!this.openFileId[this.programName]) {
-            this.openFileId[this.programName] = null;
+        // init localStorageOpenFileIds at program name if it is not initialized
+        if (!this.localStorageOpenFileIds[this.programName]) {
+            this.localStorageOpenFileIds[this.programName] = null;
         }
 
         this.storage = storageService.getStorage();
@@ -221,6 +236,10 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
     public async ngOnInit() {
         this.programExecution.isRunning = false;
         this.program = await this.storage.getProgram(this.programName);
+
+        this.localStorageOpenFileIds = JSON.parse(localStorage.getItem('openFileIds'));
+        this.openFiles = JSON.parse(localStorage.getItem('openFiles'));
+        this.editorOptions = JSON.parse(localStorage.getItem('editorOptions'));
 
         let rootDir = await this.program.getWorkingTreeRoot();
 
@@ -245,24 +264,107 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
             this.openFiles[this.programName] = [];
         }
 
-        if (!this.openFileId) {
-            this.openFileId = {};
+        if (!this.localStorageOpenFileIds) {
+            this.localStorageOpenFileIds = {};
+        } else if (this.localStorageOpenFileIds[this.programName]) {
+            this.openId = this.localStorageOpenFileIds[this.programName];
         }
+
+        // create connection for this program
+        await this.sharedbService.createConnection(this.programName);
+        this.sharedbService.on('firstData', data => {
+            for (let key in data) {
+                if (data.hasOwnProperty(key)) {
+                    this.shareDbfileContents.set(key, data[key]);
+
+                    if (this.files.get(key)) {
+                        this.files.get(key).content = data[key];
+                    }
+                }
+            }
+        });
+
+        // populate file tree and give it the root directory and it's childArray
+        await this.populateFiletree(rootDir, childArray);
 
         // open all previously opened files
         for (let fileId of this.openFiles[this.programName]) {
             if (this.files.get(fileId)) {
-                await this.openFileTab(fileId);
+                await this.openFileTab(fileId, false);
             }
         }
 
         // focus on the most previously opened file if it exists
-        if (this.openFileId[this.programName] !== null) {
-            if (this.files.get(this.openFileId[this.programName])) {
-                await this.openFile(this.openFileId[this.programName]);
-                this.updateIndicator($('#tab' + this.openFileId[this.programName]));
+        if (this.localStorageOpenFileIds[this.programName] !== null) {
+            if (this.files.get(this.localStorageOpenFileIds[this.programName])) {
+                await this.openFile(this.openId, false);
+                this.updateIndicator($('#tab' + this.localStorageOpenFileIds[this.programName]));
             }
         }
+
+        this.sharedbService.on('operations', op => {
+            if (!op.source && this.realtimeSync) {
+                for (let operation of op.operations) {
+                    let changedFileId = operation.p[0];
+
+                    if (this.files.get(changedFileId)) {
+                        this.files.get(changedFileId).content = op.data[changedFileId];
+
+                        // check whether the file is currently opened
+                        if (this.openId === changedFileId) {
+                            let delta = {
+                                action: "",
+                                lines: [],
+                                start: {
+                                    column: 0,
+                                    row: 0
+                                },
+                                end: {
+                                    column: 0,
+                                    row: 0
+                                }
+                            };
+
+                            let lines: string;
+                            let deltaRow: number = -1;
+
+                            if (operation.si) {
+                                delta.action = "insert";
+                                lines = operation.si;
+                            } else if (operation.sd) {
+                                delta.action = "remove";
+                                lines = operation.sd;
+                            }
+
+                            for (let line of lines.split(/\r\n|\r|\n/)) {
+                                delta.lines.push(line);
+                                deltaRow += 1;
+                            }
+
+                            let stringTillOffset =
+                                this.currentFileContent.substr(0, operation.p[1]).split(/\r\n|\r|\n/);
+
+                            let rowsLength = stringTillOffset.length - 1;
+
+                            delta.start.row = rowsLength;
+                            delta.end.row = rowsLength + deltaRow;
+
+                            delta.start.column = stringTillOffset[rowsLength].length;
+
+                            if (delta.lines.length > 1) {
+                                delta.end.column = delta.lines[delta.lines.length - 1].length;
+                            } else {
+                                delta.end.column = stringTillOffset[rowsLength].length +
+                                    delta.lines[delta.lines.length - 1].length;
+                            }
+
+                            // update editorContent, currentFileContent to current files content and openId to this id
+                            this.editor.getEditor().getSession().getDocument().applyDeltas([delta]);
+                        }
+                    }
+                }
+            }
+        });
 
         let hedgehogLibraryAutocomplete = {
             getCompletions: (editor, session, pos, prefix, callback) => {
@@ -294,7 +396,6 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
                         meta: 'hedgehog'
                     };
                 }));
-
             }
         };
 
@@ -309,7 +410,10 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
      * This method is called after the view is initialized so it can access frontend items
      */
     public async ngAfterViewInit(): Promise<void> {
+        // This tweaks jQuery in order to avoid the tabs being initialized with the ready() event
         $.isReady = true;
+
+        // Now initialize them manually
         const tabs = $('#sortable-tabs') as any;
         tabs.tabs();
 
@@ -335,10 +439,20 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
 
         ($('select') as any).material_select();
 
+        this.realtimeSync = localStorage.getItem('realtimeSync');
+        if (typeof this.realtimeSync === 'undefined') {
+            this.realtimeSync = true;
+            localStorage.setItem('realtimeSync', this.realtimeSync ? 'true' : 'false');
+        } else {
+            this.realtimeSync = this.realtimeSync === 'true';
+        }
+
         this.updateEditorSettings();
     }
 
     public updateEditorSettings() {
+        localStorage.setItem('realtimeSync', this.realtimeSync ? 'true' : 'false');
+        localStorage.setItem('editorOptions', JSON.stringify(this.editorOptions));
         this.editor.getEditor().setOptions(this.editorOptions);
     }
 
@@ -384,6 +498,10 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
                     parentDirectory: directory,
                     changed: false
                 };
+
+                if (this.shareDbfileContents.get(fileId)) {
+                    indexedFile.content = this.shareDbfileContents.get(fileId);
+                }
 
                 // add file to Map using the id
                 this.files.set(fileId, indexedFile);
@@ -605,6 +723,11 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
         }
     }
 
+    @HostListener('window:resize')
+    public onResize() {
+        this.updateIndicator('#tab' + this.openId);
+    }
+
     /**
      * Event binding when character is input in the ace editor
      *
@@ -625,6 +748,47 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
             }
         }
     }
+
+    /**
+     * Event binding when character is input in the ace editor and a delta object is sent
+     *
+     * @param delta object which contains the information what has been inserted or removed
+     */
+    public async onEditorDelta(delta) {
+        if (this.realtimeSync) {
+            let editorLineSplit: string[] = this.currentFileContent.split(/\r\n|\r|\n/);
+
+            let startPosition: number = 0;
+            let stringToOperate: string = '';
+
+
+            for (let i = 0; i < delta.start.row; i++) {
+                // +1 because of the break at the end
+                startPosition += editorLineSplit[i].length + 1;
+            }
+            startPosition += delta.start.column;
+
+            let operation: any = {
+                p: [this.openId, startPosition]
+            };
+
+            for (let line of delta.lines) {
+                stringToOperate += line+'\n';
+            }
+
+            // remove last break
+            stringToOperate = stringToOperate.substring(0, stringToOperate.length - 1);
+
+            if (delta.action === 'insert') {
+                operation.si = stringToOperate;
+            } else if (delta.action === 'remove') {
+                operation.sd = stringToOperate;
+            }
+
+            this.sharedbService.operation(operation);
+        }
+    }
+
 
     /**
      * Event binding when an element in the file tree is clicked
@@ -1045,29 +1209,48 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
      * Save the last opened file and set current editorContent file with given id
      *
      * @param id of the file in the files array
+     * @param updateOpenId whether to update the openId. Not done at the beginning
      */
-    private async openFile(id: string) {
+    private async openFile(id: string, updateOpenId: boolean = true) {
         let file = this.files.get(id);
 
-        if (!file.content) {
+        if (updateOpenId) {
+            // update the localStorageOpenFileIds for the local storage
+            this.localStorageOpenFileIds[this.programName] = id;
+            localStorage.setItem('openFileIds', JSON.stringify(this.localStorageOpenFileIds));
+            this.openId = id;
+        }
+
+        if (!file.storageObject) {
             // get the storage file
             file.storageObject = await file.parentDirectory.getFile(file.name);
+        }
 
-            // read content of the file form the backend
+        if (!file.content) {
             file.content = await file.storageObject.readContent();
         }
 
         // update editorContent, currentFileContent to current files content and openId to this id
         this.editorContent = file.content;
         this.currentFileContent = file.content;
-        this.openId = id;
+
+        if (!this.sharedbService.fileExists(this.openId)) {
+            this.sharedbService.operation({p: [this.openId], oi: this.currentFileContent});
+        }
     }
 
-    private async openFileTab(fileId: string) {
+    private async openFileTab(fileId: string, updateOpenId: boolean = true) {
         let index = this.openFiles[this.programName].indexOf(fileId);
 
+        if (index < 0) {
+            this.openFiles[this.programName].push(fileId);
+        }
+
+        localStorage.setItem('openFiles', JSON.stringify(this.openFiles));
+        localStorage.setItem('openFileIds', JSON.stringify(this.localStorageOpenFileIds));
+
         // update the editor content
-        await this.openFile(fileId);
+        await this.openFile(fileId, updateOpenId);
 
         // search for tab
         let tab = $('#tab' + fileId);
@@ -1133,6 +1316,9 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
             this.openFiles[this.programName].splice(index, 1);
         }
 
+        localStorage.setItem('openFiles', JSON.stringify(this.openFiles));
+        localStorage.setItem('openFileIds', JSON.stringify(this.localStorageOpenFileIds));
+
         // check if the current openId (open tab)
         if (this.openId === id) {
             // if it is first check what comes before
@@ -1157,8 +1343,8 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
                 } else {
                     // if not reset the indicator and reset editorContent and openId
                     this.resetIndicator();
-                    this.editorContent = '';
                     this.openId = null;
+                    this.editorContent = '';
                 }
             }
         }

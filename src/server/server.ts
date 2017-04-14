@@ -5,6 +5,7 @@ import path = require('path');
 import winston = require("winston");
 import chalk = require('chalk');
 import figlet = require('figlet');
+import http = require('http');
 
 import {HedgehogClient} from 'hedgehog-client';
 
@@ -24,6 +25,7 @@ import MotorResource from "./api/resource/hedgehog-io/MotorResource";
 import SensorResource from "./api/resource/hedgehog-io/SensorResource";
 import ServoResource from "./api/resource/hedgehog-io/ServoResource";
 import SocketIoSensorAdapter from "./hedgehog-io/SocketIoSensorAdapter";
+import ShareDbService from "./realtime-sync/ShareDbService";
 
 // Return external module as the file is outside of the
 // TypeScript compile output
@@ -47,6 +49,16 @@ winston.configure({
 });
 winston.level = serverConfig.logging.level;
 
+/**
+ * Model setup
+ */
+let programStorage = new GitProgramStorage(serverConfig.programStorageDirectory);
+let hedgehog = new HedgehogClient(serverConfig.hedgehogConnection);
+let processManager = new NodeProcessManager(
+    serverConfig.process.temporaryStorageDirectory,
+    serverConfig.process.pythonPath,
+    programStorage
+);
 
 /**
  * Server setup
@@ -67,14 +79,6 @@ server.connection(serverConfig.connection);
 /**
  * API setup
  */
-let programStorage = new GitProgramStorage(serverConfig.programStorageDirectory);
-let hedgehog = new HedgehogClient(serverConfig.hedgehogConnection);
-let processManager = new NodeProcessManager(
-    serverConfig.process.temporaryStorageDirectory,
-    serverConfig.process.pythonPath,
-    programStorage
-);
-
 let hedgehogApi = new Api(server, '/api');
 hedgehogApi.registerResource(new ProgramResource(programStorage, modelRegistry));
 hedgehogApi.registerResource(new WorkingTreeFileResource(programStorage, modelRegistry));
@@ -93,6 +97,11 @@ hedgehogApi.registerResource(new SensorResource(hedgehog, modelRegistry));
 let io = Io(server.listener);
 new SocketIoProcessAdapter(processManager, io);
 new SocketIoSensorAdapter(hedgehog, io);
+
+/**
+ * ShareDB backend
+ */
+new ShareDbService(programStorage, io);
 
 // tslint:disable-next-line
 server.register(require('inert'));
