@@ -3,7 +3,7 @@
         <div class="card-content">
             <div class="card-title">
                 <span>{{ name }}</span>
-                <div class="right" *ngIf="type == 'analog'">
+                <div class="right">
                     <label>
                         <input type="checkbox" id="pullup {{ name }}" (change)="updatePullup($event.target.checked)"/>
                         <label for="pullup {{ name }}">Pullup</label>
