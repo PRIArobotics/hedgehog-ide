@@ -1192,15 +1192,6 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
     private async openFileTab(fileId: string, updateOpenId: boolean = true) {
         let index = this.openFiles[this.programName].indexOf(fileId);
 
-        if (index < 0) {
-            this.openFiles[this.programName].push(fileId);
-        }
-
-        console.log(this.openFiles);
-
-        localStorage.setItem('openFiles', JSON.stringify(this.openFiles));
-        localStorage.setItem('openFileIds', JSON.stringify(this.localStorageOpenFileIds));
-
         // update the editor content
         await this.openFile(fileId, updateOpenId);
 
