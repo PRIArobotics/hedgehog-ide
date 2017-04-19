@@ -269,12 +269,14 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
         // create connection for this program
         await this.sharedbService.createConnection(this.programName);
         this.sharedbService.on('firstData', data => {
-            for (let key in data) {
-                if (data.hasOwnProperty(key)) {
-                    this.shareDbfileContents.set(key, data[key]);
+            if (this.realtimeSync) {
+                for (let key in data) {
+                    if (data.hasOwnProperty(key)) {
+                        this.shareDbfileContents.set(key, data[key]);
 
-                    if (this.files.get(key)) {
-                        this.files.get(key).content = data[key];
+                        if (this.files.get(key)) {
+                            this.files.get(key).content = data[key];
+                        }
                     }
                 }
             }
