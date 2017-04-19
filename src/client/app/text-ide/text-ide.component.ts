@@ -238,7 +238,6 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
         this.program = await this.storage.getProgram(this.programName);
 
         this.localStorageOpenFileIds = JSON.parse(localStorage.getItem('openFileIds'));
-        this.openFiles = JSON.parse(localStorage.getItem('openFiles'));
         this.editorOptions = JSON.parse(localStorage.getItem('editorOptions'));
 
         let rootDir = await this.program.getWorkingTreeRoot();
@@ -407,18 +406,15 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
      * This method is called after the view is initialized so it can access frontend items
      */
     public async ngAfterViewInit(): Promise<void> {
-        // This tweaks jQuery in order to avoid the tabs being initialized with the ready() event
-        $.isReady = true;
-
-        // Now initialize them manually
         const tabs = $('#sortable-tabs') as any;
-        tabs.tabs();
 
         // reset indicator from the tabs
-        this.resetIndicator();
+        $(document).ready(() => {
+            // remove the tab empty tab that prevents the indicator error
+            $('.tab').first().remove();
+        });
 
-        // remove the tab empty tab that prevents the indicator error
-        $('.tab').first().remove();
+        this.resetIndicator();
 
         // allow the tabs to be draggable
         tabs.sortable({
