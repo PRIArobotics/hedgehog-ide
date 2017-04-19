@@ -3,8 +3,8 @@
         <ul class="right">
             <li><a><i class="material-icons">replay</i></a></li>
         </ul>
-        <a href="#" class="brand-logo">{{ programName }}</a>
-        <a href="#!" class="breadcrumb">Versions</a>
+        <a [routerLink]="['/']" class="brand-logo">{{ programName }}</a>
+        <a [routerLink]="['/versions/' + programName]"  class="breadcrumb">Versions</a>
     </div>
 </nav>
 
