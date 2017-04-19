@@ -1,5 +1,4 @@
 import WebSocket = require('ws');
-import WebSocketJSONStream = require('websocket-json-stream');
 import ShareDB = require('sharedb');
 import IProgramStorage from "../../common/versioncontrol/ProgramStorage";
 import SocketIoJsonStream from "./SocketIoJsonStream";
