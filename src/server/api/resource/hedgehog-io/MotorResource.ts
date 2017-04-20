@@ -53,7 +53,7 @@ export default class MotorResource extends ApiResource {
 
         let velocity: number;
         if (typeof(requestData.attributes.power) === 'number') {
-            velocity = requestData.attributes.power * 10;
+            velocity = requestData.attributes.power;
         } else {
             velocity = requestData.attributes.velocity;
         }

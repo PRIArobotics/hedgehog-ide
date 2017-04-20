@@ -16,7 +16,8 @@
         <output-control
                 *ngFor="let motor of motorControls; let i = index;"
                 [name]="'Motor ' + i"
-                [minValue]="-100"
+                [minValue]="-1000"
+                [maxValue]="1000"
                 (valueChanged)="updateMotorValue(i, $event)"
                 (stateChanged)="updateMotorState(i, $event)">
         </output-control>
