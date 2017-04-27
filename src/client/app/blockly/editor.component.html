@@ -34,13 +34,7 @@
                 <div id="blocklyDiv"></div>
             </split-area>
             <split-area [size]="30" [visible]="showCode" >
-                <ace-editor
-                    #editor
-                    id="ace-editor"
-                    [text]="pyCode"
-                    [mode]="'python'"
-                    [theme]="'textmate'"
-                    [readOnly]="true"></ace-editor>
+                <pre>{{ pyCode }}</pre>
             </split-area>
         </split>
     </split-area>
