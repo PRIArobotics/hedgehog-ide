@@ -16,14 +16,23 @@ Blockly.Blocks.hedgehog.HELPURL = "http://hedgehog.pria.at/";
 
 Blockly.Blocks['hedgehog_scope'] = {
     init: function() {
-        this.setColour(Blockly.Blocks.hedgehog.HUE);
-        this.setHelpUrl(Blockly.Blocks.hedgehog.HELPURL);
-
-        this.appendDummyInput()
-            .appendField(Blockly.Msg.HEDGEHOG_SCOPE);
-        this.appendStatementInput("IN")
-            .setCheck(null);
-        this.setTooltip(Blockly.Msg.HEDGEHOG_SCOPE_TOOLTIP);
+        this.jsonInit({
+            "message0": Blockly.Msg.HEDGEHOG_SCOPE,
+            "args0": [
+                {
+                    "type": "input_dummy"
+                },
+                {
+                    "type": "input_statement",
+                    "name": "IN"
+                }
+            ],
+            "previousStatement": null,
+            "nextStatement": null,
+            "tooltip": Blockly.Msg.HEDGEHOG_SCOPE_TOOLTIP,
+            "colour": Blockly.Blocks.hedgehog.HUE,
+            "helpUrl": Blockly.Blocks.hedgehog.HELPURL
+        });
     }
 };
 

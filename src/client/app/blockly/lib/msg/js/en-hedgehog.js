@@ -6,7 +6,7 @@ goog.provide('Blockly.Msg.en.hedgehog');
 
 goog.require('Blockly.Msg');
 
-Blockly.Msg.HEDGEHOG_SCOPE = "Hedgehog scope";
+Blockly.Msg.HEDGEHOG_SCOPE = "Hedgehog scope %1 %2";
 Blockly.Msg.HEDGEHOG_WARN = "This block needs to be inside a Hedgehog Scope block!";
 Blockly.Msg.HEDGEHOG_SCOPE_TOOLTIP = "All Hedgehog blocks have to be inside of this block";
 
