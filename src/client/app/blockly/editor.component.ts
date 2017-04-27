@@ -5,7 +5,6 @@ import IProgramStorage from "../../../common/versioncontrol/ProgramStorage";
 import {HttpProgramService} from "../program/http-program.service";
 import Program from "../../../common/versioncontrol/Program";
 import {ProgramExecutionComponent} from '../program-execution/program-execution.component';
-import {AceEditorComponent} from '../text-ide/ace-editor.component';
 
 declare var Blockly: any;
 
@@ -42,9 +41,6 @@ export class BlocklyComponent implements OnInit, OnDestroy {
     private programIsRunning: boolean = false;
 
     private executionPanelVisible: boolean = false;
-
-    @ViewChild('editor')
-    private editor: AceEditorComponent;
 
     constructor(route: ActivatedRoute, storageService: HttpProgramService) {
         this.programName = route.snapshot.params['programName'];
@@ -108,16 +104,6 @@ export class BlocklyComponent implements OnInit, OnDestroy {
         // add change listener
         this.workspace.addChangeListener(e => this.onWorkspaceChange());
         this.lastSave = new Date().getTime();
-
-        // ace editor settings
-        this.editor.getEditor().setOptions({
-            fontSize: 16,
-            fontFamily: "Roboto Mono",
-            wrapBehavioursEnabled: false,
-            highlightActiveLine: false,
-            showGutter: false,
-        });
-        this.editor.getEditor().renderer.$cursorLayer.element.style.display = "none";
 
     }
 
