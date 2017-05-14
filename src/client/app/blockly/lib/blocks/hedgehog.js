@@ -137,6 +137,36 @@ Blockly.Blocks['hedgehog_move2'] = {
     onchange: Blockly.Blocks['hedgehog_move'].onchange
 };
 
+Blockly.Blocks['hedgehog_move_unlimited'] = {
+    init: function() {
+        this.jsonInit({
+            "message0": Blockly.Msg.HEDGEHOG_MOVE_UNLIMITED,
+            "args0": [
+                {
+                    "type": "field_number",
+                    "name": "PORT",
+                    "value": 0,
+                    "min": 0,
+                    "max": 3,
+                    "precision": 1
+                },
+                {
+                    "type": "input_value",
+                    "name": "SPEED",
+                    "check": "Number"
+                },
+            ],
+            "inputsInline": true,
+            "previousStatement": null,
+            "nextStatement": null,
+            "tooltip": Blockly.Msg.HEDGEHOG_MOVE_UNLIMITED_TOOLTIP,
+            "colour": Blockly.Blocks.hedgehog.HUE,
+            "helpUrl": Blockly.Blocks.hedgehog.HELPURL
+        });
+    },
+    onchange: Blockly.Blocks['hedgehog_move'].onchange
+};
+
 Blockly.Blocks['hedgehog_turn'] = {
     init: function() {
         this.jsonInit({

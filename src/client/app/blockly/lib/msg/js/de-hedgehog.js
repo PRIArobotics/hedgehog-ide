@@ -35,3 +35,6 @@ Blockly.Msg.HEDGEHOG_MOVE_TOOLTIP = "Bewegt einen Motor in eine bestimmte Richtu
 
 Blockly.Msg.HEDGEHOG_MOVE2 = "bewege Motor %1 und %2 %3 für %4 Sekunden";
 Blockly.Msg.HEDGEHOG_MOVE2_TOOLTIP = "Bewegt zwei Motoren in eine bestimmte Richtung";
+
+Blockly.Msg.HEDGEHOG_MOVE_UNLIMITED = "bewege Motor %1 %2";
+Blockly.Msg.HEDGEHOG_MOVE_UNLIMITED_TOOLTIP = "bewegt einen Motor solange bis er explizit gestoppt wird";
