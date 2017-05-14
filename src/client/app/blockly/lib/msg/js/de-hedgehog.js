@@ -38,3 +38,6 @@ Blockly.Msg.HEDGEHOG_MOVE2_TOOLTIP = "Bewegt zwei Motoren in eine bestimmte Rich
 
 Blockly.Msg.HEDGEHOG_MOVE_UNLIMITED = "bewege Motor %1 %2";
 Blockly.Msg.HEDGEHOG_MOVE_UNLIMITED_TOOLTIP = "bewegt einen Motor solange bis er explizit gestoppt wird";
+
+Blockly.Msg.HEDGEHOG_PULLUP = "Port %1 pullup %2";
+Blockly.Msg.HEDGEHOG_PULLUP_TOOLTIP = "Setze einen Pullup Widerstand für einen bestimmten IO Port";

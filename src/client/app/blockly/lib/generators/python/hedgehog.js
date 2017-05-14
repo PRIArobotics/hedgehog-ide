@@ -78,6 +78,17 @@ Blockly.Python['hedgehog_move_unlimited'] = function(block) {
     return code;
 };
 
+Blockly.Python['hedgehog_pullup'] = function(block) {
+    var port = block.getFieldValue('PORT');
+    var pullup = block.getFieldValue('STATE') == 'TRUE';
+
+    // imports
+    Blockly.Python.definitions_['import_hedgehog'] = 'from hedgehog.client import connect';
+
+    var code = 'hedgehog.set_input_state(' + port + ', ' + (pullup ? 'True' : 'False') + ')\n\n';
+    return code;
+};
+
 Blockly.Python['hedgehog_speed'] = function(block) {
     var speed = block.getFieldValue('SPEED');
     return [speed, Blockly.Python.ORDER_NONE];
