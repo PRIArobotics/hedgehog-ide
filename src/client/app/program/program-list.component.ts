@@ -66,7 +66,7 @@ export class ProgramListComponent implements OnInit {
                 'from time import sleep\n' +
                 'from hedgehog.client import connect\n\n' +
                 'with connect(emergency=15) as hedgehog:\n' +
-                '\tprint("Hello World")\n'
+                '    print("Hello World")\n'
             );
         }
         this.newProgramName = '';
