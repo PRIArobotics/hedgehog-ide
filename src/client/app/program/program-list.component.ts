@@ -6,6 +6,8 @@ import {Router} from "@angular/router";
 import {AppComponent} from "../app.component";
 import {ContextMenuComponent} from "angular2-contextmenu";
 
+declare var Materialize: any;
+
 @Component({
     selector: 'program-list',
     template: require('./program-list.component.html'),
@@ -118,6 +120,28 @@ export class ProgramListComponent implements OnInit {
             } else {
                 this.router.navigate(['/text-ide', program]);
             }
+        }
+    }
+
+    public async convertFromVisual (visualName: string) {
+        let textualName = visualName.substring(0, visualName.lastIndexOf('.blockly'));
+        let counter = 0;
+        while (this.programs.indexOf(textualName + (counter ? counter : '')) !== -1)
+            counter++;
+        textualName += (counter ? counter : '');
+
+        try {
+            let textualProgram = await this.storage.createProgram(textualName);
+            const code = await this.storage.getWorkingTreeFileContent(visualName, 'code.py');
+
+            await (await textualProgram.getWorkingTreeRoot()).addFile('main.py', code);
+            await this.reloadProgramList();
+            Materialize.toast(
+                '<i class="material-icons">done</i> Successfully converted  "'
+                + visualName + '" to "' + textualName + '"', 3000);
+        } catch (err) {
+            Materialize.toast(
+                '<i class="material-icons">close</i> Failed to convert "' + visualName + '"', 3000, 'red');
         }
     }
 }

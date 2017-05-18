@@ -13,7 +13,6 @@ import {ProgramExecutionComponent} from '../program-execution/program-execution.
 import {genericFromBase64IdSafe, genericToBase64IdSafe} from '../../../common/utils';
 import {AppComponent} from "../app.component";
 import {ShareDbClientService} from "./sharedb.service";
-import {isUndefined} from "util";
 
 declare var $: JQueryStatic;
 declare var Materialize: any;

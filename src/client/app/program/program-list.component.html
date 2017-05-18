@@ -44,6 +44,7 @@
 
                 <div class="secondary-content">
                     <button materialize="tooltip" class="waves-effect waves-teal btn-flat tooltipped" *ngIf="!program.endsWith('.blockly')" [routerLink]="['/versions', program]" data-position="bottom" data-delay="50" data-tooltip="show versions"><i class="material-icons">history</i></button>
+                    <button materialize="tooltip" class="waves-effect waves-teal btn-flat tooltipped" *ngIf="program.endsWith('.blockly')" (click)="convertFromVisual(program)" data-position="bottom" data-delay="50" data-tooltip="convert to textual"><i class="material-icons">file_upload</i></button>
                     <button materialize="tooltip" class="waves-effect waves-teal btn-flat tooltipped" *ngIf="!program.endsWith('.blockly')" (click)="openRenameModal(program)" data-position="bottom" data-delay="50" data-tooltip="rename project"><i class="material-icons">mode_edit</i></button>
                     <button materialize="tooltip" class="waves-effect waves-teal btn-flat tooltipped" *ngIf="program.endsWith('.blockly')" (click)="openRenameModal(program)" data-position="bottom" data-delay="50" data-tooltip="rename project"><i class="material-icons">mode_edit</i></button>
                     <button materialize="tooltip" class="waves-effect waves-teal btn-flat tooltipped" (click)="openDeleteModal(program)" data-position="bottom" data-delay="50" data-tooltip="delete project"><i class="material-icons">delete</i></button>
