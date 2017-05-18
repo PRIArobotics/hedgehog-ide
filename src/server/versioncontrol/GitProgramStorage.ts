@@ -28,18 +28,25 @@ export default class GitProgramStorage implements IProgramStorage {
         this.storagePath = storagePath;
     }
 
-    public async createProgram(name: string): Promise<Program> {
-        let repository = await NodeGit.Repository.init(this.getProgramPath(name), 0);
+    public async createProgram(name: string, cloneFrom?: string): Promise<Program> {
+        let repository: NodeGit.Repository;
+        let latestVersion;
+
+        if (cloneFrom) {
+            repository = await NodeGit.Clone.clone(this.getProgramPath(cloneFrom), this.getProgramPath(name));
+            latestVersion = (await repository.getHeadCommit()).id();
+        } else {
+            repository = await NodeGit.Repository.init(this.getProgramPath(name), 0);
+            latestVersion = await repository.createCommitOnHead(
+                [],
+                GitProgramStorage.signature,
+                GitProgramStorage.signature,
+                'initial commit'
+            );
+        }
+
         const isClean = (await repository.getStatus({})).length === 0;
-
-        let initialVersion = await repository.createCommitOnHead(
-            [],
-            GitProgramStorage.signature,
-            GitProgramStorage.signature,
-            'initial commit'
-        );
-
-        return new Program(this, name, initialVersion.tostrS(), isClean);
+        return new Program(this, name, latestVersion.tostrS(), isClean);
     }
 
     public async deleteProgram(name: string): Promise<void> {

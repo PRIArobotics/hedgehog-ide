@@ -20,7 +20,7 @@ interface IProgramStorage {
      *
      * @param name Name of the program
      */
-    createProgram(name: string): Promise<Program>;
+    createProgram(name: string, cloneFrom?: string): Promise<Program>;
 
     /**
      * Delete a program permanently
