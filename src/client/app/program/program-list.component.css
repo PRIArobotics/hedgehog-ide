@@ -1,7 +1,11 @@
 .program-list {
     padding-top: 30px;
-    height: 100%;
+    padding-bottom: 30px;
     width: 100%;
+    overflow-y: scroll;
+    position: absolute;
+    top: 64px;
+    bottom: 0;
 }
 
 .program-item {
