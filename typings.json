@@ -1,6 +1,7 @@
 {
   "name": "hedgehog-ide",
   "dependencies": {
+    "ncp": "registry:dt/ncp#2.0.0+20170104233124",
     "winston": "registry:dt/winston#0.0.0+20161122193333"
   },
   "globalDependencies": {

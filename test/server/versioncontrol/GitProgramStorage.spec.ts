@@ -59,7 +59,7 @@ describe('GitProgramStorage', () => {
         });
 
         describe('createProgram from existing program', () => {
-            it('should create a program as a clone from an existing program', async () => {
+            it('should not copy the git repository from the existing program', async () => {
                 let copyProgramName = getProgramName();
                 let programName = getProgramName();
 
@@ -73,22 +73,16 @@ describe('GitProgramStorage', () => {
                 );
 
                 let program = await programStorage.createProgram(programName, copyProgramName);
-                assert.equal(program.latestVersionId, (await repository.getHeadCommit()).id().tostrS());
+                assert.notEqual(program.latestVersionId, (await repository.getHeadCommit()).id().tostrS());
             });
 
-            it('should clone all checked in files from the existing program', async () => {
+            it('should all copy files from the existing program', async () => {
                 let copyProgramName = getProgramName();
                 let programName = getProgramName();
 
                 // setup repo to copy from
-                let repository = await NodeGit.Repository.init(`tmp/${copyProgramName}`, 0);
+                await wrapCallbackAsPromise(fs.mkdir, `tmp/${copyProgramName}`);
                 await wrapCallbackAsPromise(fs.writeFile, `tmp/${copyProgramName}/test`, 'hello');
-                await repository.createCommitOnHead(
-                    ['test'],
-                    GitProgramStorage.signature,
-                    GitProgramStorage.signature,
-                    'initial commit'
-                );
 
                 let program = await programStorage.createProgram(programName, copyProgramName);
                 assert.equal(await (await program.getWorkingTreeFile('test')).readContent(), 'hello');

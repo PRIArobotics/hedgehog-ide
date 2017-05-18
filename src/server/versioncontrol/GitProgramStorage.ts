@@ -2,6 +2,7 @@ import fs = require('fs');
 import path = require('path');
 import rimraf = require('rimraf');
 import NodeGit = require('nodegit');
+import {ncp} from "ncp";
 
 import {wrapCallbackAsPromise} from "../../common/utils";
 import IProgramStorage from "../../common/versioncontrol/ProgramStorage";
@@ -28,22 +29,20 @@ export default class GitProgramStorage implements IProgramStorage {
         this.storagePath = storagePath;
     }
 
-    public async createProgram(name: string, cloneFrom?: string): Promise<Program> {
-        let repository: NodeGit.Repository;
-        let latestVersion;
-
-        if (cloneFrom) {
-            repository = await NodeGit.Clone.clone(this.getProgramPath(cloneFrom), this.getProgramPath(name));
-            latestVersion = (await repository.getHeadCommit()).id();
-        } else {
-            repository = await NodeGit.Repository.init(this.getProgramPath(name), 0);
-            latestVersion = await repository.createCommitOnHead(
-                [],
-                GitProgramStorage.signature,
-                GitProgramStorage.signature,
-                'initial commit'
-            );
+    public async createProgram(name: string, copyFrom?: string): Promise<Program> {
+        if (copyFrom) {
+            await wrapCallbackAsPromise(ncp, this.getProgramPath(copyFrom), this.getProgramPath(name), {
+                filter: (fileName: string) => !fileName.startsWith(path.join(this.getProgramPath(name), '.git'))
+            });
         }
+
+        let repository = await NodeGit.Repository.init(this.getProgramPath(name), 0);
+        let latestVersion = await repository.createCommitOnHead(
+            [],
+            GitProgramStorage.signature,
+            GitProgramStorage.signature,
+            'initial commit'
+        );
 
         const isClean = (await repository.getStatus({})).length === 0;
         return new Program(this, name, latestVersion.tostrS(), isClean);
