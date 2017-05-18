@@ -18,6 +18,7 @@
                 [name]="'Motor ' + i"
                 [minValue]="-1000"
                 [maxValue]="1000"
+                [value]="0"
                 (valueChanged)="updateMotorValue(i, $event)"
                 (stateChanged)="updateMotorState(i, $event)">
         </output-control>
@@ -27,6 +28,7 @@
         <output-control
                 *ngFor="let servo of servoControls; let i = index;"
                 [name]="'Servo ' + i"
+                [value]="1023"
                 [maxValue]="2047"
                 (valueChanged)="updateServoValue(i, $event)"
                 (stateChanged)="updateServoState(i, $event)">
