@@ -40,6 +40,8 @@ export class ProgramListComponent implements OnInit, AfterViewInit {
         newName: ''
     };
 
+    private showTemplates = false;
+
     public constructor(private router: Router, storageService: HttpProgramService) {
         this.storage = storageService.getStorage();
     }

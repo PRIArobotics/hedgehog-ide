@@ -44,8 +44,12 @@
     </div>
 
     <div class="container z-depth-1">
-        <ul class="collection">
-            <li class="collection-item avatar valign-wrapper waves-effect program-item" *ngFor="let program of programs" (click)="openRoute($event, program)">
+        <ul class="collection with-header">
+            <li class="collection-header right-align">
+                <input type="checkbox" id="show-templates" [(ngModel)]="showTemplates"/>
+                <label for="show-templates">Show Templates</label>
+            </li>
+            <li class="collection-item avatar valign-wrapper waves-effect program-item" *ngFor="let program of (programs | hasProgramExtension: (showTemplates ? ['.blockly', '', '.template'] : ['.blockly', '']))" (click)="openRoute($event, program)">
                 <div [ngSwitch]="getExtension(program)">
                     <template [ngSwitchCase]="'.blockly'">
                         <i materialize="tooltip"
@@ -103,7 +107,7 @@
                 </div>
                 <div class="input-field" *ngIf="newProgramData.type === 'textual'">
                     <select class="form-control" id="new-program-copyfrom" [(ngModel)]="newProgramData.copyFrom" name="new-program-copyfrom" materialize="material_select">
-                        <option *ngFor="let program of (programs | programType: ['.template'])" [ngValue]="program" [selected]="index === 0">{{getNameWithoutExtension(program)}}</option>
+                        <option *ngFor="let program of (programs | hasProgramExtension: ['.template'])" [ngValue]="program" [selected]="index === 0">{{getNameWithoutExtension(program)}}</option>
                     </select>
                     <label for="new-program-copyfrom">Template</label>
                 </div>
