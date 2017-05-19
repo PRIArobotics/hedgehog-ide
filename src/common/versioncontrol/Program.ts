@@ -6,6 +6,23 @@ import WorkingTreeDirectory from "./WorkingTreeDirectory";
 import IProgramStorage from "./ProgramStorage";
 
 export default class Program {
+    public static getNameWithoutExtension (name: string) {
+        return Program.getExtension(name) === ''
+            ? name
+            : name.substring(0, name.lastIndexOf('.'));
+    }
+
+    public static getExtension (name: string) {
+        if (name.lastIndexOf('.') === -1)
+            return '';
+
+        const ext = name.substring(name.lastIndexOf('.'));
+        if (['.blockly', '.template'].indexOf(ext) !== -1)
+            return ext;
+        else
+            return '';
+    }
+
     constructor(private storage: IProgramStorage,
                 public name: string,
                 public latestVersionId: string,
@@ -72,22 +89,5 @@ export default class Program {
 
     public getExtension () {
         return Program.getExtension(this.name);
-    }
-
-    public static getNameWithoutExtension (name: string) {
-        return Program.getExtension(name) === ''
-            ? name
-            : name.substring(0, name.lastIndexOf('.'));
-    }
-
-    public static getExtension (name: string) {
-        if (name.lastIndexOf('.') === -1)
-            return '';
-
-        const ext = name.substring(name.lastIndexOf('.'));
-        if (['.blockly', '.template'].indexOf(ext) !== -1)
-            return ext;
-        else
-            return ''
     }
 }
