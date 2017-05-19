@@ -24,6 +24,10 @@ export default class ProgramResource extends ApiResource {
                     { name: 'name'},
                     { name: 'latestVersionId'},
                     { name: 'workingTreeClean'},
+                    {
+                        name: 'copyFrom',
+                        required: RequirementType.Forbidden
+                    }
                 )
             }
         )
@@ -57,6 +61,7 @@ export default class ProgramResource extends ApiResource {
         let attributes = (document.data as JsonApiResource).attributes;
         let program: Program;
         try {
+            console.log(attributes.copyFrom);
             program = await this.programStorage.createProgram(attributes.name, attributes.copyFrom);
         } catch(err) {
             winston.error(err);

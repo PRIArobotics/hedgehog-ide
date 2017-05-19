@@ -8,28 +8,36 @@
 </nav>
 
 <context-menu #programListContextMenu>
-    <template contextMenuItem let-node (execute)="openCreateModal('python')">
-        <i class="material-icons"> code </i> New Python Project
+    <template contextMenuItem let-node (execute)="openCreateModal('textual')">
+        <i class="material-icons"> code </i> New Textual Program
     </template>
     <template contextMenuItem let-node (execute)="openCreateModal('blockly')">
-        <i class="material-icons"> view_module </i> New Blockly Project
+        <i class="material-icons"> view_module </i> New Visual Project
+    </template>
+    <template contextMenuItem let-node (execute)="openCreateModal('template')">
+        <i class="material-icons"> description </i> New Template
     </template>
 </context-menu>
 
 <div [contextMenu]="programListContextMenu" [contextMenuSubject]="this" class="program-list">
     <div class="fixed-action-btn">
-        <a materialize="tooltip" class="btn-floating btn-large waves-effect waves-light green z-depth-4 tooltipped" data-position="left" data-delay="50" data-tooltip="Create Project">
+        <a materialize="tooltip" class="btn-floating btn-large waves-effect waves-light green z-depth-4 tooltipped" data-position="left" data-delay="50" data-tooltip="Create Program">
             <i class="material-icons">add</i>
         </a>
         <ul>
             <li>
-                <a materialize="tooltip" (click)="openCreateModal('python')" class="btn-floating blue tooltipped" data-position="left" data-delay="50" data-tooltip="Python Project">
+                <a materialize="tooltip" (click)="openCreateModal('textual')" class="btn-floating blue tooltipped" data-position="left" data-delay="50" data-tooltip="Textual Project">
                     <i class="material-icons">code</i>
                 </a>
             </li>
             <li>
-                <a materialize="tooltip" (click)="openCreateModal('blockly')" class="btn-floating red tooltipped" data-position="left" data-delay="50" data-tooltip="Blockly Project">
+                <a materialize="tooltip" (click)="openCreateModal('blockly')" class="btn-floating red tooltipped" data-position="left" data-delay="50" data-tooltip="Visual Project">
                     <i class="material-icons">view_module</i>
+                </a>
+            </li>
+            <li>
+                <a materialize="tooltip" (click)="openCreateModal('template')" class="btn-floating grey tooltipped" data-position="left" data-delay="50" data-tooltip="Template">
+                    <i class="material-icons">description</i>
                 </a>
             </li>
         </ul>
@@ -38,15 +46,36 @@
     <div class="container z-depth-1">
         <ul class="collection">
             <li class="collection-item avatar valign-wrapper waves-effect program-item" *ngFor="let program of programs" (click)="openRoute($event, program)">
-                <i materialize="tooltip" class="material-icons tooltipped circle blue program-icon" data-position="left" data-delay="50" data-tooltip="Python Project" *ngIf="!program.endsWith('.blockly')">code</i>
-                <i materialize="tooltip" class="material-icons tooltipped circle red program-icon" data-position="left" data-delay="50" data-tooltip="Blockly Project" *ngIf="program.endsWith('.blockly')">view_module</i>
-                <span class="title valign">{{ program.replace(".blockly","") }}</span>
+                <div [ngSwitch]="getExtension(program)">
+                    <template [ngSwitchCase]="'.blockly'">
+                        <i materialize="tooltip"
+                           class="material-icons tooltipped circle red program-icon"
+                           data-position="left"
+                           data-delay="50"
+                           data-tooltip="Visual Program">view_module</i>
+                    </template>
+                    <template [ngSwitchCase]="''">
+                        <i materialize="tooltip"
+                           class="material-icons tooltipped circle blue program-icon"
+                           data-position="left"
+                           data-delay="50"
+                           data-tooltip="Textual Program">code</i>
+                    </template>
+                    <template [ngSwitchCase]="'.template'">
+                        <i materialize="tooltip"
+                           class="material-icons tooltipped circle grey program-icon"
+                           data-position="left"
+                           data-delay="50"
+                           data-tooltip="Template">description</i>
+                    </template>
+                </div>
+                <span class="title valign">{{ getNameWithoutExtension(program) }}</span>
 
                 <div class="secondary-content">
-                    <button materialize="tooltip" class="waves-effect waves-teal btn-flat tooltipped" *ngIf="!program.endsWith('.blockly')" [routerLink]="['/versions', program]" data-position="bottom" data-delay="50" data-tooltip="show versions"><i class="material-icons">history</i></button>
-                    <button materialize="tooltip" class="waves-effect waves-teal btn-flat tooltipped" *ngIf="program.endsWith('.blockly')" (click)="convertFromVisual(program)" data-position="bottom" data-delay="50" data-tooltip="convert to textual"><i class="material-icons">file_upload</i></button>
-                    <button materialize="tooltip" class="waves-effect waves-teal btn-flat tooltipped" *ngIf="!program.endsWith('.blockly')" (click)="openRenameModal(program)" data-position="bottom" data-delay="50" data-tooltip="rename project"><i class="material-icons">mode_edit</i></button>
-                    <button materialize="tooltip" class="waves-effect waves-teal btn-flat tooltipped" *ngIf="program.endsWith('.blockly')" (click)="openRenameModal(program)" data-position="bottom" data-delay="50" data-tooltip="rename project"><i class="material-icons">mode_edit</i></button>
+                    <button materialize="tooltip" class="waves-effect waves-teal btn-flat tooltipped" *ngIf="getExtension(program) !== '.blockly'" [routerLink]="['/versions', program]" data-position="bottom" data-delay="50" data-tooltip="show versions"><i class="material-icons">history</i></button>
+                    <button materialize="tooltip" class="waves-effect waves-teal btn-flat tooltipped" *ngIf="getExtension(program) === '.blockly'" (click)="convertFromVisual(program)" data-position="bottom" data-delay="50" data-tooltip="convert to textual"><i class="material-icons">file_upload</i></button>
+                    <button materialize="tooltip" class="waves-effect waves-teal btn-flat tooltipped" *ngIf="getExtension(program) !== '.blockly'" (click)="openRenameModal(program)" data-position="bottom" data-delay="50" data-tooltip="rename project"><i class="material-icons">mode_edit</i></button>
+                    <button materialize="tooltip" class="waves-effect waves-teal btn-flat tooltipped" *ngIf="getExtension(program) === '.blockly'" (click)="openRenameModal(program)" data-position="bottom" data-delay="50" data-tooltip="rename project"><i class="material-icons">mode_edit</i></button>
                     <button materialize="tooltip" class="waves-effect waves-teal btn-flat tooltipped" (click)="openDeleteModal(program)" data-position="bottom" data-delay="50" data-tooltip="delete project"><i class="material-icons">delete</i></button>
                 </div>
             </li>
@@ -56,10 +85,27 @@
     <div id="create-modal" class="modal" materialize="modal" [materializeParams]="[{dismissible: true}]" [materializeActions]="createModalActions">
         <form (submit)="createProgram()">
             <div class="modal-content">
-                <h4>Create New {{  newProgramType === "blockly" ? 'Visual' : ''}} Program</h4>
+                <h4 [ngSwitch]="newProgramData.type">
+                    New
+                    <template [ngSwitchCase]="'blockly'">
+                        Visual Program
+                    </template>
+                    <template [ngSwitchCase]="'textual'">
+                        Textual Program
+                    </template>
+                    <template [ngSwitchCase]="'template'">
+                        Program Template
+                    </template>
+                </h4>
                 <div class="input-field">
-                    <input name="new-program-name" id="new-program-name" type="text" class="validate" [(ngModel)]="newProgramName"/>
-                    <label for="new-program-name">Program Name</label>
+                    <input name="new-program-name" id="new-program-name" type="text" class="validate" [(ngModel)]="newProgramData.name"/>
+                    <label for="new-program-name">{{ newProgramData.type === 'template' ? 'Template' : 'Program' }} Name</label>
+                </div>
+                <div class="input-field" *ngIf="newProgramData.type === 'textual'">
+                    <select class="form-control" id="new-program-copyfrom" [(ngModel)]="newProgramData.copyFrom" name="new-program-copyfrom" materialize="material_select">
+                        <option *ngFor="let program of (programs | programType: ['.template'])" [ngValue]="program" [selected]="index === 0">{{getNameWithoutExtension(program)}}</option>
+                    </select>
+                    <label for="new-program-copyfrom">Template</label>
                 </div>
             </div>
             <div class="modal-footer">
@@ -86,7 +132,7 @@
     <div id="rename-modal" class="modal" materialize="modal" [materializeParams]="[{dismissible: true}]" [materializeActions]="renameModalActions">
         <form (submit)="renameProgram()">
             <div class="modal-content">
-                <h4>Rename Program <strong>{{renameProgramData.oldName.replace(".blockly","")}}</strong></h4>
+                <h4>Rename Program <strong>{{getNameWithoutExtension(renameProgramData.oldName)}}</strong></h4>
                 <div class="input-field">
                     <input name="rename-new-name" id="rename-new-name" type="text" class="validate" [(ngModel)]="renameProgramData.newName" />
                     <label for="rename-new-name">Program Name</label>

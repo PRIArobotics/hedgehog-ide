@@ -10,6 +10,7 @@ import {KeysPipe} from "./directory-view.component";
 import FileViewComponent from "./file-view.component";
 import {TextIdeModule} from "../text-ide/text-ide.module";
 import {ContextMenuModule} from "angular2-contextmenu";
+import ProgramTypePipe from "./program-type.pipe";
 
 @NgModule({
     imports: [
@@ -25,7 +26,8 @@ import {ContextMenuModule} from "angular2-contextmenu";
         VersionListComponent,
         DirectoryViewComponent,
         KeysPipe,
-        FileViewComponent
+        FileViewComponent,
+        ProgramTypePipe
     ]
 })
 export class ProgramModule { }
