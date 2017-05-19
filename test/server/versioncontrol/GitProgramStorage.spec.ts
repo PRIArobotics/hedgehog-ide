@@ -89,9 +89,32 @@ describe('GitProgramStorage', () => {
                     GitProgramStorage.signature,
                     'initial commit'
                 );
+                await wrapCallbackAsPromise(fs.writeFile, `tmp/${copyProgramName}/test`, 'not hello');
 
                 let program = await programStorage.createProgram(programName, copyProgramName);
                 assert.equal(await (await program.getWorkingTreeFile('test')).readContent(), 'hello');
+            });
+
+            it('should not copy untracked files', async () => {
+                let copyProgramName = getProgramName();
+                let programName = getProgramName();
+
+                let repository = await NodeGit.Repository.init(`tmp/${copyProgramName}`, 0);
+                await repository.createCommitOnHead(
+                    [],
+                    GitProgramStorage.signature,
+                    GitProgramStorage.signature,
+                    'initial commit'
+                );
+                await wrapCallbackAsPromise(fs.writeFile, `tmp/${copyProgramName}/test`, 'hello');
+
+                await programStorage.createProgram(programName, copyProgramName);
+                try {
+                    await wrapCallbackAsPromise(fs.stat, `tmp/${programName}/test`);
+                    throw Error('File was copied');
+                } catch(err) {
+                    assert.equal(err.code, 'ENOENT');
+                }
             });
         });
     });
