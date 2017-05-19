@@ -31,21 +31,15 @@ export default class GitProgramStorage implements IProgramStorage {
 
     public async createProgram(name: string, copyFrom?: string): Promise<Program> {
         if (copyFrom) {
-            await wrapCallbackAsPromise(ncp, this.getProgramPath(copyFrom), this.getProgramPath(name), {
-                filter: (fileName: string) => !fileName.startsWith(path.join(this.getProgramPath(name), '.git'))
-            });
+            await NodeGit.Clone.clone(this.getProgramPath(copyFrom), this.getProgramPath(name));
+            await wrapCallbackAsPromise(rimraf, path.join(this.getProgramPath(name), '.git'));
         }
 
         let repository = await NodeGit.Repository.init(this.getProgramPath(name), 0);
-        let latestVersion = await repository.createCommitOnHead(
-            [],
-            GitProgramStorage.signature,
-            GitProgramStorage.signature,
-            'initial commit'
-        );
+        const latestVersionId = await this.createVersionFromWorkingTree(name, 'initial commit');
 
         const isClean = (await repository.getStatus({})).length === 0;
-        return new Program(this, name, latestVersion.tostrS(), isClean);
+        return new Program(this, name, latestVersionId, isClean);
     }
 
     public async deleteProgram(name: string): Promise<void> {
@@ -147,14 +141,14 @@ export default class GitProgramStorage implements IProgramStorage {
         await index.write();
         const treeId: NodeGit.Oid = await index.writeTree();
 
-        const parentId = (await repository.getHeadCommit()).id();
+        const headCommit = await repository.getHeadCommit();
         const commitId = await repository.createCommit(
             'HEAD',
             GitProgramStorage.signature,
             GitProgramStorage.signature,
             message,
             treeId,
-            [parentId]
+            headCommit ? [headCommit.id()] : []
         );
 
         if(tag)

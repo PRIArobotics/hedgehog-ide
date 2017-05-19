@@ -76,13 +76,19 @@ describe('GitProgramStorage', () => {
                 assert.notEqual(program.latestVersionId, (await repository.getHeadCommit()).id().tostrS());
             });
 
-            it('should all copy files from the existing program', async () => {
+            it('should clone the latest version of the existing program into the new program', async () => {
                 let copyProgramName = getProgramName();
                 let programName = getProgramName();
 
                 // setup repo to copy from
-                await wrapCallbackAsPromise(fs.mkdir, `tmp/${copyProgramName}`);
+                let repository = await NodeGit.Repository.init(`tmp/${copyProgramName}`, 0);
                 await wrapCallbackAsPromise(fs.writeFile, `tmp/${copyProgramName}/test`, 'hello');
+                await repository.createCommitOnHead(
+                    ['test'],
+                    GitProgramStorage.signature,
+                    GitProgramStorage.signature,
+                    'initial commit'
+                );
 
                 let program = await programStorage.createProgram(programName, copyProgramName);
                 assert.equal(await (await program.getWorkingTreeFile('test')).readContent(), 'hello');
