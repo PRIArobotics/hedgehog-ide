@@ -56,7 +56,11 @@ export class ProgramListComponent implements OnInit {
     }
 
     public openCreateModal(type: string) {
-        this.newProgramData.type = type;
+        this.newProgramData = {
+            name: '',
+            type,
+            copyFrom: null
+        };
         this.createModalActions.emit({action:"modal", params:['open']});
         AppComponent.fixModalOverlay();
     }
@@ -70,12 +74,6 @@ export class ProgramListComponent implements OnInit {
         if (this.newProgramData.type !== 'textual')
             programName += '.' + this.newProgramData.type;
         await this.storage.createProgram(programName, this.newProgramData.copyFrom);
-
-        this.newProgramData = {
-            name: '',
-            type: '',
-            copyFrom: ''
-        };
         await this.reloadProgramList();
     }
 

@@ -107,7 +107,8 @@
                 </div>
                 <div class="input-field" *ngIf="newProgramData.type === 'textual'">
                     <select class="form-control" id="new-program-copyfrom" [(ngModel)]="newProgramData.copyFrom" name="new-program-copyfrom" materialize="material_select">
-                        <option *ngFor="let program of (programs | hasProgramExtension: ['.template'])" [ngValue]="program" [selected]="index === 0">{{getNameWithoutExtension(program)}}</option>
+                        <option *ngFor="let program of (programs | hasProgramExtension: ['.template'])" [ngValue]="program" >{{getNameWithoutExtension(program)}}</option>
+                        <option value="">None</option>
                     </select>
                     <label for="new-program-copyfrom">Template</label>
                 </div>
