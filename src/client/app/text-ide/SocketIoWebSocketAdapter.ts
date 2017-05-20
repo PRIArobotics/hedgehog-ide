@@ -21,7 +21,7 @@ export default class SocketIoWebSocketAdapter {
         socket.on('disconnect', () => {
             this.status = 3;
             if (this.onclose)
-                this.onclose(new CloseEvent());
+                this.onclose(new CloseEvent('socket closed'));
         });
 
         socket.on('message', msg => {
