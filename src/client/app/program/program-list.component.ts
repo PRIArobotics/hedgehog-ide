@@ -1,5 +1,4 @@
 import {Component, OnInit, EventEmitter, ViewChild} from '@angular/core';
-import IProgramStorage from "../../../common/versioncontrol/ProgramStorage";
 import {MaterializeAction} from "angular2-materialize";
 import {HttpProgramService} from "./http-program.service";
 import {Router} from "@angular/router";
@@ -7,6 +6,9 @@ import {AppComponent} from "../app.component";
 import {ContextMenuComponent} from "angular2-contextmenu";
 
 declare var Materialize: any;
+
+import IProgramStorage from "../../../common/versioncontrol/ProgramStorage";
+import {default as Program} from "../../../common/versioncontrol/Program";
 
 @Component({
     selector: 'program-list',
@@ -26,14 +28,19 @@ export class ProgramListComponent implements OnInit {
     private storage: IProgramStorage;
     private programs: string[];
 
-    private newProgramName: string;
+    private newProgramData = {
+        name: '',
+        type: '',
+        copyFrom: ''
+    };
+
     private deleteProgramName: string = '';
-    private newProgramType: string;
     private renameProgramData: {oldName: string, newName: string} = {
         oldName: '',
         newName: ''
     };
 
+    private showTemplates = false;
 
     public constructor(private router: Router, storageService: HttpProgramService) {
         this.storage = storageService.getStorage();
@@ -49,7 +56,11 @@ export class ProgramListComponent implements OnInit {
     }
 
     public openCreateModal(type: string) {
-        this.newProgramType = type;
+        this.newProgramData = {
+            name: '',
+            type,
+            copyFrom: null
+        };
         this.createModalActions.emit({action:"modal", params:['open']});
         AppComponent.fixModalOverlay();
     }
@@ -59,19 +70,10 @@ export class ProgramListComponent implements OnInit {
     }
 
     public async createProgram() {
-        if(this.newProgramType === "blockly") {
-            await this.storage.createProgram(this.newProgramName + ".blockly");
-        } else {
-            let newProgram = await this.storage.createProgram(this.newProgramName);
-            let root = await newProgram.getWorkingTreeRoot();
-            await root.addFile('main.py',
-                'from time import sleep\n' +
-                'from hedgehog.client import connect\n\n' +
-                'with connect(emergency=15) as hedgehog:\n' +
-                '    print("Hello World")\n'
-            );
-        }
-        this.newProgramName = '';
+        let programName = this.newProgramData.name;
+        if (this.newProgramData.type !== 'textual')
+            programName += '.' + this.newProgramData.type;
+        await this.storage.createProgram(programName, this.newProgramData.copyFrom);
         await this.reloadProgramList();
     }
 
@@ -103,9 +105,7 @@ export class ProgramListComponent implements OnInit {
     }
 
     public async renameProgram() {
-        if (this.renameProgramData.oldName.endsWith('.blockly')) {
-            this.renameProgramData.newName = this.renameProgramData.newName + '.blockly';
-        }
+        this.renameProgramData.newName += Program.getExtension(this.renameProgramData.oldName);
 
         await this.storage.renameProgram(this.renameProgramData.oldName, this.renameProgramData.newName);
         await this.reloadProgramList();
@@ -124,7 +124,7 @@ export class ProgramListComponent implements OnInit {
     }
 
     public async convertFromVisual (visualName: string) {
-        let textualName = visualName.substring(0, visualName.lastIndexOf('.blockly'));
+        let textualName = Program.getNameWithoutExtension(visualName);
         let counter = 0;
         while (this.programs.indexOf(textualName + (counter ? counter : '')) !== -1)
             counter++;
@@ -143,5 +143,13 @@ export class ProgramListComponent implements OnInit {
             Materialize.toast(
                 '<i class="material-icons">close</i> Failed to convert "' + visualName + '"', 3000, 'red');
         }
+    }
+
+    public getExtension (name: string) {
+        return Program.getExtension(name);
+    }
+
+    public getNameWithoutExtension (name: string) {
+        return Program.getNameWithoutExtension(name);
     }
 }

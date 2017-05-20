@@ -24,6 +24,10 @@ export default class ProgramResource extends ApiResource {
                     { name: 'name'},
                     { name: 'latestVersionId'},
                     { name: 'workingTreeClean'},
+                    {
+                        name: 'copyFrom',
+                        required: RequirementType.Forbidden
+                    }
                 )
             }
         )
@@ -42,7 +46,8 @@ export default class ProgramResource extends ApiResource {
                 data: {
                     id: RequirementType.Forbidden,
                     attributes: {
-                        name: RequirementType.Required
+                        name: RequirementType.Required,
+                        copyFrom: RequirementType.Allowed
                     }
                 }
             });
@@ -53,9 +58,11 @@ export default class ProgramResource extends ApiResource {
             }).code(400);
         }
 
+        let attributes = (document.data as JsonApiResource).attributes;
         let program: Program;
         try {
-            program = await this.programStorage.createProgram((document.data as JsonApiResource).attributes.name);
+            console.log(attributes.copyFrom);
+            program = await this.programStorage.createProgram(attributes.name, attributes.copyFrom);
         } catch(err) {
             winston.error(err);
             return reply({

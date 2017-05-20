@@ -2,6 +2,7 @@ import fs = require('fs');
 import path = require('path');
 import rimraf = require('rimraf');
 import NodeGit = require('nodegit');
+import {ncp} from "ncp";
 
 import {wrapCallbackAsPromise} from "../../common/utils";
 import IProgramStorage from "../../common/versioncontrol/ProgramStorage";
@@ -28,18 +29,17 @@ export default class GitProgramStorage implements IProgramStorage {
         this.storagePath = storagePath;
     }
 
-    public async createProgram(name: string): Promise<Program> {
+    public async createProgram(name: string, copyFrom?: string): Promise<Program> {
+        if (copyFrom) {
+            await NodeGit.Clone.clone(this.getProgramPath(copyFrom), this.getProgramPath(name));
+            await wrapCallbackAsPromise(rimraf, path.join(this.getProgramPath(name), '.git'));
+        }
+
         let repository = await NodeGit.Repository.init(this.getProgramPath(name), 0);
+        const latestVersionId = await this.createVersionFromWorkingTree(name, 'initial commit');
+
         const isClean = (await repository.getStatus({})).length === 0;
-
-        let initialVersion = await repository.createCommitOnHead(
-            [],
-            GitProgramStorage.signature,
-            GitProgramStorage.signature,
-            'initial commit'
-        );
-
-        return new Program(this, name, initialVersion.tostrS(), isClean);
+        return new Program(this, name, latestVersionId, isClean);
     }
 
     public async deleteProgram(name: string): Promise<void> {
@@ -141,14 +141,14 @@ export default class GitProgramStorage implements IProgramStorage {
         await index.write();
         const treeId: NodeGit.Oid = await index.writeTree();
 
-        const parentId = (await repository.getHeadCommit()).id();
+        const headCommit = await repository.getHeadCommit();
         const commitId = await repository.createCommit(
             'HEAD',
             GitProgramStorage.signature,
             GitProgramStorage.signature,
             message,
             treeId,
-            [parentId]
+            headCommit ? [headCommit.id()] : []
         );
 
         if(tag)

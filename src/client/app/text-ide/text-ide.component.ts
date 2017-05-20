@@ -14,7 +14,6 @@ import {genericFromBase64IdSafe, genericToBase64IdSafe} from '../../../common/ut
 import {AppComponent} from "../app.component";
 import {ShareDbClientService} from "./sharedb.service";
 
-declare var $: JQueryStatic;
 declare var Materialize: any;
 
 export class File {
@@ -430,8 +429,6 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.openFile(tab.attr('id').substr(3));
             }
         });
-
-        ($('select') as any).material_select();
 
         this.realtimeSync = localStorage.getItem('realtimeSync');
         if (typeof this.realtimeSync === 'undefined') {

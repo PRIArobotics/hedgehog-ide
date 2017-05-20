@@ -57,6 +57,66 @@ describe('GitProgramStorage', () => {
             let commit = await repository.getHeadCommit();
             assert.equal(program.latestVersionId, commit.id().tostrS());
         });
+
+        describe('createProgram from existing program', () => {
+            it('should not copy the git repository from the existing program', async () => {
+                let copyProgramName = getProgramName();
+                let programName = getProgramName();
+
+                // setup repo to copy from
+                let repository = await NodeGit.Repository.init(`tmp/${copyProgramName}`, 0);
+                await repository.createCommitOnHead(
+                    [],
+                    GitProgramStorage.signature,
+                    GitProgramStorage.signature,
+                    'initial origin commit'
+                );
+
+                let program = await programStorage.createProgram(programName, copyProgramName);
+                assert.notEqual(program.latestVersionId, (await repository.getHeadCommit()).id().tostrS());
+            });
+
+            it('should clone the latest version of the existing program into the new program', async () => {
+                let copyProgramName = getProgramName();
+                let programName = getProgramName();
+
+                // setup repo to copy from
+                let repository = await NodeGit.Repository.init(`tmp/${copyProgramName}`, 0);
+                await wrapCallbackAsPromise(fs.writeFile, `tmp/${copyProgramName}/test`, 'hello');
+                await repository.createCommitOnHead(
+                    ['test'],
+                    GitProgramStorage.signature,
+                    GitProgramStorage.signature,
+                    'initial commit'
+                );
+                await wrapCallbackAsPromise(fs.writeFile, `tmp/${copyProgramName}/test`, 'not hello');
+
+                let program = await programStorage.createProgram(programName, copyProgramName);
+                assert.equal(await (await program.getWorkingTreeFile('test')).readContent(), 'hello');
+            });
+
+            it('should not copy untracked files', async () => {
+                let copyProgramName = getProgramName();
+                let programName = getProgramName();
+
+                let repository = await NodeGit.Repository.init(`tmp/${copyProgramName}`, 0);
+                await repository.createCommitOnHead(
+                    [],
+                    GitProgramStorage.signature,
+                    GitProgramStorage.signature,
+                    'initial commit'
+                );
+                await wrapCallbackAsPromise(fs.writeFile, `tmp/${copyProgramName}/test`, 'hello');
+
+                await programStorage.createProgram(programName, copyProgramName);
+                try {
+                    await wrapCallbackAsPromise(fs.stat, `tmp/${programName}/test`);
+                    throw Error('File was copied');
+                } catch(err) {
+                    assert.equal(err.code, 'ENOENT');
+                }
+            });
+        });
     });
 
     describe('deleteProgram', () => {

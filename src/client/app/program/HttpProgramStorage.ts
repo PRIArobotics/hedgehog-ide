@@ -20,13 +20,14 @@ export default class HttpProgramStorage implements IProgramStorage {
 
     public constructor(private http: Http) { }
 
-    public createProgram(name: string): Promise<Program> {
+    public createProgram(name: string, copyFrom?: string): Promise<Program> {
         // create program data object
         let programData = {
             data: {
                 type: 'program',
                 attributes: {
-                    name
+                    name,
+                    copyFrom
                 }
             }
         };

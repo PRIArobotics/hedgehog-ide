@@ -54,6 +54,8 @@ paths:
                   properties:
                     name:
                       type: string
+                    copyFrom:
+                      type: string
       responses:
         201:
           description: 'Returns the newly created program'
