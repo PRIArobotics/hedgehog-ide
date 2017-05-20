@@ -1,4 +1,4 @@
-import {Component, EventEmitter} from '@angular/core';
+import {AfterViewInit, Component, EventEmitter} from '@angular/core';
 import {MaterializeAction} from "angular2-materialize";
 
 declare const VERSION: string;
@@ -8,7 +8,7 @@ declare const VERSION: string;
     template: require('./app.component.html'),
     styles: [require('./app.component.css')]
 })
-export class AppComponent {
+export class AppComponent implements AfterViewInit {
     public static fixModalOverlay() {
         // This is extremely hacky but apparently, there is no other solution.
         // Move modal to right location as it should fill the whole screen otherwise
@@ -22,6 +22,11 @@ export class AppComponent {
     };
 
     private aboutModalActions = new EventEmitter<string|MaterializeAction>();
+
+    public ngAfterViewInit(): void {
+        // initialize all selects of the application here
+        ($('select') as any).material_select();
+    }
 
     get version () {
         return VERSION;

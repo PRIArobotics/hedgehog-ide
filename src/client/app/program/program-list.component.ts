@@ -1,4 +1,4 @@
-import {Component, OnInit, EventEmitter, ViewChild, AfterViewInit} from '@angular/core';
+import {Component, OnInit, EventEmitter, ViewChild} from '@angular/core';
 import {MaterializeAction} from "angular2-materialize";
 import {HttpProgramService} from "./http-program.service";
 import {Router} from "@angular/router";
@@ -18,7 +18,7 @@ import {default as Program} from "../../../common/versioncontrol/Program";
         HttpProgramService
     ]
 })
-export class ProgramListComponent implements OnInit, AfterViewInit {
+export class ProgramListComponent implements OnInit {
     public createModalActions = new EventEmitter<string|MaterializeAction>();
     public deleteModalActions = new EventEmitter<string|MaterializeAction>();
     public renameModalActions = new EventEmitter<string|MaterializeAction>();
@@ -49,10 +49,6 @@ export class ProgramListComponent implements OnInit, AfterViewInit {
     public async ngOnInit() {
         // add programs for testing
         return this.reloadProgramList();
-    }
-
-    public ngAfterViewInit () {
-        ($('select') as any).material_select();
     }
 
     public async reloadProgramList() {
