@@ -30,7 +30,7 @@
     "@angular/upgrade": "~4.1",
     "ace-builds": "^1.2.6",
     "angular-in-memory-web-api": "~0.3.0",
-    "angular-split": "PRIArobotics/angular-split",
+    "angular-split": "^0.2.0",
     "angular2-contextmenu": "^0.8.2",
     "angular2-materialize": "^15.0.2",
     "angular2-tree-component": "^3.1.0",
@@ -82,7 +82,8 @@
     "raw-loader": "^0.5.1",
     "sinon": "^2.2.0",
     "style-loader": "^0.17.0",
-    "tslint": "^4.4.2",
+    "systemjs-plugin-babel": "0.0.21",
+    "tslint": "^5.2.0",
     "typescript": "~2.3.2",
     "typings": "^2.1.0",
     "webpack": "^2.5.1"
