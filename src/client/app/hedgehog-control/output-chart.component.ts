@@ -3,8 +3,7 @@ import {BaseChartDirective} from "ng2-charts/ng2-charts";
 
 @Component({
     selector: 'output-chart',
-    template: require('./output-chart.component.html'),
-    styles: [require('./output-chart.component.css')]
+    template: require('./output-chart.component.html')
 })
 export default class OutputChartComponent implements DoCheck, OnInit {
 

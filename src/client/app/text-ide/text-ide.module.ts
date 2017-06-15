@@ -14,6 +14,9 @@ import {TextIdeComponent} from './text-ide.component';
 import 'brace';
 import {AngularSplitModule} from "angular-split";
 
+import { Subject } from 'rxjs';
+console.log(Subject)
+
 @NgModule({
     imports: [
         MaterializeModule,

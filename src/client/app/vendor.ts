@@ -6,7 +6,6 @@ import 'zone.js/dist/zone.js';
 import 'reflect-metadata/Reflect.js';
 
 // Angular Dependencies
-import 'rxjs';
 import 'jquery';
 import 'jquery-ui-dist/jquery-ui.js';
 
