@@ -14,7 +14,7 @@
             'common/': './common/'
         },
         map: {
-            'socket.io-client': './node_modules/socket.io-client/dist/socket.io.min.js',
+            'socket.io-client': './node_modules/socket.io-client/dist/socket.io.slim.js',
             'materialize-css': './node_modules/materialize-css/dist/js/materialize.js',
             'babel-polyfill/dist/polyfill.js': './node_modules/babel-polyfill/dist/polyfill.js',
             'zone.js/dist/zone.js': './node_modules/zone.js/dist/zone.js',
@@ -72,6 +72,7 @@
                 format: 'global',
                 deps: ['../blocks_compressed.js']
             }
-        }
+        },
+        transpiler: 'systemjs-plugin-babel'
     });
 })(this);

@@ -9,7 +9,7 @@ module.exports = {
     devtool: 'source-map',
 
     output: {
-        path: 'build/dist',
+        path: path.join(__dirname, 'build/dist'),
         filename: '[name].[hash].js',
     },
 
@@ -47,8 +47,10 @@ module.exports = {
         new HtmlWebpackPlugin({
             template: './src/client/index.html'
         }),
-        new webpack.optimize.UglifyJsPlugin({ // https://github.com/angular/angular/issues/10618
-            mangle: false
+        new webpack.optimize.UglifyJsPlugin({
+            mangle: {
+                keep_fnames: true
+            }
         }),
         new ExtractTextPlugin('[name].[hash].css'),
         new webpack.LoaderOptionsPlugin({

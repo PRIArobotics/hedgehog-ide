@@ -19,7 +19,7 @@ export class AppComponent implements AfterViewInit {
         overlay.detach();
         // attach it to the thing you want darkened
         $('router-outlet').after(overlay);
-    };
+    }
 
     private aboutModalActions = new EventEmitter<string|MaterializeAction>();
 

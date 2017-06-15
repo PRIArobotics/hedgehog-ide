@@ -21,7 +21,7 @@ export class ObjectParser<T> {
     public constructor(public targetFactory: () => T, ...properties: IParserProperty[]) {
         if(properties)
             this.addProperties.apply(this, properties);
-    };
+    }
 
     /**
      * Parse a single resource

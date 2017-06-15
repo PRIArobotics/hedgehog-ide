@@ -95,6 +95,8 @@ hedgehogApi.registerResource(new SensorResource(hedgehog, modelRegistry));
  * Socket.io setup
  */
 let io = Io(server.listener);
+
+// tslint:disable
 new SocketIoProcessAdapter(processManager, io);
 new SocketIoSensorAdapter(hedgehog, io);
 
@@ -102,9 +104,8 @@ new SocketIoSensorAdapter(hedgehog, io);
  * ShareDB backend
  */
 new ShareDbService(programStorage, io);
-
-// tslint:disable-next-line
 server.register(require('inert'));
+// tslint:enable
 
 /**
  * Static resources (Angular webapp)
