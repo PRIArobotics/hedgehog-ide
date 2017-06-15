@@ -127,17 +127,22 @@ export class BlocklyComponent implements OnInit, OnDestroy {
     }
 
     private injectBlockly() {
-        let options: any = {toolbox: document.getElementById('toolbox'),
-            zoom: {controls: false,
-                   wheel: true,
-                   startScale: 1.0,
-                   maxScale: 2,
-                   minScale: 0.8,
-                   scaleSpeed: 1.05},
-            grid: {spacing: 20,
-                   length: 3,
-                   colour: '#ccc',
-                   snap: true},
+        let options: any = {
+            toolbox: document.getElementById('toolbox'),
+            zoom: {
+                controls: false,
+                wheel: true,
+                startScale: 1.0,
+                maxScale: 2,
+                minScale: 0.8,
+                scaleSpeed: 1.05
+            },
+            grid: {
+                spacing: 20,
+                length: 3,
+                colour: '#ccc',
+                snap: true
+            },
             trashcan: false,
             maxBlocks: 400,
             scrollbars: true,
