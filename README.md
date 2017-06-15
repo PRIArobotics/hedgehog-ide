@@ -1,5 +1,7 @@
 # hedgehog-ide
 [![Build Status](https://travis-ci.org/PRIArobotics/hedgehog-ide.svg?branch=master)](https://travis-ci.org/PRIArobotics/hedgehog-ide)
+[![Dependency Status](https://david-dm.org/priarobotics/hedgehog-ide.svg)](https://david-dm.org/priarobotics/hedgehog-ide)
+
 
 Hedgehog IDE and Deployment Protocol
 
