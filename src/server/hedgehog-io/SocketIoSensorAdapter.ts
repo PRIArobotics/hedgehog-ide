@@ -21,7 +21,7 @@ export default class SocketIoSensorAdapter {
                 sensorData.push({
                     id: port,
                     type: 'digital',
-                    value: await this.hedgehog.getDigital(port)
+                    value: await this.hedgehog.getDigital(port)? 1 : 0
                 });
             }
         }
