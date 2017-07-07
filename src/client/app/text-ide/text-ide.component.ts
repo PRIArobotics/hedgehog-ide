@@ -2,7 +2,7 @@ import {Component, ViewChild, OnInit, AfterViewInit, EventEmitter, HostListener,
 import {ActivatedRoute} from '@angular/router';
 import {WorkingTreeObjectType} from '../../../common/versioncontrol/WorkingTreeObject';
 import WorkingTreeDirectory from '../../../common/versioncontrol/WorkingTreeDirectory';
-import {TreeComponent} from 'angular2-tree-component';
+import {TreeComponent} from 'angular-tree-component';
 import {AceEditorComponent} from './ace-editor.component';
 import WorkingTreeFile from '../../../common/versioncontrol/WorkingTreeFile';
 import IProgramStorage from '../../../common/versioncontrol/ProgramStorage';
