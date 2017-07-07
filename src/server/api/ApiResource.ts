@@ -6,7 +6,7 @@ abstract class ApiResource {
 
     public constructor(public pathPrefix = '') { }
 
-    public addEndpoint(path, method, handler) {
+    public addEndpoint(path, method, handler) { // tslint:disable-line:no-shadowed-variable
         if(!this.endpoints)
             this.endpoints = [];
 

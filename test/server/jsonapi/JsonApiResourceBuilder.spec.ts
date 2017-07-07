@@ -42,7 +42,7 @@ describe('JsonApiResourceBuilder', () => {
         it('should correctly set the relationship data and included data', () => {
             let documentBuilder = {
                 included: [],
-                addIncludedResource(resource) {
+                addIncludedResource(resource) { // tslint:disable-line:no-shadowed-variable
                     this.included.push(resource);
                 }
             };
