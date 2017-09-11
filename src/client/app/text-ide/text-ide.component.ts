@@ -1,4 +1,7 @@
-import {Component, ViewChild, OnInit, AfterViewInit, EventEmitter, HostListener, OnDestroy} from '@angular/core';
+import {
+    Component, ViewChild, OnInit, AfterViewInit, EventEmitter, HostListener, OnDestroy,
+    AfterContentInit
+} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {WorkingTreeObjectType} from '../../../common/versioncontrol/WorkingTreeObject';
 import WorkingTreeDirectory from '../../../common/versioncontrol/WorkingTreeDirectory';
@@ -29,14 +32,14 @@ export class File {
 @Component({
     selector: 'hedgehog-ide',
     template: require('./text-ide.component.html'),
-    styles: [require('./text-ide.component.css')],
+    styles: [require('./text-ide.component.scss')],
     providers: [
         HttpProgramService,
         ShareDbClientService
     ]
 })
 
-export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
+export class TextIdeComponent implements OnInit, AfterViewInit, AfterContentInit, OnDestroy {
     public fileTreeOptions = {
         allowDrag: true,
         allowDrop: (element, to) => {
@@ -283,7 +286,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
         // populate file tree and give it the root directory and it's childArray
         await this.populateFiletree(rootDir, childArray);
 
-        // open all previously opened files
+        // open all previously opened filesa
         for (let fileId of this.openFiles[this.programName]) {
             if (this.files.get(fileId)) {
                 await this.openFileTab(fileId, false);
@@ -362,7 +365,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
             }
         });
 
-        let hedgehogLibraryAutocomplete = {
+        const hedgehogLibraryAutocomplete = {
             getCompletions: (editor, session, pos, prefix, callback) => {
                 let autocompletionList = [
                     'set_input_state(port, pullup)',
@@ -429,7 +432,9 @@ export class TextIdeComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.openFile(tab.attr('id').substr(3));
             }
         });
+    }
 
+    public async ngAfterContentInit() {
         this.realtimeSync = localStorage.getItem('realtimeSync');
         if (typeof this.realtimeSync === 'undefined') {
             this.realtimeSync = true;

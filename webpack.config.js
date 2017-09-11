@@ -4,7 +4,10 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var path = require('path');
 
 module.exports = {
-    entry: ['./build/src/client/app/main.js'],
+    entry: {
+        app: './src/client/app/main.ts',
+        vendor: './src/client/app/vendor.ts'
+    },
 
     devtool: 'source-map',
 
@@ -14,11 +17,21 @@ module.exports = {
     },
 
     resolve: {
-        extensions: ['.js']
+        extensions: ['.js', '.ts']
     },
 
     module: {
         rules: [
+            {
+                test: /\.ts$/,
+                loaders: [
+                    {
+                        loader: 'awesome-typescript-loader'
+                    },
+                    'angular2-template-loader'
+                ],
+                exclude: /node_modules/
+            },
             {
                 test: /\.html$/,
                 loader: 'html-loader'
@@ -35,23 +48,27 @@ module.exports = {
             {
                 test: /\.css$/,
                 use: 'raw-loader'
+            },
+            {
+                test: /\.scss$/,
+                loader: ['raw-loader', 'sass-loader']
             }
         ]
     },
 
     plugins: [
         new webpack.optimize.CommonsChunkPlugin({
-            name: ['app']
+            name: ['app', 'vendor']
         }),
 
         new HtmlWebpackPlugin({
             template: './src/client/index.html'
         }),
-        new webpack.optimize.UglifyJsPlugin({
+        /*new webpack.optimize.UglifyJsPlugin({
             mangle: {
                 keep_fnames: true
             }
-        }),
+        }),*/
         new ExtractTextPlugin('[name].[hash].css'),
         new webpack.LoaderOptionsPlugin({
             htmlLoader: {

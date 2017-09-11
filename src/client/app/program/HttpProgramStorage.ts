@@ -4,15 +4,13 @@ import 'rxjs/add/operator/toPromise';
 import IProgramStorage from '../../../common/versioncontrol/ProgramStorage';
 import Program from '../../../common/versioncontrol/Program';
 import Blob from '../../../common/versioncontrol/Blob';
-import Tree from '../../../common/versioncontrol/Tree';
 import Version from '../../../common/versioncontrol/Version';
 import WorkingTreeDirectory from '../../../common/versioncontrol/WorkingTreeDirectory';
 import WorkingTreeFile from '../../../common/versioncontrol/WorkingTreeFile';
 import {Http, Headers} from '@angular/http';
 import {genericToBase64, genericFromBase64, basename} from "../../../common/utils";
 import {WorkingTreeObjectType} from "../../../common/versioncontrol/WorkingTreeObject";
-import {TreeItem} from "../../../common/versioncontrol/Tree";
-import {TreeItemType} from "../../../common/versioncontrol/Tree";
+import {default as Tree, TreeItem, TreeItemType} from "../../../common/versioncontrol/Tree";
 
 export default class HttpProgramStorage implements IProgramStorage {
 
@@ -178,7 +176,7 @@ export default class HttpProgramStorage implements IProgramStorage {
 
                 // loop through all items
                 for (let item of res.data.relationships.items.data) {
-                    for (let includedItem of res.included ) {
+                    for (let includedItem of res.included) {
                         // check if included id and the data item id match up
                         if (includedItem.id === item.id) {
                             // check if the type of the item is a blob (file) or tree (directory)

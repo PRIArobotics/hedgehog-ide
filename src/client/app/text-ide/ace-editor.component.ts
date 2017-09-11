@@ -1,10 +1,5 @@
 import {Component, EventEmitter, Output, ElementRef, Input} from '@angular/core';
 
-import 'brace';
-import 'brace/theme/textmate';
-import 'brace/theme/tomorrow_night';
-import 'brace/mode/python';
-
 declare var ace: any;
 
 /**
