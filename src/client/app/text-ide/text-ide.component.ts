@@ -666,7 +666,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, AfterContentInit
     @HostListener('window:keydown', ['$event'])
     public async keyDownEvent(e) {
         // check if the user pressed CTRL - S to save the open file
-        if ((e.keyCode === 115 || e.keyCode === 83 ) && (e.ctrlKey || e.metaKey) && this.openId) {
+        if ((e.keyCode === 115 || e.keyCode === 83) && (e.ctrlKey || e.metaKey) && this.openId) {
             e.preventDefault();
 
             await this.saveOpenFile();

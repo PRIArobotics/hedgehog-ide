@@ -3,8 +3,7 @@ import {Injectable, Inject} from "@angular/core";
 import {DOCUMENT} from "@angular/platform-browser";
 import io = require('socket.io-client');
 
-import IProcessManager from "../../../common/ProcessManager";
-import {IProcess} from "../../../common/ProcessManager";
+import {default as IProcessManager , IProcess} from "../../../common/ProcessManager";
 import {genericFromBase64, genericToBase64} from "../../../common/utils";
 import EventEmitter from "./EventEmitter";
 

@@ -1,8 +1,7 @@
 import {Component, OnInit, Pipe, PipeTransform} from "@angular/core";
 import {ActivatedRoute} from "@angular/router";
 import {HttpProgramService} from "./http-program.service";
-import Tree from "../../../common/versioncontrol/Tree";
-import {TreeItemType} from "../../../common/versioncontrol/Tree";
+import {default as Tree, TreeItemType} from "../../../common/versioncontrol/Tree";
 
 
 @Component({
@@ -44,7 +43,7 @@ export class KeysPipe implements PipeTransform {
     public transform(value) {
         let keys: any = [];
         for (let key of value.keys()) {
-            keys.push( {key, value: value.get(key)} );
+            keys.push({key, value: value.get(key)});
         }
         return keys;
     }

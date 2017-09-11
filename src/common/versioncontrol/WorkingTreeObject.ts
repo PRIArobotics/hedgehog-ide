@@ -1,6 +1,4 @@
-
-import {basename, dirname} from "../utils";
-import { join } from "../utils";
+import {basename, dirname, join} from "../utils";
 import IProgramStorage from "./ProgramStorage";
 
 abstract class WorkingTreeObject {

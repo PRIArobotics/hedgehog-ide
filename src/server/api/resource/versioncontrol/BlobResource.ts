@@ -32,7 +32,7 @@ export default class BlobResource extends ApiResource {
 
         let documentBuilder = new JsonApiDocumentBuilder();
         documentBuilder.setLinks(getLinkUrl(req, `/api/blobs/${genericToBase64(programName)}/${blobId}`), null);
-        documentBuilder.addResource( await this.serializerRegistry.serialize(blob, req, documentBuilder));
+        documentBuilder.addResource(await this.serializerRegistry.serialize(blob, req, documentBuilder));
 
         return reply(documentBuilder.getProduct())
             .code(200);

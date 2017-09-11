@@ -1,8 +1,7 @@
 import Hapi = require('hapi');
 
-import JsonApiDocumentBuilder from "../jsonapi/JsonApiBuilder";
+import {default as JsonApiDocumentBuilder, JsonApiResourceBuilder} from "../jsonapi/JsonApiBuilder";
 import {JsonApiResource} from "../jsonapi/JsonApiObjects";
-import {JsonApiResourceBuilder} from "../jsonapi/JsonApiBuilder";
 import {genericToBase64} from "../../common/utils";
 import {getLinkUrl} from "../utils";
 import {IProcess} from "../../common/ProcessManager";

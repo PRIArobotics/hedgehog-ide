@@ -1,8 +1,6 @@
 import assert = require('assert');
 
-import { basename } from '../src/common/utils';
-import { dirname } from '../src/common/utils';
-import { join } from '../src/common/utils';
+import { basename, dirname, join } from '../src/common/utils';
 
 describe('Utils', () => {
     describe('basename', () => {

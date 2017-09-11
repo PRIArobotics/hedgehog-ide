@@ -6,9 +6,8 @@ import IProgramStorage from "../../../../common/versioncontrol/ProgramStorage";
 import {JsonApiDocument, JsonApiResource} from "../../../jsonapi/JsonApiObjects";
 import {ObjectParser, RequirementType} from "../../../jsonapi/Parser";
 import Program from "../../../../common/versioncontrol/Program";
-import JsonApiDocumentBuilder from "../../../jsonapi/JsonApiBuilder";
+import {default as JsonApiDocumentBuilder, DataType} from "../../../jsonapi/JsonApiBuilder";
 import SerializerRegistry from "../../../serializer/SerializerRegistry";
-import {DataType} from "../../../jsonapi/JsonApiBuilder";
 import {getRequestUrl, getLinkUrl} from "../../../utils";
 import {genericFromBase64, genericToBase64} from "../../../../common/utils";
 
@@ -193,7 +192,7 @@ export default class ProgramResource extends ApiResource {
     private async replyProgram(program: Program, request, reply) {
         let documentBuilder = new JsonApiDocumentBuilder();
         documentBuilder.setLinks(getLinkUrl(request, `/api/programs/${genericToBase64(program.name)}`), null);
-        documentBuilder.addResource( await this.serializerRegistry.serialize(program, request, documentBuilder));
+        documentBuilder.addResource(await this.serializerRegistry.serialize(program, request, documentBuilder));
 
         return reply(documentBuilder.getProduct())
             .code(200);

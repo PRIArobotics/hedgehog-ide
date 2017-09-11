@@ -6,10 +6,9 @@ import ApiResource from "../../ApiResource";
 import SerializerRegistry from "../../../serializer/SerializerRegistry";
 import ApiEndpoint from "../../ApiEndpoint";
 import {IReply} from "hapi";
-import JsonApiDocumentBuilder from "../../../jsonapi/JsonApiBuilder";
 import {getLinkUrl, getRequestUrl} from "../../../utils";
 import {SensorType, default as Sensor} from "../../../../common/Sensor";
-import {DataType} from "../../../jsonapi/JsonApiBuilder";
+import {default as JsonApiDocumentBuilder , DataType} from "../../../jsonapi/JsonApiBuilder";
 import {JsonApiDocument, JsonApiResource} from "../../../jsonapi/JsonApiObjects";
 import {RequirementType, ObjectParser} from "../../../jsonapi/Parser";
 

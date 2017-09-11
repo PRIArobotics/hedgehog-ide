@@ -32,7 +32,7 @@ export default class TreeResource extends ApiResource {
 
         let documentBuilder = new JsonApiDocumentBuilder();
         documentBuilder.setLinks(getLinkUrl(req, `/api/trees/${genericToBase64(programName)}/${treeId}`), null);
-        documentBuilder.addResource( await this.serializerRegistry.serialize(tree, req, documentBuilder));
+        documentBuilder.addResource(await this.serializerRegistry.serialize(tree, req, documentBuilder));
 
         return reply(documentBuilder.getProduct())
             .code(200);

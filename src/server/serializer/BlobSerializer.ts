@@ -2,8 +2,7 @@ import Hapi = require('hapi');
 
 import {JsonApiResource} from "../jsonapi/JsonApiObjects";
 import Blob from "../../common/versioncontrol/Blob";
-import JsonApiDocumentBuilder from "../jsonapi/JsonApiBuilder";
-import {JsonApiResourceBuilder} from "../jsonapi/JsonApiBuilder";
+import {default as JsonApiDocumentBuilder, JsonApiResourceBuilder} from "../jsonapi/JsonApiBuilder";
 
 async function serializeBlob (blob: Blob,
                               request: Hapi.Request,

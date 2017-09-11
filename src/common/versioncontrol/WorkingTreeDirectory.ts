@@ -1,7 +1,5 @@
-
 import WorkingTreeFile from "./WorkingTreeFile";
-import WorkingTreeObject from "./WorkingTreeObject";
-import { WorkingTreeObjectType } from "./WorkingTreeObject";
+import {default as WorkingTreeObject, WorkingTreeObjectType} from "./WorkingTreeObject";
 import {join} from "../utils";
 
 export default class WorkingTreeDirectory extends WorkingTreeObject {

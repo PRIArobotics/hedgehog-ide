@@ -1,5 +1,4 @@
-import WorkingTreeObject from "./WorkingTreeObject";
-import {WorkingTreeObjectType} from "./WorkingTreeObject";
+import {default as WorkingTreeObject, WorkingTreeObjectType} from "./WorkingTreeObject";
 
 export default class WorkingTreeFile extends WorkingTreeObject {
     public readonly type = WorkingTreeObjectType.File;

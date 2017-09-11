@@ -7,9 +7,8 @@ import IProgramStorage from "../../../../common/versioncontrol/ProgramStorage";
 import {genericFromBase64, genericToBase64} from "../../../../common/utils";
 import Version from "../../../../common/versioncontrol/Version";
 import {getLinkUrl, getRequestUrl} from "../../../utils";
-import JsonApiDocumentBuilder from "../../../jsonapi/JsonApiBuilder";
+import {default as JsonApiDocumentBuilder, DataType} from "../../../jsonapi/JsonApiBuilder";
 import ApiEndpoint from "../../ApiEndpoint";
-import {DataType} from "../../../jsonapi/JsonApiBuilder";
 import {JsonApiDocument, JsonApiResource} from "../../../jsonapi/JsonApiObjects";
 import {RequirementType, ObjectParser} from "../../../jsonapi/Parser";
 
@@ -122,7 +121,7 @@ export default class VersionResource extends ApiResource {
 
         let documentBuilder = new JsonApiDocumentBuilder();
         documentBuilder.setLinks(getLinkUrl(req, `/api/versions/${genericToBase64(programName)}/${versionId}`), null);
-        documentBuilder.addResource( await this.serializerRegistry.serialize(version, req, documentBuilder));
+        documentBuilder.addResource(await this.serializerRegistry.serialize(version, req, documentBuilder));
 
         return reply(documentBuilder.getProduct())
             .code(200);

@@ -2,9 +2,7 @@ import NodeGit = require('nodegit');
 import fs = require('fs');
 
 import Blob from "../../common/versioncontrol/Blob";
-import Tree from "../../common/versioncontrol/Tree";
-import {TreeItem} from "../../common/versioncontrol/Tree";
-import {TreeItemType} from "../../common/versioncontrol/Tree";
+import {default as Tree, TreeItem, TreeItemType} from "../../common/versioncontrol/Tree";
 import Version from "../../common/versioncontrol/Version";
 import WorkingTreeDirectory from "../../common/versioncontrol/WorkingTreeDirectory";
 import WorkingTreeFile from "../../common/versioncontrol/WorkingTreeFile";

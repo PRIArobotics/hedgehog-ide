@@ -1,8 +1,10 @@
 import "babel-polyfill";
 import assert = require('assert');
-import JsonApiDocumentBuilder from "../../../src/server/jsonapi/JsonApiBuilder";
-import {DataType} from "../../../src/server/jsonapi/JsonApiBuilder";
-import {JsonApiResourceBuilder} from "../../../src/server/jsonapi/JsonApiBuilder";
+import {
+    default as JsonApiDocumentBuilder,
+    DataType,
+    JsonApiResourceBuilder
+} from "../../../src/server/jsonapi/JsonApiBuilder";
 import {JsonApiResource} from "../../../src/server/jsonapi/JsonApiObjects";
 
 describe('JsonApiDocumentBuilder', () => {

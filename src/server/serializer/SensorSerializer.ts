@@ -1,8 +1,7 @@
 import Hapi = require('hapi');
 import {JsonApiResource} from "../jsonapi/JsonApiObjects";
 import {JsonApiResourceBuilder, default as JsonApiDocumentBuilder} from "../jsonapi/JsonApiBuilder";
-import {SensorType} from "../../common/Sensor";
-import Sensor from "../../common/Sensor";
+import {default as Sensor, SensorType} from "../../common/Sensor";
 
 async function serializeSensor (sensor: Sensor,
                                 request: Hapi.Request,

@@ -1,5 +1,4 @@
-import { basename } from '../utils';
-import { dirname } from '../utils';
+import { basename, dirname } from '../utils';
 
 import IProgramStorage from './ProgramStorage';
 import Program from './Program';
