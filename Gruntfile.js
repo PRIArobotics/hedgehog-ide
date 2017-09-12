@@ -149,7 +149,7 @@ module.exports = function(grunt) {
         nodetask.stderr.pipe(process.stderr);
     });
 
-    grunt.registerTask('build-dirty', ['ts', 'copy', 'webpack-dev']);
+    grunt.registerTask('build-dirty', ['ts', 'copy', 'webpack:dev']);
     grunt.registerTask('build', ['clean', 'build-dirty']);
     grunt.registerTask('default', ['concurrent:run']);
 };
