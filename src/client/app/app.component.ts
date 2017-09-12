@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, EventEmitter} from '@angular/core';
+import {AfterViewInit, Component, EventEmitter, ViewEncapsulation} from '@angular/core';
 import {MaterializeAction} from "angular2-materialize";
 
 declare const VERSION: string;
@@ -6,7 +6,8 @@ declare const VERSION: string;
 @Component({
     selector: 'my-app',
     template: require('./app.component.html'),
-    styles: [require('./app.component.scss')]
+    styles: [require('./app.component.scss')],
+    encapsulation: ViewEncapsulation.None
 })
 export class AppComponent implements AfterViewInit {
     public static fixModalOverlay() {

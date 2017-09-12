@@ -11,11 +11,6 @@ module.exports = {
 
     devtool: 'source-map',
 
-    output: {
-        path: path.join(__dirname, 'build/dist'),
-        filename: '[name].[hash].js',
-    },
-
     resolve: {
         extensions: ['.js', '.ts']
     },
@@ -64,24 +59,11 @@ module.exports = {
         new HtmlWebpackPlugin({
             template: './src/client/index.html'
         }),
-        /*new webpack.optimize.UglifyJsPlugin({
-            mangle: {
-                keep_fnames: true
-            }
-        }),*/
         new ExtractTextPlugin('[name].[hash].css'),
-        new webpack.LoaderOptionsPlugin({
-            htmlLoader: {
-                minimize: false // workaround for ng2
-            }
-        }),
         new webpack.ProvidePlugin({
             '$': 'jquery',
             'jQuery':'jquery',
             'window.jQuery':'jquery'
-        }),
-        new webpack.DefinePlugin({
-            VERSION: "'" + require('./package.json').version + "'",
         })
     ]
 

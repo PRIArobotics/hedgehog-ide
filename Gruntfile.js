@@ -3,46 +3,16 @@ var path = require('path');
 var spec = require('swagger-tools').specs.v2;
 var yaml = require('js-yaml');
 
+const webpackConfig = require('./src/client/webpack.prod');
+
 module.exports = function(grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
         ts: {
-            options: {
-                target: 'es6',
-                module: 'commonjs',
-                moduleResolution: 'node',
-                sourceMap: true,
-                emitDecoratorMetadata: true,
-                experimentalDecorators: true,
-                removeComments: false,
-                noImplicitAny: false,
-                rootDir: '.'
-            },
-            all: {
-                src: ['src/**/*.ts', 'typings/index.d.ts'],
-                outDir: 'build'
-            },
-            test: {
-                src: ['test/**/*.ts', 'typings/index.d.ts'],
-                outDir: 'build'
-            }
-        },
-        babel: {
-            options: {
-                presets: ['es2015']
-            },
-            all: {
-                files: [{
-                    expand: true,
-                    cwd: 'build',
-                    src: [
-                        'src/**/*.js',
-                        'test/**/*.js',
-                        '!src/client/node_modules/*',
-                        '!src/client/app/blockly/lib/*'
-                    ],
-                    dest: 'build'
-                }]
+            default: {
+                tsconfig: {
+                    passThrough: true
+                }
             }
         },
         clean: [
@@ -52,19 +22,6 @@ module.exports = function(grunt) {
         copy: {
             client: {
                 files: [
-                    {
-                        expand: true,
-                        cwd: 'src/',
-                        src: [
-                            '**/*.html',
-                            '**/*.css',
-                            '**/*.svg',
-                            '**/*.ico',
-                            'client/systemjs*.js',
-                        ],
-                        dest: 'build/src'
-                    },
-
                     //blockly libs
                     {
                         expand: true,
@@ -83,9 +40,9 @@ module.exports = function(grunt) {
                     //google material files
                     {
                         expand: true,
-                        cwd: 'src/client/assets/css/google-material',
+                        cwd: 'src/client/assets',
                         src: ['**'],
-                        dest: 'build/src/client/assets/css/google-material'
+                        dest: 'build/src/client/assets'
                     }
                 ]
             }
@@ -99,6 +56,8 @@ module.exports = function(grunt) {
             common: 'src/common/**/*.ts',
             test: 'test/**/*.ts'
         },
+
+        // todo fix watch an concurrent
         concurrent: {
             run: [['compile', 'sass','copy', 'injector', 'run-server'], 'watch:compile', 'watch:copy'],
             options: {
@@ -121,40 +80,11 @@ module.exports = function(grunt) {
                 }
             }
         },
-        injector: {
-            options: {
-                addRootSlash: false,
-                ignorePath: 'build/src/client',
-                transform: function (filepath) {
-                    console.log(filepath);
-                    return `<script src="${filepath}"></script>`;
-                }
-            },
-            src: {
-                files: {
-                    'build/src/client/index.html': [
-                        'node_modules/systemjs/dist/system.src.js',
-                        'build/src/client/systemjs.config.js',
-                        'build/src/client/systemjs-bootstrap.js'
-                    ]
-                }
-            }
-        },
-        sass: {
-            dist: {
-                files: [
-                    {
-                        expand: true,
-                        cwd: 'src/client',
-                        src: ['**/*.scss'],
-                        dest: 'build/src/client',
-                        rename: function(dest, src) {
-                            return path.join(dest, src.replace(/\.scss$/, ".css"));
-                        }
-                    }
-                ]
-            }
-        },
+        webpack: {
+            'dev-watch': Object.assign({watch: true}, require('./src/client/webpack.dev')),
+            dev: require('./src/client/webpack.dev'),
+            dist: webpackConfig
+        }
     });
 
     grunt.loadNpmTasks('grunt-ts');
@@ -163,9 +93,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-concurrent');
-    grunt.loadNpmTasks('grunt-babel');
-    grunt.loadNpmTasks('grunt-injector');
-    grunt.loadNpmTasks('grunt-sass');
+    grunt.loadNpmTasks('grunt-webpack');
 
     grunt.registerTask('swagger-validate', function() {
         var done = this.async();
@@ -221,8 +149,7 @@ module.exports = function(grunt) {
         nodetask.stderr.pipe(process.stderr);
     });
 
-    grunt.registerTask('compile', ['ts', 'babel']);
-    grunt.registerTask('build-dirty', ['compile', 'sass', 'copy', 'injector']);
+    grunt.registerTask('build-dirty', ['ts', 'copy', 'webpack-dev']);
     grunt.registerTask('build', ['clean', 'build-dirty']);
     grunt.registerTask('default', ['concurrent:run']);
 };

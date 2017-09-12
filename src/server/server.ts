@@ -131,18 +131,29 @@ server.route({
     }
 });
 
-if (serverConfig.environment === 'production') {
-    server.route({
-        method: 'GET',
-        path: '/assets/{param*}',
-        handler: {
-            directory: {
-                path: 'src/client/assets',
-                redirectToSlash: true
-            }
+server.route({
+    method: 'GET',
+    path: '/assets/{param*}',
+    handler: {
+        directory: {
+            path: 'src/client/assets',
+            redirectToSlash: true
         }
-    });
+    }
+});
 
+server.route({
+    method: 'GET',
+    path: '/app/{param*}',
+    handler: {
+        directory: {
+            path: 'src/client/app',
+            redirectToSlash: true
+        }
+    }
+});
+
+if (serverConfig.environment === 'production') {
     server.route({
         method: 'GET',
         path: '/{param*}',
@@ -157,21 +168,10 @@ if (serverConfig.environment === 'production') {
 } else {
     server.route({
         method: 'GET',
-        path: '/common/{param*}',
-        handler: {
-            directory: {
-                path: 'src/common',
-                redirectToSlash: true
-            }
-        }
-    });
-
-    server.route({
-        method: 'GET',
         path: '/{param*}',
         handler: {
             directory: {
-                path: 'src/client',
+                path: 'client',
                 redirectToSlash: true,
                 index: true
             }
@@ -190,7 +190,7 @@ server.ext('onPreResponse', (request, reply) => {
         if (serverConfig.environment === 'production') {
             indexFile = path.join(__dirname, '../../dist/index.html');
         } else {
-            indexFile = path.join(__dirname, '../client/index.html');
+            indexFile = path.join(__dirname, '../../client/index.html');
         }
         return reply.file(indexFile);
     }
