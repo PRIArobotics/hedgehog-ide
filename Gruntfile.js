@@ -50,9 +50,8 @@ module.exports = function(grunt) {
             test: 'test/**/*.ts'
         },
 
-        // todo fix watch an concurrent
         concurrent: {
-            run: [['compile', 'sass','copy', 'injector', 'run-server'], 'watch:compile', 'watch:copy'],
+            run: [['ts', 'copy', 'run-server'], 'watch:ts', 'watch:copy', 'webpack:dev-watch'],
             options: {
                 logConcurrentOutput: true
             }
@@ -65,9 +64,12 @@ module.exports = function(grunt) {
                     interrupt: true
                 }
             },
-            compile: {
-                files: 'src/**/*.ts',
-                tasks: ['compile'],
+            ts: {
+                files: [
+                    'src/server/**/*.ts',
+                    'src/common/**/*.ts'
+                ],
+                tasks: ['ts'],
                 options: {
                     interrupt: true
                 }
