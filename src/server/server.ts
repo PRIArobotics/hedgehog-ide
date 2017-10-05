@@ -26,6 +26,7 @@ import SensorResource from "./api/resource/hedgehog-io/SensorResource";
 import ServoResource from "./api/resource/hedgehog-io/ServoResource";
 import SocketIoSensorAdapter from "./hedgehog-io/SocketIoSensorAdapter";
 import ShareDbService from "./realtime-sync/ShareDbService";
+import AuthenticationResource from "./api/resource/authentication/AuthenticationResource";
 
 // Return external module as the file is outside of the
 // TypeScript compile output
@@ -80,6 +81,7 @@ server.connection(serverConfig.connection);
  * API setup
  */
 let hedgehogApi = new Api(server, '/api');
+hedgehogApi.registerResource(new AuthenticationResource(serverConfig.auth.jwtSecret));
 hedgehogApi.registerResource(new ProgramResource(programStorage, modelRegistry));
 hedgehogApi.registerResource(new WorkingTreeFileResource(programStorage, modelRegistry));
 hedgehogApi.registerResource(new WorkingTreeDirectoryResource(programStorage, modelRegistry));

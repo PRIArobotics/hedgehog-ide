@@ -27,5 +27,12 @@ exports = module.exports = {
     // Logging configuration
     logging: {
         level: 'debug'
+    },
+
+    // Auth config
+    // Generate this e.g. as follows
+    // node -e "console.log(require('crypto').randomBytes(256).toString('base64'));"
+    auth: {
+        jwtSecret: 'secret!'
     }
 };

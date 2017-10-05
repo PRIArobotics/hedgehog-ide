@@ -1,6 +1,7 @@
 {
   "name": "hedgehog-ide",
   "dependencies": {
+    "jsonwebtoken": "registry:dt/jsonwebtoken#7.2.0+20161229235100",
     "ncp": "registry:dt/ncp#2.0.0+20170104233124",
     "winston": "registry:dt/winston#0.0.0+20161122193333"
   },

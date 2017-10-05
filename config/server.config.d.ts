@@ -5,6 +5,7 @@ interface IServerConfig {
     process: IProcessConfig;
     connection: IConnectionConfig;
     logging: ILoggingConfig;
+    auth: IAuthConfig;
 }
 
 interface IProcessConfig {
@@ -19,6 +20,10 @@ interface IConnectionConfig {
 
 interface ILoggingConfig {
     level: string;
+}
+
+interface IAuthConfig {
+    jwtSecret: string;
 }
 
 declare let serverConfig: IServerConfig;
