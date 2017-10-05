@@ -1,32 +1,32 @@
 <html>
-<head>
-    <base href="/">
-    <title>Hedgehog Web IDE</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" href="assets/img/favicon.ico" type="image/x-icon" />
-    <link href="assets/css/google-material/material-icons.css" rel="stylesheet">
-    <link href="node_modules/materialize-css/dist/css/materialize.min.css" rel="stylesheet">
-    <link href="node_modules/jquery-ui-dist/jquery-ui.min.css" rel="stylesheet">
+    <head>
+        <base href="/">
+        <title>Hedgehog Web IDE</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" href="assets/img/favicon.ico" type="image/x-icon" />
+        <link href="assets/css/google-material/material-icons.css" rel="stylesheet">
+        <link href="node_modules/materialize-css/dist/css/materialize.min.css" rel="stylesheet">
+        <link href="node_modules/jquery-ui-dist/jquery-ui.min.css" rel="stylesheet">
 
-    <script src="app/blockly/lib/blockly_compressed.js"></script>
-    <script src="app/blockly/lib/blocks_compressed.js"></script>
-    <script src="app/blockly/lib/blocks/hedgehog.js"></script>
-    <script src="app/blockly/lib/python_compressed.js"></script>
-    <script src="app/blockly/lib/generators/python/hedgehog.js"></script>
-    <script src="app/blockly/lib/msg/js/en.js"></script>
-    <script>
-        window.process = {
-            nextTick: function(fn) {
-                setTimeout(fn.bind(this))
-            }
-        };
-    </script>
-    <script src="app/blockly/lib/msg/js/en-hedgehog.js"></script>
+        <script src="app/blockly/lib/blockly_compressed.js"></script>
+        <script src="app/blockly/lib/blocks_compressed.js"></script>
+        <script src="app/blockly/lib/blocks/hedgehog.js"></script>
+        <script src="app/blockly/lib/python_compressed.js"></script>
+        <script src="app/blockly/lib/generators/python/hedgehog.js"></script>
+        <script src="app/blockly/lib/msg/js/en.js"></script>
+        <script>
+            window.process = {
+                nextTick: function(fn) {
+                    setTimeout(fn.bind(this))
+                }
+            };
+        </script>
+        <script src="app/blockly/lib/msg/js/en-hedgehog.js"></script>
 
-    <!-- injector:js -->
-    <!-- endinjector -->
-</head>
+        <!-- injector:js -->
+        <!-- endinjector -->
+    </head>
     <body>
         <!-- 5. Display the application -->
         <my-app>
