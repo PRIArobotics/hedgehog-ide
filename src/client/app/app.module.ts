@@ -1,6 +1,7 @@
 import {BrowserModule} from "@angular/platform-browser";
 import {Routes, RouterModule} from "@angular/router";
 import {NgModule, CUSTOM_ELEMENTS_SCHEMA} from "@angular/core";
+import {FormsModule} from "@angular/forms";
 
 import {AppComponent} from "./app.component";
 import {TextIdeComponent} from "./text-ide/text-ide.component";
@@ -15,6 +16,7 @@ import VersionListComponent from "./program/version-list.component";
 import DirectoryViewComponent from "./program/directory-view.component";
 import FileViewComponent from "./program/file-view.component";
 import {MaterializeModule} from "angular2-materialize";
+import {AuthGuardComponent} from "./auth-guard.component";
 
 const appRoutes: Routes = [
     {
@@ -55,6 +57,7 @@ const appRoutes: Routes = [
     imports: [
         MaterializeModule,
         BrowserModule,
+        FormsModule,
         ProgramModule,
         TextIdeModule,
         BlocklyModule,
@@ -63,8 +66,9 @@ const appRoutes: Routes = [
     ],
     declarations: [
         AppComponent,
+        AuthGuardComponent
     ],
-    bootstrap: [ AppComponent ],
+    bootstrap: [ AuthGuardComponent ],
     schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })
 export class AppModule { }

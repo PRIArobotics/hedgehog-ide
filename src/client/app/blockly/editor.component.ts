@@ -9,7 +9,7 @@ import {ProgramExecutionComponent} from '../program-execution/program-execution.
 declare var Blockly: any;
 
 @Component({
-    selector: 'my-app',
+    selector: 'blockly-ide',
     template: require('./editor.component.html'),
     providers: [
         HttpProgramService
