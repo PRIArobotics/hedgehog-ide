@@ -70,7 +70,7 @@ export default class AuthenticationResource extends ApiResource {
         if (!passwordCorrect) {
             return reply({
                 error: 'Could not log in user. Wrong username or password.'
-            }).code(400);
+            }).code(401);
         }
 
         // Generate JWT token
