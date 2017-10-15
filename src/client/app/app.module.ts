@@ -17,6 +17,9 @@ import DirectoryViewComponent from "./program/directory-view.component";
 import FileViewComponent from "./program/file-view.component";
 import {MaterializeModule} from "angular2-materialize";
 import {AuthGuardComponent} from "./auth-guard.component";
+import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
+import {HeaderInterceptor} from "./header-interceptor.service";
+import {AuthProvider} from "./auth-provider.service";
 
 const appRoutes: Routes = [
     {
@@ -62,13 +65,22 @@ const appRoutes: Routes = [
         TextIdeModule,
         BlocklyModule,
         HedgehogControlModule,
-        RouterModule.forRoot(appRoutes)
+        RouterModule.forRoot(appRoutes),
+        HttpClientModule,
     ],
     declarations: [
         AppComponent,
         AuthGuardComponent
     ],
     bootstrap: [ AuthGuardComponent ],
-    schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
+    schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
+    providers: [
+        AuthProvider,
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: HeaderInterceptor,
+            multi: true,
+        }
+    ]
 })
 export class AppModule { }

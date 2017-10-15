@@ -1,4 +1,4 @@
-<div *ngIf="token !== null; then ideBlock; else loginBlock">this is ignored</div>
+<div *ngIf="authProvider.token !== null; then ideBlock; else loginBlock">this is ignored</div>
 <ng-template #ideBlock>
     <my-app></my-app>
 </ng-template>

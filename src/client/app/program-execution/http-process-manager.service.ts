@@ -1,4 +1,3 @@
-import {Http} from "@angular/http";
 import {Injectable, Inject} from "@angular/core";
 import {DOCUMENT} from "@angular/platform-browser";
 import io = require('socket.io-client');
@@ -6,6 +5,7 @@ import io = require('socket.io-client');
 import {default as IProcessManager , IProcess} from "../../../common/ProcessManager";
 import {genericFromBase64, genericToBase64} from "../../../common/utils";
 import EventEmitter from "./EventEmitter";
+import {HttpClient} from "@angular/common/http";
 
 @Injectable()
 export class HttpProcessManagerService implements IProcessManager {
@@ -21,7 +21,7 @@ export class HttpProcessManagerService implements IProcessManager {
     private eventEmitter = new EventEmitter();
     private io: SocketIOClient.Socket;
 
-    public constructor (private http: Http, @Inject(DOCUMENT) private document) {
+    public constructor (private http: HttpClient, @Inject(DOCUMENT) private document) {
         this.io = io(`${document.location.protocol}//${document.location.hostname}:${document.location.port}`);
         this.socketIoRegisterNewProcessHandler();
         this.socketIoRegisterStreamDataHandler('stdout');
@@ -39,7 +39,7 @@ export class HttpProcessManagerService implements IProcessManager {
                     args
                 }
             }
-        }).toPromise()).json().data;
+        }).toPromise())['data'];
 
         return HttpProcessManagerService.resourceToProcess(response);
     }
@@ -61,7 +61,7 @@ export class HttpProcessManagerService implements IProcessManager {
     }
 
     public async getProcess (pid: number): Promise<IProcess> {
-        let response = (await this.http.get(`/api/processes/${pid}`).toPromise()).json().data;
+        let response = (await this.http.get(`/api/processes/${pid}`).toPromise())['data'];
         return HttpProcessManagerService.resourceToProcess(response);
     }
 

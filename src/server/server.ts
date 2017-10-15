@@ -80,8 +80,20 @@ server.connection(serverConfig.connection);
 /**
  * API setup
  */
+// tslint:disable-next-line
+server.register(require('hapi-auth-jwt2'));
+
+server.auth.strategy('jwt', 'jwt', {
+    key: serverConfig.auth.jwtSecret,
+    // TODO: add proper validation function
+    validateFunc: (decoded, req, cb) => cb(null, true),
+    verifyOptions: { algorithms: [ 'HS256' ] }
+});
+
+server.auth.default('jwt');
+
 let hedgehogApi = new Api(server, '/api');
-hedgehogApi.registerResource(new AuthenticationResource(serverConfig.auth.jwtSecret));
+hedgehogApi.registerResource(new AuthenticationResource(serverConfig.auth.jwtSecret), false);
 hedgehogApi.registerResource(new ProgramResource(programStorage, modelRegistry));
 hedgehogApi.registerResource(new WorkingTreeFileResource(programStorage, modelRegistry));
 hedgehogApi.registerResource(new WorkingTreeDirectoryResource(programStorage, modelRegistry));
@@ -120,7 +132,8 @@ server.route({
             path: '../node_modules',
             redirectToSlash: true
         }
-    }
+    },
+    config: { auth: false }
 });
 server.route({
     method: 'GET',
@@ -130,7 +143,8 @@ server.route({
             path: '../node_modules/ace-builds/src-min-noconflict',
             redirectToSlash: true
         }
-    }
+    },
+    config: { auth: false }
 });
 
 server.route({
@@ -141,7 +155,8 @@ server.route({
             path: 'src/client/assets',
             redirectToSlash: true
         }
-    }
+    },
+    config: { auth: false }
 });
 
 server.route({
@@ -152,7 +167,8 @@ server.route({
             path: 'src/client/app',
             redirectToSlash: true
         }
-    }
+    },
+    config: { auth: false }
 });
 
 if (serverConfig.environment === 'production') {
@@ -165,7 +181,8 @@ if (serverConfig.environment === 'production') {
                 redirectToSlash: true,
                 index: true
             }
-        }
+        },
+        config: { auth: false }
     });
 } else {
     server.route({
@@ -177,7 +194,8 @@ if (serverConfig.environment === 'production') {
                 redirectToSlash: true,
                 index: true
             }
-        }
+        },
+        config: { auth: false }
     });
 }
 
