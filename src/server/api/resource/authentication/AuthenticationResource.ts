@@ -53,8 +53,8 @@ export default class AuthenticationResource extends ApiResource {
         }
 
         // Check userdata
-        let passwordCorrect: boolean = true;
-        /*try {
+        let passwordCorrect: boolean;
+        try {
             passwordCorrect = (await wrapCallbackAsPromise(
                 passwd.checkPass,
                 requestData.attributes.username,
@@ -65,7 +65,7 @@ export default class AuthenticationResource extends ApiResource {
             return reply({
                 error: 'Could not log in user.'
             }).code(500);
-        }*/
+        }
 
         if (!passwordCorrect) {
             return reply({
