@@ -6,6 +6,7 @@ import {default as IProcessManager , IProcess} from "../../../common/ProcessMana
 import {genericFromBase64, genericToBase64} from "../../../common/utils";
 import EventEmitter from "./EventEmitter";
 import {HttpClient} from "@angular/common/http";
+import {AuthProvider} from "../auth-provider.service";
 
 @Injectable()
 export class HttpProcessManagerService implements IProcessManager {
@@ -21,8 +22,9 @@ export class HttpProcessManagerService implements IProcessManager {
     private eventEmitter = new EventEmitter();
     private io: SocketIOClient.Socket;
 
-    public constructor (private http: HttpClient, @Inject(DOCUMENT) private document) {
-        this.io = io(`${document.location.protocol}//${document.location.hostname}:${document.location.port}`);
+    public constructor (private http: HttpClient, @Inject(DOCUMENT) private document, authProvider: AuthProvider) {
+        const host = `${document.location.protocol}//${document.location.hostname}:${document.location.port}`;
+        this.io = io(host, {query: {jwtToken: authProvider.token}});
         this.socketIoRegisterNewProcessHandler();
         this.socketIoRegisterStreamDataHandler('stdout');
         this.socketIoRegisterStreamDataHandler('stderr');
@@ -49,11 +51,11 @@ export class HttpProcessManagerService implements IProcessManager {
     }
 
     public async getStdout (pid: number): Promise<string> {
-        return (await this.http.get(`/api/processes/${pid}/stdout`).toPromise()).toString();
+        return (await this.http.get(`/api/processes/${pid}/stdout`, {responseType: 'text'}).toPromise()).toString();
     }
 
     public async getStderr (pid: number): Promise<string> {
-        return (await this.http.get(`/api/processes/${pid}/stderr`).toPromise()).toString();
+        return (await this.http.get(`/api/processes/${pid}/stderr`, {responseType: 'text'}).toPromise()).toString();
     }
 
     public async writeStdin (pid: number, data: string): Promise<void> {

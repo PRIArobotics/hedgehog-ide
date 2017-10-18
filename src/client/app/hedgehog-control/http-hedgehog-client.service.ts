@@ -3,13 +3,14 @@ import io = require('socket.io-client');
 import {Http, Headers} from "@angular/http";
 import {Injectable} from "@angular/core";
 import {Observable} from "rxjs";
+import {AuthProvider} from "../auth-provider.service";
 
 @Injectable()
 export class HttpHedgehogClientService {
 
     private headers = new Headers({'Content-Type': 'application/vnd.api+json'});
 
-    public constructor (private http: Http) { }
+    public constructor (private http: Http, private authProvider: AuthProvider) { }
 
     public async getSensorValue (port: number) {
         // send get request for specific sensor value
@@ -107,7 +108,7 @@ export class HttpHedgehogClientService {
 
     public onSensorValues (): Observable<Array<{id: number, type: string, value: number}>> {
         const host = `${document.location.protocol}//${document.location.hostname}:${document.location.port}`;
-        let socket = io(host + '/sensors');
+        let socket = io(host + '/sensors', {query: {jwtToken: this.authProvider.token}});
 
         return Observable.fromEventPattern(
             cb => {

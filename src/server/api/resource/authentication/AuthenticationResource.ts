@@ -74,9 +74,12 @@ export default class AuthenticationResource extends ApiResource {
         }
 
         // Generate JWT token
-        const token = await wrapCallbackAsPromise(jwt.sign, {
-            username: requestData.attributes.username
-        }, this.jwtSecret);
+        const token = await wrapCallbackAsPromise(
+            jwt.sign,
+            { username: requestData.attributes.username },
+            this.jwtSecret,
+            { expiresIn: '1d' }
+        );
 
         let documentBuilder = new JsonApiDocumentBuilder();
         let resourceBuilder = documentBuilder.getResourceBuilder();

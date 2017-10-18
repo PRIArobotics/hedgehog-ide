@@ -295,6 +295,7 @@ export default class HttpProgramStorage implements IProgramStorage {
             .toPromise()
             .then(response => {
                 // parse json response
+                console.log()
                 let res = response['data'];
 
                 // create new WorkingTreeFile instance with the given data
@@ -306,9 +307,8 @@ export default class HttpProgramStorage implements IProgramStorage {
     public getWorkingTreeFileContent(programName: string, path: string, encoding: string = 'utf-8'): Promise<string> {
         // send get request for the content of a file and return the returned text
         return this.http
-            .get(`/api/files/${genericToBase64(programName)}/${genericToBase64(path)}/content`)
-            .toPromise()
-            .then(response => response['data']);
+            .get(`/api/files/${genericToBase64(programName)}/${genericToBase64(path)}/content`, {responseType: 'text'})
+            .toPromise();
     }
 
     public createWorkingTreeDirectory(programName: string, path: string, mode?: number): Promise<void> {

@@ -6,6 +6,7 @@ import winston = require("winston");
 import chalk = require('chalk');
 import figlet = require('figlet');
 import http = require('http');
+import jwt = require('jsonwebtoken');
 
 import {HedgehogClient} from 'hedgehog-client';
 
@@ -85,8 +86,9 @@ server.register(require('hapi-auth-jwt2'));
 
 server.auth.strategy('jwt', 'jwt', {
     key: serverConfig.auth.jwtSecret,
-    // TODO: add proper validation function
-    validateFunc: (decoded, req, cb) => cb(null, true),
+    validateFunc: (decoded, req, cb) => {
+        cb(null, decoded.exp >= Math.round(Date.now() / 1000));
+    },
     verifyOptions: { algorithms: [ 'HS256' ] }
 });
 
@@ -109,6 +111,28 @@ hedgehogApi.registerResource(new SensorResource(hedgehog, modelRegistry));
  * Socket.io setup
  */
 let io = Io(server.listener);
+
+// Socket.io authentication
+io.use((socket, next) => {
+    const handshake = socket.handshake;
+
+    let decoded;
+    try {
+        decoded = jwt.decode(handshake.query.jwtToken, serverConfig.auth.jwtSecret);
+    } catch (err) {
+        winston.error(err);
+        next(new Error('Invalid token'));
+    }
+
+    if (decoded) {
+        if (decoded.exp >= Math.round(Date.now() / 1000))
+            next();
+        else
+            next(new Error('Expired token'));
+    } else {
+        next(new Error('Invalid token'));
+    }
+});
 
 // tslint:disable
 new SocketIoProcessAdapter(processManager, io);

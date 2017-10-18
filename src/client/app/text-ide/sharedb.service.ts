@@ -7,18 +7,19 @@ import {DOCUMENT} from "@angular/platform-browser";
 import sharedb = require('sharedb/lib/client');
 import {wrapCallbackAsPromise} from "../../../common/utils";
 import SocketIoWebSocketAdapter from "./SocketIoWebSocketAdapter";
+import {AuthProvider} from "../auth-provider.service";
 
 @Injectable()
 export class ShareDbClientService {
     private doc;
 
     private eventEmitter = new EventEmitter();
-    constructor (@Inject(DOCUMENT) private document) { }
+    constructor (@Inject(DOCUMENT) private document, private authProvider: AuthProvider) { }
 
     public async createConnection (programName: string) {
         // Open WebSocket connection to ShareDB server
         const host = `${document.location.protocol}//${document.location.hostname}:${document.location.port}`;
-        let socket = io(host + '/realtime-sync');
+        let socket = io(host + '/realtime-sync', {query: {jwtToken: this.authProvider.token}});
         let connection = new sharedb.Connection(new SocketIoWebSocketAdapter(socket));
 
         this.doc = connection.get('hedgehog-ide', programName);
