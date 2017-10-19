@@ -48,21 +48,21 @@ paths:
       responses:
         200:
           description: 'Returns the JWT auth token'
-            schema:
-              type: object
-              properties:
-                data:
-                  type: object
-                  properties:
-                    type:
-                      type: string
-                      enum:
-                      - token
-                    attributes:
-                      type: object
-                      properties:
-                        token:
-                          type: string
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum:
+                    - token
+                  attributes:
+                    type: object
+                    properties:
+                      token:
+                        type: string
   /programs:
     get:
       summary: 'Get a list of all programs stored on the controller'
