@@ -5,7 +5,6 @@ import path = require('path');
 import winston = require("winston");
 import chalk = require('chalk');
 import figlet = require('figlet');
-import http = require('http');
 
 import {HedgehogClient} from 'hedgehog-client';
 
