@@ -41,3 +41,11 @@ Blockly.Msg.HEDGEHOG_MOVE_UNLIMITED_TOOLTIP = "bewegt einen Motor solange bis er
 
 Blockly.Msg.HEDGEHOG_PULLUP = "Port %1 pullup %2";
 Blockly.Msg.HEDGEHOG_PULLUP_TOOLTIP = "Setze einen Pullup Widerstand für einen bestimmten IO Port";
+
+Blockly.Msg.HEDGEHOG_CREATE_SCOPE = "iRobot Create scope %1 %2";
+Blockly.Msg.HEDGEHOG_CREATE2_SCOPE = "iRobot Create2 scope %1 %2";
+Blockly.Msg.HEDGEHOG_CREATE_WARN = "Dieser Block muss sich innerhalb eines iRobot Create oder Create2 Scope Blocks befinden!";
+Blockly.Msg.HEDGEHOG_CREATE_SCOPE_TOOLTIP = "Alle Create Blöcke müssen sich innerhalb eines Create oder Create2 scope Blocks befinden";
+
+Blockly.Msg.HEDGEHOG_CREATE_DRIVE_DIRECT = "fahre mit dem Create %1 Sekunden lang mit Geschwindigkeiten %2 & %3";
+Blockly.Msg.HEDGEHOG_CREATE_DRIVE_DIRECT_TOOLTIP = "Fährt den Create für eine bestimmte Zeit";

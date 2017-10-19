@@ -148,3 +148,38 @@ Blockly.Python['hedgehog_sleep'] = function(block) {
     var code = 'sleep(' + time + ')\n\n';
     return code;
 };
+
+Blockly.Python['hedgehog_create_scope'] = function(block) {
+    var statements = Blockly.Python.statementToCode(block, 'IN');
+    Blockly.Python.definitions_['import_create'] = 'from hedgehog.client import connect_create';
+
+    var code = 'with connect_create() as create:\n';
+    code += Blockly.Python.INDENT + 'create.safe()\n\n';
+    code += statements;
+    return code;
+};
+
+Blockly.Python['hedgehog_create2_scope'] = function(block) {
+    var statements = Blockly.Python.statementToCode(block, 'IN');
+    Blockly.Python.definitions_['import_create2'] = 'from hedgehog.client import connect_create2';
+
+    var code = 'with connect_create2() as create:\n';
+    code += Blockly.Python.INDENT + 'create.safe()\n\n';
+    code += statements;
+    return code;
+};
+
+Blockly.Python['hedgehog_create_drive_direct'] = function(block) {
+    var time = Blockly.Python.valueToCode(block, 'TIME', Blockly.Python.ORDER_ATOMIC);
+    var lspeed = Blockly.Python.valueToCode(block, 'LSPEED', Blockly.Python.ORDER_NONE);
+    var rspeed = Blockly.Python.valueToCode(block, 'RSPEED', Blockly.Python.ORDER_NONE);
+
+    // imports
+    Blockly.Python.definitions_['import_sleep'] = 'from time import sleep';
+    Blockly.Python.definitions_['import_create'] = 'from hedgehog.client import connect_create';
+
+    var code = 'create.drive_direct(' + lspeed + ', ' + rspeed + ')\n';
+    code += 'sleep(' + time + ')\n';
+    code += 'create.drive_direct(0, 0)\n\n';
+    return code;
+};

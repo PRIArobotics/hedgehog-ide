@@ -375,3 +375,104 @@ Blockly.Blocks['hedgehog_read_digital'] = {
     },
     onchange: Blockly.Blocks['hedgehog_move'].onchange
 };
+
+Blockly.Blocks['hedgehog_create_scope'] = {
+    init: function() {
+        this.jsonInit({
+            "message0": Blockly.Msg.HEDGEHOG_CREATE_SCOPE,
+            "args0": [
+                {
+                    "type": "input_dummy"
+                },
+                {
+                    "type": "input_statement",
+                    "name": "IN"
+                }
+            ],
+            "previousStatement": null,
+            "nextStatement": null,
+            "tooltip": Blockly.Msg.HEDGEHOG_CREATE_SCOPE_TOOLTIP,
+            "colour": Blockly.Blocks.hedgehog.HUE,
+            "helpUrl": Blockly.Blocks.hedgehog.HELPURL
+        });
+    }
+};
+
+Blockly.Blocks['hedgehog_create2_scope'] = {
+    init: function() {
+        this.jsonInit({
+            "message0": Blockly.Msg.HEDGEHOG_CREATE2_SCOPE,
+            "args0": [
+                {
+                    "type": "input_dummy"
+                },
+                {
+                    "type": "input_statement",
+                    "name": "IN"
+                }
+            ],
+            "previousStatement": null,
+            "nextStatement": null,
+            "tooltip": Blockly.Msg.HEDGEHOG_CREATE_SCOPE_TOOLTIP,
+            "colour": Blockly.Blocks.hedgehog.HUE,
+            "helpUrl": Blockly.Blocks.hedgehog.HELPURL
+        });
+    }
+};
+
+Blockly.Blocks['hedgehog_create_drive_direct'] = {
+    init: function() {
+        this.jsonInit({
+            "message0": Blockly.Msg.HEDGEHOG_CREATE_DRIVE_DIRECT,
+            "args0": [
+                {
+                    "type": "input_value",
+                    "name": "TIME",
+                    "check": "Number"
+                },
+                {
+                    "type": "input_value",
+                    "name": "LSPEED",
+                    "check": "Number"
+                },
+                {
+                    "type": "input_value",
+                    "name": "RSPEED",
+                    "check": "Number"
+                }
+            ],
+            "inputsInline": true,
+            "previousStatement": null,
+            "nextStatement": null,
+            "tooltip": Blockly.Msg.HEDGEHOG_MOVE_TOOLTIP,
+            "colour": Blockly.Blocks.hedgehog.HUE,
+            "helpUrl": Blockly.Blocks.hedgehog.HELPURL
+        });
+    },
+    onchange: function(e) {
+        if (this.workspace.isDragging()) {
+            return;  // Don't change state at the start of a drag.
+        }
+        var legal = false;
+        // Is the block nested in a loop?
+        var block = this;
+        do {
+            if (block.type == 'hedgehog_create_scope') {
+                legal = true;
+                break;
+            }
+            block = block.getSurroundParent();
+        } while (block);
+        if (legal) {
+            this.setWarningText(null);
+            if (!this.isInFlyout) {
+                this.setDisabled(false);
+            }
+        } else {
+            this.setWarningText(Blockly.Msg.HEDGEHOG_CREATE_WARN);
+            if (!this.isInFlyout && !this.getInheritedDisabled()) {
+                this.setDisabled(true);
+            }
+        }
+    }
+};
