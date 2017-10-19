@@ -32,4 +32,9 @@ export class AuthProvider {
                 sessionStorage.setItem('auth-token', this._token);
             });
     }
+
+    public invalidateToken () {
+        this._token = null;
+        sessionStorage.removeItem('auth-token');
+    }
 }

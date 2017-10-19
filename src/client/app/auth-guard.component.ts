@@ -4,10 +4,7 @@ import {AuthProvider} from "./auth-provider.service";
 
 @Component({
     selector: 'auth-guard',
-    template: require('./auth-guard.component.html'),
-    providers: [
-        AuthProvider
-    ]
+    template: require('./auth-guard.component.html')
 })
 export class AuthGuardComponent {
     private username: string;
@@ -26,6 +23,9 @@ export class AuthGuardComponent {
             password: this.password
         };
         requestData.addResource(requestResource.getProduct());
+
+        this.username = '';
+        this.password = '';
 
         return this.authProvider.login(this.username, this.password)
             .then(response => {
