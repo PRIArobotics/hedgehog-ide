@@ -1,6 +1,7 @@
 import {BrowserModule} from "@angular/platform-browser";
 import {Routes, RouterModule} from "@angular/router";
 import {NgModule, CUSTOM_ELEMENTS_SCHEMA} from "@angular/core";
+import {FormsModule} from "@angular/forms";
 
 import {AppComponent} from "./app.component";
 import {TextIdeComponent} from "./text-ide/text-ide.component";
@@ -15,6 +16,10 @@ import VersionListComponent from "./program/version-list.component";
 import DirectoryViewComponent from "./program/directory-view.component";
 import FileViewComponent from "./program/file-view.component";
 import {MaterializeModule} from "angular2-materialize";
+import {AuthGuardComponent} from "./auth-guard.component";
+import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
+import {HeaderInterceptor} from "./header-interceptor.service";
+import {AuthProvider} from "./auth-provider.service";
 
 const appRoutes: Routes = [
     {
@@ -55,16 +60,27 @@ const appRoutes: Routes = [
     imports: [
         MaterializeModule,
         BrowserModule,
+        FormsModule,
         ProgramModule,
         TextIdeModule,
         BlocklyModule,
         HedgehogControlModule,
-        RouterModule.forRoot(appRoutes)
+        RouterModule.forRoot(appRoutes),
+        HttpClientModule,
     ],
     declarations: [
         AppComponent,
+        AuthGuardComponent
     ],
-    bootstrap: [ AppComponent ],
-    schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
+    bootstrap: [ AuthGuardComponent ],
+    schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
+    providers: [
+        AuthProvider,
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: HeaderInterceptor,
+            multi: true,
+        }
+    ]
 })
 export class AppModule { }

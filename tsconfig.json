@@ -13,7 +13,8 @@
     "downlevelIteration": true
   },
   "include": [
-    "src/server/*.ts",
+    //"src/server/*.ts",
+    "src/**/*.ts",
     "test/**/*.ts"
   ],
   "files": [

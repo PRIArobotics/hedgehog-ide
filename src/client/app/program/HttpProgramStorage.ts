@@ -7,16 +7,14 @@ import Blob from '../../../common/versioncontrol/Blob';
 import Version from '../../../common/versioncontrol/Version';
 import WorkingTreeDirectory from '../../../common/versioncontrol/WorkingTreeDirectory';
 import WorkingTreeFile from '../../../common/versioncontrol/WorkingTreeFile';
-import {Http, Headers} from '@angular/http';
 import {genericToBase64, genericFromBase64, basename} from "../../../common/utils";
 import {WorkingTreeObjectType} from "../../../common/versioncontrol/WorkingTreeObject";
 import {default as Tree, TreeItem, TreeItemType} from "../../../common/versioncontrol/Tree";
+import {HttpClient} from "@angular/common/http";
 
 export default class HttpProgramStorage implements IProgramStorage {
 
-    private headers = new Headers({'Content-Type': 'application/vnd.api+json'});
-
-    public constructor(private http: Http) { }
+    public constructor(private http: HttpClient) { }
 
     public createProgram(name: string, copyFrom?: string): Promise<Program> {
         // create program data object
@@ -30,15 +28,14 @@ export default class HttpProgramStorage implements IProgramStorage {
             }
         };
 
-        // send post request with headers (json) and the stringifyed data object
+        // send post request with the stringifyed data object
         return this.http
             .post('/api/programs',
-                JSON.stringify(programData),
-                {headers: this.headers})
+                JSON.stringify(programData))
             .toPromise()
             .then(response => {
                 // parse json response
-                let res = response.json().data;
+                let res = response['data'];
 
                 // return new Program with the json data
                 return new Program(this, res.attributes.name,
@@ -61,7 +58,7 @@ export default class HttpProgramStorage implements IProgramStorage {
             .toPromise()
             .then(response => {
                 // save programs from response
-                let programs = response.json().data;
+                let programs = response['data'];
                 let programNames: string[] = [];
 
                 // add the name of all programs to programNames
@@ -81,7 +78,7 @@ export default class HttpProgramStorage implements IProgramStorage {
             .toPromise()
             .then(response => {
                 // parse json response
-                let res = response.json().data;
+                let res = response['data'];
 
                 // create new Program Instance
                 return new Program(this, res.attributes.name,
@@ -103,11 +100,10 @@ export default class HttpProgramStorage implements IProgramStorage {
             }
         };
 
-        // send patch request with headers (json) and the stringifyed data object
+        // send patch request with the stringifyed data object
         return this.http
             .patch(`/api/programs/${currentId}`,
-                JSON.stringify(programData),
-                {headers: this.headers})
+                JSON.stringify(programData))
             .toPromise()
             .then(() => Promise.resolve());
     }
@@ -129,8 +125,7 @@ export default class HttpProgramStorage implements IProgramStorage {
         // send patch request with headers (json) and the stringifyed data object
         return this.http
             .patch(`/api/programs/${programId}`,
-                JSON.stringify(programData),
-                {headers: this.headers})
+                JSON.stringify(programData))
             .toPromise()
             .then(() => Promise.resolve());
     }
@@ -142,7 +137,7 @@ export default class HttpProgramStorage implements IProgramStorage {
             .toPromise()
             .then(response => {
                 // parse json response
-                let res = response.json().data;
+                let res = response['data'];
 
                 // create new Blob Instance
                 return new Blob(this, programName, blobId, res.attributes.size);
@@ -156,7 +151,7 @@ export default class HttpProgramStorage implements IProgramStorage {
             .toPromise()
             .then(response => {
                 // parse json response
-                let res = response.json().data;
+                let res = response['data'];
 
                 // retrieve the content from the attributes
                 return res.attributes.content;
@@ -170,7 +165,7 @@ export default class HttpProgramStorage implements IProgramStorage {
             .toPromise()
             .then(response => {
                 // parse json response
-                let res = response.json();
+                let res = response['data'];
 
                 let items: Map<string, TreeItem> = new Map<string, TreeItem>();
 
@@ -204,7 +199,7 @@ export default class HttpProgramStorage implements IProgramStorage {
             .toPromise()
             .then(response => {
                 // parse json response
-                let res = response.json().data;
+                let res = response['data'];
 
                 let versionIds: string[] = [];
                 for (let item of res) {
@@ -225,7 +220,7 @@ export default class HttpProgramStorage implements IProgramStorage {
             .toPromise()
             .then(response => {
                 // parse json response
-                let res = response.json().data;
+                let res = response['data'];
 
                 // create new Version Instance
                 return new Version(this, programName, res.id, res.attributes.tag, res.attributes.message,
@@ -251,11 +246,10 @@ export default class HttpProgramStorage implements IProgramStorage {
         // send post request with headers (json) and the stringifyed data object
         return this.http
             .post(`/api/versions/${programId}`,
-                JSON.stringify(versionData),
-                {headers: this.headers})
+                JSON.stringify(versionData))
             .toPromise()
             .then(response => {
-                return response.json().data.relationships.tree.id;
+                return response['data'].relationships.tree.id;
             });
     }
 
@@ -265,7 +259,7 @@ export default class HttpProgramStorage implements IProgramStorage {
             .toPromise()
             .then(response => {
                 // parse json response
-                let res = response.json().data;
+                let res = response['data'];
 
                 // create empty items and types array
                 let items: string[] = [];
@@ -301,7 +295,7 @@ export default class HttpProgramStorage implements IProgramStorage {
             .toPromise()
             .then(response => {
                 // parse json response
-                let res = response.json().data;
+                let res = response['data'];
 
                 // create new WorkingTreeFile instance with the given data
                 return new WorkingTreeFile(this, programName,
@@ -312,9 +306,8 @@ export default class HttpProgramStorage implements IProgramStorage {
     public getWorkingTreeFileContent(programName: string, path: string, encoding: string = 'utf-8'): Promise<string> {
         // send get request for the content of a file and return the returned text
         return this.http
-            .get(`/api/files/${genericToBase64(programName)}/${genericToBase64(path)}/content`)
-            .toPromise()
-            .then(response => response.text());
+            .get(`/api/files/${genericToBase64(programName)}/${genericToBase64(path)}/content`, {responseType: 'text'})
+            .toPromise();
     }
 
     public createWorkingTreeDirectory(programName: string, path: string, mode?: number): Promise<void> {
@@ -334,8 +327,7 @@ export default class HttpProgramStorage implements IProgramStorage {
         // send post request with headers (json) and the stringifyed data object
         return this.http
             .post(`/api/directories/${genericToBase64(programName)}`,
-                JSON.stringify(directoryData),
-                {headers: this.headers})
+                JSON.stringify(directoryData))
             .toPromise()
             .then(() => Promise.resolve());
     }
@@ -362,8 +354,7 @@ export default class HttpProgramStorage implements IProgramStorage {
         // send post request with headers (json) and the stringifyed data object
         return this.http
             .post(`/api/files/${genericToBase64(programName)}`,
-                JSON.stringify(fileData),
-                {headers: this.headers})
+                JSON.stringify(fileData))
             .toPromise()
             .then(() => Promise.resolve());
     }
@@ -391,8 +382,7 @@ export default class HttpProgramStorage implements IProgramStorage {
         return this.http
             .patch(`/api/${options.directory ? 'directories' : 'files'}/
                     ${genericToBase64(programName)}/${pathId}`,
-                JSON.stringify(fileData),
-                {headers: this.headers})
+                JSON.stringify(fileData))
             .toPromise()
             .then(() => Promise.resolve());
     }
@@ -422,8 +412,7 @@ export default class HttpProgramStorage implements IProgramStorage {
         // send post request with headers (json) and the stringifyed data object
         return this.http
             .patch(`/api/programs/${programId}`,
-                JSON.stringify(programData),
-                {headers: this.headers})
+                JSON.stringify(programData))
             .toPromise()
             .then(() => Promise.resolve());
     }

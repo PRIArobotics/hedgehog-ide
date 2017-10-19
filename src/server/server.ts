@@ -5,6 +5,7 @@ import path = require('path');
 import winston = require("winston");
 import chalk = require('chalk');
 import figlet = require('figlet');
+import jwt = require('jsonwebtoken');
 
 import {HedgehogClient} from 'hedgehog-client';
 
@@ -25,6 +26,7 @@ import SensorResource from "./api/resource/hedgehog-io/SensorResource";
 import ServoResource from "./api/resource/hedgehog-io/ServoResource";
 import SocketIoSensorAdapter from "./hedgehog-io/SocketIoSensorAdapter";
 import ShareDbService from "./realtime-sync/ShareDbService";
+import AuthenticationResource from "./api/resource/authentication/AuthenticationResource";
 
 // Return external module as the file is outside of the
 // TypeScript compile output
@@ -78,7 +80,21 @@ server.connection(serverConfig.connection);
 /**
  * API setup
  */
+// tslint:disable-next-line
+server.register(require('hapi-auth-jwt2'));
+
+server.auth.strategy('jwt', 'jwt', {
+    key: serverConfig.auth.jwtSecret,
+    validateFunc: (decoded, req, cb) => {
+        cb(null, decoded.exp >= Math.round(Date.now() / 1000));
+    },
+    verifyOptions: { algorithms: [ 'HS256' ] }
+});
+
+server.auth.default('jwt');
+
 let hedgehogApi = new Api(server, '/api');
+hedgehogApi.registerResource(new AuthenticationResource(serverConfig.auth.jwtSecret), false);
 hedgehogApi.registerResource(new ProgramResource(programStorage, modelRegistry));
 hedgehogApi.registerResource(new WorkingTreeFileResource(programStorage, modelRegistry));
 hedgehogApi.registerResource(new WorkingTreeDirectoryResource(programStorage, modelRegistry));
@@ -94,6 +110,28 @@ hedgehogApi.registerResource(new SensorResource(hedgehog, modelRegistry));
  * Socket.io setup
  */
 let io = Io(server.listener);
+
+// Socket.io authentication
+io.use((socket, next) => {
+    const handshake = socket.handshake;
+
+    let decoded;
+    try {
+        decoded = jwt.decode(handshake.query.jwtToken, serverConfig.auth.jwtSecret);
+    } catch (err) {
+        winston.error(err);
+        next(new Error('Invalid token'));
+    }
+
+    if (decoded) {
+        if (decoded.exp >= Math.round(Date.now() / 1000))
+            next();
+        else
+            next(new Error('Expired token'));
+    } else {
+        next(new Error('Invalid token'));
+    }
+});
 
 // tslint:disable
 new SocketIoProcessAdapter(processManager, io);
@@ -117,7 +155,8 @@ server.route({
             path: '../node_modules',
             redirectToSlash: true
         }
-    }
+    },
+    config: { auth: false }
 });
 server.route({
     method: 'GET',
@@ -127,7 +166,8 @@ server.route({
             path: '../node_modules/ace-builds/src-min-noconflict',
             redirectToSlash: true
         }
-    }
+    },
+    config: { auth: false }
 });
 
 server.route({
@@ -138,7 +178,8 @@ server.route({
             path: 'src/client/assets',
             redirectToSlash: true
         }
-    }
+    },
+    config: { auth: false }
 });
 
 server.route({
@@ -149,7 +190,8 @@ server.route({
             path: 'src/client/app',
             redirectToSlash: true
         }
-    }
+    },
+    config: { auth: false }
 });
 
 if (serverConfig.environment === 'production') {
@@ -162,7 +204,8 @@ if (serverConfig.environment === 'production') {
                 redirectToSlash: true,
                 index: true
             }
-        }
+        },
+        config: { auth: false }
     });
 } else {
     server.route({
@@ -174,7 +217,8 @@ if (serverConfig.environment === 'production') {
                 redirectToSlash: true,
                 index: true
             }
-        }
+        },
+        config: { auth: false }
     });
 }
 

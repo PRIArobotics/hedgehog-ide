@@ -15,6 +15,54 @@ produces:
 consumes:
 - application/vnd.api+json
 paths:
+  /auth/login:
+    post:
+      summary: 'Login to the IDE and generate a JWT token'
+      parameters:
+        - name: user
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                required:
+                - type
+                - attributes
+                properties:
+                  type:
+                    type: string
+                    enum:
+                    - user
+                  attributes:
+                    type: object
+                    required:
+                    - username
+                    - password
+                    properties:
+                      name:
+                        type: string
+                      password:
+                        type: string
+      responses:
+        200:
+          description: 'Returns the JWT auth token'
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum:
+                    - token
+                  attributes:
+                    type: object
+                    properties:
+                      token:
+                        type: string
   /programs:
     get:
       summary: 'Get a list of all programs stored on the controller'
