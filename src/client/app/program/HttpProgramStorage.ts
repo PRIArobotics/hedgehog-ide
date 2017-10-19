@@ -295,7 +295,6 @@ export default class HttpProgramStorage implements IProgramStorage {
             .toPromise()
             .then(response => {
                 // parse json response
-                console.log()
                 let res = response['data'];
 
                 // create new WorkingTreeFile instance with the given data
