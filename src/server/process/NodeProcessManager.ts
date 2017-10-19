@@ -23,7 +23,7 @@ export default class NodeProcessManager implements IProcessManager {
             programName,
             filePath,
             args,
-            spawn(this.pythonPath, [this.storage.getWorkingTreePath(programName, filePath), ...args])
+            spawn(this.pythonPath, ['-u', this.storage.getWorkingTreePath(programName, filePath), ...args])
         );
 
         this.processes.set(process.nodeProcess.pid, process);
