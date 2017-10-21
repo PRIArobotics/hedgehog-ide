@@ -43,6 +43,7 @@ Blockly.Msg.HEDGEHOG_PULLUP = "port %1 pullup %2";
 Blockly.Msg.HEDGEHOG_PULLUP_TOOLTIP = "set the pullup state for a specified IO port";
 
 Blockly.Msg.HEDGEHOG_CREATE_SCOPE = "iRobot Create scope %1 %2";
+Blockly.Msg.HEDGEHOG_CREATE2_SCOPE = "iRobot Create2 scope %1 %2";
 Blockly.Msg.HEDGEHOG_CREATE_WARN = "This block needs to be inside an iRobot Create Scope block!";
 Blockly.Msg.HEDGEHOG_CREATE_SCOPE_TOOLTIP = "All Create blocks have to be inside of this block";
 
