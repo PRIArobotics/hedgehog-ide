@@ -27,7 +27,7 @@
     <li><a (click)="setLanguage('de')">Deutsch</a></li>
 </ul>
 
-<split direction="vertical" (dragProgress)="resizeWindow()">
+<split direction="vertical" (dragProgress)="resizeWindow()" class="ide-split">
     <split-area [size]="70">
         <split direction="horizontal" (dragProgress)="resizeWindow()">
             <split-area [size]="70">
@@ -40,7 +40,8 @@
     </split-area>
     <split-area [size]="30" [visible]="executionPanelVisible">
         <program-execution (onExit)="programIsRunning = false" (onVisibleChange)="executionPanelVisible = $event" id="split-execute"></program-execution>
-    </split-area>
+    </split-area>grunt
+
 </split>
 
 <!-- blockly toolbox -->

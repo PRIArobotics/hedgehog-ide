@@ -203,3 +203,11 @@ div > ul > li > a {
     -webkit-transform: translateX(3px);
     transform: translateX(3px);
 }
+
+.ide-split {;
+    position: absolute;
+    top: 64px;
+    bottom: 0;
+    height: initial !important;
+    margin-top: 2px;
+}
