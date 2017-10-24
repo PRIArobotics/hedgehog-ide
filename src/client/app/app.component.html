@@ -66,18 +66,3 @@
         </div>
     </form>
 </div>
-
-<div id="login-modal" class="modal" materialize="modal" [materializeParams]="[{dismissible: false}]" [materializeActions]="aboutModalActions">
-    <form (submit)="closeSettingsModal()">
-        <div class="modal-content">
-
-        </div>
-        <div class="modal-footer">
-            <div class="row">
-                <div class="col m10 offset-m1">
-                    <button class="waves-effect waves-green btn-flat" type="reset" (click)="aboutModalActions.emit({action:'modal', params:['close']})">Close</button>
-                </div>
-            </div>
-        </div>
-    </form>
-</div>
