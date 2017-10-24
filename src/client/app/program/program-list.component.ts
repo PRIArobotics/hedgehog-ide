@@ -73,7 +73,10 @@ export class ProgramListComponent implements OnInit {
         let programName = this.newProgramData.name;
         if (this.newProgramData.type !== 'textual')
             programName += '.' + this.newProgramData.type;
-        await this.storage.createProgram(programName, this.newProgramData.copyFrom);
+
+        const copyFrom = this.newProgramData.copyFrom === 'none' ? null : this.newProgramData.copyFrom;
+
+        await this.storage.createProgram(programName, copyFrom);
         await this.reloadProgramList();
     }
 
