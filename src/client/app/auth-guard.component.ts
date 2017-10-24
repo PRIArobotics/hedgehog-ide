@@ -1,4 +1,4 @@
-import {Component, OnInit} from "@angular/core";
+import {Component} from "@angular/core";
 import JsonApiDocumentBuilder from "../../server/jsonapi/JsonApiBuilder";
 import {AuthProvider} from "./auth-provider.service";
 import {ConfigurationService} from "./util/configuration-service";
