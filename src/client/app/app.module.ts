@@ -1,6 +1,6 @@
 import {BrowserModule} from "@angular/platform-browser";
 import {Routes, RouterModule} from "@angular/router";
-import {NgModule, CUSTOM_ELEMENTS_SCHEMA} from "@angular/core";
+import {NgModule, CUSTOM_ELEMENTS_SCHEMA, APP_INITIALIZER} from "@angular/core";
 import {FormsModule} from "@angular/forms";
 
 import {AppComponent} from "./app.component";
@@ -20,7 +20,7 @@ import {AuthGuardComponent} from "./auth-guard.component";
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {HeaderInterceptor} from "./header-interceptor.service";
 import {AuthProvider} from "./auth-provider.service";
-import {ConfigurationService} from "./util/configuration-service";
+import {ConfigurationService, default as initConfigurationService} from "./util/configuration-service";
 
 const appRoutes: Routes = [
     {
@@ -82,6 +82,13 @@ const appRoutes: Routes = [
             provide: HTTP_INTERCEPTORS,
             useClass: HeaderInterceptor,
             multi: true,
+        },
+        // This makes sure the configuration is loaded before any UI components are shown
+        {
+            provide: APP_INITIALIZER,
+            useFactory: initConfigurationService,
+            deps: [ConfigurationService],
+            multi: true
         }
     ]
 })

@@ -7,20 +7,14 @@ import {ConfigurationService} from "./util/configuration-service";
     selector: 'auth-guard',
     template: require('./auth-guard.component.html')
 })
-export class AuthGuardComponent implements OnInit {
+export class AuthGuardComponent {
 
     private username: string;
     private password: string;
 
     private error: string = '';
 
-    private config = null;
-
     public constructor(private authProvider: AuthProvider, private configService: ConfigurationService) { }
-
-    public async ngOnInit() {
-        this.config = await this.configService.getConfig();
-    }
 
     private login() {
         const requestData = new JsonApiDocumentBuilder();
