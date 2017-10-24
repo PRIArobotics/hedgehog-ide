@@ -27,7 +27,7 @@
     <li><a (click)="setLanguage('de')">Deutsch</a></li>
 </ul>
 
-<split direction="vertical" (dragProgress)="resizeWindow()">
+<split direction="vertical" (dragProgress)="resizeWindow()" class="ide-split">
     <split-area [size]="70">
         <split direction="horizontal" (dragProgress)="resizeWindow()">
             <split-area [size]="70">
@@ -104,6 +104,25 @@
             <value name="TIME">
                 <shadow type="math_number">
                     <field name="NUM">2</field>
+                </shadow>
+            </value>
+        </block>
+        <block type="hedgehog_create_scope"></block>
+        <block type="hedgehog_create2_scope"></block>
+        <block type="hedgehog_create_drive_direct">
+            <value name="TIME">
+                <shadow type="math_number">
+                    <field name="NUM">2</field>
+                </shadow>
+            </value>
+            <value name="LSPEED">
+                <shadow type="math_number">
+                    <field name="NUM">200</field>
+                </shadow>
+            </value>
+            <value name="RSPEED">
+                <shadow type="math_number">
+                    <field name="NUM">200</field>
                 </shadow>
             </value>
         </block>
