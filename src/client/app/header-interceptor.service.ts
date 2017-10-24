@@ -19,10 +19,12 @@ export class HeaderInterceptor implements HttpInterceptor {
 
         const token = this.authProvider.token;
         const headers = req.headers
-            .set('Authorization', token)
             .set('Content-Type', 'application/vnd.api+json');
 
-        const authReq = token ? req.clone({headers}) : req;
+        if (token)
+            headers.set('Authorization', token);
+
+        const authReq = req.clone({headers});
         return next.handle(authReq).do(null, (err: HttpErrorResponse) => {
             if (err.status === 401) {
                 this.authProvider.invalidateToken();
