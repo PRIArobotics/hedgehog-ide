@@ -15,6 +15,30 @@ produces:
 consumes:
 - application/vnd.api+json
 paths:
+  /config:
+    get:
+      summary: 'Retrieves for the client relevant system configuration'
+      responses:
+        200:
+          description: 'Returns the JWT auth token'
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum:
+                    - configuration
+                  attributes:
+                    type: object
+                    properties:
+                      auth:
+                        type: object
+                        properties:
+                          enabled:
+                            type: boolean
   /auth/login:
     post:
       summary: 'Login to the IDE and generate a JWT token'
