@@ -457,7 +457,7 @@ Blockly.Blocks['hedgehog_create_drive_direct'] = {
         // Is the block nested in a loop?
         var block = this;
         do {
-            if (block.type == 'hedgehog_create_scope') {
+            if (block.type === 'hedgehog_create_scope' || block.type === 'hedgehog_create2_scope') {
                 legal = true;
                 break;
             }
