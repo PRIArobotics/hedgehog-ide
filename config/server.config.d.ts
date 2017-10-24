@@ -23,6 +23,7 @@ interface ILoggingConfig {
 }
 
 interface IAuthConfig {
+    enabled: boolean;
     jwtSecret: string;
 }
 

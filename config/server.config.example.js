@@ -29,10 +29,13 @@ exports = module.exports = {
         level: 'debug'
     },
 
-    // Auth config
-    // Generate this e.g. as follows
-    // node -e "console.log(require('crypto').randomBytes(256).toString('base64'));"
+    // Authentication configuration
     auth: {
-        jwtSecret: 'secret!'
+        // Require authentication
+        enabled: true,
+
+        // Secret key used for signing JWT tokens
+        // Generate it e.g. via node: 'node -e "console.log(require('crypto').randomBytes(256).toString('base64'));"'
+        jwtSecret: 'Supercalifragilisticexpialidocious'
     }
 };

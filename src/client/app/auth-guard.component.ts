@@ -1,18 +1,26 @@
-import {Component} from "@angular/core";
+import {Component, OnInit} from "@angular/core";
 import JsonApiDocumentBuilder from "../../server/jsonapi/JsonApiBuilder";
 import {AuthProvider} from "./auth-provider.service";
+import {ConfigurationService} from "./util/configuration-service";
 
 @Component({
     selector: 'auth-guard',
     template: require('./auth-guard.component.html')
 })
-export class AuthGuardComponent {
+export class AuthGuardComponent implements OnInit {
+
     private username: string;
     private password: string;
 
     private error: string = '';
 
-    public constructor(private authProvider: AuthProvider) { }
+    private config = null;
+
+    public constructor(private authProvider: AuthProvider, private configService: ConfigurationService) { }
+
+    public async ngOnInit() {
+        this.config = await this.configService.getConfig();
+    }
 
     private login() {
         const requestData = new JsonApiDocumentBuilder();

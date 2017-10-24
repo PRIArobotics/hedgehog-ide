@@ -20,6 +20,7 @@ import {AuthGuardComponent} from "./auth-guard.component";
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {HeaderInterceptor} from "./header-interceptor.service";
 import {AuthProvider} from "./auth-provider.service";
+import {ConfigurationService} from "./util/configuration-service";
 
 const appRoutes: Routes = [
     {
@@ -75,6 +76,7 @@ const appRoutes: Routes = [
     bootstrap: [ AuthGuardComponent ],
     schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
     providers: [
+        ConfigurationService,
         AuthProvider,
         {
             provide: HTTP_INTERCEPTORS,

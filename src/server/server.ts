@@ -27,6 +27,7 @@ import ServoResource from "./api/resource/hedgehog-io/ServoResource";
 import SocketIoSensorAdapter from "./hedgehog-io/SocketIoSensorAdapter";
 import ShareDbService from "./realtime-sync/ShareDbService";
 import AuthenticationResource from "./api/resource/authentication/AuthenticationResource";
+import ConfigurationResource from "./api/resource/ConfigurationResource";
 
 // Return external module as the file is outside of the
 // TypeScript compile output
@@ -80,20 +81,23 @@ server.connection(serverConfig.connection);
 /**
  * API setup
  */
-// tslint:disable-next-line
-server.register(require('hapi-auth-jwt2'));
+if (serverConfig.auth.enabled) {
+    // tslint:disable-next-line
+    server.register(require('hapi-auth-jwt2'));
 
-server.auth.strategy('jwt', 'jwt', {
-    key: serverConfig.auth.jwtSecret,
-    validateFunc: (decoded, req, cb) => {
-        cb(null, decoded.exp >= Math.round(Date.now() / 1000));
-    },
-    verifyOptions: { algorithms: [ 'HS256' ] }
-});
+    server.auth.strategy('jwt', 'jwt', {
+        key: serverConfig.auth.jwtSecret,
+        validateFunc: (decoded, req, cb) => {
+            cb(null, decoded.exp >= Math.round(Date.now() / 1000));
+        },
+        verifyOptions: { algorithms: [ 'HS256' ] }
+    });
 
-server.auth.default('jwt');
+    server.auth.default('jwt');
+}
 
 let hedgehogApi = new Api(server, '/api');
+hedgehogApi.registerResource(new ConfigurationResource(serverConfig), false);
 hedgehogApi.registerResource(new AuthenticationResource(serverConfig.auth.jwtSecret), false);
 hedgehogApi.registerResource(new ProgramResource(programStorage, modelRegistry));
 hedgehogApi.registerResource(new WorkingTreeFileResource(programStorage, modelRegistry));
@@ -112,26 +116,28 @@ hedgehogApi.registerResource(new SensorResource(hedgehog, modelRegistry));
 let io = Io(server.listener);
 
 // Socket.io authentication
-io.use((socket, next) => {
-    const handshake = socket.handshake;
+if (serverConfig.auth.enabled) {
+    io.use((socket, next) => {
+        const handshake = socket.handshake;
 
-    let decoded;
-    try {
-        decoded = jwt.decode(handshake.query.jwtToken, serverConfig.auth.jwtSecret);
-    } catch (err) {
-        winston.error(err);
-        next(new Error('Invalid token'));
-    }
+        let decoded;
+        try {
+            decoded = jwt.decode(handshake.query.jwtToken, serverConfig.auth.jwtSecret);
+        } catch (err) {
+            winston.error(err);
+            next(new Error('Invalid token'));
+        }
 
-    if (decoded) {
-        if (decoded.exp >= Math.round(Date.now() / 1000))
-            next();
-        else
-            next(new Error('Expired token'));
-    } else {
-        next(new Error('Invalid token'));
-    }
-});
+        if (decoded) {
+            if (decoded.exp >= Math.round(Date.now() / 1000))
+                next();
+            else
+                next(new Error('Expired token'));
+        } else {
+            next(new Error('Invalid token'));
+        }
+    });
+}
 
 // tslint:disable
 new SocketIoProcessAdapter(processManager, io);
