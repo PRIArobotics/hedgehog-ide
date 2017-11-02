@@ -26,12 +26,11 @@ export class AuthGuardComponent {
         };
         requestData.addResource(requestResource.getProduct());
 
-        this.username = '';
-        this.password = '';
-
         return this.authProvider.login(this.username, this.password)
             .then(response => {
                 this.error = '';
+                this.username = '';
+                this.password = '';
             })
             .catch(err => {
                 if (err.status === 500)
