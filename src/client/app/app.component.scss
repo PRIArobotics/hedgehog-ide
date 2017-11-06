@@ -185,6 +185,18 @@ div > ul > li > a {
 #about-modal {
     top: 5% !important;
     max-height: 90% !important;
+
+    .logo {
+        padding: 30px 40px 20px;
+    }
+
+    li, span {
+        font-size: 1.1rem;
+    }
+
+    .names, .names .col {
+        padding: 0;
+    }
 }
 
 /* Animation */

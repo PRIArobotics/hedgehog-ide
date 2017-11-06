@@ -16,44 +16,74 @@
 <div id="about-modal" class="modal" materialize="modal" [materializeParams]="[{dismissible: true}]" [materializeActions]="aboutModalActions">
     <form (submit)="closeSettingsModal()">
         <div class="modal-content">
-            <img class="responsive-img" src="/assets/img/logo-text.svg">
             <div class="row">
                 <div class="col m10 offset-m1">
-                    <span class="right">Version: {{ version }}</span>
-                    <h4>About Hedgehog IDE</h4>
-                    <h4>Team</h4>
-                    <ul>
-                        <li><a href="https://mklein.co.at">Markus Klein</a></li>
-                        <li><a href="https://github.com/tfellner-tgm">Thomas Fellner</a></li>
-                        <li><a href="https://github.com/hmohamad">Hassan Mohamad</a></li>
-                    </ul>
+                    <img class="responsive-img logo" src="/assets/img/logo-text.svg">
+                    <span class="right">IDE Version: {{ version }}</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col m10 offset-m1">
+                    <div class="divider"></div>
+                    <div class="section">
+                        <h3>About Hedgehog</h3>
+                        <h4>Team</h4>
+                        <div class="row names">
+                            <span class="col m6">Gottfried Koppensteiner</span>
+                            <span class="col m6">Clemens Koza</span>
+                            <span class="col m6">Martin Wolff</span>
+                            <span class="col m6">Daniel Frank</span>
+                            <span class="col m6">Markus Klein</span>
+                            <span class="col m6">Lisamarie Schuster</span>
+                            <span class="col m6">Nicole Weinert</span>
+                            <span class="col m6">Lisa Vittori</span>
+                            <span class="col m6">Karl-Heinz Gräbner</span>
+                            <span class="col m6">Martin Krammer</span>
+                        </div>
 
-                    <h4>Links</h4>
-                    <ul>
-                        <li><a href="https://hedgehog.pria.at">Hedgehog Web Page</a></li>
-                        <li><a href="https://github.com/PRIArobotics/hedgehog-ide">GitHub Repository</a></li>
-                        <li><a href="https://pria.at">Practical Robotics Institute Austria</a></li>
-                    </ul>
+                        <h4>Kickstarter Sponsors</h4>
 
-                    <h4>Acknowledgement</h4>
-                    <ul>
-                        <li>Clemens Koza</li>
-                        <li>Reinhard Grabler</li>
-                        <li>Martin Krammer</li>
-                        <li>Daniel Frank</li>
-                        <li>Martin Wolff</li>
-                        <li>Gottfried Koppensteiner</li>
-                        <li>and all other PRIA staff</li>
-                    </ul>
+                        <h4>Kickstarter Supporters</h4>
 
-                    <h4>Legal</h4>
-                    <ul>
-                        <li>Licensed under <a href="https://github.com/PRIArobotics/hedgehog-ide/blob/master/LICENSE">AGPLv3+</a></li>
-                        <li>Copyright &copy; 2017, Practical Robotics Institute Austria</li>
-                        <li>Copyright &copy; 2017, Markus Klein</li>
-                        <li>Copyright &copy; 2017, Thomas Fellner</li>
-                        <li>Copyright &copy; 2017, Hassan Mohamad</li>
-                    </ul>
+                        <h4>Links</h4>
+                        <ul>
+                            <li><a href="https://hedgehog.pria.at">Hedgehog Website</a></li>
+                            <li><a href="https://hedgehog.readthedocs.io">Hedgehog Documentation</a></li>
+                            <li><a href="https://github.com/PRIArobotics/hedgehog-ide">GitHub Repository</a></li>
+                            <li><a href="https://pria.at">Practical Robotics Institute Austria</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="divider"></div>
+                    <div class="section">
+                        <h3>About Hedgehog IDE</h3>
+                        <h4>Team</h4>
+                        <ul>
+                            <li><a href="https://mklein.co.at">Markus Klein</a></li>
+                            <li><a href="https://github.com/tfellner-tgm">Thomas Fellner</a></li>
+                            <li><a href="https://github.com/hmohamad">Hassan Mohamad</a></li>
+                        </ul>
+
+                        <h4>Acknowledgement</h4>
+                        <ul>
+                            <li>Clemens Koza</li>
+                            <li>Reinhard Grabler</li>
+                            <li>Martin Krammer</li>
+                            <li>Daniel Frank</li>
+                            <li>Martin Wolff</li>
+                            <li>Gottfried Koppensteiner</li>
+                            <li>and all other PRIA staff</li>
+                        </ul>
+
+                        <h4>Legal</h4>
+                        <ul>
+                            <li>Licensed under <a href="https://github.com/PRIArobotics/hedgehog-ide/blob/master/LICENSE">AGPLv3+</a></li>
+                            <li>Copyright &copy; 2017, Practical Robotics Institute Austria</li>
+                            <li>Copyright &copy; 2017, Markus Klein</li>
+                            <li>Copyright &copy; 2017, Thomas Fellner</li>
+                            <li>Copyright &copy; 2017, Hassan Mohamad</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
