@@ -192,8 +192,23 @@ export class TextIdeComponent implements OnInit, AfterViewInit, AfterContentInit
             'from hedgehog.client import connect\n\n' +
             'with connect(emergency=15) as hedgehog:\n' +
             '    print("Hello World")\n'
+        },
+        {
+            name: 'Python Create Hello World',
+            value: 'from time import sleep\n' +
+            'from hedgehog.client import connect_create\n\n' +
+            'with connect_create() as create:\n' +
+            '    create.safe()\n' +
+            '    print("Hello World")\n'
+        },
+        {
+            name: 'Python Create2 Hello World',
+            value: 'from time import sleep\n' +
+            'from hedgehog.client import connect_create2\n\n' +
+            'with connect_create2() as create:\n' +
+            '    create.safe()\n' +
+            '    print("Hello World")\n'
         }
-
     ];
 
     /**
