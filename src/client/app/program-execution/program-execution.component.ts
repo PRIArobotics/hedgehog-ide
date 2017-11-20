@@ -29,31 +29,13 @@ export class ProgramExecutionComponent implements OnDestroy, OnInit {
 
     public constructor (private processManager: HttpProcessManagerService) {
         processManager.on('stdout', (pid: number, data: string) => {
-            if (pid === this.processPid) {
-                this.outputList.push({
-                    type: 'stdout',
-                    data
-                });
-            } else if (!this.processPid && this.isRunning) {
-                this.bufferedOutput.push({
-                    type: 'stdout',
-                    data
-                });
-            }
+            if (pid === this.processPid || (!this.processPid && this.isRunning))
+                this.writeToConsole('stdout', data);
         });
 
         processManager.on('stderr', (pid: number, data: string) => {
-            if (pid === this.processPid) {
-                this.outputList.push({
-                    type: 'stderr',
-                    data
-                });
-            } else if (!this.processPid && this.isRunning) {
-                this.bufferedOutput.push({
-                    type: 'stderr',
-                    data
-                });
-            }
+            if (pid === this.processPid || (!this.processPid && this.isRunning))
+                this.writeToConsole('stderr', data);
         });
 
         processManager.on('exit', (pid: number) => {
@@ -107,22 +89,14 @@ export class ProgramExecutionComponent implements OnDestroy, OnInit {
     public async sendInput () {
         if (this.isRunning) {
             await this.processManager.writeStdin(this.processPid, this.input + '\n');
-
-            this.outputList.push({
-                type: 'stdin',
-                data: this.input
-            });
-
+            this.writeToConsole('stdin', this.input);
             this.input = '';
         }
     }
 
     public async stop () {
         if (this.isRunning) {
-            this.outputList.push({
-                type: 'stdout',
-                data: 'program stopped ...'
-            });
+            this.writeToConsole('stdout', 'program stopped ...');
 
             this.isRunning = false;
             await this.processManager.kill(this.processPid);
@@ -135,5 +109,13 @@ export class ProgramExecutionComponent implements OnDestroy, OnInit {
 
         this.showPanel = false;
         this.onVisibleChange.emit(false);
+    }
+
+    public writeToConsole(type: string, data: string): void {
+        // Show only the last 500 lines in the console
+        if(this.outputList.length === 500)
+            this.outputList.splice(0, 1);
+
+        this.outputList.push({type, data});
     }
 }
