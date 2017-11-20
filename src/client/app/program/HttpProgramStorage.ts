@@ -163,10 +163,8 @@ export default class HttpProgramStorage implements IProgramStorage {
         return this.http
             .get(`/api/trees/${genericToBase64(programName)}/${treeId}`)
             .toPromise()
-            .then(response => {
-                // parse json response
-                let res = response['data'];
-
+            .then((res: any) => {
+                console.log(res);
                 let items: Map<string, TreeItem> = new Map<string, TreeItem>();
 
                 // loop through all items
