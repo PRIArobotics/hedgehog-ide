@@ -91,7 +91,7 @@
                         </div>
                     </div>
                 </split-area>
-                <split-area [size]="30" [visible]="executionPanelVisible">
+                <split-area [size]="30" [visible]="executionPanelVisible" class="execution-split-area">
                     <program-execution (onExit)="programIsRunning = false" (onVisibleChange)="executionPanelVisibleChanged($event)" id="split-execute"></program-execution>
                 </split-area>
             </split>
