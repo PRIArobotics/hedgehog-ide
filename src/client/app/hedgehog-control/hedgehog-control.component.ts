@@ -25,26 +25,23 @@ export default class HedgehogControlComponent implements AfterViewInit, OnDestro
             });
         });
 
-        [0, 1, 2, 3].forEach(() => {
+        [0, 1, 2, 3, 4, 5].forEach(() => {
             this.servoControls.push({
                 value: 0,
                 state: false
             });
         });
 
-        [0, 1, 2, 3, 4, 5, 6, 7].forEach(() => {
+        for (let i = 0; i < 16; i++) {
             this.analogSensors.push({
                 dataset: [],
                 labels: []
             });
-        });
-
-        [0, 1, 2, 3, 4, 5, 6, 7].forEach(() => {
             this.digitalSensors.push({
                 dataset: [],
                 labels: []
             });
-        });
+        }
 
         this.sensorSubscription = this.hedgehogClient.onSensorValues()
             .subscribe(async sensorData => {
@@ -55,11 +52,11 @@ export default class HedgehogControlComponent implements AfterViewInit, OnDestro
                     let value = sensor.value;
 
                     if (sensor.type === "analog") {
-                        dataset = this.analogSensors[sensor.id % 8].dataset;
-                        labels = this.analogSensors[sensor.id % 8].labels;
+                        dataset = this.analogSensors[sensor.id].dataset;
+                        labels = this.analogSensors[sensor.id].labels;
                     } else if (sensor.type === "digital") {
-                        dataset = this.digitalSensors[sensor.id % 8].dataset;
-                        labels = this.digitalSensors[sensor.id % 8].labels;
+                        dataset = this.digitalSensors[sensor.id].dataset;
+                        labels = this.digitalSensors[sensor.id].labels;
                         value = value ? 1 : 0;
                     }
 

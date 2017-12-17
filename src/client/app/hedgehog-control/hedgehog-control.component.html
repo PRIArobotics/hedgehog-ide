@@ -28,8 +28,8 @@
         <output-control
                 *ngFor="let servo of servoControls; let i = index;"
                 [name]="'Servo ' + i"
-                [value]="1023"
-                [maxValue]="2047"
+                [value]="1000"
+                [maxValue]="2000"
                 (valueChanged)="updateServoValue(i, $event)"
                 (stateChanged)="updateServoState(i, $event)">
         </output-control>
@@ -53,7 +53,7 @@
 
         <output-chart
                 *ngFor="let digital of digitalSensors; let i = index;"
-                [name]="'Digital ' + (i + 8)"
+                [name]="'Digital ' + i"
                 [lineData]="digitalSensors[i].dataset"
                 [lineLabels]="digitalSensors[i].labels"
                 [type]="'digital'"
