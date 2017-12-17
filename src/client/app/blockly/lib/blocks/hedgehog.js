@@ -274,7 +274,7 @@ Blockly.Blocks['hedgehog_read_analog'] = {
                     "name": "PORT",
                     "value": 0,
                     "min": 0,
-                    "max": 7,
+                    "max": 15,
                     "precision": 1
                 }
             ],
@@ -297,7 +297,7 @@ Blockly.Blocks['hedgehog_servo'] = {
                     "name": "PORT",
                     "value": 0,
                     "min": 0,
-                    "max": 3,
+                    "max": 5,
                     "precision": 1
                 },
                 {
@@ -361,8 +361,8 @@ Blockly.Blocks['hedgehog_read_digital'] = {
                 {
                     "type": "field_number",
                     "name": "PORT",
-                    "value": 8,
-                    "min": 8,
+                    "value": 0,
+                    "min": 0,
                     "max": 15,
                     "precision": 1
                 }
