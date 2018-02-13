@@ -112,9 +112,6 @@ export class TextIdeComponent implements OnInit, AfterViewInit, AfterContentInit
     private openFiles: {[programName: string]: string[]} = {};
 
     // local storage Object as programName: string
-    private openFileId: {[programName: string]: string} = {};
-
-    // local storage Object as programName: string
     private localStorageOpenFileIds: {[programName: string]: string} = {};
 
     // indexed files from the file tree
@@ -253,7 +250,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, AfterContentInit
         this.programExecution.isRunning = false;
         this.program = await this.storage.getProgram(this.programName);
 
-        this.localStorageOpenFileIds = JSON.parse(localStorage.getItem('openFileIds'));
+        this.localStorageOpenFileIds = JSON.parse(localStorage.getItem('openFileIds')) || {};
         this.editorOptions = JSON.parse(localStorage.getItem('editorOptions'));
 
         let rootDir = await this.program.getWorkingTreeRoot();
@@ -264,7 +261,6 @@ export class TextIdeComponent implements OnInit, AfterViewInit, AfterContentInit
         this.fileTree[0]['children'] = childArray;
         this.fileTree[0]['storageObject'] = rootDir;
 
-        this.openFileId = JSON.parse(localStorage.getItem('openFileId'));
         this.openFiles = JSON.parse(localStorage.getItem('openFiles'));
 
         if (!this.openFiles) {
@@ -274,12 +270,6 @@ export class TextIdeComponent implements OnInit, AfterViewInit, AfterContentInit
         if (!this.openFiles[this.programName]) {
             // if not create a new Map with the program name
             this.openFiles[this.programName] = [];
-        }
-
-        if (!this.localStorageOpenFileIds) {
-            this.localStorageOpenFileIds = {};
-        } else if (this.localStorageOpenFileIds[this.programName]) {
-            this.openId = this.localStorageOpenFileIds[this.programName];
         }
 
         // create connection for this program
@@ -301,19 +291,20 @@ export class TextIdeComponent implements OnInit, AfterViewInit, AfterContentInit
         // populate file tree and give it the root directory and it's childArray
         await this.populateFiletree(rootDir, childArray);
 
-        // open all previously opened filesa
+        // open all previously opened files
         for (let fileId of this.openFiles[this.programName]) {
             if (this.files.get(fileId)) {
                 await this.openFileTab(fileId, false);
             }
         }
 
-        // focus on the most previously opened file if it exists
-        if (this.localStorageOpenFileIds[this.programName] !== null) {
-            if (this.files.get(this.localStorageOpenFileIds[this.programName])) {
-                await this.openFile(this.openId, false);
-                this.updateIndicator($('#tab' + this.localStorageOpenFileIds[this.programName]));
-            }
+        // load and focus on the most previously opened file if it exists
+        if (this.localStorageOpenFileIds[this.programName]) {
+            this.openId = this.localStorageOpenFileIds[this.programName];
+
+            // open file in editor
+            await this.openFile(this.openId, false);
+            this.updateIndicator($('#tab' + this.localStorageOpenFileIds[this.programName]));
         }
 
         this.sharedbService.on('operations', op => {
@@ -1182,13 +1173,6 @@ export class TextIdeComponent implements OnInit, AfterViewInit, AfterContentInit
     private async openFile(id: string, updateOpenId: boolean = true) {
         let file = this.files.get(id);
 
-        if (updateOpenId) {
-            // update the localStorageOpenFileIds for the local storage
-            this.localStorageOpenFileIds[this.programName] = id;
-            localStorage.setItem('openFileIds', JSON.stringify(this.localStorageOpenFileIds));
-            this.openId = id;
-        }
-
         if (!file.storageObject) {
             // get the storage file
             file.storageObject = await file.parentDirectory.getFile(file.name);
@@ -1196,6 +1180,14 @@ export class TextIdeComponent implements OnInit, AfterViewInit, AfterContentInit
 
         if (!file.content) {
             file.content = await file.storageObject.readContent();
+        }
+
+
+        if (updateOpenId) {
+            // update the localStorageOpenFileIds for the local storage
+            this.localStorageOpenFileIds[this.programName] = id;
+            localStorage.setItem('openFileIds', JSON.stringify(this.localStorageOpenFileIds));
+            this.openId = id;
         }
 
         // update editorContent, currentFileContent to current files content and openId to this id
@@ -1230,7 +1222,6 @@ export class TextIdeComponent implements OnInit, AfterViewInit, AfterContentInit
         }
 
         localStorage.setItem('openFiles', JSON.stringify(this.openFiles));
-        localStorage.setItem('openFileId', JSON.stringify(this.openFileId));
 
         // load new li as tab
         ($('div.tabs') as any).tabs();
