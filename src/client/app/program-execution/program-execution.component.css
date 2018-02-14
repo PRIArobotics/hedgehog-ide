@@ -31,6 +31,11 @@
     151
      */
     height: calc(100% - 45px);
+    margin: 1vh 0;
+}
+
+#output pre {
+    margin: 0;
 }
 
 #close-button {
@@ -38,6 +43,7 @@
     text-align: right;
     height: 2rem;
 }
+
 
 .stdin {
     color: #38b449;
