@@ -15,8 +15,8 @@
                     <i class="material-icons">code</i>
             </a></li>
             <li>
-                <a (click)="run()" materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="run program"  *ngIf="!programIsRunning"><i class="material-icons">play_arrow</i></a>
-                <a (click)="stop()" materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="stop program" *ngIf="programIsRunning"><i class="material-icons">stop</i></a>
+                <a (click)="run()" materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="run program"  *ngIf="!programExecution.isRunning" [ngClass]="{ 'disabled': programExecution.commandInProgress }"><i class="material-icons">play_arrow</i></a>
+                <a (click)="programExecution.stop()" materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="stop program" *ngIf="programExecution.isRunning" [ngClass]="{ 'disabled': programExecution.commandInProgress }"><i class="material-icons">stop</i></a>
             </li>
         </ul>
     </div>
@@ -39,7 +39,7 @@
         </split>
     </split-area>
     <split-area [size]="30" [visible]="executionPanelVisible">
-        <program-execution (onExit)="programIsRunning = false" (onVisibleChange)="executionPanelVisible = $event" id="split-execute"></program-execution>
+        <program-execution (onVisibleChange)="executionPanelVisible = $event" id="split-execute"></program-execution>
     </split-area>
 </split>
 

@@ -4,8 +4,8 @@
             <a class="brand-logo"> {{ programName }} </a>
             <ul class="right">
                 <li>
-                    <a (click)="run()" [ngClass]="{ 'disabled': !openId }" *ngIf="!programIsRunning" materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="execute open file"><i class="material-icons">play_arrow</i></a>
-                    <a (click)="programExecution.stop()" *ngIf="programIsRunning" materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="stop program"><i class="material-icons">stop</i></a>
+                    <a (click)="run()" [ngClass]="{ 'disabled': !openId || programExecution.commandInProgress }" *ngIf="!programExecution.isRunning" materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="execute open file"><i class="material-icons">play_arrow</i></a>
+                    <a (click)="programExecution.stop()" [ngClass]="{ 'disabled': programExecution.commandInProgress }" *ngIf="programExecution.isRunning" materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="stop program"><i class="material-icons">stop</i></a>
                 </li>
                 <li><a (click)="saveAllFiles(true)"><i materialize="tooltip" class="material-icons tooltipped" data-position="bottom" data-delay="50" data-tooltip="save files">save</i></a></li>
                 <li><a (click)="openSaveVersionModal()"><i materialize="tooltip" class="material-icons tooltipped" data-position="bottom" data-delay="50" data-tooltip="save as version">note_add</i></a></li>
@@ -92,7 +92,7 @@
                     </div>
                 </split-area>
                 <split-area [size]="30" [visible]="executionPanelVisible" class="execution-split-area">
-                    <program-execution (onExit)="programIsRunning = false" (onVisibleChange)="executionPanelVisibleChanged($event)" id="split-execute"></program-execution>
+                    <program-execution (onVisibleChange)="executionPanelVisibleChanged($event)" id="split-execute"></program-execution>
                 </split-area>
             </split>
         </split-area>

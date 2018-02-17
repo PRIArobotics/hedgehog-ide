@@ -89,7 +89,6 @@ export class TextIdeComponent implements OnInit, AfterViewInit, AfterContentInit
     @ViewChild(ProgramExecutionComponent)
     private programExecution: ProgramExecutionComponent;
 
-    private programIsRunning: boolean = false;
     private executionPanelVisible: boolean = false;
 
     // modal action for creating a new file
@@ -460,9 +459,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, AfterContentInit
 
     public async ngOnDestroy(): Promise<void> {
         // stop the program if it is running
-        if (this.programIsRunning) {
-            await this.programExecution.stop();
-        }
+        await this.programExecution.stop();
     }
 
     /**
@@ -1112,7 +1109,6 @@ export class TextIdeComponent implements OnInit, AfterViewInit, AfterContentInit
     public async run() {
         await this.saveOpenFile();
         await this.programExecution.run(this.programName, genericFromBase64IdSafe(this.openId));
-        this.programIsRunning = true;
     }
 
     public async saveVersionAction() {

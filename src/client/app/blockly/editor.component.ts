@@ -38,7 +38,6 @@ export class BlocklyComponent implements OnInit, OnDestroy {
 
     @ViewChild(ProgramExecutionComponent)
     private programExecution: ProgramExecutionComponent;
-    private programIsRunning: boolean = false;
 
     private executionPanelVisible: boolean = false;
 
@@ -49,14 +48,8 @@ export class BlocklyComponent implements OnInit, OnDestroy {
 
     public async run () {
         this.saveWorkspace();
-        this.programIsRunning = true;
         await this.rootDir.addFile("code.py", this.toPython());
         await this.programExecution.run(this.programName, "code.py");
-    }
-
-    public async stop () {
-        this.programIsRunning = false;
-        this.programExecution.stop();
     }
 
     public clearWorkspace(): void {

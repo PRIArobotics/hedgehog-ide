@@ -8,6 +8,7 @@ import {HttpProcessManagerService} from "./http-process-manager.service";
 })
 export class ProgramExecutionComponent implements OnDestroy, OnInit {
     public isRunning: boolean = false;
+    public commandInProgress: boolean = false;
     public input: string = '';
 
     public outputList: Array<{type: string, data: string}> = [];
@@ -65,12 +66,22 @@ export class ProgramExecutionComponent implements OnDestroy, OnInit {
     }
 
     public async run (programName: string, filePath: string, args?: string[]) {
-        this.isRunning = true;
+        this.commandInProgress = true;
         if (!this.showPanel)
             this.onVisibleChange.emit(true);
         this.showPanel = true;
         this.outputList = [];
-        this.processPid = (await this.processManager.run(programName, filePath, args)).pid;
+
+        try {
+            this.processPid = (await this.processManager.run(programName, filePath, args)).pid;
+        } catch (err) {
+            this.commandInProgress = false;
+            this.outputList.push({type: 'stderr', data: `Failed to run '${filePath}'`});
+            return;
+        }
+
+        this.commandInProgress = false;
+        this.isRunning = true;
         this.replay = {
             programName,
             filePath,
@@ -96,10 +107,19 @@ export class ProgramExecutionComponent implements OnDestroy, OnInit {
 
     public async stop () {
         if (this.isRunning) {
-            this.writeToConsole('stdout', 'program stopped ...');
+            this.commandInProgress = true;
 
+            try {
+                await this.processManager.kill(this.processPid);
+            } catch (err) {
+                this.commandInProgress = false;
+                this.outputList.push({type: 'stderr', data: `Failed to stop process`});
+                return;
+            }
+
+            this.writeToConsole('stdout', 'Program stopped');
+            this.commandInProgress = false;
             this.isRunning = false;
-            await this.processManager.kill(this.processPid);
         }
     }
 
