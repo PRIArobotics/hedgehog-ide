@@ -35,7 +35,7 @@ $ tar -xf  hedgehog-ide-v0.2.0-beta-linux-armv6l.tar.gz
 If you want the latest version development version of the IDE you can also clone the repository and build it from source:
 ```bash
 $ git clone https://github.com/PRIArobotics/hedgehog-ide.git 
-$ hedgehog-ide
+$ cd hedgehog-ide
 $ npm install
 $ ./node_modules/typings/dist/bin.js install
 $ ./node_modules/grunt/bin/grunt build
