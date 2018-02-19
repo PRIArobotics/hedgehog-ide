@@ -47,6 +47,9 @@ jspm_packages
 # Build directory
 build
 
+# Release directory
+release
+
 # JetBrains
 .idea
 
