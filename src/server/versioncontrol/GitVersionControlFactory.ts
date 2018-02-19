@@ -33,7 +33,7 @@ export function createVersion(storage, programName: string, gitTag: NodeGit.Tag,
         gitTag ? gitTag.name() : null,
         gitCommit.message(),
         gitCommit.date(),
-        gitCommit.parents(null).map(parent => parent.tostrS()),
+        gitCommit.parents().map(parent => parent.tostrS()),
         gitCommit.treeId().tostrS()
     );
 }

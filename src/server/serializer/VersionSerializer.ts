@@ -1,4 +1,5 @@
-import Hapi = require('hapi');
+import {Request} from "hapi";
+
 import Version from "../../common/versioncontrol/Version";
 import {default as JsonApiDocumentBuilder, JsonApiResourceBuilder} from "../jsonapi/JsonApiBuilder";
 import {JsonApiResource} from "../jsonapi/JsonApiObjects";
@@ -6,7 +7,7 @@ import {genericToBase64} from "../../common/utils";
 import {getLinkUrl} from "../utils";
 
 function serializeVersion (version: Version,
-                           request: Hapi.Request,
+                           request: Request,
                            documentBuilder: JsonApiDocumentBuilder): Promise<JsonApiResource> {
     const programId = genericToBase64(version.programName);
     let resourceBuilder = new JsonApiResourceBuilder(documentBuilder);

@@ -24,7 +24,7 @@ export default class SocketIoJsonStream extends Duplex {
         this.on('end', () => socket.disconnect(true));
     }
 
-    public _write (msg: any, encoding: string, next: () => {}) {
+    public _write (msg: any, encoding: string, next: (err?: Error) => void): void {
         this.socket.emit('message', msg);
         next();
     }

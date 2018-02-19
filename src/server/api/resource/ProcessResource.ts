@@ -1,4 +1,4 @@
-import Hapi = require('hapi');
+import {ReplyNoContinue, Request} from "hapi";
 
 import ApiResource from "../ApiResource";
 import SerializerRegistry from "../../serializer/SerializerRegistry";
@@ -17,7 +17,7 @@ export default class ProcessResource extends ApiResource {
     }
 
     @ApiEndpoint('POST')
-    public async createProcess (req: Hapi.Request, reply: Hapi.IReply) {
+    public async createProcess (req: Request, reply: ReplyNoContinue) {
         let parser = JsonApiDocument.getParser().addProperties({
             name: 'data',
             required: RequirementType.Required,
@@ -69,7 +69,7 @@ export default class ProcessResource extends ApiResource {
     }
 
     @ApiEndpoint('GET', '/{pid}')
-    public async getProcess (req: Hapi.Request, reply: Hapi.IReply) {
+    public async getProcess (req: Request, reply: ReplyNoContinue) {
         let process = await this.processManager.getProcess(Number(req.params['pid']));
 
         let documentBuilder = new JsonApiDocumentBuilder();
@@ -80,7 +80,7 @@ export default class ProcessResource extends ApiResource {
     }
 
     @ApiEndpoint('DELETE', '/{pid}')
-    public async killProcess (req: Hapi.Request, reply: Hapi.IReply) {
+    public async killProcess (req: Request, reply: ReplyNoContinue) {
         await this.processManager.kill(Number(req.params['pid']));
 
         return reply('')
@@ -88,7 +88,7 @@ export default class ProcessResource extends ApiResource {
     }
 
     @ApiEndpoint('GET', '/{pid}/stdout')
-    public async getStdout (req: Hapi.Request, reply: Hapi.IReply) {
+    public async getStdout (req: Request, reply: ReplyNoContinue) {
         let output: string;
         try {
             output = await this.processManager.getStdout(Number(req.params['pid']));
@@ -104,7 +104,7 @@ export default class ProcessResource extends ApiResource {
     }
 
     @ApiEndpoint('GET', '/{pid}/stderr')
-    public async getStderr (req: Hapi.Request, reply: Hapi.IReply) {
+    public async getStderr (req: Request, reply: ReplyNoContinue) {
         let errorStream: string;
         try {
             errorStream = await this.processManager.getStderr(Number(req.params['pid']));
@@ -120,7 +120,7 @@ export default class ProcessResource extends ApiResource {
     }
 
     @ApiEndpoint('PATCH', '/{pid}/stdin')
-    public async writeStdin (req: Hapi.Request, reply: Hapi.IReply) {
+    public async writeStdin (req: Request, reply: ReplyNoContinue) {
         try {
             await this.processManager.writeStdin(Number(req.params['pid']), req.payload);
         } catch (err) {

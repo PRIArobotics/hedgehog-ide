@@ -1,5 +1,5 @@
-import Hapi = require('hapi');
 import winston = require("winston");
+import {ReplyNoContinue, Request} from "hapi";
 
 import ApiResource from "../../ApiResource";
 import {genericToBase64, genericFromBase64} from "../../../../common/utils";
@@ -16,7 +16,7 @@ export default class TreeResource extends ApiResource {
     }
 
     @ApiEndpoint('GET', '{treeId}')
-    public async getTree (req: Hapi.Request, reply: Hapi.IReply) {
+    public async getTree (req: Request, reply: ReplyNoContinue) {
         const programName = genericFromBase64(req.params['programId']);
         const treeId = req.params['treeId'];
 

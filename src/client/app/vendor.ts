@@ -31,7 +31,7 @@ import 'jquery-ui-dist/jquery-ui.js';
 
 import "materialize-css";
 import "angular2-materialize";
-import 'angular2-contextmenu';
+import 'ngx-contextmenu';
 
 
 import 'angular-tree-component';

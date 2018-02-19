@@ -21,6 +21,7 @@ import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {HeaderInterceptor} from "./header-interceptor.service";
 import {AuthProvider} from "./auth-provider.service";
 import {ConfigurationService, default as initConfigurationService} from "./util/configuration-service";
+import {ContextMenuModule} from "ngx-contextmenu";
 
 const appRoutes: Routes = [
     {
@@ -68,6 +69,7 @@ const appRoutes: Routes = [
         HedgehogControlModule,
         RouterModule.forRoot(appRoutes),
         HttpClientModule,
+        ContextMenuModule.forRoot()
     ],
     declarations: [
         AppComponent,

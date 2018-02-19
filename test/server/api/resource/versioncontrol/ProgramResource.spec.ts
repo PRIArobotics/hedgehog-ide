@@ -47,7 +47,7 @@ describe('ProgramResource', () => {
     let server: Hapi.Server;
     let programResource: ProgramResource;
     let storage: IProgramStorage;
-    let mock: Sinon.SinonMock;
+    let mock: sinon.SinonMock;
 
     before(() => {
         programResource = new ProgramResource(null, modelRegistry);

@@ -29,7 +29,7 @@
                   (onActivate)="fileTreeEvent($event)"
                   (onMoveNode)="onMoveNode($event)">
 
-                <template #treeNodeTemplate let-node>
+                <ng-template #treeNodeTemplate let-node>
                     <div [contextMenu]="fileTreeActions" [contextMenuSubject]="node">
                         <span class="no-break">
                             <i *ngIf="node.data.children && !node.isExpanded" class="material-icons"> folder </i>
@@ -38,23 +38,23 @@
                             <span> {{ node.data.name }} </span>
                         </span>
                     </div>
-                </template>
+                </ng-template>
 
             </Tree>
 
             <context-menu #treeContextMenu>
-                <template contextMenuItem let-node (execute)="newData.file = true; openNewFileOrDirectoryModal($event)">
+                <ng-template contextMenuItem let-node (execute)="newData.file = true; openNewFileOrDirectoryModal($event)">
                     <i class="material-icons"> insert_drive_file </i> New File
-                </template>
-                <template contextMenuItem let-node (execute)="newData.file = false; openNewFileOrDirectoryModal($event)">
+                </ng-template>
+                <ng-template contextMenuItem let-node (execute)="newData.file = false; openNewFileOrDirectoryModal($event)">
                     <i class="material-icons"> folder </i> New Directory
-                </template>
-                <template contextMenuItem let-node (execute)="openDeleteModal($event)">
+                </ng-template>
+                <ng-template contextMenuItem let-node (execute)="openDeleteModal($event)">
                     <i class="material-icons"> delete </i> Delete
-                </template>
-                <template contextMenuItem let-node (execute)="openRenameModal($event)">
+                </ng-template>
+                <ng-template contextMenuItem let-node (execute)="openRenameModal($event)">
                     <i class="material-icons"> mode_edit </i> Rename
-                </template>
+                </ng-template>
             </context-menu>
         </split-area>
         <split-area [size]="80">
@@ -65,7 +65,7 @@
                         <div class="col s12 editor-tabs">
                             <ul class="tabs" materialize="tabs" id="sortable-tabs">
                                 <li class="tab"><a></a></li>
-                                <template ngFor let-fileId [ngForOf]="openFiles[programName]" >
+                                <ng-template ngFor let-fileId [ngForOf]="openFiles[programName]" >
                                     <li *ngIf="files.get(fileId)" class="tab" id="tab{{ fileId }}" (click)="openFile(fileId)">
                                         <a class="green-text lighten-3 waves-effect">
                                             {{ files.get(fileId).name }}
@@ -73,7 +73,7 @@
                                             <i class="material-icons" (click)="closeTab(fileId)">close</i>
                                         </a>
                                     </li>
-                                </template>
+                                </ng-template>
                             </ul>
                         </div>
 

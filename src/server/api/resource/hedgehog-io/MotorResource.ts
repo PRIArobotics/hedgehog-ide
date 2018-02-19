@@ -1,10 +1,9 @@
-import Hapi = require('hapi');
 import winston = require("winston");
+import {ReplyNoContinue, Request} from "hapi";
 import {HedgehogClient, MotorState} from 'hedgehog-client';
 
 import ApiResource from "../../ApiResource";
 import SerializerRegistry from "../../../serializer/SerializerRegistry";
-import {IReply} from "hapi";
 import {JsonApiDocument, JsonApiResource} from "../../../jsonapi/JsonApiObjects";
 import {RequirementType, ObjectParser} from "../../../jsonapi/Parser";
 import ApiEndpoint from "../../ApiEndpoint";
@@ -15,7 +14,7 @@ export default class MotorResource extends ApiResource {
     }
 
     @ApiEndpoint('PATCH', '/{motorId}')
-    public setMotor (req: Hapi.Request, reply: IReply) {
+    public setMotor (req: Request, reply: ReplyNoContinue) {
         const motorPort = Number(req.params['motorId']);
 
         let parser = JsonApiDocument.getParser().addProperties({

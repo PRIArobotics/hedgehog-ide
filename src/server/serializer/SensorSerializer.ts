@@ -1,10 +1,11 @@
-import Hapi = require('hapi');
+import {Request} from "hapi";
+
 import {JsonApiResource} from "../jsonapi/JsonApiObjects";
 import {JsonApiResourceBuilder, default as JsonApiDocumentBuilder} from "../jsonapi/JsonApiBuilder";
 import {default as Sensor, SensorType} from "../../common/Sensor";
 
 async function serializeSensor (sensor: Sensor,
-                                request: Hapi.Request,
+                                request: Request,
                                 documentBuilder: JsonApiDocumentBuilder): Promise<JsonApiResource> {
     let resourceBuilder = new JsonApiResourceBuilder(documentBuilder);
     resourceBuilder.resource.type = 'sensor';

@@ -1,10 +1,10 @@
-import Hapi = require('hapi');
 import winston = require("winston");
+import {ReplyNoContinue, Request} from "hapi";
+
 import {HedgehogClient} from 'hedgehog-client';
 
 import ApiResource from "../../ApiResource";
 import SerializerRegistry from "../../../serializer/SerializerRegistry";
-import {IReply} from "hapi";
 import {JsonApiDocument, JsonApiResource} from "../../../jsonapi/JsonApiObjects";
 import {RequirementType, ObjectParser} from "../../../jsonapi/Parser";
 import ApiEndpoint from "../../ApiEndpoint";
@@ -15,7 +15,7 @@ export default class ServoResource extends ApiResource {
     }
 
     @ApiEndpoint('PATCH', '/{servoId}')
-    public setServo (req: Hapi.Request, reply: IReply) {
+    public setServo (req: Request, reply: ReplyNoContinue) {
         const servoPort = Number(req.params['servoId']);
 
         let parser = JsonApiDocument.getParser().addProperties({

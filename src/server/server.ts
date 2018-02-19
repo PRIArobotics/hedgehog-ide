@@ -1,11 +1,11 @@
 import "babel-polyfill";
-import Hapi = require('hapi');
 import Io = require('socket.io');
 import path = require('path');
 import winston = require("winston");
-import chalk = require('chalk');
 import figlet = require('figlet');
 import jwt = require('jsonwebtoken');
+import chalk from "chalk";
+import {ReplyWithContinue, Server, Request} from "hapi";
 
 import {HedgehogClient} from 'hedgehog-client';
 
@@ -29,11 +29,11 @@ import ShareDbService from "./realtime-sync/ShareDbService";
 import AuthenticationResource from "./api/resource/authentication/AuthenticationResource";
 import ConfigurationResource from "./api/resource/ConfigurationResource";
 
+
 // Return external module as the file is outside of the
 // TypeScript compile output
 // tslint:disable-next-line
 let serverConfig = require('../../../config/server.config');
-
 
 console.log(chalk.green(figlet.textSync('Hedgehog IDE')));
 
@@ -66,7 +66,7 @@ let processManager = new NodeProcessManager(
  * Server setup
  */
 // Create a server with a host and port
-const server = new Hapi.Server({
+const server = new Server({
     connections: {
         routes: {
             files: {
@@ -250,10 +250,10 @@ server.ext('onPreResponse', (request, reply) => {
 /**
  * Request logging
  */
-server.ext('onPreResponse', (request: Hapi.Request, reply: Hapi.IReply) => {
+server.ext('onPreResponse', (request: Request, reply: ReplyWithContinue) => {
     winston.debug(
         `[${chalk.red(request.id)}] ${chalk.cyan(request.info.remoteAddress)}: ` +
-        `<${chalk.yellow(request.response.statusCode)}> ${chalk.green(request.method)} ${request.path}`);
+        `<${chalk.yellow(request.response.statusCode as any)}> ${chalk.green(request.method)} ${request.path}`);
     return reply.continue();
 });
 

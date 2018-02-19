@@ -14,7 +14,7 @@ describe('WorkingTreeFileResource', () => {
     let server: Hapi.Server;
     let workingTreeFileResource: WorkingTreeFileResource;
     let storage: IProgramStorage;
-    let mock: Sinon.SinonMock;
+    let mock: sinon.SinonMock;
 
     before(() => {
         workingTreeFileResource = new WorkingTreeFileResource(null, modelRegistry);

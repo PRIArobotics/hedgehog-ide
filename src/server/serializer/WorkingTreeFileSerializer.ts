@@ -1,4 +1,4 @@
-import Hapi = require('hapi');
+import {Request} from "hapi";
 
 import {JsonApiResource} from "../jsonapi/JsonApiObjects";
 import {genericToBase64} from "../../common/utils";
@@ -8,7 +8,7 @@ import {JsonApiResourceBuilder, default as JsonApiDocumentBuilder} from "../json
 import SerializerRegistry from "./SerializerRegistry";
 
 async function serializeWorkingTreeFile (file: WorkingTreeFile,
-                                         request: Hapi.Request,
+                                         request: Request,
                                          documentBuilder: JsonApiDocumentBuilder,
                                          registry: SerializerRegistry,
                                          includeContent: boolean = true): Promise<JsonApiResource> {

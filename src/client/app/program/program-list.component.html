@@ -8,15 +8,15 @@
 </nav>
 
 <context-menu #programListContextMenu>
-    <template contextMenuItem let-node (execute)="openCreateModal('textual')">
+    <ng-template contextMenuItem let-node (execute)="openCreateModal('textual')">
         <i class="material-icons"> code </i> New Textual Program
-    </template>
-    <template contextMenuItem let-node (execute)="openCreateModal('blockly')">
+    </ng-template>
+    <ng-template contextMenuItem let-node (execute)="openCreateModal('blockly')">
         <i class="material-icons"> view_module </i> New Visual Project
-    </template>
-    <template contextMenuItem let-node (execute)="openCreateModal('template')">
+    </ng-template>
+    <ng-template contextMenuItem let-node (execute)="openCreateModal('template')">
         <i class="material-icons"> description </i> New Template
-    </template>
+    </ng-template>
 </context-menu>
 
 <div [contextMenu]="programListContextMenu" [contextMenuSubject]="this" class="program-list">
@@ -51,27 +51,27 @@
             </li>
             <li class="collection-item avatar valign-wrapper waves-effect program-item" *ngFor="let program of (programs | hasProgramExtension: (showTemplates ? ['.blockly', '', '.template'] : ['.blockly', '']))" (click)="openRoute($event, program)">
                 <div [ngSwitch]="getExtension(program)">
-                    <template [ngSwitchCase]="'.blockly'">
+                    <ng-template [ngSwitchCase]="'.blockly'">
                         <i materialize="tooltip"
                            class="material-icons tooltipped circle red program-icon"
                            data-position="left"
                            data-delay="50"
                            data-tooltip="Visual Program">view_module</i>
-                    </template>
-                    <template [ngSwitchCase]="''">
+                    </ng-template>
+                    <ng-template [ngSwitchCase]="''">
                         <i materialize="tooltip"
                            class="material-icons tooltipped circle blue program-icon"
                            data-position="left"
                            data-delay="50"
                            data-tooltip="Textual Program">code</i>
-                    </template>
-                    <template [ngSwitchCase]="'.template'">
+                    </ng-template>
+                    <ng-template [ngSwitchCase]="'.template'">
                         <i materialize="tooltip"
                            class="material-icons tooltipped circle grey program-icon"
                            data-position="left"
                            data-delay="50"
                            data-tooltip="Template">description</i>
-                    </template>
+                    </ng-template>
                 </div>
                 <span class="title valign">{{ getNameWithoutExtension(program) }}</span>
 
@@ -91,15 +91,15 @@
             <div class="modal-content">
                 <h4 [ngSwitch]="newProgramData.type">
                     New
-                    <template [ngSwitchCase]="'blockly'">
+                    <ng-template [ngSwitchCase]="'blockly'">
                         Visual Program
-                    </template>
-                    <template [ngSwitchCase]="'textual'">
+                    </ng-template>
+                    <ng-template [ngSwitchCase]="'textual'">
                         Textual Program
-                    </template>
-                    <template [ngSwitchCase]="'template'">
+                    </ng-template>
+                    <ng-template [ngSwitchCase]="'template'">
                         Program Template
-                    </template>
+                    </ng-template>
                 </h4>
                 <div class="input-field">
                     <input name="new-program-name" id="new-program-name" type="text" class="validate" [(ngModel)]="newProgramData.name"/>

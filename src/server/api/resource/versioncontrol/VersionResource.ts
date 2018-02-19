@@ -1,5 +1,5 @@
-import Hapi = require('hapi');
 import winston = require("winston");
+import {ReplyNoContinue, Request} from "hapi";
 
 import ApiResource from "../../ApiResource";
 import SerializerRegistry from "../../../serializer/SerializerRegistry";
@@ -18,7 +18,7 @@ export default class VersionResource extends ApiResource {
     }
 
     @ApiEndpoint('POST')
-    public async createVersion (req: Hapi.Request, reply: Hapi.IReply) {
+    public async createVersion (req: Request, reply: ReplyNoContinue) {
         const programName = genericFromBase64(req.params['programId']);
 
         let versionParser = JsonApiDocument.getParser().addProperties({
@@ -70,7 +70,7 @@ export default class VersionResource extends ApiResource {
     }
 
     @ApiEndpoint('GET')
-    public async getVersionList (req: Hapi.Request, reply: Hapi.IReply) {
+    public async getVersionList (req: Request, reply: ReplyNoContinue) {
         const programName = genericFromBase64(req.params['programId']);
 
         let documentBuilder = new JsonApiDocumentBuilder();
@@ -101,12 +101,12 @@ export default class VersionResource extends ApiResource {
 
 
     @ApiEndpoint('GET', '/{versionId}')
-    public async getVersion (req: Hapi.Request, reply: Hapi.IReply) {
+    public async getVersion (req: Request, reply: ReplyNoContinue) {
         const versionId = req.params['versionId'];
         return this.replyVersion(versionId, req, reply);
     }
 
-    public async replyVersion (versionId: string, req: Hapi.Request, reply: Hapi.IReply) {
+    public async replyVersion (versionId: string, req: Request, reply: ReplyNoContinue) {
         const programName = genericFromBase64(req.params['programId']);
 
         let version: Version;

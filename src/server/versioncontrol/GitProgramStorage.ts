@@ -113,7 +113,7 @@ export default class GitProgramStorage implements IProgramStorage {
 
             eventEmitter.on('error', reject);
 
-            eventEmitter.start();
+            (eventEmitter as any).start();
         });
     }
 

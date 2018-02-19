@@ -449,6 +449,11 @@ export class TextIdeComponent implements OnInit, AfterViewInit, AfterContentInit
         }
 
         this.updateEditorSettings();
+
+        this.newFileOrDirectoryModalActions.subscribe((val) => {
+            if(val.params[0] === 'open')
+                AppComponent.fixModalOverlay();
+        });
     }
 
     public updateEditorSettings() {
@@ -830,7 +835,6 @@ export class TextIdeComponent implements OnInit, AfterViewInit, AfterContentInit
 
         // open modal
         this.newFileOrDirectoryModalActions.emit({action: "modal", params: ['open']});
-        AppComponent.fixModalOverlay();
     }
 
     /**

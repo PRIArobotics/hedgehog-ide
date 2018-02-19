@@ -3,7 +3,6 @@ import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 
 import {TreeModule} from 'angular-tree-component';
-import {ContextMenuModule} from 'angular2-contextmenu';
 
 import {MaterializeModule} from 'angular2-materialize';
 import {AceEditorComponent} from './ace-editor.component';
@@ -12,6 +11,7 @@ import {ProgramExecutionModule} from '../program-execution/program-execution.mod
 
 import {TextIdeComponent} from './text-ide.component';
 import {AngularSplitModule} from "angular-split";
+import {ContextMenuModule} from "ngx-contextmenu";
 
 @NgModule({
     imports: [

@@ -60,7 +60,7 @@ export default class NodeProcessManager implements IProcessManager {
         return Promise.resolve(this.processes.get(pid));
     }
 
-    public on (event: string, handler: Function) {
+    public on (event: string, handler: (...args: any[]) => void) {
         this.eventEmitter.on(event, handler);
     }
 

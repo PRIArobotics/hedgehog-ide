@@ -1,5 +1,5 @@
-import Hapi = require('hapi');
 import winston = require("winston");
+import {ReplyNoContinue, Request, Response} from "hapi";
 
 import ApiResource from "../../ApiResource";
 import ApiEndpoint from "../../ApiEndpoint";
@@ -16,7 +16,7 @@ export default class BlobResource extends ApiResource {
     }
 
     @ApiEndpoint('GET', '/{blobId}')
-    public async getBlob (req: Hapi.Request, reply: Hapi.IReply) {
+    public async getBlob (req: Request, reply: ReplyNoContinue) {
         const programName = genericFromBase64(req.params['programId']);
         const blobId = req.params['blobId'];
 

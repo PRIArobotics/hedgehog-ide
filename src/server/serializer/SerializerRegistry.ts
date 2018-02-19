@@ -1,4 +1,4 @@
-import Hapi = require('hapi');
+import {Request} from "hapi";
 
 import {JsonApiResource} from "../jsonapi/JsonApiObjects";
 import JsonApiDocumentBuilder from "../jsonapi/JsonApiBuilder";
@@ -21,7 +21,7 @@ export default class SerializerRegistry {
 
 export interface ISerializer {
     (object: any,
-     request: Hapi.Request,
+     request: Request,
      documentBuilder: JsonApiDocumentBuilder,
      registry?: SerializerRegistry,
      ...args): Promise<JsonApiResource>;

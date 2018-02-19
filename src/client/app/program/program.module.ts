@@ -8,8 +8,8 @@ import VersionListComponent from "./version-list.component";
 import {default as DirectoryViewComponent, KeysPipe} from "./directory-view.component";
 import FileViewComponent from "./file-view.component";
 import {TextIdeModule} from "../text-ide/text-ide.module";
-import {ContextMenuModule} from "angular2-contextmenu";
 import ProgramExtensionPipe from "./program-extension.pipe";
+import {ContextMenuModule} from "ngx-contextmenu";
 
 @NgModule({
     imports: [
