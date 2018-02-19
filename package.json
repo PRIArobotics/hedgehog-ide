@@ -62,6 +62,7 @@
     "systemjs": "^0.20.12",
     "systemjs-plugin-babel": "0.0.23",
     "winston": "^2.3.0",
+    "ws": "^4.0.0",
     "zone.js": "^0.8.11"
   },
   "devDependencies": {

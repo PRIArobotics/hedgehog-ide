@@ -84,7 +84,7 @@ export default class ProgramResource extends ApiResource {
             }).code(404);
         }
 
-        return await this.replyProgram(program , req, reply);
+        return this.replyProgram(program , req, reply);
     }
 
     @ApiEndpoint('GET')

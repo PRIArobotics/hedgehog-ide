@@ -71,7 +71,7 @@ export default class WorkingTreeFileResource extends ApiResource {
 
     @ApiEndpoint('GET', '/{fileId}')
     public async getFile(req, reply) {
-        return await this.replyFile(
+        return this.replyFile(
             genericFromBase64(req.params['programId']),
             genericFromBase64(req.params['fileId']),
             req,
