@@ -11,6 +11,7 @@ declare var Blockly: any;
 @Component({
     selector: 'blockly-ide',
     template: require('./editor.component.html'),
+    styles: [require('./editor.component.scss')],
     providers: [
         HttpProgramService
     ]

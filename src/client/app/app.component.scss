@@ -9,6 +9,10 @@
     display: none !important;
 }
 
+nav {
+   flex: 1;
+}
+
 nav .disabled {
     pointer-events: none;
     box-shadow: none;
@@ -151,8 +155,16 @@ div > ul > li > a {
     background-color: #FFFFFF !important;
 }
 
+my-app {
+    display: flex;
+}
+
+.wrapper {
+    display: flex;
+    flex-grow: 1;
+}
+
 .side-bar {
-    position: fixed;
     width: 64px;
     height: 100%;
 }
@@ -160,14 +172,6 @@ div > ul > li > a {
 .side-bar .side-bar-item {
     margin: 6px 6px 15px;
     width: 52px;
-}
-
-.wrapper {
-    position: fixed;
-    left: 64px;
-    right: 0;
-    top: 0;
-    bottom: 0;
 }
 
 #about-link {
