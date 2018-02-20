@@ -3,6 +3,7 @@ var HtmlWebpackPlugin = require('html-webpack-plugin');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var path = require('path');
 
+
 module.exports = {
     entry: {
         app: './src/client/app/main.ts',
@@ -12,6 +13,9 @@ module.exports = {
     devtool: 'source-map',
 
     resolve: {
+        alias: {
+            'jquery': path.resolve(__dirname, '../../node_modules/jquery/dist/jquery.js')
+        },
         extensions: ['.js', '.ts']
     },
 
@@ -63,7 +67,8 @@ module.exports = {
         new webpack.ProvidePlugin({
             '$': 'jquery',
             'jQuery':'jquery',
-            'window.jQuery':'jquery'
+            'window.$':'jquery',
+            'window.jQuery': 'jquery',
         })
     ]
 

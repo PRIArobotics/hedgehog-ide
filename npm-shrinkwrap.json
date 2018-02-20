@@ -213,6 +213,36 @@
       "resolved": "https://registry.npmjs.org/angular-in-memory-web-api/-/angular-in-memory-web-api-0.3.2.tgz",
       "integrity": "sha1-iDbZ4lNNN7co88taHK9v4ef7vs0="
     },
+    "angular-split": {
+      "version": "github:PRIArobotics/angular-split#8fc37071317c5eb0a4fc1541733e7f35252d409b",
+      "requires": {
+        "@angular/common": "4.4.5",
+        "@angular/compiler": "4.4.5",
+        "@angular/core": "4.4.5",
+        "@angular/platform-browser": "4.4.5",
+        "core-js": "2.4.1",
+        "reflect-metadata": "0.1.10",
+        "rimraf": "2.6.1",
+        "rxjs": "5.0.2",
+        "typescript": "2.2.2",
+        "zone.js": "0.8.12"
+      },
+      "dependencies": {
+        "rxjs": {
+          "version": "5.0.2",
+          "resolved": "https://registry.npmjs.org/rxjs/-/rxjs-5.0.2.tgz",
+          "integrity": "sha1-zGUTdW2qk8q0CFwbWhmj4o+2xr8=",
+          "requires": {
+            "symbol-observable": "1.0.4"
+          }
+        },
+        "typescript": {
+          "version": "2.2.2",
+          "resolved": "https://registry.npmjs.org/typescript/-/typescript-2.2.2.tgz",
+          "integrity": "sha1-YGAiUIR5tV/6NotY/uljoD39eww="
+        }
+      }
+    },
     "angular-tree-component": {
       "version": "3.9.0",
       "resolved": "https://registry.npmjs.org/angular-tree-component/-/angular-tree-component-3.9.0.tgz",
@@ -491,9 +521,9 @@
       "dev": true
     },
     "asap": {
-      "version": "2.0.5",
-      "resolved": "https://registry.npmjs.org/asap/-/asap-2.0.5.tgz",
-      "integrity": "sha1-UidltQw1EEkOUtfc/ghe+bqWlY8="
+      "version": "2.0.6",
+      "resolved": "https://registry.npmjs.org/asap/-/asap-2.0.6.tgz",
+      "integrity": "sha1-5QNHYR1+aQlDIIu9r+vLwvuGbUY="
     },
     "asn1": {
       "version": "0.2.3",
@@ -2765,6 +2795,11 @@
       "requires": {
         "repeating": "2.0.1"
       }
+    },
+    "detect-libc": {
+      "version": "1.0.3",
+      "resolved": "https://registry.npmjs.org/detect-libc/-/detect-libc-1.0.3.tgz",
+      "integrity": "sha1-+hN8S9aY7fVc1c0CrFWfkaTEups="
     },
     "detect-newline": {
       "version": "2.1.0",
@@ -7486,10 +7521,12 @@
       }
     },
     "node-pre-gyp": {
-      "version": "0.6.36",
-      "resolved": "https://registry.npmjs.org/node-pre-gyp/-/node-pre-gyp-0.6.36.tgz",
-      "integrity": "sha1-22BBEst04NR3VU6bUFsXq936t4Y=",
+      "version": "0.6.39",
+      "resolved": "https://registry.npmjs.org/node-pre-gyp/-/node-pre-gyp-0.6.39.tgz",
+      "integrity": "sha512-OsJV74qxnvz/AMGgcfZoDaeDXKD3oY3QVIbBmwszTFkRisTSXbMQyn4UWzUMOtA5SVhrBZOTp0wcoSBgfMfMmQ==",
       "requires": {
+        "detect-libc": "1.0.3",
+        "hawk": "3.1.3",
         "mkdirp": "0.5.1",
         "nopt": "4.0.1",
         "npmlog": "4.1.2",
@@ -7498,7 +7535,7 @@
         "rimraf": "2.6.1",
         "semver": "5.3.0",
         "tar": "2.2.1",
-        "tar-pack": "3.4.0"
+        "tar-pack": "3.4.1"
       },
       "dependencies": {
         "nopt": {
@@ -7620,7 +7657,7 @@
         "lodash": "4.17.4",
         "nan": "2.3.5",
         "node-gyp": "3.6.2",
-        "node-pre-gyp": "0.6.36",
+        "node-pre-gyp": "0.6.39",
         "promisify-node": "0.3.0"
       }
     },
@@ -7629,7 +7666,7 @@
       "resolved": "https://registry.npmjs.org/nodegit-promise/-/nodegit-promise-4.0.0.tgz",
       "integrity": "sha1-VyKxhPLfcycWEGSnkdLoQskWezQ=",
       "requires": {
-        "asap": "2.0.5"
+        "asap": "2.0.6"
       }
     },
     "nopt": {
@@ -10606,9 +10643,9 @@
       }
     },
     "tar-pack": {
-      "version": "3.4.0",
-      "resolved": "https://registry.npmjs.org/tar-pack/-/tar-pack-3.4.0.tgz",
-      "integrity": "sha1-I74tf2cagzk3bL2wuP4/3r8xeYQ=",
+      "version": "3.4.1",
+      "resolved": "https://registry.npmjs.org/tar-pack/-/tar-pack-3.4.1.tgz",
+      "integrity": "sha512-PPRybI9+jM5tjtCbN2cxmmRU7YmqT3Zv/UDy48tAh2XRkLa9bAORtSWLkVc13+GJF+cdTh1yEnHEk3cpTaL5Kg==",
       "requires": {
         "debug": "2.6.0",
         "fstream": "1.0.11",

@@ -15,11 +15,13 @@ export class AppComponent implements AfterViewInit {
         // Move modal to right location as it should fill the whole screen otherwise
         // See https://github.com/Dogfalo/materialize/issues/1532
         // grab the dark overlay
-        let overlay = $('.modal-overlay');
-        // remove it
-        overlay.detach();
-        // attach it to the thing you want darkened
-        $('router-outlet').after(overlay);
+        setTimeout(() => {
+            let overlay = $('.modal-overlay');
+            // remove it
+            overlay.detach();
+            // attach it to the thing you want darkened
+            $('router-outlet').after(overlay);
+        }, 40);
     }
 
     private aboutModalActions = new EventEmitter<string|MaterializeAction>();
