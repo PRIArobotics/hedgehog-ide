@@ -62,7 +62,7 @@ export class ProgramExecutionComponent implements OnDestroy, OnInit {
     }
 
     public async ngOnDestroy (): Promise<void> {
-        await this.processManager.kill(this.processPid);
+        await this.stop();
     }
 
     public async run (programName: string, filePath: string, args?: string[]) {
