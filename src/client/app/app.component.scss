@@ -1,5 +1,6 @@
 @import "../../../node_modules/materialize-css/sass/components/color";
 @import "../../../node_modules/materialize-css/sass/components/variables";
+@import '../../../node_modules/angular-tree-component/dist/angular-tree-component.css';
 
 /* Master Styles */
 /* Solves issue as described here:
@@ -38,55 +39,6 @@ nav .disabled {
         -webkit-transform: initial !important;
         transform: initial !important;
     }
-}
-
-/* indicator color */
-
-.tabs:not(.tabs-transparent) .indicator {
-    background-color: #38b449 !important;
-}
-
-/* file tree style*/
-
-.tree-node-active .node-content-wrapper {
-    background-color: #fff !important;
-}
-
-.node-content-wrapper, .tree-children {
-    position: relative;
-}
-
-.node-content-wrapper::before, .tree-children::after {
-    content: "";
-    position: absolute;
-}
-
-.node-content-wrapper::before {
-    border-bottom: 1px solid lightgrey;
-    border-left: 1px solid lightgrey;
-    height: 28px;
-    top: -17px;
-    width: 20px;
-    left: -28px;
-}
-
-.tree-node-leaf > .node-wrapper > .node-content-wrapper::before {
-    width: 25px;
-}
-
-.tree-children::after {
-    border-left: 1px solid lightgrey;
-    height: 100%;
-    top: -15px;
-    left: -15px;
-}
-
-treenode:last-child > .tree-node > .tree-children::after {
-    border-left: none;
-}
-
-.toggle-children {
-    z-index: 1;
 }
 
 /* context menu */
@@ -226,4 +178,56 @@ my-app {
     bottom: 0;
     height: initial !important;
     margin-top: 2px;
+}
+
+/* indicator color */
+
+.tabs:not(.tabs-transparent) .indicator {
+    background-color: #38b449 !important;
+}
+
+/* file tree style*/
+.node-content-wrapper, .tree-children {
+    position: relative;
+}
+
+.node-content-wrapper::before, .tree-children::after {
+    content: "";
+    position: absolute;
+}
+
+.node-content-wrapper::before {
+    border-bottom: 1px solid lightgrey;
+    border-left: 1px solid lightgrey;
+    height: 28px;
+    top: -17px;
+    width: 20px;
+    left: -28px;
+}
+
+.tree-node-level-1 > tree-node-wrapper > .node-wrapper > .node-content-wrapper::before {
+    display: none;
+}
+
+.tree-node-leaf > .node-wrapper > .node-content-wrapper::before {
+    width: 25px;
+}
+
+.tree-node-active .node-content-wrapper {
+    background-color: #fff !important;
+}
+
+.tree-children::after {
+    border-left: 1px solid lightgrey;
+    height: 100%;
+    top: -15px;
+    left: -15px;
+}
+
+tree-node:last-child > .tree-node > .tree-children::after {
+    border-left: none;
+}
+
+.toggle-children {
+    z-index: 1;
 }

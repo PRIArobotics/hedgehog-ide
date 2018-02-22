@@ -21,15 +21,15 @@
             (dragProgress)="updateIndicator('#tab' + openId)">
         <split-area
                 [size]="20">
-            <Tree #tree
+            <tree-root #tree
                   id="file-tree"
                   [nodes]="fileTree"
                   [options]="fileTreeOptions"
                   [focused]="true"
-                  (onActivate)="fileTreeEvent($event)"
-                  (onMoveNode)="onMoveNode($event)">
+                  (activate)="fileTreeEvent($event)"
+                  (moveNode)="onMoveNode($event)">
 
-                <ng-template #treeNodeTemplate let-node>
+                <ng-template #treeNodeTemplate let-node let-index="index">
                     <div [contextMenu]="fileTreeActions" [contextMenuSubject]="node">
                         <span class="no-break">
                             <i *ngIf="node.data.children && !node.isExpanded" class="material-icons"> folder </i>
@@ -40,7 +40,7 @@
                     </div>
                 </ng-template>
 
-            </Tree>
+            </tree-root>
 
             <context-menu #treeContextMenu>
                 <ng-template contextMenuItem let-node (execute)="newData.file = true; openNewFileOrDirectoryModal($event)">
