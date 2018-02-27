@@ -5,7 +5,7 @@ export default class SocketIoSensorAdapter {
 
     public constructor (private hedgehog: HedgehogClient, io: SocketIO.Server) {
         this.ns = io.of('/sensors');
-        setInterval(async () => await this.sendSensorUpdate(), 200);
+        setInterval(async () => this.sendSensorUpdate(), 200);
     }
 
     private async sendSensorUpdate () {

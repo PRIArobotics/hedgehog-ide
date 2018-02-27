@@ -17,7 +17,9 @@ module.exports = function(grunt) {
         },
         clean: [
             'build',
-            'tmp'
+            'tmp',
+            'tmp',
+            'release'
         ],
         copy: {
             client: {
@@ -38,6 +40,33 @@ module.exports = function(grunt) {
                         dest: 'build/src/client/assets'
                     }
                 ]
+            },
+            release: {
+                files: [
+                    {
+                        expand: true,
+                        src: [
+                            'package.json',
+                            'LICENSE',
+                            'README.md',
+                            'INSTALL.md',
+                            'node_modules/**',
+                            'build/dist/**',
+                            'build/src/client/app/blockly/**',
+                            'build/src/client/assets/**',
+                            'build/src/common/**',
+                            'build/src/server/**',
+                            '!**/*.js.map',
+                        ],
+                        dest: 'release/'
+                    },
+                    {
+                        expand: true,
+                        cwd: 'config',
+                        src: ['server.config.d.ts', 'server.config.example.js'],
+                        dest: 'release/config/'
+                    },
+                ]
             }
         },
         tslint: {
@@ -51,7 +80,7 @@ module.exports = function(grunt) {
         },
 
         concurrent: {
-            run: [['ts', 'copy', 'run-server'], 'watch:ts', 'watch:copy', 'webpack:dev-watch'],
+            run: [['ts', 'copy:client', 'run-server'], 'watch:ts', 'watch:copy', 'webpack:dev-watch'],
             options: {
                 logConcurrentOutput: true
             }
@@ -59,7 +88,7 @@ module.exports = function(grunt) {
         watch: {
             copy: {
                 files: ['src/**/*.html', 'src/**/*.css','src/client/app/blockly/lib/**'],
-                tasks: ['copy', 'injector'],
+                tasks: ['copy:client', 'injector'],
                 options: {
                     interrupt: true
                 }
@@ -79,6 +108,18 @@ module.exports = function(grunt) {
             'dev-watch': Object.assign({watch: true}, require('./src/client/webpack.dev')),
             dev: require('./src/client/webpack.dev'),
             dist: webpackConfig
+        },
+        run: {
+            release: {
+                options: {
+                    cwd: 'dist'
+                },
+                cmd: 'npm',
+                args: [
+                    'prune',
+                    '--production'
+                ]
+            }
         }
     });
 
@@ -144,7 +185,27 @@ module.exports = function(grunt) {
         nodetask.stderr.pipe(process.stderr);
     });
 
-    grunt.registerTask('build-dirty', ['ts', 'copy', 'webpack:dev', 'sass']);
+    grunt.registerTask('release-prune', function() {
+        var options = {
+            cmd: 'npm',
+            args: ['prune', '--production'],
+            opts: {
+                cwd: 'release'
+            }
+        };
+
+        var done = this.async();
+
+        var nodetask = grunt.util.spawn(options, function doneFunction(error, result, code) {
+            done()
+        });
+
+        nodetask.stdout.pipe(process.stdout);
+        nodetask.stderr.pipe(process.stderr);
+    });
+
+    grunt.registerTask('build-dirty', ['ts', 'copy:client', 'webpack:dev']);
     grunt.registerTask('build', ['clean', 'build-dirty']);
     grunt.registerTask('default', ['concurrent:run']);
+    grunt.registerTask('release', ['build', 'webpack:dist', 'copy:release', 'release-prune'])
 };
