@@ -62,7 +62,7 @@ export default class WorkingTreeDirectoryResource extends ApiResource {
     }
 
     @ApiEndpoint('GET', '/{directoryId}')
-    public async getDirectory(req: Hapi.Request, reply: Hapi.IReply) {
+    public async getDirectory(req: Request, reply: ReplyNoContinue) {
         return this.replyDirectory(
             genericFromBase64(req.params['programId']),
             genericFromBase64(req.params['directoryId']),
