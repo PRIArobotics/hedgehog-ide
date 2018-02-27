@@ -1,5 +1,13 @@
 @import "../../../node_modules/materialize-css/sass/components/color";
+
+$hedgehog-green-light: #38b449;
+$hedgehog-green-dark: #007c3c;
+$secondary-color:  $hedgehog-green-light !default;
+
 @import "../../../node_modules/materialize-css/sass/components/variables";
+@import "../../../node_modules/materialize-css/sass/components/typography";
+@import "../../../node_modules/materialize-css/sass/components/global";
+
 @import '../../../node_modules/angular-tree-component/dist/angular-tree-component.css';
 
 /* Master Styles */
@@ -43,27 +51,26 @@ nav .disabled {
 
 /* context menu */
 
-.angular2-contextmenu .dropdown-menu {
-    border: solid 1px black;
-    background-color: white;
-    padding: 0;
+.ngx-contextmenu .dropdown-menu {
+    @extend .collection;
+    @extend .z-depth-2;
     z-index: 5;
 }
-.angular2-contextmenu li {
+.ngx-contextmenu li {
     display: block;
-    border-top: solid 1px black;
     text-transform: uppercase;
     text-align: left;
 }
-.angular2-contextmenu li:first-child {
+.ngx-contextmenu li:first-child {
     border-top: none;
 }
-.angular2-contextmenu a {
-    color: black;
+.ngx-contextmenu a {
+    @extend .collection-item;
+    color: black !important;
     display: block;
     padding: 0.5em 1em;
 }
-.angular2-contextmenu a:hover {
+.ngx-contextmenu a:hover {
     color: black;
     background-color:white;
 }

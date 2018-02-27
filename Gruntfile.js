@@ -34,7 +34,7 @@ module.exports = function(grunt) {
                     {
                         expand: true,
                         cwd: 'src/client/assets',
-                        src: ['**'],
+                        src: ['**', '!*.scss'],
                         dest: 'build/src/client/assets'
                     }
                 ]
@@ -144,7 +144,7 @@ module.exports = function(grunt) {
         nodetask.stderr.pipe(process.stderr);
     });
 
-    grunt.registerTask('build-dirty', ['ts', 'copy', 'webpack:dev']);
+    grunt.registerTask('build-dirty', ['ts', 'copy', 'webpack:dev', 'sass']);
     grunt.registerTask('build', ['clean', 'build-dirty']);
     grunt.registerTask('default', ['concurrent:run']);
 };
