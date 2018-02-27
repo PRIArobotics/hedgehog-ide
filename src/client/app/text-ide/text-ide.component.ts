@@ -36,7 +36,7 @@ export class File {
     providers: [
         HttpProgramService,
         ShareDbClientService
-    ]
+    ],
 })
 
 export class TextIdeComponent implements OnInit, AfterViewInit, AfterContentInit, OnDestroy {
@@ -449,6 +449,11 @@ export class TextIdeComponent implements OnInit, AfterViewInit, AfterContentInit
         }
 
         this.updateEditorSettings();
+
+        this.newFileOrDirectoryModalActions.subscribe(val => {
+            if(val.params[0] === 'open')
+                AppComponent.fixModalOverlay();
+        });
     }
 
     public updateEditorSettings() {
@@ -762,6 +767,8 @@ export class TextIdeComponent implements OnInit, AfterViewInit, AfterContentInit
                 // update the indicator to this new tab
                 this.updateIndicator($('#tab' + event.node.data.fileId));
             }, 0);
+        } else {
+            this.tree.treeModel.getFocusedNode().toggleExpanded();
         }
     }
 
@@ -830,7 +837,6 @@ export class TextIdeComponent implements OnInit, AfterViewInit, AfterContentInit
 
         // open modal
         this.newFileOrDirectoryModalActions.emit({action: "modal", params: ['open']});
-        AppComponent.fixModalOverlay();
     }
 
     /**

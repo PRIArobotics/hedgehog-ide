@@ -1,4 +1,4 @@
-import Hapi = require('hapi');
+import {Request} from "hapi";
 
 import {default as Tree, TreeItemType} from "../../common/versioncontrol/Tree";
 import {default as JsonApiDocumentBuilder, JsonApiResourceBuilder} from "../jsonapi/JsonApiBuilder";
@@ -6,7 +6,7 @@ import {JsonApiResource} from "../jsonapi/JsonApiObjects";
 import {getLinkUrl} from "../utils";
 
 function serializeTree (tree: Tree,
-                        request: Hapi.Request,
+                        request: Request,
                         documentBuilder: JsonApiDocumentBuilder): Promise<JsonApiResource> {
     let resourceBuilder = new JsonApiResourceBuilder(documentBuilder);
     resourceBuilder.resource.type = 'tree';

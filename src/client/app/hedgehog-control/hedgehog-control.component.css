@@ -1,5 +1,10 @@
+:host {
+    flex: 1;
+}
+
 .app-content {
     padding-top: 30px;
     overflow: auto;
     height: calc(100% - 112px);
+    margin-bottom: 0;
 }

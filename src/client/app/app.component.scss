@@ -1,5 +1,12 @@
 @import "../../../node_modules/materialize-css/sass/components/color";
-@import "../../../node_modules/materialize-css/sass/components/variables";
+
+$hedgehog-green-light: #38b449;
+$hedgehog-green-dark: #007c3c;
+$secondary-color:  $hedgehog-green-light !default;
+$link-color: $hedgehog-green-light;
+
+@import "../../../node_modules/materialize-css/sass/materialize";
+@import '../../../node_modules/angular-tree-component/dist/angular-tree-component.css';
 
 /* Master Styles */
 /* Solves issue as described here:
@@ -7,6 +14,10 @@
  */
 [hidden] {
     display: none !important;
+}
+
+nav {
+   flex: 1;
 }
 
 nav .disabled {
@@ -36,78 +47,28 @@ nav .disabled {
     }
 }
 
-/* indicator color */
-
-.tabs:not(.tabs-transparent) .indicator {
-    background-color: #38b449 !important;
-}
-
-/* file tree style*/
-
-.tree-node-active .node-content-wrapper {
-    background-color: #fff !important;
-}
-
-.node-content-wrapper, .tree-children {
-    position: relative;
-}
-
-.node-content-wrapper::before, .tree-children::after {
-    content: "";
-    position: absolute;
-}
-
-.node-content-wrapper::before {
-    border-bottom: 1px solid lightgrey;
-    border-left: 1px solid lightgrey;
-    height: 28px;
-    top: -17px;
-    width: 20px;
-    left: -28px;
-}
-
-.tree-node-leaf > .node-wrapper > .node-content-wrapper::before {
-    width: 25px;
-}
-
-.tree-children::after {
-    border-left: 1px solid lightgrey;
-    height: 100%;
-    top: -15px;
-    left: -15px;
-}
-
-treenode:last-child > .tree-node > .tree-children::after {
-    border-left: none;
-}
-
-.toggle-children {
-    z-index: 1;
-}
-
 /* context menu */
 
-.angular2-contextmenu .dropdown-menu {
-    border: solid 1px black;
-    background-color: white;
-    padding: 0;
+.ngx-contextmenu .dropdown-menu {
+    @extend .collection;
+    @extend .z-depth-2;
     z-index: 5;
 }
-.angular2-contextmenu li {
+.ngx-contextmenu li {
     display: block;
-    border-top: solid 1px black;
     text-transform: uppercase;
     text-align: left;
 }
-.angular2-contextmenu li:first-child {
+.ngx-contextmenu li:first-child {
     border-top: none;
 }
-.angular2-contextmenu a {
-    color: black;
+.ngx-contextmenu a {
+    @extend .collection-item;
+    color: black !important;
     display: block;
     padding: 0.5em 1em;
 }
-.angular2-contextmenu a:hover {
+.ngx-contextmenu a:hover {
     color: black;
     background-color:white;
 }
@@ -151,8 +112,16 @@ div > ul > li > a {
     background-color: #FFFFFF !important;
 }
 
+my-app {
+    display: flex;
+}
+
+.wrapper {
+    display: flex;
+    flex-grow: 1;
+}
+
 .side-bar {
-    position: fixed;
     width: 64px;
     height: 100%;
 }
@@ -160,14 +129,6 @@ div > ul > li > a {
 .side-bar .side-bar-item {
     margin: 6px 6px 15px;
     width: 52px;
-}
-
-.wrapper {
-    position: fixed;
-    left: 64px;
-    right: 0;
-    top: 0;
-    bottom: 0;
 }
 
 #about-link {
@@ -222,4 +183,56 @@ div > ul > li > a {
     bottom: 0;
     height: initial !important;
     margin-top: 2px;
+}
+
+/* indicator color */
+
+.tabs:not(.tabs-transparent) .indicator {
+    background-color: #38b449 !important;
+}
+
+/* file tree style*/
+.node-content-wrapper, .tree-children {
+    position: relative;
+}
+
+.node-content-wrapper::before, .tree-children::after {
+    content: "";
+    position: absolute;
+}
+
+.node-content-wrapper::before {
+    border-bottom: 1px solid lightgrey;
+    border-left: 1px solid lightgrey;
+    height: 28px;
+    top: -17px;
+    width: 20px;
+    left: -28px;
+}
+
+.tree-node-level-1 > tree-node-wrapper > .node-wrapper > .node-content-wrapper::before {
+    display: none;
+}
+
+.tree-node-leaf > .node-wrapper > .node-content-wrapper::before {
+    width: 25px;
+}
+
+.tree-node-active .node-content-wrapper {
+    background-color: #fff !important;
+}
+
+.tree-children::after {
+    border-left: 1px solid lightgrey;
+    height: 100%;
+    top: -15px;
+    left: -15px;
+}
+
+tree-node:last-child > .tree-node > .tree-children::after {
+    border-left: none;
+}
+
+.toggle-children {
+    z-index: 1;
 }

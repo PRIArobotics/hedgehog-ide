@@ -57,7 +57,7 @@
                 [lineData]="digitalSensors[i].dataset"
                 [lineLabels]="digitalSensors[i].labels"
                 [type]="'digital'"
-                (pullupChanged)="updateSensorPullup(i + 8, $event)">
+                (pullupChanged)="updateSensorPullup(i, $event)">
         </output-chart>
     </div>
 </div>

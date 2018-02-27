@@ -2,11 +2,12 @@ import {Component, OnInit, EventEmitter, ViewChild} from '@angular/core';
 import {MaterializeAction} from "angular2-materialize";
 import {HttpProgramService} from "./http-program.service";
 import {Router} from "@angular/router";
-import {AppComponent} from "../app.component";
-import {ContextMenuComponent} from "angular2-contextmenu";
+import {ContextMenuComponent} from "ngx-contextmenu";
+
 
 declare var Materialize: any;
 
+import {AppComponent} from "../app.component";
 import IProgramStorage from "../../../common/versioncontrol/ProgramStorage";
 import {default as Program} from "../../../common/versioncontrol/Program";
 

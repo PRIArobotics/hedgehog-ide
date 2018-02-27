@@ -1,11 +1,10 @@
-import Hapi = require('hapi');
 import winston = require("winston");
+import {ReplyNoContinue, Request} from "hapi";
 import {HedgehogClient} from 'hedgehog-client';
 
 import ApiResource from "../../ApiResource";
 import SerializerRegistry from "../../../serializer/SerializerRegistry";
 import ApiEndpoint from "../../ApiEndpoint";
-import {IReply} from "hapi";
 import {getLinkUrl, getRequestUrl} from "../../../utils";
 import {SensorType, default as Sensor} from "../../../../common/Sensor";
 import {default as JsonApiDocumentBuilder , DataType} from "../../../jsonapi/JsonApiBuilder";
@@ -19,7 +18,7 @@ export default class SensorResource extends ApiResource {
     }
 
     @ApiEndpoint('GET', '/{sensorId}')
-    public async getSensor (req: Hapi.Request, reply: IReply) {
+    public async getSensor (req: Request, reply: ReplyNoContinue) {
         const sensorPort = Number(req.params['sensorId']);
 
         let sensor = new Sensor();
@@ -40,7 +39,7 @@ export default class SensorResource extends ApiResource {
     }
 
     @ApiEndpoint('GET')
-    public async getSensorList (req: Hapi.Request, reply: IReply) {
+    public async getSensorList (req: Request, reply: ReplyNoContinue) {
         let documentBuilder = new JsonApiDocumentBuilder();
         documentBuilder.setLinks(getRequestUrl(req), null);
         documentBuilder.setDataType(DataType.Many);
@@ -64,7 +63,7 @@ export default class SensorResource extends ApiResource {
     }
 
     @ApiEndpoint('PATCH', '/{sensorId}')
-    public async setSensorPullup (req: Hapi.Request, reply: IReply) {
+    public async setSensorPullup (req: Request, reply: ReplyNoContinue) {
         const sensorPort = Number(req.params['sensorId']);
 
         let parser = JsonApiDocument.getParser().addProperties({

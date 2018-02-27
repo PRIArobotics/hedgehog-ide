@@ -1,4 +1,4 @@
-import Hapi = require('hapi');
+import {Request} from "hapi";
 
 import {JsonApiResource} from "../jsonapi/JsonApiObjects";
 import {getLinkUrl} from "../utils";
@@ -6,7 +6,7 @@ import {default as JsonApiDocumentBuilder, JsonApiResourceBuilder} from "../json
 import {genericToBase64} from "../../common/utils";
 
 async function serializeProgram (program: any,
-                                 request: Hapi.Request,
+                                 request: Request,
                                  documentBuilder: JsonApiDocumentBuilder): Promise<JsonApiResource> {
     let versionIds = await program.getVersionIds();
     let initialVersion = await program.getVersion(versionIds[versionIds.length - 1]);

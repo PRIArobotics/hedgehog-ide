@@ -1,11 +1,11 @@
-import Hapi = require('hapi');
+import {Request} from "hapi";
 
 import {JsonApiResource} from "../jsonapi/JsonApiObjects";
 import Blob from "../../common/versioncontrol/Blob";
 import {default as JsonApiDocumentBuilder, JsonApiResourceBuilder} from "../jsonapi/JsonApiBuilder";
 
 async function serializeBlob (blob: Blob,
-                              request: Hapi.Request,
+                              request: Request,
                               documentBuilder: JsonApiDocumentBuilder): Promise<JsonApiResource> {
     let content = await blob.readContent();
 

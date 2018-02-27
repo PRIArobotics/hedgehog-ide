@@ -1,5 +1,5 @@
-import Hapi = require('hapi');
 import winston = require("winston");
+import {ReplyNoContinue, Request} from "hapi";
 
 import ApiResource from "../../ApiResource";
 import IProgramStorage from "../../../../common/versioncontrol/ProgramStorage";
@@ -158,7 +158,7 @@ export default class WorkingTreeFileResource extends ApiResource {
             .code(200);
     }
 
-    private async replyFile(programName: string, filePath: string, request: Hapi.Request, reply) {
+    private async replyFile(programName: string, filePath: string, request: Request, reply) {
         // Load file from storage
         let file: WorkingTreeFile;
         try {

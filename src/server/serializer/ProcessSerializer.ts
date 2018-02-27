@@ -1,4 +1,4 @@
-import Hapi = require('hapi');
+import {Request} from "hapi";
 
 import {default as JsonApiDocumentBuilder, JsonApiResourceBuilder} from "../jsonapi/JsonApiBuilder";
 import {JsonApiResource} from "../jsonapi/JsonApiObjects";
@@ -7,7 +7,7 @@ import {getLinkUrl} from "../utils";
 import {IProcess} from "../../common/ProcessManager";
 
 function serializeProcess (process: IProcess,
-                           request: Hapi.Request,
+                           request: Request,
                            documentBuilder: JsonApiDocumentBuilder): Promise<JsonApiResource> {
     const programId = genericToBase64(process.programName);
     let resourceBuilder = new JsonApiResourceBuilder(documentBuilder);

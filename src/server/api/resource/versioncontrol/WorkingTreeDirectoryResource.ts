@@ -1,5 +1,5 @@
-import Hapi = require('hapi');
 import winston = require('winston');
+import {ReplyNoContinue, Request} from "hapi";
 
 import ApiResource from "../../ApiResource";
 import ApiEndpoint from "../../ApiEndpoint";
@@ -28,7 +28,7 @@ export default class WorkingTreeDirectoryResource extends ApiResource {
     }
 
     @ApiEndpoint('POST')
-    public async createDirectory(req: Hapi.Request, reply: Hapi.IReply) {
+    public async createDirectory(req: Request, reply: ReplyNoContinue) {
         const programName = genericFromBase64(req.params['programId']);
 
         // Parse request payload
@@ -62,7 +62,7 @@ export default class WorkingTreeDirectoryResource extends ApiResource {
     }
 
     @ApiEndpoint('GET', '/{directoryId}')
-    public async getDirectory(req: Hapi.Request, reply: Hapi.IReply) {
+    public async getDirectory(req: Request, reply: ReplyNoContinue) {
         return this.replyDirectory(
             genericFromBase64(req.params['programId']),
             genericFromBase64(req.params['directoryId']),
@@ -72,7 +72,7 @@ export default class WorkingTreeDirectoryResource extends ApiResource {
     }
 
     @ApiEndpoint('PATCH', '/{directoryId}')
-    public async updateDirectory(req: Hapi.Request, reply: Hapi.IReply) {
+    public async updateDirectory(req: Request, reply: ReplyNoContinue) {
         const programName = genericFromBase64(req.params['programId']);
         let oldDirectoryPath = genericFromBase64(req.params['directoryId']);
 
@@ -107,7 +107,7 @@ export default class WorkingTreeDirectoryResource extends ApiResource {
     }
 
     @ApiEndpoint('DELETE', '/{directoryId}')
-    public async deleteDirectory(req: Hapi.Request, reply: Hapi.IReply) {
+    public async deleteDirectory(req: Request, reply: ReplyNoContinue) {
         // TODO implement check whether file exists
         try {
             await this.programStorage.deleteWorkingTreeObject(
@@ -125,8 +125,8 @@ export default class WorkingTreeDirectoryResource extends ApiResource {
 
     private async replyDirectory(programName: string,
                                  directoryPath: string,
-                                 request: Hapi.Request,
-                                 reply: Hapi.IReply) {
+                                 request: Request,
+                                 reply: ReplyNoContinue) {
         let directory: WorkingTreeDirectory;
         try {
             directory = await this.programStorage.getWorkingTreeDirectory(programName, directoryPath);

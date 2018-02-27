@@ -1,8 +1,8 @@
 import path = require('path');
-import Hapi = require('hapi');
+import {RouteConfiguration} from "hapi";
 
 abstract class ApiResource {
-    private endpoints: Hapi.IRouteConfiguration[];
+    private endpoints: RouteConfiguration[];
 
     public constructor(public pathPrefix = '') { }
 

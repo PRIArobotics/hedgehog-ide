@@ -1,6 +1,7 @@
+import {ReplyNoContinue, Request} from "hapi";
+
 import ApiResource from "../../ApiResource";
 import ApiEndpoint from "../../ApiEndpoint";
-import * as Hapi from "hapi";
 import {JsonApiDocument, JsonApiResource} from "../../../jsonapi/JsonApiObjects";
 import {ObjectParser, RequirementType} from "../../../jsonapi/Parser";
 import winston = require("winston");
@@ -16,7 +17,7 @@ export default class AuthenticationResource extends ApiResource {
     }
 
     @ApiEndpoint('POST', '/login')
-    public async login(req: Hapi.Request, reply: Hapi.IReply) {
+    public async login(req: Request, reply: ReplyNoContinue) {
         let parser = JsonApiDocument.getParser().addProperties({
             name: 'data',
             required: RequirementType.Required,

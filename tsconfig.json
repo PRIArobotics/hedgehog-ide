@@ -17,9 +17,6 @@
     "src/**/*.ts",
     "test/**/*.ts"
   ],
-  "files": [
-    "typings/index.d.ts"
-  ],
   "exclude": [
     "node_modules"
   ]
