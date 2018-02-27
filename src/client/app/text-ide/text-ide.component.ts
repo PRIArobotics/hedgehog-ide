@@ -450,7 +450,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, AfterContentInit
 
         this.updateEditorSettings();
 
-        this.newFileOrDirectoryModalActions.subscribe((val) => {
+        this.newFileOrDirectoryModalActions.subscribe(val => {
             if(val.params[0] === 'open')
                 AppComponent.fixModalOverlay();
         });
