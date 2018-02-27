@@ -3,11 +3,9 @@
 $hedgehog-green-light: #38b449;
 $hedgehog-green-dark: #007c3c;
 $secondary-color:  $hedgehog-green-light !default;
+$link-color: $hedgehog-green-light;
 
-@import "../../../node_modules/materialize-css/sass/components/variables";
-@import "../../../node_modules/materialize-css/sass/components/typography";
-@import "../../../node_modules/materialize-css/sass/components/global";
-
+@import "../../../node_modules/materialize-css/sass/materialize";
 @import '../../../node_modules/angular-tree-component/dist/angular-tree-component.css';
 
 /* Master Styles */
