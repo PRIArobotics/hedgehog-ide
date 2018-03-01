@@ -21,7 +21,7 @@
   "dependencies": {
     "@angular/cdk": "^5.2.3",
     "@angular/common": "^5.2.7",
-    "@angular/compiler": "^5.2.6",
+    "@angular/compiler": "^5.2.7",
     "@angular/core": "^5.2.6",
     "@angular/forms": "^5.2.7",
     "@angular/http": "^5.2.6",
