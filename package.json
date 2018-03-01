@@ -20,7 +20,7 @@
   "homepage": "https://github.com/kleiinnn/hedgehog-ide#readme",
   "dependencies": {
     "@angular/cdk": "^5.2.3",
-    "@angular/common": "^5.2.6",
+    "@angular/common": "^5.2.7",
     "@angular/compiler": "^5.2.6",
     "@angular/core": "^5.2.6",
     "@angular/forms": "^5.2.6",
