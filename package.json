@@ -48,7 +48,7 @@
     "jquery": "^3.3.1",
     "jquery-ui-dist": "^1.12.1",
     "js-yaml": "^3.10.0",
-    "jsonwebtoken": "^8.1.1",
+    "jsonwebtoken": "^8.2.0",
     "materialize-css": "^0.100.2",
     "ncp": "^2.0.0",
     "ng2-charts": "^1.6.0",
