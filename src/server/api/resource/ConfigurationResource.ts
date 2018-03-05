@@ -1,5 +1,3 @@
-import {ReplyNoContinue, Request} from "hapi";
-
 import ApiResource from "../ApiResource";
 import ApiEndpoint from "../ApiEndpoint";
 import JsonApiDocumentBuilder from "../../jsonapi/JsonApiBuilder";
@@ -10,7 +8,7 @@ export default class ConfigurationResource extends ApiResource {
     }
 
     @ApiEndpoint('GET')
-    public async getConfiguration (req: Request, reply: ReplyNoContinue) {
+    public async getConfiguration () {
         let documentBuilder = new JsonApiDocumentBuilder();
         let resourceBuilder = documentBuilder.getResourceBuilder();
         resourceBuilder.resource.type = 'configuration';
@@ -20,7 +18,6 @@ export default class ConfigurationResource extends ApiResource {
             }
         };
         documentBuilder.addResource(resourceBuilder.getProduct());
-        return reply(documentBuilder.getProduct())
-            .code(200);
+        return documentBuilder.getProduct();
     }
 }

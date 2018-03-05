@@ -1,4 +1,4 @@
-import {ReplyNoContinue, Request} from "hapi";
+import {Request, ResponseToolkit} from "hapi";
 
 import ApiResource from "../ApiResource";
 import SerializerRegistry from "../../serializer/SerializerRegistry";
@@ -17,7 +17,7 @@ export default class ProcessResource extends ApiResource {
     }
 
     @ApiEndpoint('POST')
-    public async createProcess (req: Request, reply: ReplyNoContinue) {
+    public async createProcess (req: Request, h: ResponseToolkit) {
         let parser = JsonApiDocument.getParser().addProperties({
             name: 'data',
             required: RequirementType.Required,
@@ -51,7 +51,7 @@ export default class ProcessResource extends ApiResource {
             requestData = parser.parse(req.payload).data as JsonApiResource;
         } catch (err) {
             winston.error(err);
-            return reply({
+            return h.response({
                 error: 'Error while parsing the request. Argument might be missing.'
             }).code(400);
         }
@@ -64,73 +64,67 @@ export default class ProcessResource extends ApiResource {
         let documentBuilder = new JsonApiDocumentBuilder();
         documentBuilder.setLinks(getLinkUrl(req, `/api/processes/${process.pid}`), null);
         documentBuilder.addResource(await this.serializerRegistry.serialize(process, req, documentBuilder));
-        return reply(documentBuilder.getProduct())
-            .code(201);
+        return h.response(documentBuilder.getProduct()).code(201);
     }
 
     @ApiEndpoint('GET', '/{pid}')
-    public async getProcess (req: Request, reply: ReplyNoContinue) {
+    public async getProcess (req: Request) {
         let process = await this.processManager.getProcess(Number(req.params['pid']));
 
         let documentBuilder = new JsonApiDocumentBuilder();
         documentBuilder.setLinks(getLinkUrl(req, `/api/processes/${process.pid}`), null);
         documentBuilder.addResource(await this.serializerRegistry.serialize(process, req, documentBuilder));
-        return reply(documentBuilder.getProduct())
-            .code(200);
+        return documentBuilder.getProduct();
     }
 
     @ApiEndpoint('DELETE', '/{pid}')
-    public async killProcess (req: Request, reply: ReplyNoContinue) {
+    public async killProcess (req: Request, h: ResponseToolkit) {
         await this.processManager.kill(Number(req.params['pid']));
 
-        return reply('')
-            .code(204);
+        return h.response().code(204);
     }
 
     @ApiEndpoint('GET', '/{pid}/stdout')
-    public async getStdout (req: Request, reply: ReplyNoContinue) {
+    public async getStdout (req: Request, h: ResponseToolkit) {
         let output: string;
         try {
             output = await this.processManager.getStdout(Number(req.params['pid']));
         } catch (err) {
             winston.error(err);
-            return reply({
+            return h.response({
                 error: 'Failed to retrieve process output. The process might not exist or has stopped already.'
             }).code(400);
         }
 
-        return reply(output)
-            .code(200);
+        return output;
     }
 
     @ApiEndpoint('GET', '/{pid}/stderr')
-    public async getStderr (req: Request, reply: ReplyNoContinue) {
+    public async getStderr (req: Request, h: ResponseToolkit) {
         let errorStream: string;
         try {
             errorStream = await this.processManager.getStderr(Number(req.params['pid']));
         } catch (err) {
             winston.error(err);
-            return reply({
+            return h.response({
                 error: 'Failed to retrieve process error stream. The process might not exist or has stopped already.'
             }).code(400);
         }
 
-        return reply(errorStream)
-            .code(200);
+        return errorStream;
     }
 
     @ApiEndpoint('PATCH', '/{pid}/stdin')
-    public async writeStdin (req: Request, reply: ReplyNoContinue) {
+    public async writeStdin (req: Request, h: ResponseToolkit) {
         try {
-            await this.processManager.writeStdin(Number(req.params['pid']), req.payload);
+            await this.processManager.writeStdin(Number(req.params['pid']), req.payload as string);
         } catch (err) {
             winston.error(err);
-            return reply({
+            return h.response({
                 error: 'Failed to retrieve process error stream. The process might not exist or has stopped already.'
             }).code(400);
         }
 
-        reply('')
-            .code(204);
+        return h.response().code(204);
     }
 }

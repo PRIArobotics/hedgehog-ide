@@ -1,4 +1,4 @@
-import {ReplyNoContinue, Request} from "hapi";
+import {Request, ResponseToolkit} from "hapi";
 
 import ApiResource from "../../ApiResource";
 import ApiEndpoint from "../../ApiEndpoint";
@@ -17,7 +17,7 @@ export default class AuthenticationResource extends ApiResource {
     }
 
     @ApiEndpoint('POST', '/login')
-    public async login(req: Request, reply: ReplyNoContinue) {
+    public async login(req: Request, h: ResponseToolkit) {
         let parser = JsonApiDocument.getParser().addProperties({
             name: 'data',
             required: RequirementType.Required,
@@ -48,7 +48,7 @@ export default class AuthenticationResource extends ApiResource {
             requestData = parser.parse(req.payload).data as JsonApiResource;
         } catch (err) {
             winston.error(err);
-            return reply({
+            return h.response({
                 error: 'Error while parsing the request. Argument might be missing.'
             }).code(400);
         }
@@ -63,13 +63,13 @@ export default class AuthenticationResource extends ApiResource {
             ) === 'passwordCorrect');
         } catch (err) {
             winston.error(err);
-            return reply({
+            return h.response({
                 error: 'Could not log in user.'
             }).code(500);
         }
 
         if (!passwordCorrect) {
-            return reply({
+            return h.response({
                 error: 'Could not log in user. Wrong username or password.'
             }).code(401);
         }
@@ -87,7 +87,6 @@ export default class AuthenticationResource extends ApiResource {
         resourceBuilder.resource.type = 'token';
         resourceBuilder.resource.attributes = {token};
         documentBuilder.addResource(resourceBuilder.getProduct());
-        return reply(documentBuilder.getProduct())
-            .code(200);
+        return documentBuilder.getProduct();
     }
 }

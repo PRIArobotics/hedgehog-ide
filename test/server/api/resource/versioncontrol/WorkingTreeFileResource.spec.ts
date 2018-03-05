@@ -28,7 +28,7 @@ describe('WorkingTreeFileResource', () => {
     });
 
     describe('createFile', () => {
-        it('should create and return the newly created file', done => {
+        it('should create and return the newly created file', async () => {
             mock.expects('createOrUpdateWorkingTreeFile')
                 .withArgs('program1', 'testfile', 'Hello World!')
                 .once()
@@ -42,7 +42,7 @@ describe('WorkingTreeFileResource', () => {
                 .withExactArgs('program1', 'testfile')
                 .returns('Hello World!');
 
-            server.inject({
+            const res = await server.inject({
                 url: 'http://localhost:61749/api/files/cHJvZ3JhbTE=',
                 method: 'POST',
                 payload: {
@@ -54,42 +54,40 @@ describe('WorkingTreeFileResource', () => {
                         }
                     }
                 }
-            }, res => {
-                mock.verify();
-                assert.equal(res.statusCode, 201);
-                assert.deepEqual(JSON.parse(res.payload), {
-                    jsonapi: {
-                        version: "1.0"
+            });
+            mock.verify();
+            assert.equal(res.statusCode, 201);
+            assert.deepEqual(JSON.parse(res.payload), {
+                jsonapi: {
+                    version: "1.0"
+                },
+                links: {
+                    self: "http://localhost:61749/api/files/cHJvZ3JhbTE=/dGVzdGZpbGU="
+                },
+                data: {
+                    type: "file",
+                    id: "dGVzdGZpbGU=",
+                    attributes: {
+                        path: "testfile",
+                        mode: 33188,
+                        content: "Hello World!",
+                        encoding: "utf-8",
+                        size: 12
                     },
-                    links: {
-                        self: "http://localhost:61749/api/files/cHJvZ3JhbTE=/dGVzdGZpbGU="
-                    },
-                    data: {
-                        type: "file",
-                        id: "dGVzdGZpbGU=",
-                        attributes: {
-                            path: "testfile",
-                            mode: 33188,
-                            content: "Hello World!",
-                            encoding: "utf-8",
-                            size: 12
-                        },
-                        relationships: {
-                            directory: {
-                                links: {
-                                    related: "http://localhost:61749/api/directories/cHJvZ3JhbTE=/Lg=="
-                                }
+                    relationships: {
+                        directory: {
+                            links: {
+                                related: "http://localhost:61749/api/directories/cHJvZ3JhbTE=/Lg=="
                             }
                         }
                     }
-                });
-                done();
+                }
             });
         });
     });
 
     describe('getFile', () => {
-        it('should return the requests working tree file', done => {
+        it('should return the requests working tree file', async () => {
             mock.expects('getWorkingTreeFile')
                 .withExactArgs('program1', 'testfile')
                 .once()
@@ -100,63 +98,59 @@ describe('WorkingTreeFileResource', () => {
                 .once()
                 .returns('Hello World!');
 
-            server.inject({
+            const res = await server.inject({
                 url: 'http://localhost:61749/api/files/cHJvZ3JhbTE=/dGVzdGZpbGU=',
                 method: 'GET'
-            }, res => {
-                mock.verify();
-                assert.equal(res.statusCode, 200);
-                assert.deepEqual(JSON.parse(res.payload), {
-                    jsonapi: {
-                        version: "1.0"
+            });
+            mock.verify();
+            assert.equal(res.statusCode, 200);
+            assert.deepEqual(JSON.parse(res.payload), {
+                jsonapi: {
+                    version: "1.0"
+                },
+                links: {
+                    self: "http://localhost:61749/api/files/cHJvZ3JhbTE=/dGVzdGZpbGU="
+                },
+                data: {
+                    type: "file",
+                    id: "dGVzdGZpbGU=",
+                    attributes: {
+                        path: "testfile",
+                        mode: 33188,
+                        content: "Hello World!",
+                        encoding: "utf-8",
+                        size: 12
                     },
-                    links: {
-                        self: "http://localhost:61749/api/files/cHJvZ3JhbTE=/dGVzdGZpbGU="
-                    },
-                    data: {
-                        type: "file",
-                        id: "dGVzdGZpbGU=",
-                        attributes: {
-                            path: "testfile",
-                            mode: 33188,
-                            content: "Hello World!",
-                            encoding: "utf-8",
-                            size: 12
-                        },
-                        relationships: {
-                            directory: {
-                                links: {
-                                    related: "http://localhost:61749/api/directories/cHJvZ3JhbTE=/Lg=="
-                                }
+                    relationships: {
+                        directory: {
+                            links: {
+                                related: "http://localhost:61749/api/directories/cHJvZ3JhbTE=/Lg=="
                             }
                         }
                     }
-                });
-                done();
+                }
             });
         });
     });
 
     describe('deleteFile', () => {
-        it('should delete an existing working tree file', done => {
+        it('should delete an existing working tree file', async () => {
             mock.expects('deleteWorkingTreeObject')
                 .withExactArgs('program1', 'testfile')
                 .once()
                 .returns(Promise.resolve());
 
-            server.inject({
+            const res = await server.inject({
                 url: 'http://localhost:61749/api/files/cHJvZ3JhbTE=/dGVzdGZpbGU=',
                 method: 'delete'
-            }, res => {
-                mock.verify();
-                assert.equal(res.statusCode, 204);
-                done();
             });
+            mock.verify();
+            assert.equal(res.statusCode, 204);
         });
     });
 
     describe('updateFile', () => {
-        it('should rename a file', done => {
+        it('should rename a file', async () => {
             mock.expects('updateWorkingTreeObject')
                 .once()
                 .withExactArgs('program1', 'testfile', {
@@ -173,7 +167,7 @@ describe('WorkingTreeFileResource', () => {
                 .withExactArgs('program1', 'new_testfile')
                 .returns('Hello World!');
 
-            server.inject({
+            const res = await server.inject({
                 url: 'http://localhost:61749/api/files/cHJvZ3JhbTE=/dGVzdGZpbGU=',
                 method: 'patch',
                 payload: {
@@ -185,40 +179,38 @@ describe('WorkingTreeFileResource', () => {
                         }
                     }
                 }
-            }, res => {
-                mock.verify();
-                assert.equal(res.statusCode, 200);
-                assert.deepEqual(JSON.parse(res.payload), {
-                    jsonapi: {
-                        version: "1.0"
+            });
+            mock.verify();
+            assert.equal(res.statusCode, 200);
+            assert.deepEqual(JSON.parse(res.payload), {
+                jsonapi: {
+                    version: "1.0"
+                },
+                links: {
+                    self: "http://localhost:61749/api/files/cHJvZ3JhbTE=/bmV3X3Rlc3RmaWxl"
+                },
+                data: {
+                    type: "file",
+                    id: "bmV3X3Rlc3RmaWxl",
+                    attributes: {
+                        path: "new_testfile",
+                        mode: 33188,
+                        content: "Hello World!",
+                        encoding: "utf-8",
+                        size: 12
                     },
-                    links: {
-                        self: "http://localhost:61749/api/files/cHJvZ3JhbTE=/bmV3X3Rlc3RmaWxl"
-                    },
-                    data: {
-                        type: "file",
-                        id: "bmV3X3Rlc3RmaWxl",
-                        attributes: {
-                            path: "new_testfile",
-                            mode: 33188,
-                            content: "Hello World!",
-                            encoding: "utf-8",
-                            size: 12
-                        },
-                        relationships: {
-                            directory: {
-                                links: {
-                                    related: "http://localhost:61749/api/directories/cHJvZ3JhbTE=/Lg=="
-                                }
+                    relationships: {
+                        directory: {
+                            links: {
+                                related: "http://localhost:61749/api/directories/cHJvZ3JhbTE=/Lg=="
                             }
                         }
                     }
-                });
-                done();
+                }
             });
         });
 
-        it('should update the file\'s content', done => {
+        it('should update the file\'s content', async () => {
             mock.expects('createOrUpdateWorkingTreeFile')
                 .withArgs('program1', 'testfile', 'Knock knock.')
                 .once()
@@ -232,7 +224,7 @@ describe('WorkingTreeFileResource', () => {
                 .withExactArgs('program1', 'testfile')
                 .returns('Knock knock.');
 
-            server.inject({
+            const res = await server.inject({
                 url: 'http://localhost:61749/api/files/cHJvZ3JhbTE=/dGVzdGZpbGU=',
                 method: 'patch',
                 payload: {
@@ -244,40 +236,38 @@ describe('WorkingTreeFileResource', () => {
                         }
                     }
                 }
-            }, res => {
-                mock.verify();
-                assert.equal(res.statusCode, 200);
-                assert.deepEqual(JSON.parse(res.payload), {
-                    jsonapi: {
-                        version: "1.0"
+            });
+            mock.verify();
+            assert.equal(res.statusCode, 200);
+            assert.deepEqual(JSON.parse(res.payload), {
+                jsonapi: {
+                    version: "1.0"
+                },
+                links: {
+                    self: "http://localhost:61749/api/files/cHJvZ3JhbTE=/dGVzdGZpbGU="
+                },
+                data: {
+                    type: "file",
+                    id: "dGVzdGZpbGU=",
+                    attributes: {
+                        path: "testfile",
+                        mode: 33188,
+                        content: "Knock knock.",
+                        encoding: "utf-8",
+                        size: 12
                     },
-                    links: {
-                        self: "http://localhost:61749/api/files/cHJvZ3JhbTE=/dGVzdGZpbGU="
-                    },
-                    data: {
-                        type: "file",
-                        id: "dGVzdGZpbGU=",
-                        attributes: {
-                            path: "testfile",
-                            mode: 33188,
-                            content: "Knock knock.",
-                            encoding: "utf-8",
-                            size: 12
-                        },
-                        relationships: {
-                            directory: {
-                                links: {
-                                    related: "http://localhost:61749/api/directories/cHJvZ3JhbTE=/Lg=="
-                                }
+                    relationships: {
+                        directory: {
+                            links: {
+                                related: "http://localhost:61749/api/directories/cHJvZ3JhbTE=/Lg=="
                             }
                         }
                     }
-                });
-                done();
+                }
             });
         });
 
-        it('should chmod the file', done => {
+        it('should chmod the file', async () => {
             mock.expects('updateWorkingTreeObject')
                 .once()
                 .withExactArgs('program1', 'testfile', {
@@ -294,7 +284,7 @@ describe('WorkingTreeFileResource', () => {
                 .withExactArgs('program1', 'testfile')
                 .returns('Hello World!');
 
-            server.inject({
+            const res = await server.inject({
                 url: 'http://localhost:61749/api/files/cHJvZ3JhbTE=/dGVzdGZpbGU=',
                 method: 'patch',
                 payload: {
@@ -306,36 +296,34 @@ describe('WorkingTreeFileResource', () => {
                         }
                     }
                 }
-            }, res => {
-                mock.verify();
-                assert.equal(res.statusCode, 200);
-                assert.deepEqual(JSON.parse(res.payload), {
-                    jsonapi: {
-                        version: "1.0"
+            });
+            mock.verify();
+            assert.equal(res.statusCode, 200);
+            assert.deepEqual(JSON.parse(res.payload), {
+                jsonapi: {
+                    version: "1.0"
+                },
+                links: {
+                    self: "http://localhost:61749/api/files/cHJvZ3JhbTE=/dGVzdGZpbGU="
+                },
+                data: {
+                    type: "file",
+                    id: "dGVzdGZpbGU=",
+                    attributes: {
+                        path: "testfile",
+                        mode: 0o100666,
+                        content: "Hello World!",
+                        encoding: "utf-8",
+                        size: 12
                     },
-                    links: {
-                        self: "http://localhost:61749/api/files/cHJvZ3JhbTE=/dGVzdGZpbGU="
-                    },
-                    data: {
-                        type: "file",
-                        id: "dGVzdGZpbGU=",
-                        attributes: {
-                            path: "testfile",
-                            mode: 0o100666,
-                            content: "Hello World!",
-                            encoding: "utf-8",
-                            size: 12
-                        },
-                        relationships: {
-                            directory: {
-                                links: {
-                                    related: "http://localhost:61749/api/directories/cHJvZ3JhbTE=/Lg=="
-                                }
+                    relationships: {
+                        directory: {
+                            links: {
+                                related: "http://localhost:61749/api/directories/cHJvZ3JhbTE=/Lg=="
                             }
                         }
                     }
-                });
-                done();
+                }
             });
         });
     });

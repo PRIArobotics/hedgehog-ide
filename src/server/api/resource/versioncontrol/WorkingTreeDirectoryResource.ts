@@ -1,12 +1,12 @@
 import winston = require('winston');
-import {ReplyNoContinue, Request} from "hapi";
+import {Request, ResponseToolkit} from "hapi";
 
 import ApiResource from "../../ApiResource";
 import ApiEndpoint from "../../ApiEndpoint";
 import IProgramStorage from "../../../../common/versioncontrol/ProgramStorage";
 import SerializerRegistry from "../../../serializer/SerializerRegistry";
 import {genericFromBase64, genericToBase64} from "../../../../common/utils";
-import {JsonApiResource} from "../../../jsonapi/JsonApiObjects";
+import {JsonApiDocument, JsonApiResource} from "../../../jsonapi/JsonApiObjects";
 import {ObjectParser, RequirementType} from "../../../jsonapi/Parser";
 import WorkingTreeDirectory from "../../../../common/versioncontrol/WorkingTreeDirectory";
 import JsonApiDocumentBuilder from "../../../jsonapi/JsonApiBuilder";
@@ -28,13 +28,13 @@ export default class WorkingTreeDirectoryResource extends ApiResource {
     }
 
     @ApiEndpoint('POST')
-    public async createDirectory(req: Request, reply: ReplyNoContinue) {
+    public async createDirectory(req: Request, h: ResponseToolkit) {
         const programName = genericFromBase64(req.params['programId']);
 
         // Parse request payload
         let directoryData;
         try {
-            directoryData = WorkingTreeDirectoryResource.directoryParser.parse(req.payload.data, {
+            directoryData = WorkingTreeDirectoryResource.directoryParser.parse((req.payload as JsonApiDocument).data, {
                 id: RequirementType.Forbidden,
                 attributes: {
                     path: RequirementType.Required
@@ -42,7 +42,7 @@ export default class WorkingTreeDirectoryResource extends ApiResource {
             }).attributes;
         } catch(err) {
             winston.error(err);
-            return reply({
+            return h.response({
                 error: 'Error while parsing the request. Arguments might be missing.'
             }).code(400);
         }
@@ -52,37 +52,37 @@ export default class WorkingTreeDirectoryResource extends ApiResource {
             await this.programStorage.createWorkingTreeDirectory(programName, directoryData.path, directoryData.mode);
         } catch(err) {
             winston.error(err);
-            return reply({
+            return h.response({
                 error: 'Failed to create file.'
             }).code(500);
         }
 
-        return (await this.replyDirectory(programName, directoryData.path, req, reply))
-            .code(201);
+        return h.response(await this.replyDirectory(programName, directoryData.path, req, h)).code(201);
     }
 
     @ApiEndpoint('GET', '/{directoryId}')
-    public async getDirectory(req: Request, reply: ReplyNoContinue) {
+    public async getDirectory(req: Request, h: ResponseToolkit) {
         return this.replyDirectory(
             genericFromBase64(req.params['programId']),
             genericFromBase64(req.params['directoryId']),
             req,
-            reply
+            h
         );
     }
 
     @ApiEndpoint('PATCH', '/{directoryId}')
-    public async updateDirectory(req: Request, reply: ReplyNoContinue) {
+    public async updateDirectory(req: Request, h: ResponseToolkit) {
         const programName = genericFromBase64(req.params['programId']);
         let oldDirectoryPath = genericFromBase64(req.params['directoryId']);
 
         // Parse request payload
         let directoryData;
         try {
-            directoryData = WorkingTreeDirectoryResource.directoryParser.parse(req.payload.data).attributes;
+            const data: JsonApiResource = (req.payload as JsonApiDocument).data as JsonApiResource;
+            directoryData = WorkingTreeDirectoryResource.directoryParser.parse(data.attributes);
         } catch(err) {
             winston.error(err);
-            return reply({
+            return h.response({
                 error: 'Error while parsing the request. Arguments might be missing.'
             }).code(400);
         }
@@ -93,7 +93,7 @@ export default class WorkingTreeDirectoryResource extends ApiResource {
                 mode: directoryData.mode
             });
         } catch (err) {
-            return reply({
+            return h.response({
                 error: 'Failed to update the directory.'
             }).code(500);
         }
@@ -102,12 +102,12 @@ export default class WorkingTreeDirectoryResource extends ApiResource {
             programName,
             directoryData.path || oldDirectoryPath,
             req,
-            reply
+            h
         );
     }
 
     @ApiEndpoint('DELETE', '/{directoryId}')
-    public async deleteDirectory(req: Request, reply: ReplyNoContinue) {
+    public async deleteDirectory(req: Request, h: ResponseToolkit) {
         // TODO implement check whether file exists
         try {
             await this.programStorage.deleteWorkingTreeObject(
@@ -116,23 +116,23 @@ export default class WorkingTreeDirectoryResource extends ApiResource {
             );
         } catch(err) {
             winston.error(err);
-            return reply({
+            return h.response({
                 error: 'An error occurred while deleting the file'
             }).code(500);
         }
-        return reply('').code(204);
+        return h.response().code(204);
     }
 
     private async replyDirectory(programName: string,
                                  directoryPath: string,
                                  request: Request,
-                                 reply: ReplyNoContinue) {
+                                 h: ResponseToolkit) {
         let directory: WorkingTreeDirectory;
         try {
             directory = await this.programStorage.getWorkingTreeDirectory(programName, directoryPath);
         } catch (err) {
             winston.error(err);
-            return reply({
+            return h.response({
                 error: 'Error while fetching the directory.'
             }).code(500);
         }
@@ -147,7 +147,6 @@ export default class WorkingTreeDirectoryResource extends ApiResource {
             await this.serializerRegistry.serialize(directory, request, documentBuilder));
 
         // Return file
-        return reply(documentBuilder.getProduct())
-            .code(200);
+        return documentBuilder.getProduct();
     }
 }

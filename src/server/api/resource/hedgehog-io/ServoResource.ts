@@ -1,5 +1,5 @@
 import winston = require("winston");
-import {ReplyNoContinue, Request} from "hapi";
+import {Request, ResponseToolkit} from "hapi";
 
 import {HedgehogClient} from 'hedgehog-client';
 
@@ -15,7 +15,7 @@ export default class ServoResource extends ApiResource {
     }
 
     @ApiEndpoint('PATCH', '/{servoId}')
-    public setServo (req: Request, reply: ReplyNoContinue) {
+    public setServo (req: Request, h: ResponseToolkit) {
         const servoPort = Number(req.params['servoId']);
 
         let parser = JsonApiDocument.getParser().addProperties({
@@ -42,13 +42,13 @@ export default class ServoResource extends ApiResource {
             requestData = parser.parse(req.payload).data as JsonApiResource;
         } catch (err) {
             winston.error(err);
-            return reply({
+            return h.response({
                 error: 'Error while parsing the request. Argument might be missing.'
             }).code(400);
         }
 
 
         this.hedgehog.setServo(servoPort, requestData.attributes.enabled, Number(requestData.attributes.position));
-        return reply('');
+        return '';
     }
 }

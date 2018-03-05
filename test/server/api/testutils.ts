@@ -4,8 +4,7 @@ import ApiResource from "../../../src/server/api/ApiResource";
 import Api from "../../../src/server/api/Api";
 
 export function setupApiServer(...resources: ApiResource[]) {
-    let server = new Hapi.Server();
-    server.connection({
+    let server = new Hapi.Server({
         host: 'localhost',
         port: 61749
     });

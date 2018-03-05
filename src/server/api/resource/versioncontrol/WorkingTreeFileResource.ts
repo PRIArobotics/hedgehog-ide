@@ -1,9 +1,9 @@
 import winston = require("winston");
-import {ReplyNoContinue, Request} from "hapi";
+import {Request, ResponseToolkit} from "hapi";
 
 import ApiResource from "../../ApiResource";
 import IProgramStorage from "../../../../common/versioncontrol/ProgramStorage";
-import {JsonApiResource} from "../../../jsonapi/JsonApiObjects";
+import {JsonApiDocument, JsonApiResource} from "../../../jsonapi/JsonApiObjects";
 import {ObjectParser, RequirementType} from "../../../jsonapi/Parser";
 import SerializerRegistry from "../../../serializer/SerializerRegistry";
 import {genericFromBase64, genericToBase64} from "../../../../common/utils";
@@ -30,13 +30,13 @@ export default class WorkingTreeFileResource extends ApiResource {
     }
 
     @ApiEndpoint('POST')
-    public async createFile(req, reply) {
+    public async createFile(req: Request, h: ResponseToolkit) {
         const programName = genericFromBase64(req.params['programId']);
 
         // Parse request payload
         let requestData: JsonApiResource;
         try {
-             requestData = WorkingTreeFileResource.fileParser.parse(req.payload.data, {
+             requestData = WorkingTreeFileResource.fileParser.parse((req.payload as JsonApiDocument).data, {
                  id: RequirementType.Forbidden,
                  attributes: {
                      path: RequirementType.Required
@@ -44,7 +44,7 @@ export default class WorkingTreeFileResource extends ApiResource {
              });
         } catch(err) {
             winston.error(err);
-            return reply({
+            return h.response({
                 error: 'Error while parsing the request. Arguments might be missing.'
             }).code(400);
         }
@@ -59,38 +59,37 @@ export default class WorkingTreeFileResource extends ApiResource {
             );
         } catch(err) {
             winston.error(err);
-            return reply({
+            return h.response({
                 error: 'Error while writing file.'
             }).code(500);
         }
 
         // Return file
-        return (await this.replyFile(programName, requestData.attributes.path, req, reply))
-            .code(201);
+        return h.response(await this.replyFile(programName, requestData.attributes.path, req, h)).code(201);
     }
 
     @ApiEndpoint('GET', '/{fileId}')
-    public async getFile(req, reply) {
+    public async getFile(req, h: ResponseToolkit) {
         return this.replyFile(
             genericFromBase64(req.params['programId']),
             genericFromBase64(req.params['fileId']),
             req,
-            reply
+            h
         );
     }
 
     @ApiEndpoint('PATCH', '/{fileId}')
-    public async updateFile(req, reply) {
+    public async updateFile(req: Request, h: ResponseToolkit) {
         const programName = genericFromBase64(req.params['programId']);
         let filePath = genericFromBase64(req.params['fileId']);
 
         // Update request payload
         let updatedFile;
         try {
-            updatedFile = WorkingTreeFileResource.fileParser.parse(req.payload.data).attributes;
+            updatedFile = WorkingTreeFileResource.fileParser.parse((req.payload as JsonApiDocument).data).attributes;
         } catch(err) {
             winston.error(err);
-            return reply({
+            return h.response({
                 error: 'Error while parsing the request. Arguments might be missing.'
             }).code(400);
         }
@@ -120,11 +119,11 @@ export default class WorkingTreeFileResource extends ApiResource {
             );
         }
 
-        return this.replyFile(programName, filePath, req, reply);
+        return this.replyFile(programName, filePath, req, h);
     }
 
     @ApiEndpoint('DELETE', '/{fileId}')
-    public async deleteFile(req, reply) {
+    public async deleteFile(req: Request, h: ResponseToolkit) {
         // TODO implement check whether file exists
         try {
             await this.programStorage.deleteWorkingTreeObject(
@@ -133,15 +132,15 @@ export default class WorkingTreeFileResource extends ApiResource {
             );
         } catch(err) {
             winston.error(err);
-            return reply({
+            return h.response({
                 error: 'An error occurred while deleting the file'
             }).code(500);
         }
-        return reply().code(204);
+        return h.response().code(204);
     }
 
     @ApiEndpoint('GET', '/{fileId}/content')
-    public async getContent(req, reply) {
+    public async getContent(req: Request, h: ResponseToolkit) {
         let content: string;
         try {
             content = await this.programStorage.getWorkingTreeFileContent(
@@ -150,22 +149,21 @@ export default class WorkingTreeFileResource extends ApiResource {
             );
         } catch (err) {
             winston.error(err);
-            return reply({
+            return h.response({
                 error: 'Failed to retrieve file content'
             }).code(500);
         }
-        return reply(content)
-            .code(200);
+        return content;
     }
 
-    private async replyFile(programName: string, filePath: string, request: Request, reply) {
+    private async replyFile(programName: string, filePath: string, request: Request, h: ResponseToolkit) {
         // Load file from storage
         let file: WorkingTreeFile;
         try {
             file = await this.programStorage.getWorkingTreeFile(programName, filePath);
         } catch(err) {
             winston.error(err);
-            return reply({
+            return h.response({
                 error: 'Error while fetching the file.'
             }).code(500);
         }
@@ -185,7 +183,6 @@ export default class WorkingTreeFileResource extends ApiResource {
         ));
 
         // Return file
-        return reply(documentBuilder.getProduct())
-            .code(200);
+        return documentBuilder.getProduct();
     }
 }

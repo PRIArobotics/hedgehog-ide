@@ -7,7 +7,7 @@ export function getLinkUrl(request: Request, linkPath) {
 
 export function getRequestUrl(request: Request) {
     // from http://stackoverflow.com/questions/31840286/how-to-get-the-full-url-for-a-request-in-hapi
-    return request.connection.info.protocol
+    return request.server.info.protocol
         + '://'
         + request.info.host
         + request.url.path;

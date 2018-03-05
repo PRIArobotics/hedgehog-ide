@@ -1,5 +1,5 @@
 import winston = require("winston");
-import {ReplyNoContinue, Request} from "hapi";
+import {Request, ResponseToolkit} from "hapi";
 
 import ApiResource from "../../ApiResource";
 import SerializerRegistry from "../../../serializer/SerializerRegistry";
@@ -18,7 +18,7 @@ export default class VersionResource extends ApiResource {
     }
 
     @ApiEndpoint('POST')
-    public async createVersion (req: Request, reply: ReplyNoContinue) {
+    public async createVersion (req: Request, h: ResponseToolkit) {
         const programName = genericFromBase64(req.params['programId']);
 
         let versionParser = JsonApiDocument.getParser().addProperties({
@@ -48,7 +48,7 @@ export default class VersionResource extends ApiResource {
                 document = versionParser.parse(req.payload);
             } catch(err) {
                 winston.error(err);
-                return reply({
+                return h.response({
                     error: 'Error while parsing the request.'
                 }).code(400);
             }
@@ -61,16 +61,15 @@ export default class VersionResource extends ApiResource {
             versionId = await this.programStorage.createVersionFromWorkingTree(programName, message, tag);
         } catch (err) {
             winston.error(err);
-            return reply({
+            return h.response({
                 error: 'Failed to save version'
             }).code(500);
         }
-        return (await this.replyVersion(versionId, req, reply))
-            .code(201);
+        return h.response(this.replyVersion(versionId, req, h)).code(201);
     }
 
     @ApiEndpoint('GET')
-    public async getVersionList (req: Request, reply: ReplyNoContinue) {
+    public async getVersionList (req: Request, h: ResponseToolkit) {
         const programName = genericFromBase64(req.params['programId']);
 
         let documentBuilder = new JsonApiDocumentBuilder();
@@ -82,7 +81,7 @@ export default class VersionResource extends ApiResource {
             versionIds = await this.programStorage.getVersionIds(programName);
         } catch(err) {
             winston.error(err);
-            return reply({
+            return h.response({
                 error: 'Failed to load version list'
             }).code(500);
         }
@@ -96,17 +95,17 @@ export default class VersionResource extends ApiResource {
             }
         }
 
-        return reply(documentBuilder.getProduct());
+        return documentBuilder.getProduct();
     }
 
 
     @ApiEndpoint('GET', '/{versionId}')
-    public async getVersion (req: Request, reply: ReplyNoContinue) {
+    public async getVersion (req: Request, h: ResponseToolkit) {
         const versionId = req.params['versionId'];
-        return this.replyVersion(versionId, req, reply);
+        return this.replyVersion(versionId, req, h);
     }
 
-    public async replyVersion (versionId: string, req: Request, reply: ReplyNoContinue) {
+    public async replyVersion (versionId: string, req: Request, h: ResponseToolkit) {
         const programName = genericFromBase64(req.params['programId']);
 
         let version: Version;
@@ -114,7 +113,7 @@ export default class VersionResource extends ApiResource {
             version = await this.programStorage.getVersion(programName, versionId);
         } catch (err) {
             winston.error(err);
-            return reply({
+            return h.response({
                 error: 'Failed to load version'
             }).code(500);
         }
@@ -123,7 +122,6 @@ export default class VersionResource extends ApiResource {
         documentBuilder.setLinks(getLinkUrl(req, `/api/versions/${genericToBase64(programName)}/${versionId}`), null);
         documentBuilder.addResource(await this.serializerRegistry.serialize(version, req, documentBuilder));
 
-        return reply(documentBuilder.getProduct())
-            .code(200);
+        return documentBuilder.getProduct();
     }
 }

@@ -1,8 +1,8 @@
 import path = require('path');
-import {RouteConfiguration} from "hapi";
+import {ServerRoute} from "hapi";
 
 abstract class ApiResource {
-    private endpoints: RouteConfiguration[];
+    private endpoints: ServerRoute[];
 
     public constructor(public pathPrefix = '') { }
 

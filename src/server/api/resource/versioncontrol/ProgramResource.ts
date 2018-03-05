@@ -1,4 +1,5 @@
 import winston = require('winston');
+import {Request, ResponseToolkit} from "hapi";
 
 import ApiResource from "../../ApiResource";
 import ApiEndpoint from "../../ApiEndpoint";
@@ -38,7 +39,7 @@ export default class ProgramResource extends ApiResource {
     }
 
     @ApiEndpoint('POST')
-    public async createProgram(req, reply) {
+    public async createProgram(req: Request, h: ResponseToolkit) {
         let document: JsonApiDocument;
         try {
             document = ProgramResource.programParser.parse(req.payload, {
@@ -52,7 +53,7 @@ export default class ProgramResource extends ApiResource {
             });
         } catch(err) {
             winston.error(err);
-            return reply({
+            return h.response({
                 error: 'Error while parsing the request. Argument might be missing.'
             }).code(400);
         }
@@ -63,32 +64,31 @@ export default class ProgramResource extends ApiResource {
             program = await this.programStorage.createProgram(attributes.name, attributes.copyFrom);
         } catch(err) {
             winston.error(err);
-            return reply({
+            return h.response({
                 error: 'An error occurred while creating the program.'
             }).code(500);
         }
 
-        return (await this.replyProgram(program, req, reply))
-            .code(201);
+        return h.response(await this.replyProgram(program, req)).code(201);
     }
 
     @ApiEndpoint('GET', '/{programId}')
-    public async getProgram(req, reply) {
+    public async getProgram(req: Request, h: ResponseToolkit) {
         let program: Program;
         try {
             program = await this.programStorage.getProgram(genericFromBase64(req.params['programId']));
         } catch(err) {
             winston.error(err);
-            return reply({
+            return h.response({
                 error: 'Program not found or failed to load'
             }).code(404);
         }
 
-        return this.replyProgram(program , req, reply);
+        return this.replyProgram(program , req);
     }
 
     @ApiEndpoint('GET')
-    public async getProgramList(req, reply) {
+    public async getProgramList(req: Request, h: ResponseToolkit) {
         let documentBuilder = new JsonApiDocumentBuilder();
         documentBuilder.setLinks(getRequestUrl(req), null);
         documentBuilder.setDataType(DataType.Many);
@@ -98,7 +98,7 @@ export default class ProgramResource extends ApiResource {
             programNames = await this.programStorage.getProgramNames();
         } catch(err) {
             winston.error(err);
-            return reply({
+            return h.response({
                 error: 'Failed to load program list'
             }).code(500);
         }
@@ -112,31 +112,31 @@ export default class ProgramResource extends ApiResource {
             }
         }
 
-        return reply(documentBuilder.getProduct());
+        return documentBuilder.getProduct();
     }
 
     @ApiEndpoint('DELETE', '/{programId}')
-    public async deleteProgram(req, reply) {
+    public async deleteProgram(req: Request, h: ResponseToolkit) {
         // TODO implement check whether program exists
         try {
             await this.programStorage.deleteProgram(genericFromBase64(req.params['programId']));
         } catch(err) {
             winston.error(err);
-            return reply({
-                error: 'Un unknown error occurred while deleting the program'
+            return h.response({
+                error: 'An unknown error occurred while deleting the program'
             }).code(500);
         }
-        return reply().code(204);
+        return h.response().code(204);
     }
 
     @ApiEndpoint('PATCH', '/{programId}')
-    public async updateProgram(req, reply) {
+    public async updateProgram(req: Request, h: ResponseToolkit) {
         let requestData: JsonApiResource;
         try {
             requestData = ProgramResource.programParser.parse(req.payload).data as JsonApiResource;
         } catch(err) {
             winston.error(err);
-            return reply({
+            return h.response({
                 error: 'Error while parsing the request. Argument might be missing.'
             }).code(400);
         }
@@ -146,7 +146,7 @@ export default class ProgramResource extends ApiResource {
             program = await this.programStorage.getProgram(genericFromBase64(req.params['programId']));
         } catch(err) {
             winston.error(err);
-            return reply({
+            return h.response({
                 error: 'Program not found or failed to load'
             }).code(404);
         }
@@ -156,7 +156,7 @@ export default class ProgramResource extends ApiResource {
             try {
                 await program.rename(requestData.attributes.name);
             } catch(err) {
-                return reply({
+                return h.response({
                     error: 'Failed to rename the program. Program with target name might already exist'
                 }).code(400);
             }
@@ -167,7 +167,7 @@ export default class ProgramResource extends ApiResource {
             try {
                 await program.resetWorkingTree();
             } catch(err) {
-                return reply({
+                return h.response({
                     error: 'Failed to reset the program\'s working tree'
                 }).code(500);
             }
@@ -179,21 +179,20 @@ export default class ProgramResource extends ApiResource {
             try {
                 await program.reset(requestData.attributes.latestVersionId);
             } catch (err) {
-                return reply({
+                return h.response({
                     error: 'Failed to reset the program'
                 }).code(500);
             }
         }
 
-        return this.replyProgram(program, req, reply);
+        return this.replyProgram(program, req);
     }
 
-    private async replyProgram(program: Program, request, reply) {
+    private async replyProgram(program: Program, request) {
         let documentBuilder = new JsonApiDocumentBuilder();
         documentBuilder.setLinks(getLinkUrl(request, `/api/programs/${genericToBase64(program.name)}`), null);
         documentBuilder.addResource(await this.serializerRegistry.serialize(program, request, documentBuilder));
 
-        return reply(documentBuilder.getProduct())
-            .code(200);
+        return documentBuilder.getProduct();
     }
 }

@@ -1,5 +1,5 @@
 import winston = require("winston");
-import {ReplyNoContinue, Request, Response} from "hapi";
+import {Request, ResponseToolkit} from "hapi";
 
 import ApiResource from "../../ApiResource";
 import ApiEndpoint from "../../ApiEndpoint";
@@ -16,7 +16,7 @@ export default class BlobResource extends ApiResource {
     }
 
     @ApiEndpoint('GET', '/{blobId}')
-    public async getBlob (req: Request, reply: ReplyNoContinue) {
+    public async getBlob (req: Request, h: ResponseToolkit) {
         const programName = genericFromBase64(req.params['programId']);
         const blobId = req.params['blobId'];
 
@@ -25,7 +25,7 @@ export default class BlobResource extends ApiResource {
             blob = await this.programStorage.getBlob(programName, blobId);
         } catch (err) {
             winston.error(err);
-            return reply({
+            return h.response({
                 error: 'Failed to load blob'
             }).code(500);
         }
@@ -34,7 +34,6 @@ export default class BlobResource extends ApiResource {
         documentBuilder.setLinks(getLinkUrl(req, `/api/blobs/${genericToBase64(programName)}/${blobId}`), null);
         documentBuilder.addResource(await this.serializerRegistry.serialize(blob, req, documentBuilder));
 
-        return reply(documentBuilder.getProduct())
-            .code(200);
+        return documentBuilder.getProduct();
     }
 }

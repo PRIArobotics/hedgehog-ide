@@ -1,5 +1,5 @@
 import winston = require("winston");
-import {ReplyNoContinue, Request} from "hapi";
+import {Request, ResponseToolkit} from "hapi";
 
 import ApiResource from "../../ApiResource";
 import {genericToBase64, genericFromBase64} from "../../../../common/utils";
@@ -16,7 +16,7 @@ export default class TreeResource extends ApiResource {
     }
 
     @ApiEndpoint('GET', '{treeId}')
-    public async getTree (req: Request, reply: ReplyNoContinue) {
+    public async getTree (req: Request, h: ResponseToolkit) {
         const programName = genericFromBase64(req.params['programId']);
         const treeId = req.params['treeId'];
 
@@ -25,8 +25,8 @@ export default class TreeResource extends ApiResource {
             tree = await this.programStorage.getTree(programName, treeId);
         } catch (err) {
             winston.error(err);
-            return reply({
-                error: 'Failed to load blob'
+            h.response({
+                error: 'Failed to load tree'
             }).code(500);
         }
 
@@ -34,7 +34,6 @@ export default class TreeResource extends ApiResource {
         documentBuilder.setLinks(getLinkUrl(req, `/api/trees/${genericToBase64(programName)}/${treeId}`), null);
         documentBuilder.addResource(await this.serializerRegistry.serialize(tree, req, documentBuilder));
 
-        return reply(documentBuilder.getProduct())
-            .code(200);
+        return documentBuilder.getProduct();
     }
 }
