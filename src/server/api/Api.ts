@@ -1,6 +1,6 @@
 import path = require('path');
 import ApiResource from "./ApiResource";
-import {RouteHandler, Server} from "hapi";
+import {Lifecycle, Server} from "hapi";
 
 export default class Api {
     public constructor(private server: Server,
@@ -11,8 +11,8 @@ export default class Api {
             this.server.route({
                 path: path.join(this.prefix, endpoint.path),
                 method: endpoint.method,
-                handler: (endpoint.handler as RouteHandler).bind(resource),
-                config: auth === null ? { } : { auth }
+                handler: (endpoint.handler as Lifecycle.Method).bind(resource),
+                options: auth === null ? { } : { auth }
             });
         }
     }

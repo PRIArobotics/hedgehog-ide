@@ -1,5 +1,5 @@
 import winston = require("winston");
-import {ReplyNoContinue, Request} from "hapi";
+import {Request, ResponseToolkit} from "hapi";
 import {HedgehogClient, MotorState} from 'hedgehog-client';
 
 import ApiResource from "../../ApiResource";
@@ -14,7 +14,7 @@ export default class MotorResource extends ApiResource {
     }
 
     @ApiEndpoint('PATCH', '/{motorId}')
-    public setMotor (req: Request, reply: ReplyNoContinue) {
+    public setMotor (req: Request, h: ResponseToolkit) {
         const motorPort = Number(req.params['motorId']);
 
         let parser = JsonApiDocument.getParser().addProperties({
@@ -45,7 +45,7 @@ export default class MotorResource extends ApiResource {
             requestData = parser.parse(req.payload).data as JsonApiResource;
         } catch (err) {
             winston.error(err);
-            return reply({
+            return h.response({
                 error: 'Error while parsing the request. Argument might be missing.'
             }).code(400);
         }
@@ -58,6 +58,6 @@ export default class MotorResource extends ApiResource {
         }
 
         this.hedgehog.move(motorPort, velocity, velocity !== 0? MotorState.POWER : MotorState.BRAKE);
-        return reply('');
+        return '';
     }
 }

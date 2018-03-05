@@ -1,5 +1,5 @@
 import winston = require("winston");
-import {ReplyNoContinue, Request} from "hapi";
+import {Request, ResponseToolkit} from "hapi";
 import {HedgehogClient} from 'hedgehog-client';
 
 import ApiResource from "../../ApiResource";
@@ -18,7 +18,7 @@ export default class SensorResource extends ApiResource {
     }
 
     @ApiEndpoint('GET', '/{sensorId}')
-    public async getSensor (req: Request, reply: ReplyNoContinue) {
+    public async getSensor (req: Request) {
         const sensorPort = Number(req.params['sensorId']);
 
         let sensor = new Sensor();
@@ -35,11 +35,11 @@ export default class SensorResource extends ApiResource {
         let documentBuilder = new JsonApiDocumentBuilder();
         documentBuilder.setLinks(getLinkUrl(req, `/api/sensors/${sensorPort}`), null);
         documentBuilder.addResource(await this.serializerRegistry.serialize(sensor, req, documentBuilder));
-        return reply(documentBuilder.getProduct());
+        return documentBuilder.getProduct();
     }
 
     @ApiEndpoint('GET')
-    public async getSensorList (req: Request, reply: ReplyNoContinue) {
+    public async getSensorList (req: Request) {
         let documentBuilder = new JsonApiDocumentBuilder();
         documentBuilder.setLinks(getRequestUrl(req), null);
         documentBuilder.setDataType(DataType.Many);
@@ -59,11 +59,11 @@ export default class SensorResource extends ApiResource {
             documentBuilder.addResource(await this.serializerRegistry.serialize(sensor, req, documentBuilder));
         }
 
-        return reply(documentBuilder.getProduct());
+        return documentBuilder.getProduct();
     }
 
     @ApiEndpoint('PATCH', '/{sensorId}')
-    public async setSensorPullup (req: Request, reply: ReplyNoContinue) {
+    public async setSensorPullup (req: Request, h: ResponseToolkit) {
         const sensorPort = Number(req.params['sensorId']);
 
         let parser = JsonApiDocument.getParser().addProperties({
@@ -84,11 +84,11 @@ export default class SensorResource extends ApiResource {
             pullup = (parser.parse(req.payload).data as JsonApiResource).attributes.pullup;
         } catch (err) {
             winston.error(err);
-            return reply({
+            h.response({
                 error: 'Error while parsing the request. Argument might be missing.'
             }).code(400);
         }
         await this.hedgehog.setInputState(sensorPort, pullup);
-        return this.getSensor(req, reply);
+        return this.getSensor(req);
     }
 }

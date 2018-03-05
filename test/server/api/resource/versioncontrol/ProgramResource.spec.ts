@@ -61,7 +61,7 @@ describe('ProgramResource', () => {
     });
 
     describe('createProgram', () => {
-        it('should create a new program', done => {
+        it('should create a new program', async () => {
             const creationDate = new Date();
             let program = new Program(storage, 'program', 'version1', true);
 
@@ -75,7 +75,7 @@ describe('ProgramResource', () => {
             mock.expects('getVersion')
                 .returns(Promise.resolve(new Version(storage, 'program', 'version1', '', '', creationDate, [], '')));
 
-            server.inject({
+            const res = await server.inject({
                 url: '/api/programs',
                 method: 'POST',
                 payload: {
@@ -86,25 +86,24 @@ describe('ProgramResource', () => {
                         }
                     }
                 }
-            }, res => {
-                mock.verify();
-                assert.equal(res.statusCode, 201);
-                assert.deepEqual(JSON.parse(res.payload), {
-                    links: {
-                        self: 'http://localhost:61749/api/programs/cHJvZ3JhbQ=='
-                    },
-                    jsonapi: {
-                        version: '1.0'
-                    },
-                    data: getProgramResourceReply(program, creationDate)
-                });
-                done();
             });
+            mock.verify();
+            assert.equal(res.statusCode, 201);
+            assert.deepEqual(JSON.parse(res.payload), {
+                links: {
+                    self: 'http://localhost:61749/api/programs/cHJvZ3JhbQ=='
+                },
+                jsonapi: {
+                    version: '1.0'
+                },
+                data: getProgramResourceReply(program, creationDate)
+            });
+
         });
     });
 
     describe('getProgram', () => {
-        it('should load and return an existing program', done => {
+        it('should load and return an existing program', async () => {
             const creationDate = new Date();
             let program = new Program(storage, 'program1', 'version1', true);
 
@@ -119,28 +118,26 @@ describe('ProgramResource', () => {
             mock.expects('getVersion')
                 .returns(Promise.resolve(new Version(storage, 'program1', 'version1', '', '', creationDate, [], '')));
 
-            server.inject({
+            const res = await server.inject({
                 url: '/api/programs/cHJvZ3JhbTE=',
                 method: 'GET'
-            }, res => {
-                mock.verify();
-                assert.equal(res.statusCode, 200);
-                assert.deepEqual(JSON.parse(res.payload), {
-                    links: {
-                        self: 'http://localhost:61749/api/programs/cHJvZ3JhbTE='
-                    },
-                    jsonapi: {
-                        version: '1.0'
-                    },
-                    data: getProgramResourceReply(program, creationDate)
-                });
-                done();
+            });
+            mock.verify();
+            assert.equal(res.statusCode, 200);
+            assert.deepEqual(JSON.parse(res.payload), {
+                links: {
+                    self: 'http://localhost:61749/api/programs/cHJvZ3JhbTE='
+                },
+                jsonapi: {
+                    version: '1.0'
+                },
+                data: getProgramResourceReply(program, creationDate)
             });
         });
     });
 
     describe('getProgramList', () => {
-        it('should return a list containing all programs stored on the controller', done => {
+        it('should return a list containing all programs stored on the controller', async () => {
             const creationDate = new Date();
             let program1 = new Program(storage, 'program1', 'version1', true);
             let program2 = new Program(storage, 'program2', 'version2', true);
@@ -171,49 +168,45 @@ describe('ProgramResource', () => {
                 .withExactArgs('program2', 'version2')
                 .returns(Promise.resolve(new Version(storage, 'program2', 'version2', '', '', creationDate, [], '')));
 
-            server.inject({
+            const res = await server.inject({
                 url: '/api/programs',
                 method: 'GET'
-            }, res => {
-                mock.verify();
-                assert.equal(res.statusCode, 200);
-                assert.deepEqual(JSON.parse(res.payload),{
-                    links: {
-                        self: 'http://localhost:61749/api/programs'
-                    },
-                    jsonapi: {
-                        version: '1.0'
-                    },
-                    data: [
-                        getProgramResourceReply(program1, creationDate),
-                        getProgramResourceReply(program2, creationDate)
-                    ]
-                });
-                done();
+            });
+            mock.verify();
+            assert.equal(res.statusCode, 200);
+            assert.deepEqual(JSON.parse(res.payload),{
+                links: {
+                    self: 'http://localhost:61749/api/programs'
+                },
+                jsonapi: {
+                    version: '1.0'
+                },
+                data: [
+                    getProgramResourceReply(program1, creationDate),
+                    getProgramResourceReply(program2, creationDate)
+                ]
             });
         });
     });
 
     describe('deleteProgram', () => {
-        it('should delete a program', done => {
+        it('should delete a program', async () => {
             mock.expects('deleteProgram')
                 .once()
                 .withExactArgs('program1')
                 .returns(Promise.resolve());
 
-            server.inject({
+            const res = await server.inject({
                 url: '/api/programs/cHJvZ3JhbTE=',
                 method: 'DELETE'
-            }, res => {
-                mock.verify();
-                assert.equal(res.statusCode, 204);
-                done();
             });
+            mock.verify();
+            assert.equal(res.statusCode, 204);
         });
     });
 
     describe('updateProgram', () => {
-        it('should rename a program', done => {
+        it('should rename a program', async () => {
             const creationDate = new Date();
             let program = new Program(storage, 'program2', 'version1', true);
 
@@ -232,7 +225,7 @@ describe('ProgramResource', () => {
                 .once()
                 .withExactArgs('program2', 'program1');
 
-            server.inject({
+            const res = await server.inject({
                 url: '/api/programs/cHJvZ3JhbTI=',
                 method: 'PATCH',
                 payload: {
@@ -244,23 +237,21 @@ describe('ProgramResource', () => {
                         }
                     }
                 }
-            }, res => {
-                mock.verify();
-                assert.equal(res.statusCode, 200);
-                assert.deepEqual(JSON.parse(res.payload), {
-                    links: {
-                        self: 'http://localhost:61749/api/programs/cHJvZ3JhbTE='
-                    },
-                    jsonapi: {
-                        version: '1.0'
-                    },
-                    data: getProgramResourceReply(program, creationDate)
-                });
-                done();
+            });
+            mock.verify();
+            assert.equal(res.statusCode, 200);
+            assert.deepEqual(JSON.parse(res.payload), {
+                links: {
+                    self: 'http://localhost:61749/api/programs/cHJvZ3JhbTE='
+                },
+                jsonapi: {
+                    version: '1.0'
+                },
+                data: getProgramResourceReply(program, creationDate)
             });
         });
 
-        it('should reset a programs working tree', done => {
+        it('should reset a programs working tree', async () => {
             const creationDate = new Date();
             let program = new Program(storage, 'program1', 'version1', false);
 
@@ -279,7 +270,7 @@ describe('ProgramResource', () => {
                 .once()
                 .withExactArgs('program1');
 
-            server.inject({
+            const res = await server.inject({
                 url: '/api/programs/cHJvZ3JhbTE=',
                 method: 'PATCH',
                 payload: {
@@ -291,23 +282,21 @@ describe('ProgramResource', () => {
                         }
                     }
                 }
-            }, res => {
-                mock.verify();
-                assert.equal(res.statusCode, 200);
-                assert.deepEqual(JSON.parse(res.payload), {
-                    links: {
-                        self: 'http://localhost:61749/api/programs/cHJvZ3JhbTE='
-                    },
-                    jsonapi: {
-                        version: '1.0'
-                    },
-                    data: getProgramResourceReply(program, creationDate)
-                });
-                done();
+            });
+            mock.verify();
+            assert.equal(res.statusCode, 200);
+            assert.deepEqual(JSON.parse(res.payload), {
+                links: {
+                    self: 'http://localhost:61749/api/programs/cHJvZ3JhbTE='
+                },
+                jsonapi: {
+                    version: '1.0'
+                },
+                data: getProgramResourceReply(program, creationDate)
             });
         });
 
-        it('should reset the program', done => {
+        it('should reset the program', async () => {
             const creationDate = new Date();
             let program = new Program(storage, 'program1', 'version2', true);
 
@@ -326,7 +315,7 @@ describe('ProgramResource', () => {
                 .once()
                 .withExactArgs('program1', 'version1');
 
-            server.inject({
+            const res = await server.inject({
                 url: '/api/programs/cHJvZ3JhbTE=',
                 method: 'PATCH',
                 payload: {
@@ -338,20 +327,18 @@ describe('ProgramResource', () => {
                         }
                     }
                 }
-            }, res => {
-                mock.verify();
-                assert.equal(res.statusCode, 200);
-                program.latestVersionId = 'version1';
-                assert.deepEqual(JSON.parse(res.payload), {
-                    links: {
-                        self: 'http://localhost:61749/api/programs/cHJvZ3JhbTE='
-                    },
-                    jsonapi: {
-                        version: '1.0'
-                    },
-                    data: getProgramResourceReply(program, creationDate)
-                });
-                done();
+            });
+            mock.verify();
+            assert.equal(res.statusCode, 200);
+            program.latestVersionId = 'version1';
+            assert.deepEqual(JSON.parse(res.payload), {
+                links: {
+                    self: 'http://localhost:61749/api/programs/cHJvZ3JhbTE='
+                },
+                jsonapi: {
+                    version: '1.0'
+                },
+                data: getProgramResourceReply(program, creationDate)
             });
         });
     });
