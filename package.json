@@ -66,7 +66,7 @@
     "zone.js": "^0.8.20"
   },
   "devDependencies": {
-    "@types/hapi": "^16.1.14",
+    "@types/hapi": "^17.0.4",
     "@types/inert": "^4.2.7",
     "@types/jquery": "^3.3.0",
     "@types/jsonwebtoken": "^7.2.5",
