@@ -86,7 +86,7 @@ import ConfigurationResource from "./api/resource/ConfigurationResource";
 
         server.auth.strategy('jwt', 'jwt', {
             key: serverConfig.auth.jwtSecret,
-            validateFunc: (decoded, req, cb) => {
+            validate: (decoded, req, cb) => {
                 cb(null, decoded.exp >= Math.round(Date.now() / 1000));
             },
             verifyOptions: { algorithms: [ 'HS256' ] }
