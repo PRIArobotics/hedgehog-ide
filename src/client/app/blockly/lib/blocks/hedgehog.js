@@ -94,6 +94,36 @@ Blockly.Blocks['hedgehog_move'] = {
     }
 };
 
+Blockly.Blocks['hedgehog_move_unlimited'] = {
+    init: function() {
+        this.jsonInit({
+            "message0": Blockly.Msg.HEDGEHOG_MOVE_UNLIMITED,
+            "args0": [
+                {
+                    "type": "field_number",
+                    "name": "PORT",
+                    "value": 0,
+                    "min": 0,
+                    "max": 3,
+                    "precision": 1
+                },
+                {
+                    "type": "input_value",
+                    "name": "SPEED",
+                    "check": "Number"
+                },
+            ],
+            "inputsInline": true,
+            "previousStatement": null,
+            "nextStatement": null,
+            "tooltip": Blockly.Msg.HEDGEHOG_MOVE_UNLIMITED_TOOLTIP,
+            "colour": Blockly.Blocks.hedgehog.HUE,
+            "helpUrl": Blockly.Blocks.hedgehog.HELPURL
+        });
+    },
+    onchange: Blockly.Blocks['hedgehog_move'].onchange
+};
+
 Blockly.Blocks['hedgehog_move2'] = {
     init: function() {
         this.jsonInit({
@@ -130,66 +160,6 @@ Blockly.Blocks['hedgehog_move2'] = {
             "previousStatement": null,
             "nextStatement": null,
             "tooltip": Blockly.Msg.HEDGEHOG_MOVE2_TOOLTIP,
-            "colour": Blockly.Blocks.hedgehog.HUE,
-            "helpUrl": Blockly.Blocks.hedgehog.HELPURL
-        });
-    },
-    onchange: Blockly.Blocks['hedgehog_move'].onchange
-};
-
-Blockly.Blocks['hedgehog_move_unlimited'] = {
-    init: function() {
-        this.jsonInit({
-            "message0": Blockly.Msg.HEDGEHOG_MOVE_UNLIMITED,
-            "args0": [
-                {
-                    "type": "field_number",
-                    "name": "PORT",
-                    "value": 0,
-                    "min": 0,
-                    "max": 3,
-                    "precision": 1
-                },
-                {
-                    "type": "input_value",
-                    "name": "SPEED",
-                    "check": "Number"
-                },
-            ],
-            "inputsInline": true,
-            "previousStatement": null,
-            "nextStatement": null,
-            "tooltip": Blockly.Msg.HEDGEHOG_MOVE_UNLIMITED_TOOLTIP,
-            "colour": Blockly.Blocks.hedgehog.HUE,
-            "helpUrl": Blockly.Blocks.hedgehog.HELPURL
-        });
-    },
-    onchange: Blockly.Blocks['hedgehog_move'].onchange
-};
-
-Blockly.Blocks['hedgehog_pullup'] = {
-    init: function() {
-        this.jsonInit({
-            "message0": Blockly.Msg.HEDGEHOG_PULLUP,
-            "args0": [
-                {
-                    "type": "field_number",
-                    "name": "PORT",
-                    "value": 0,
-                    "min": 0,
-                    "max": 7,
-                    "precision": 1
-                },
-                {
-                    "type": "field_checkbox",
-                    "name": "STATE",
-                    "checked": true
-                },
-            ],
-            "inputsInline": true,
-            "previousStatement": null,
-            "nextStatement": null,
-            "tooltip": Blockly.Msg.HEDGEHOG_PULLUP_TOOLTIP,
             "colour": Blockly.Blocks.hedgehog.HUE,
             "helpUrl": Blockly.Blocks.hedgehog.HELPURL
         });
@@ -240,53 +210,6 @@ Blockly.Blocks['hedgehog_turn'] = {
     onchange: Blockly.Blocks['hedgehog_move'].onchange
 };
 
-Blockly.Blocks['hedgehog_dir'] = {
-    init: function() {
-        this.setColour(Blockly.Blocks.hedgehog.HUE);
-        this.setHelpUrl(Blockly.Blocks.hedgehog.HELPURL);
-
-        this.appendDummyInput()
-            .appendField(new Blockly.FieldDropdown([[Blockly.Msg.HEDGEHOG_RIGHT, "1000"], [Blockly.Msg.HEDGEHOG_LEFT, "-1000"]]), "DIR");
-        this.setOutput(true, "Number");
-        this.setTooltip('');
-    }
-};
-
-Blockly.Blocks['hedgehog_speed'] = {
-    init: function() {
-        this.setColour(Blockly.Blocks.hedgehog.HUE);
-        this.setHelpUrl(Blockly.Blocks.hedgehog.HELPURL);
-
-        this.appendDummyInput()
-            .appendField(new Blockly.FieldDropdown([[Blockly.Msg.HEDGEHOG_FORWARD, "1000"], [Blockly.Msg.HEDGEHOG_BACKWARD, "-1000"]]), "SPEED");
-        this.setOutput(true, "Number");
-        this.setTooltip('');
-    }
-};
-
-Blockly.Blocks['hedgehog_read_analog'] = {
-    init: function() {
-        this.jsonInit({
-            "message0": Blockly.Msg.HEDGEHOG_READ_ANALOG,
-            "args0": [
-                {
-                    "type": "field_number",
-                    "name": "PORT",
-                    "value": 0,
-                    "min": 0,
-                    "max": 15,
-                    "precision": 1
-                }
-            ],
-            "output": "Number",
-            "tooltip": Blockly.Msg.HEDGEHOG_READ_ANALOG_TOOLTIP,
-            "colour": Blockly.Blocks.hedgehog.HUE,
-            "helpUrl": Blockly.Blocks.hedgehog.HELPURL
-        });
-    },
-    onchange: Blockly.Blocks['hedgehog_move'].onchange
-};
-
 Blockly.Blocks['hedgehog_servo'] = {
     init: function() {
         this.jsonInit({
@@ -317,40 +240,57 @@ Blockly.Blocks['hedgehog_servo'] = {
     onchange: Blockly.Blocks['hedgehog_move'].onchange
 };
 
-Blockly.Blocks['hedgehog_degrees'] = {
-    init: function() {
-        this.setColour(Blockly.Blocks.hedgehog.HUE);
-        this.setHelpUrl(Blockly.Blocks.hedgehog.HELPURL);
-
-        Blockly.FieldAngle.ROUND = 5;
-        Blockly.FieldAngle.CLOCKWISE = true;
-        Blockly.FieldAngle.OFFSET = 90;
-        this.appendDummyInput()
-            .appendField(new Blockly.FieldAngle(45), "ANGLE");
-        this.setOutput(true, "Number");
-        this.setTooltip('');
-    }
-};
-
-Blockly.Blocks['hedgehog_sleep'] = {
+Blockly.Blocks['hedgehog_pullup'] = {
     init: function() {
         this.jsonInit({
-            "message0": Blockly.Msg.HEDGEHOG_SLEEP,
+            "message0": Blockly.Msg.HEDGEHOG_PULLUP,
             "args0": [
                 {
-                    "type": "input_value",
-                    "name": "TIME",
-                    "check": "Number"
-                }
+                    "type": "field_number",
+                    "name": "PORT",
+                    "value": 0,
+                    "min": 0,
+                    "max": 7,
+                    "precision": 1
+                },
+                {
+                    "type": "field_checkbox",
+                    "name": "STATE",
+                    "checked": true
+                },
             ],
             "inputsInline": true,
             "previousStatement": null,
             "nextStatement": null,
-            "tooltip": Blockly.Msg.HEDGEHOG_SLEEP_TOOLTIP,
+            "tooltip": Blockly.Msg.HEDGEHOG_PULLUP_TOOLTIP,
             "colour": Blockly.Blocks.hedgehog.HUE,
             "helpUrl": Blockly.Blocks.hedgehog.HELPURL
         });
-    }
+    },
+    onchange: Blockly.Blocks['hedgehog_move'].onchange
+};
+
+Blockly.Blocks['hedgehog_read_analog'] = {
+    init: function() {
+        this.jsonInit({
+            "message0": Blockly.Msg.HEDGEHOG_READ_ANALOG,
+            "args0": [
+                {
+                    "type": "field_number",
+                    "name": "PORT",
+                    "value": 0,
+                    "min": 0,
+                    "max": 15,
+                    "precision": 1
+                }
+            ],
+            "output": "Number",
+            "tooltip": Blockly.Msg.HEDGEHOG_READ_ANALOG_TOOLTIP,
+            "colour": Blockly.Blocks.hedgehog.HUE,
+            "helpUrl": Blockly.Blocks.hedgehog.HELPURL
+        });
+    },
+    onchange: Blockly.Blocks['hedgehog_move'].onchange
 };
 
 Blockly.Blocks['hedgehog_read_digital'] = {
@@ -374,6 +314,27 @@ Blockly.Blocks['hedgehog_read_digital'] = {
         });
     },
     onchange: Blockly.Blocks['hedgehog_move'].onchange
+};
+
+Blockly.Blocks['hedgehog_sleep'] = {
+    init: function() {
+        this.jsonInit({
+            "message0": Blockly.Msg.HEDGEHOG_SLEEP,
+            "args0": [
+                {
+                    "type": "input_value",
+                    "name": "TIME",
+                    "check": "Number"
+                }
+            ],
+            "inputsInline": true,
+            "previousStatement": null,
+            "nextStatement": null,
+            "tooltip": Blockly.Msg.HEDGEHOG_SLEEP_TOOLTIP,
+            "colour": Blockly.Blocks.hedgehog.HUE,
+            "helpUrl": Blockly.Blocks.hedgehog.HELPURL
+        });
+    }
 };
 
 Blockly.Blocks['hedgehog_create_scope'] = {
@@ -474,5 +435,45 @@ Blockly.Blocks['hedgehog_create_drive_direct'] = {
                 this.setDisabled(true);
             }
         }
+    }
+};
+
+// Default parameter blocks
+Blockly.Blocks['hedgehog_dir'] = {
+    init: function() {
+        this.setColour(Blockly.Blocks.hedgehog.HUE);
+        this.setHelpUrl(Blockly.Blocks.hedgehog.HELPURL);
+
+        this.appendDummyInput()
+            .appendField(new Blockly.FieldDropdown([[Blockly.Msg.HEDGEHOG_RIGHT, "1000"], [Blockly.Msg.HEDGEHOG_LEFT, "-1000"]]), "DIR");
+        this.setOutput(true, "Number");
+        this.setTooltip('');
+    }
+};
+
+Blockly.Blocks['hedgehog_speed'] = {
+    init: function() {
+        this.setColour(Blockly.Blocks.hedgehog.HUE);
+        this.setHelpUrl(Blockly.Blocks.hedgehog.HELPURL);
+
+        this.appendDummyInput()
+            .appendField(new Blockly.FieldDropdown([[Blockly.Msg.HEDGEHOG_FORWARD, "1000"], [Blockly.Msg.HEDGEHOG_BACKWARD, "-1000"]]), "SPEED");
+        this.setOutput(true, "Number");
+        this.setTooltip('');
+    }
+};
+
+Blockly.Blocks['hedgehog_degrees'] = {
+    init: function() {
+        this.setColour(Blockly.Blocks.hedgehog.HUE);
+        this.setHelpUrl(Blockly.Blocks.hedgehog.HELPURL);
+
+        Blockly.FieldAngle.ROUND = 5;
+        Blockly.FieldAngle.CLOCKWISE = true;
+        Blockly.FieldAngle.OFFSET = 90;
+        this.appendDummyInput()
+            .appendField(new Blockly.FieldAngle(45), "ANGLE");
+        this.setOutput(true, "Number");
+        this.setTooltip('');
     }
 };
