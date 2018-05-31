@@ -1,10 +1,10 @@
-// This file was automatically generated.  Do not modify.
-
 'use strict';
 
 goog.provide('Blockly.Msg.de.hedgehog');
 
 goog.require('Blockly.Msg');
+
+// <default GSL customizable: module-extras />
 
 Blockly.Msg.HEDGEHOG_SCOPE = "Hedgehog scope %1 %2";
 Blockly.Msg.HEDGEHOG_SCOPE_TOOLTIP = "Alle Hedgehog Blöcke müssen sich innerhalb eines Hedgehog scope Blocks befinden";
@@ -37,16 +37,20 @@ Blockly.Msg.HEDGEHOG_SLEEP = "pausiere für %1 Sekunden";
 Blockly.Msg.HEDGEHOG_SLEEP_TOOLTIP = "pausiert den Programmablauf für eine spezifische Zeit";
 
 Blockly.Msg.HEDGEHOG_CREATE_SCOPE = "iRobot Create scope %1 %2";
-Blockly.Msg.HEDGEHOG_CREATE2_SCOPE = "iRobot Create2 scope %1 %2";
 Blockly.Msg.HEDGEHOG_CREATE_SCOPE_TOOLTIP = "Alle Create Blöcke müssen sich innerhalb eines Create oder Create2 scope Blocks befinden";
+
+Blockly.Msg.HEDGEHOG_CREATE2_SCOPE = "iRobot Create2 scope %1 %2";
 
 Blockly.Msg.HEDGEHOG_CREATE_DRIVE_DIRECT = "fahre mit dem Create %1 Sekunden lang mit Geschwindigkeiten %2 & %3";
 Blockly.Msg.HEDGEHOG_CREATE_DRIVE_DIRECT_TOOLTIP = "Fährt den Create für eine bestimmte Zeit";
 
+// <GSL customizable: extra-msgs>
 Blockly.Msg.HEDGEHOG_WARN = "Dieser Block muss sich innerhalb eines Hedgehog Scope Blocks befinden!";
 Blockly.Msg.HEDGEHOG_CREATE_WARN = "Dieser Block muss sich innerhalb eines iRobot Create oder Create2 Scope Blocks befinden!";
+Blockly.Msg.HEDGEHOG_CREATE2_SCOPE_TOOLTIP = Blockly.Msg.HEDGEHOG_CREATE_SCOPE_TOOLTIP;
 
 Blockly.Msg.HEDGEHOG_FORWARD = "vorwärts";
 Blockly.Msg.HEDGEHOG_BACKWARD = "rückwärts";
 Blockly.Msg.HEDGEHOG_RIGHT = "rechts ⟳";
 Blockly.Msg.HEDGEHOG_LEFT = "links ⟲";
+// </GSL customizable: extra-msgs>
