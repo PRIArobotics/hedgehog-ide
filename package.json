@@ -10,14 +10,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kleiinnn/hedgehog-ide.git"
+    "url": "git+https://github.com/PRIArobotics/hedgehog-ide.git"
   },
   "author": "",
   "license": "AGPL-3.0+",
   "bugs": {
-    "url": "https://github.com/kleiinnn/hedgehog-ide/issues"
+    "url": "https://github.com/PRIArobotics/hedgehog-ide/issues"
   },
-  "homepage": "https://github.com/kleiinnn/hedgehog-ide#readme",
+  "homepage": "https://github.com/PRIArobotics/hedgehog-ide#readme",
   "dependencies": {
     "@angular/cdk": "^5.2.3",
     "@angular/common": "^5.2.7",
