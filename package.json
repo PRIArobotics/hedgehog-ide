@@ -7,6 +7,7 @@
     "test": "mocha --reporter spec --check-leaks --recursive build/test/",
     "develop": "./node_modules/grunt/bin/grunt",
     "release": "./node_modules/grunt/bin/grunt release",
+    "gsl-blockly": "cd gsl && invoke gsl_blockly",
     "start": "node build/src/server/server.js"
   },
   "repository": {
