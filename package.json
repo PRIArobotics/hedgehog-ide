@@ -5,7 +5,8 @@
   "main": "src/server/server",
   "scripts": {
     "test": "mocha --reporter spec --check-leaks --recursive build/test/",
-    "build": "grunt",
+    "develop": "./node_modules/grunt/bin/grunt",
+    "release": "./node_modules/grunt/bin/grunt release",
     "start": "node build/src/server/server.js"
   },
   "repository": {

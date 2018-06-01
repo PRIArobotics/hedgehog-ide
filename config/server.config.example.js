@@ -1,6 +1,5 @@
 exports = module.exports = {
-    // 'production' will serve the webpack client package
-    // 'debug' uses SystemJS
+    // environment: 'debug',
     environment: 'production',
 
     // Path where the programs will be storage
