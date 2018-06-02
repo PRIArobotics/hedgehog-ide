@@ -1,83 +1,80 @@
 modules:
-- name: hedgehog
-  langs:
-  - key: de
-    blocks:
-    - name: hedgehog_scope
-      msg: Hedgehog scope %1 %2
-      tooltip: Alle Hedgehog Blöcke müssen sich innerhalb eines Hedgehog scope Blocks befinden
-    - name: hedgehog_move
-      msg: bewege Motor %1 %2 für %3 Sekunden
-      tooltip: Bewegt einen Motor in eine bestimmte Richtung
-    - name: hedgehog_move_unlimited
-      msg: bewege Motor %1 %2
-      tooltip: bewegt einen Motor solange bis er explizit gestoppt wird
-    - name: hedgehog_move2
-      msg: bewege Motor %1 und %2 %3 für %4 Sekunden
-      tooltip: Bewegt zwei Motoren in eine bestimmte Richtung
-    - name: hedgehog_turn
-      msg: wende mit Motor %1 und %2 %3 für %4 Sekunden
-      tooltip: wendet den Hedgehog indem zwei Motoren in entgegengesetzter Richtung laufen gelassen werden
-    - name: hedgehog_servo
-      msg: setze Servo %1 auf %2 Grad
-      tooltip: verändert die position eines Servos
-    - name: hedgehog_pullup
-      msg: Port %1 pullup %2
-      tooltip: Setze einen Pullup Widerstand für einen bestimmten IO Port
-    - name: hedgehog_read_analog
-      msg: analoger Port %1
-      tooltip: gibt den Wert eines analogen Ports zurück
-    - name: hedgehog_read_digital
-      msg: digitaler Port %1
-      tooltip: gibt den Wert eines analogen Ports zurück
-    - name: hedgehog_sleep
-      msg: pausiere für %1 Sekunden
-      tooltip: pausiert den Programmablauf für eine spezifische Zeit
-    - name: hedgehog_create_scope
-      msg: iRobot Create scope %1 %2
-      tooltip: Alle Create Blöcke müssen sich innerhalb eines Create oder Create2 scope Blocks befinden
-    - name: hedgehog_create2_scope
-      msg: iRobot Create2 scope %1 %2
-    - name: hedgehog_create_drive_direct
-      msg: fahre mit dem Create %1 Sekunden lang mit Geschwindigkeiten %2 & %3
-      tooltip: Fährt den Create für eine bestimmte Zeit
-  - key: en
-    blocks:
-    - name: hedgehog_scope
-      msg: Hedgehog scope %1 %2
-      tooltip: All Hedgehog blocks have to be inside of this block
-    - name: hedgehog_move
-      msg: move motor %1 %2 for %3 seconds
-      tooltip: move one motor for a certain duration
-    - name: hedgehog_move_unlimited
-      msg: move motor %1 %2
-      tooltip: move motor until stopped explicitly
-    - name: hedgehog_move2
-      msg: move motor %1 and %2 %3 for %4 seconds
-      tooltip: move two motors for a certain duration
-    - name: hedgehog_turn
-      msg: turn motors %1 and %2 %3 for %4 seconds
-      tooltip: turn the Hedgehog for a certain duration
-    - name: hedgehog_servo
-      msg: set servo %1 to %2 degrees
-      tooltip: move a servo to a specified position
-    - name: hedgehog_pullup
-      msg: port %1 pullup %2
-      tooltip: set the pullup state for a specified IO port
-    - name: hedgehog_read_analog
-      msg: analog port %1
-      tooltip: get the value of an analog port
-    - name: hedgehog_read_digital
-      msg: digital port %1
-      tooltip: get the value of a digital port
-    - name: hedgehog_sleep
-      msg: sleep for %1 seconds
-      tooltip: pause the program for a certain amount of time
-    - name: hedgehog_create_scope
-      msg: iRobot Create scope %1 %2
-      tooltip: All Create blocks have to be inside of this block
-    - name: hedgehog_create2_scope
-      msg: iRobot Create2 scope %1 %2
-    - name: hedgehog_create_drive_direct
-      msg: drive the Create for %1 seconds with velocities %2 & %3
-      tooltip: Drives the Create for a certain amount of time
+  hedgehog:
+    de:
+      hedgehog_scope:
+        msg: Hedgehog scope %1 %2
+        tooltip: Alle Hedgehog Blöcke müssen sich innerhalb eines Hedgehog scope Blocks befinden
+      hedgehog_move:
+        msg: bewege Motor %1 %2 für %3 Sekunden
+        tooltip: Bewegt einen Motor in eine bestimmte Richtung
+      hedgehog_move_unlimited:
+        msg: bewege Motor %1 %2
+        tooltip: bewegt einen Motor solange bis er explizit gestoppt wird
+      hedgehog_move2:
+        msg: bewege Motor %1 und %2 %3 für %4 Sekunden
+        tooltip: Bewegt zwei Motoren in eine bestimmte Richtung
+      hedgehog_turn:
+        msg: wende mit Motor %1 und %2 %3 für %4 Sekunden
+        tooltip: wendet den Hedgehog indem zwei Motoren in entgegengesetzter Richtung laufen gelassen werden
+      hedgehog_servo:
+        msg: setze Servo %1 auf %2 Grad
+        tooltip: verändert die position eines Servos
+      hedgehog_pullup:
+        msg: Port %1 pullup %2
+        tooltip: Setze einen Pullup Widerstand für einen bestimmten IO Port
+      hedgehog_read_analog:
+        msg: analoger Port %1
+        tooltip: gibt den Wert eines analogen Ports zurück
+      hedgehog_read_digital:
+        msg: digitaler Port %1
+        tooltip: gibt den Wert eines analogen Ports zurück
+      hedgehog_sleep:
+        msg: pausiere für %1 Sekunden
+        tooltip: pausiert den Programmablauf für eine spezifische Zeit
+      hedgehog_create_scope:
+        msg: iRobot Create scope %1 %2
+        tooltip: Alle Create Blöcke müssen sich innerhalb eines Create oder Create2 scope Blocks befinden
+      hedgehog_create2_scope:
+        msg: iRobot Create2 scope %1 %2
+      hedgehog_create_drive_direct:
+        msg: fahre mit dem Create %1 Sekunden lang mit Geschwindigkeiten %2 & %3
+        tooltip: Fährt den Create für eine bestimmte Zeit
+    en:
+      hedgehog_scope:
+        msg: Hedgehog scope %1 %2
+        tooltip: All Hedgehog blocks have to be inside of this block
+      hedgehog_move:
+        msg: move motor %1 %2 for %3 seconds
+        tooltip: move one motor for a certain duration
+      hedgehog_move_unlimited:
+        msg: move motor %1 %2
+        tooltip: move motor until stopped explicitly
+      hedgehog_move2:
+        msg: move motor %1 and %2 %3 for %4 seconds
+        tooltip: move two motors for a certain duration
+      hedgehog_turn:
+        msg: turn motors %1 and %2 %3 for %4 seconds
+        tooltip: turn the Hedgehog for a certain duration
+      hedgehog_servo:
+        msg: set servo %1 to %2 degrees
+        tooltip: move a servo to a specified position
+      hedgehog_pullup:
+        msg: port %1 pullup %2
+        tooltip: set the pullup state for a specified IO port
+      hedgehog_read_analog:
+        msg: analog port %1
+        tooltip: get the value of an analog port
+      hedgehog_read_digital:
+        msg: digital port %1
+        tooltip: get the value of a digital port
+      hedgehog_sleep:
+        msg: sleep for %1 seconds
+        tooltip: pause the program for a certain amount of time
+      hedgehog_create_scope:
+        msg: iRobot Create scope %1 %2
+        tooltip: All Create blocks have to be inside of this block
+      hedgehog_create2_scope:
+        msg: iRobot Create2 scope %1 %2
+      hedgehog_create_drive_direct:
+        msg: drive the Create for %1 seconds with velocities %2 & %3
+        tooltip: Drives the Create for a certain amount of time

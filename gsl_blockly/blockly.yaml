@@ -1,152 +1,151 @@
 modules:
-- name: hedgehog
-  blocks:
-  - name: hedgehog_scope
-    scope: true
-    args:
-    - type: input_dummy
-    - type: input_statement
-      name: IN
-  - name: hedgehog_move
-    requiresScope: hedgehog
-    args:
-    - type: field_number
-      name: PORT
-      value: 0
-      min: 0
-      max: 3
-      precision: 1
-    - type: input_value
-      name: SPEED
-      check: Number
-    - type: input_value
-      name: TIME
-      check: Number
-  - name: hedgehog_move_unlimited
-    requiresScope: hedgehog
-    args:
-    - type: field_number
-      name: PORT
-      value: 0
-      min: 0
-      max: 3
-      precision: 1
-    - type: input_value
-      name: SPEED
-      check: Number
-  - name: hedgehog_move2
-    requiresScope: hedgehog
-    args:
-    - type: field_number
-      name: PORT1
-      value: 0
-      min: 0
-      max: 3
-      precision: 1
-    - type: field_number
-      name: PORT2
-      value: 1
-      min: 0
-      max: 3
-      precision: 1
-    - type: input_value
-      name: SPEED
-      check: Number
-    - type: input_value
-      name: TIME
-      check: Number
-  - name: hedgehog_turn
-    requiresScope: hedgehog
-    args:
-    - type: field_number
-      name: PORT1
-      value: 0
-      min: 0
-      max: 3
-      precision: 1
-    - type: field_number
-      name: PORT2
-      value: 1
-      min: 0
-      max: 3
-      precision: 1
-    - type: input_value
-      name: DIR
-      check: Number
-    - type: input_value
-      name: TIME
-      check: Number
-  - name: hedgehog_servo
-    requiresScope: hedgehog
-    args:
-    - type: field_number
-      name: PORT
-      value: 0
-      min: 0
-      max: 5
-      precision: 1
-    - type: input_value
-      name: ANGLE
-      check: Number
-  - name: hedgehog_pullup
-    requiresScope: hedgehog
-    args:
-    - type: field_number
-      name: PORT
-      value: 0
-      min: 0
-      max: 15
-      precision: 1
-    - type: field_checkbox
-      name: STATE
-      checked: true
-  - name: hedgehog_read_analog
-    requiresScope: hedgehog
-    output: Number
-    args:
-    - type: field_number
-      name: PORT
-      value: 0
-      min: 0
-      max: 15
-      precision: 1
-  - name: hedgehog_read_digital
-    requiresScope: hedgehog
-    output: Boolean
-    args:
-    - type: field_number
-      name: PORT
-      value: 0
-      min: 0
-      max: 15
-      precision: 1
-  - name: hedgehog_sleep
-    requiresScope: hedgehog
-    args:
-    - type: input_value
-      name: TIME
-      check: Number
-  - name: hedgehog_create_scope
-    scope: true
-    args:
-    - type: input_dummy
-    - type: input_statement
-      name: IN
-  - name: hedgehog_create2_scope
-    scope: true
-    args:
-    - type: input_dummy
-    - type: input_statement
-      name: IN
-  - name: hedgehog_create_drive_direct
-    requiresScope: create
-    args:
-    - type: input_value
-      name: TIME
-      check: Number
-    - type: input_value
-      name: LSPEED
-      check: Number
-    - type: input_value
-      name: RSPEED
-      check: Number
+  hedgehog:
+    hedgehog_scope:
+      scope: true
+      args:
+      - type: input_dummy
+      - type: input_statement
+        name: IN
+    hedgehog_move:
+      requiresScope: hedgehog
+      args:
+      - type: field_number
+        name: PORT
+        value: 0
+        min: 0
+        max: 3
+        precision: 1
+      - type: input_value
+        name: SPEED
+        check: Number
+      - type: input_value
+        name: TIME
+        check: Number
+    hedgehog_move_unlimited:
+      requiresScope: hedgehog
+      args:
+      - type: field_number
+        name: PORT
+        value: 0
+        min: 0
+        max: 3
+        precision: 1
+      - type: input_value
+        name: SPEED
+        check: Number
+    hedgehog_move2:
+      requiresScope: hedgehog
+      args:
+      - type: field_number
+        name: PORT1
+        value: 0
+        min: 0
+        max: 3
+        precision: 1
+      - type: field_number
+        name: PORT2
+        value: 1
+        min: 0
+        max: 3
+        precision: 1
+      - type: input_value
+        name: SPEED
+        check: Number
+      - type: input_value
+        name: TIME
+        check: Number
+    hedgehog_turn:
+      requiresScope: hedgehog
+      args:
+      - type: field_number
+        name: PORT1
+        value: 0
+        min: 0
+        max: 3
+        precision: 1
+      - type: field_number
+        name: PORT2
+        value: 1
+        min: 0
+        max: 3
+        precision: 1
+      - type: input_value
+        name: DIR
+        check: Number
+      - type: input_value
+        name: TIME
+        check: Number
+    hedgehog_servo:
+      requiresScope: hedgehog
+      args:
+      - type: field_number
+        name: PORT
+        value: 0
+        min: 0
+        max: 5
+        precision: 1
+      - type: input_value
+        name: ANGLE
+        check: Number
+    hedgehog_pullup:
+      requiresScope: hedgehog
+      args:
+      - type: field_number
+        name: PORT
+        value: 0
+        min: 0
+        max: 15
+        precision: 1
+      - type: field_checkbox
+        name: STATE
+        checked: true
+    hedgehog_read_analog:
+      requiresScope: hedgehog
+      output: Number
+      args:
+      - type: field_number
+        name: PORT
+        value: 0
+        min: 0
+        max: 15
+        precision: 1
+    hedgehog_read_digital:
+      requiresScope: hedgehog
+      output: Boolean
+      args:
+      - type: field_number
+        name: PORT
+        value: 0
+        min: 0
+        max: 15
+        precision: 1
+    hedgehog_sleep:
+      requiresScope: hedgehog
+      args:
+      - type: input_value
+        name: TIME
+        check: Number
+    hedgehog_create_scope:
+      scope: true
+      args:
+      - type: input_dummy
+      - type: input_statement
+        name: IN
+    hedgehog_create2_scope:
+      scope: true
+      args:
+      - type: input_dummy
+      - type: input_statement
+        name: IN
+    hedgehog_create_drive_direct:
+      requiresScope: create
+      args:
+      - type: input_value
+        name: TIME
+        check: Number
+      - type: input_value
+        name: LSPEED
+        check: Number
+      - type: input_value
+        name: RSPEED
+        check: Number
