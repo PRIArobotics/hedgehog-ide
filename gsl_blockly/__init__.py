@@ -11,3 +11,11 @@ def get_model(model_file, msg_model_file):
             if module.name in msg_modules:
                 module.langs = msg_modules[module.name]
         return model
+
+
+def main():
+    from . import blockly_target
+
+    model = get_model('gsl_blockly/blockly.yaml', 'gsl_blockly/blockly_msgs.yaml')
+    root = '.'
+    blockly_target.generate_code(model, root)
