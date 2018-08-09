@@ -145,7 +145,8 @@ Blockly.Python['{block.name}'] = function(block) {{""")
     let {arg.name.lower()} = Blockly.Python.valueToCode(block, {repr(arg.name)}, Blockly.Python.ORDER_ATOMIC);""")
             yield from lines(f"""\
 
-    let code = '';""")
+    let code = '';
+    // TODO generate code""")
             if 'output' not in block:
                 yield from lines(f"""\
     return code;""")
