@@ -83,8 +83,7 @@ modules:
         msg: Hedgehog范围 %1 %2
         tooltip: 所有Hedgehog区块都必须在这个区域内
       hedgehog_move:
-        msg: 电机 %1 %2 移动 %3 
-        秒
+        msg: 电机 %1 %2 移动 %3 秒
         tooltip: 移动电机一段时间
       hedgehog_move_unlimited:
         msg: 移动电机 %1 %2
