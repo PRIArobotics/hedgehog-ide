@@ -19,11 +19,17 @@ export default class NodeProcessManager implements IProcessManager {
                  private storage: GitProgramStorage) { }
 
     public run (programName: string, filePath: string, args: string[] = []): Promise<NodeProcess> {
+        let processArgs: string[];
+        if(programName === null || filePath === null)
+            processArgs = ['-u', ...args];
+        else
+            processArgs = ['-u', this.storage.getWorkingTreePath(programName, filePath), ...args];
+
         let process: NodeProcess = new NodeProcess(
             programName,
             filePath,
             args,
-            spawn(this.pythonPath, ['-u', this.storage.getWorkingTreePath(programName, filePath), ...args])
+            spawn(this.pythonPath, processArgs)
         );
 
         this.processes.set(process.nodeProcess.pid, process);
