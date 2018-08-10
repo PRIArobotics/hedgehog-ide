@@ -44,7 +44,7 @@ Blockly.Msg.HEDGEHOG_CREATE2_SCOPE = "iRobot Create2 范围 %1 %2";
 Blockly.Msg.HEDGEHOG_CREATE_DRIVE_DIRECT = "走 Create %1 秒 速度 %2 & %3";
 Blockly.Msg.HEDGEHOG_CREATE_DRIVE_DIRECT_TOOLTIP = "驱动Create一段时间";
 
-// <default GSL customizable: extra-msgs />
+// <GSL customizable: extra-msgs>
 Blockly.Msg.HEDGEHOG_WARN = "这块需要在 Hedgehog 范围块里面!";
 Blockly.Msg.HEDGEHOG_CREATE_WARN = "这块需要在 iRobot Create 块范围!";
 Blockly.Msg.HEDGEHOG_CREATE2_SCOPE_TOOLTIP = Blockly.Msg.HEDGEHOG_CREATE_SCOPE_TOOLTIP;
@@ -53,3 +53,4 @@ Blockly.Msg.HEDGEHOG_FORWARD = "向前";
 Blockly.Msg.HEDGEHOG_BACKWARD = "向后";
 Blockly.Msg.HEDGEHOG_RIGHT = "⟳";
 Blockly.Msg.HEDGEHOG_LEFT = "⟲";
+// </GSL customizable: extra-msgs>
