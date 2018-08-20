@@ -3,7 +3,6 @@ import {MaterializeAction} from "angular2-materialize";
 import {HttpProgramService} from "./http-program.service";
 import {Router} from "@angular/router";
 import {ContextMenuComponent} from "ngx-contextmenu";
-import {CookieService} from "ngx-cookie";
 
 declare var Materialize: any;
 
