@@ -78,3 +78,44 @@ modules:
       hedgehog_create_drive_direct:
         msg: drive the Create for %1 seconds with velocities %2 & %3
         tooltip: Drives the Create for a certain amount of time
+    cn:
+      hedgehog_scope:
+        msg: Hedgehog范围 %1 %2
+        tooltip: 所有Hedgehog区块都必须在这个区域内
+      hedgehog_move:
+        msg: 电机 %1 %2 移动 %3 秒
+        tooltip: 移动电机一段时间
+      hedgehog_move_unlimited:
+        msg: 移动电机 %1 %2
+        tooltip: 移动电机直到停止命令
+      hedgehog_move2:
+        msg: 移动电机 %1 和 %2 %3 %4 秒
+        tooltip: 将两台电机移动一段时间
+      hedgehog_turn:
+        msg: 转动电机 %1 和 %2 %3 %4 秒
+        tooltip: 转Hedgehog一段时间
+      hedgehog_servo:
+        msg: 设置 servo %1 到 %2 度
+        tooltip: 移动servo到指定位置
+      hedgehog_pullup:
+        msg: 接口 %1 pullup %2
+        tooltip: 设置pullup状态
+      hedgehog_read_analog:
+        msg: 类似物 接口 %1
+        tooltip: 获取模拟端口的值
+      hedgehog_read_digital:
+        msg: 数字 接口 %1
+        tooltip: 获取数字端口的价值
+      hedgehog_sleep:
+        msg: 等 %1 秒
+        tooltip: 暂停程序一段时间
+      hedgehog_create_scope:
+        msg: iRobot Create 范围 %1 %2
+        tooltip: 所有Create区块都必须在这个区域内
+      hedgehog_create2_scope:
+        msg: iRobot Create2 范围 %1 %2
+      hedgehog_create_drive_direct:
+        msg: 走 Create %1 秒 速度 %2 & %3
+        tooltip: 驱动Create一段时间
+
+      
