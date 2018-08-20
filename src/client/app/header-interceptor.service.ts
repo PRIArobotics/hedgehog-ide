@@ -18,8 +18,10 @@ export class HeaderInterceptor implements HttpInterceptor {
             this.authProvider = this.injector.get(AuthProvider);
 
         const token = this.authProvider.token;
-        const headers = req.headers
-            .set('Content-Type', 'application/vnd.api+json');
+
+        const headers = req.headers;
+        if(!headers.get('Content-Type'))
+            headers.set('Content-Type', 'application/vnd.api+json');
 
         if (token)
             headers.set('Authorization', token);

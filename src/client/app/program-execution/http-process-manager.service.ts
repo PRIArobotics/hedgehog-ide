@@ -5,8 +5,9 @@ import io = require('socket.io-client');
 import {default as IProcessManager , IProcess} from "../../../common/ProcessManager";
 import {genericFromBase64, genericToBase64} from "../../../common/utils";
 import EventEmitter from "./EventEmitter";
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {AuthProvider} from "../auth-provider.service";
+import {RequestOptions} from "@angular/http";
 
 @Injectable()
 export class HttpProcessManagerService implements IProcessManager {
@@ -59,7 +60,12 @@ export class HttpProcessManagerService implements IProcessManager {
     }
 
     public async writeStdin (pid: number, data: string): Promise<void> {
-        await this.http.patch(`/api/processes/${pid}/stdin`, data).toPromise();
+        const httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type':  'text/plain',
+            })
+        }
+        await this.http.patch(`/api/processes/${pid}/stdin`, data, httpOptions).toPromise();
     }
 
     public async getProcess (pid: number): Promise<IProcess> {
