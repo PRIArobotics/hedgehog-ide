@@ -72,7 +72,7 @@ export class ProgramListComponent implements OnInit {
 
     private showTemplates = false;
 
-    public constructor(private router: Router, storageService: HttpProgramService, private _cookieService: CookieService) {
+    public constructor(private router: Router, storageService: HttpProgramService) {
         this.storage = storageService.getStorage();
         this.lang_change_language = "Change Language";
         this.lang_programs = "Programs";
