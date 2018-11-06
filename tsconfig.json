@@ -9,11 +9,10 @@
     "removeComments": false,
     "noImplicitAny": false,
     "outDir": "build",
-    "lib": ["es2015", "es6", "es5", "DOM", "ScriptHost"],
+    "lib": ["es2015", "es6", "es5", "dom", "scripthost"],
     "downlevelIteration": true
   },
   "include": [
-    //"src/server/*.ts",
     "src/**/*.ts",
     "test/**/*.ts"
   ],

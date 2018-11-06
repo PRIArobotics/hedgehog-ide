@@ -9,6 +9,7 @@
     "no-consecutive-blank-lines": false,
     "whitespace": [false, "check-branch"],
     "ordered-imports": false,
+    "interface-name": false,
     "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore"],
     "no-string-literal": false,
     "no-unused-new": false,
@@ -17,7 +18,7 @@
     "max-classes-per-file": [true, 10],
     "callable-types": false,
     "arrow-parens": [true, "ban-single-arg-parens"],
-    "ban-types": [true, [["String"]]],
+    "ban-types": [true, ["String"]],
     "prefer-conditional-expression": false,
     "no-submodule-imports": false,
     "no-implicit-dependencies": [true, "dev"]

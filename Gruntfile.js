@@ -18,7 +18,6 @@ module.exports = function(grunt) {
         clean: [
             'build',
             'tmp',
-            'tmp',
             'release'
         ],
         copy: {
