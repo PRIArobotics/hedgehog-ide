@@ -1,8 +1,9 @@
 language: node_js
 
 node_js:
-  - 11
-  - 10
+# not working - see https://travis-ci.org/PRIArobotics/hedgehog-ide/builds/451430107
+#  - 11
+#  - 10
   - 9
   - 8
   - 7
@@ -21,8 +22,6 @@ addons:
       - libzmq3
       - libzmq3-dev
 
-before_install:
-  - if [[ `npm -v` != 3* ]]; then npm i -g npm@3; fi
 install:
   - npm install
 script:
