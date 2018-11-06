@@ -28,8 +28,9 @@ export class ProgramListComponent implements OnInit {
     private storage: IProgramStorage;
     private programs: string[];
     private language: string;
-    
-    //Felder für Sprachänderung
+
+    // for localization support
+    // tslint:disable:variable-name
     private lang_change_language: string;
     private lang_programs: string;
     private lang_show_templates: string;
@@ -57,6 +58,7 @@ export class ProgramListComponent implements OnInit {
     private lang_cannot_undo_sentence: string;
     private lang_textural_program: string;
     private lang_visual_program: string;
+    // tslint:enable:variable-name
 
     private newProgramData = {
         name: '',
@@ -98,15 +100,15 @@ export class ProgramListComponent implements OnInit {
         this.lang_template_name = "Template Name";
         this.lang_delete_visual_sentence = "Are you sure you want to delete this visual program:";
         this.lang_delete_textural_sentence = "Are you sure you want to delete this program:";
-        this.lang_cannot_undo_sentence = "This operation cannot be undone!"
+        this.lang_cannot_undo_sentence = "This operation cannot be undone!";
         this.lang_textural_program = "Textural Program";
         this.lang_visual_program = "Visual Program";
     }
-    
+
     public async ngOnInit() {
         this.reloadProgramList();
         this.language = localStorage.getItem("lang");
-        
+
         // add programs for testing
         switch(this.language) {
             case "de": {
@@ -236,7 +238,7 @@ export class ProgramListComponent implements OnInit {
         localStorage.setItem("lang", param);
         window.location.reload();
     }
-    
+
     public languageEn() {
         this.lang_change_language = "Change Language";
         this.lang_programs = "Programs";
@@ -262,11 +264,11 @@ export class ProgramListComponent implements OnInit {
         this.lang_template_name = "Template Name";
         this.lang_delete_visual_sentence = "Are you sure you want to delete this visual program:";
         this.lang_delete_textural_sentence = "Are you sure you want to delete this program:";
-        this.lang_cannot_undo_sentence = "This operation cannot be undone!"
+        this.lang_cannot_undo_sentence = "This operation cannot be undone!";
         this.lang_textural_program = "Textural Program";
         this.lang_visual_program = "Visual Program";
     }
-    
+
     public languageDe() {
         this.lang_change_language = "Sprache ändern";
         this.lang_programs = "Programme";
@@ -295,9 +297,8 @@ export class ProgramListComponent implements OnInit {
         this.lang_cannot_undo_sentence = "Diese Operation kann nicht rückgängig gemacht werden!";
         this.lang_textural_program = "Textuelles Programm";
         this.lang_visual_program = "Grafisches Programm";
-
     }
-    
+
     public languageCn() {
         this.lang_change_language = "改变语言";
         this.lang_programs = "程序";
@@ -326,6 +327,5 @@ export class ProgramListComponent implements OnInit {
         this.lang_cannot_undo_sentence = "此操作无法撤消";
         this.lang_textural_program = "文本程序";
         this.lang_visual_program = "图形程序";
-
     }
 }

@@ -64,7 +64,7 @@ export class HttpProcessManagerService implements IProcessManager {
             headers: new HttpHeaders({
                 'Content-Type':  'text/plain',
             })
-        }
+        };
         await this.http.patch(`/api/processes/${pid}/stdin`, data, httpOptions).toPromise();
     }
 
