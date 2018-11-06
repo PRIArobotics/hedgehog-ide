@@ -8,13 +8,12 @@
     "experimentalDecorators": true,
     "removeComments": false,
     "noImplicitAny": false,
-    "outDir": "build",
+    "outDir": "build/src",
     "lib": ["es2015", "es6", "es5", "dom", "scripthost"],
     "downlevelIteration": true
   },
   "include": [
-    "src/**/*.ts",
-    "test/**/*.ts"
+    "src/**/*.ts"
   ],
   "exclude": [
     "node_modules"
