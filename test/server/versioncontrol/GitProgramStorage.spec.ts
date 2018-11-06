@@ -348,7 +348,7 @@ describe('GitProgramStorage', () => {
                     'second commit'
                 )).tostrS()
             ];
-            await repository.createBranch('hedgehog', commits[1], false, GitProgramStorage.signature, null);
+            await repository.createBranch('hedgehog', commits[1], false);
             assert.deepEqual(await programStorage.getVersionIds(programName), commits.reverse());
         });
     });
