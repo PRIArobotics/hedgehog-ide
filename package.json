@@ -46,7 +46,7 @@
     "figlet": "^1.2.0",
     "hapi": "^17.2.1",
     "hapi-auth-jwt2": "^8.0.0",
-    "hedgehog-client": "^0.3.2",
+    "hedgehog-client": "^0.4.2",
     "inert": "^5.1.2",
     "jquery": "^3.3.1",
     "jquery-ui-dist": "^1.12.1",
