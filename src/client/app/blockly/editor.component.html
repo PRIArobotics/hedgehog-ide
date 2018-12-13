@@ -49,14 +49,31 @@
     <category name="Hedgehog" colour="120">
         <block type="hedgehog_scope"></block>
         <block type="hedgehog_move2">
-            <value name="SPEED">
-                <shadow type="hedgehog_speed">
-                    <field name="SPEED">1000</field>
+            <value name="SPEED1">
+                <shadow type="math_number">
+                    <field name="NUM">1000</field>
+                </shadow>
+            </value>
+            <value name="SPEED2">
+                <shadow type="math_number">
+                    <field name="NUM">1000</field>
                 </shadow>
             </value>
             <value name="TIME">
                 <shadow type="math_number">
-                    <field name="NUM">10</field>
+                    <field name="NUM">1</field>
+                </shadow>
+            </value>
+        </block>
+        <block type="hedgehog_move2_unlimited">
+            <value name="SPEED1">
+                <shadow type="math_number">
+                    <field name="NUM">1000</field>
+                </shadow>
+            </value>
+            <value name="SPEED2">
+                <shadow type="math_number">
+                    <field name="NUM">1000</field>
                 </shadow>
             </value>
         </block>
@@ -68,7 +85,7 @@
             </value>
             <value name="TIME">
                 <shadow type="math_number">
-                    <field name="NUM">10</field>
+                    <field name="NUM">1</field>
                 </shadow>
             </value>
         </block>
@@ -76,18 +93,6 @@
             <value name="SPEED">
                 <shadow type="hedgehog_speed">
                     <field name="SPEED">1000</field>
-                </shadow>
-            </value>
-        </block>
-        <block type="hedgehog_turn">
-            <value name="DIR">
-                <shadow type="hedgehog_dir">
-                    <field name="DIR">1000</field>
-                </shadow>
-            </value>
-            <value name="TIME">
-                <shadow type="math_number">
-                    <field name="NUM">2</field>
                 </shadow>
             </value>
         </block>

@@ -15,8 +15,14 @@ Blockly.Msg.HEDGEHOG_MOVE_TOOLTIP = "Bewegt einen Motor in eine bestimmte Richtu
 Blockly.Msg.HEDGEHOG_MOVE_UNLIMITED = "bewege Motor %1 %2";
 Blockly.Msg.HEDGEHOG_MOVE_UNLIMITED_TOOLTIP = "bewegt einen Motor solange bis er explizit gestoppt wird";
 
-Blockly.Msg.HEDGEHOG_MOVE2 = "bewege Motor %1 und %2 %3 für %4 Sekunden";
-Blockly.Msg.HEDGEHOG_MOVE2_TOOLTIP = "Bewegt zwei Motoren in eine bestimmte Richtung";
+Blockly.Msg.HEDGEHOG_MOVE2 = "bewege Motor %1 und %2 mit Geschwindigkeit %3 und %4 für %5 Sekunden";
+Blockly.Msg.HEDGEHOG_MOVE2_TOOLTIP = "Bewegt zwei Motor in eine bestimmte Richtung";
+
+Blockly.Msg.HEDGEHOG_MOVE2_UNLIMITED = "bewege Motor %1 und %2 mit Geschwindigkeit %3 und %4";
+Blockly.Msg.HEDGEHOG_MOVE2_UNLIMITED_TOOLTIP = "bewegt zwei Motoren solange bis sie explizit gestoppt werden";
+
+Blockly.Msg.HEDGEHOG_FORWARD = "bewege Motor %1 und %2 %3 für %4 Sekunden";
+Blockly.Msg.HEDGEHOG_FORWARD_TOOLTIP = "Bewegt zwei Motoren in eine bestimmte Richtung";
 
 Blockly.Msg.HEDGEHOG_TURN = "wende mit Motor %1 und %2 %3 für %4 Sekunden";
 Blockly.Msg.HEDGEHOG_TURN_TOOLTIP = "wendet den Hedgehog indem zwei Motoren in entgegengesetzter Richtung laufen gelassen werden";

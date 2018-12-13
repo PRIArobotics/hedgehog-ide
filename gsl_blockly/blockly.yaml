@@ -49,6 +49,51 @@ modules:
         max: 3
         precision: 1
       - type: input_value
+        name: SPEED1
+        check: Number
+      - type: input_value
+        name: SPEED2
+        check: Number
+      - type: input_value
+        name: TIME
+        check: Number
+    hedgehog_move2_unlimited:
+      requiresScope: hedgehog
+      args:
+      - type: field_number
+        name: PORT1
+        value: 0
+        min: 0
+        max: 3
+        precision: 1
+      - type: field_number
+        name: PORT2
+        value: 1
+        min: 0
+        max: 3
+        precision: 1
+      - type: input_value
+        name: SPEED1
+        check: Number
+      - type: input_value
+        name: SPEED2
+        check: Number
+    hedgehog_forward:
+      requiresScope: hedgehog
+      args:
+      - type: field_number
+        name: PORT1
+        value: 0
+        min: 0
+        max: 3
+        precision: 1
+      - type: field_number
+        name: PORT2
+        value: 1
+        min: 0
+        max: 3
+        precision: 1
+      - type: input_value
         name: SPEED
         check: Number
       - type: input_value

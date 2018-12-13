@@ -11,6 +11,12 @@ modules:
         msg: bewege Motor %1 %2
         tooltip: bewegt einen Motor solange bis er explizit gestoppt wird
       hedgehog_move2:
+        msg: bewege Motor %1 und %2 mit Geschwindigkeit %3 und %4 für %5 Sekunden
+        tooltip: Bewegt zwei Motor in eine bestimmte Richtung
+      hedgehog_move2_unlimited:
+        msg: bewege Motor %1 und %2 mit Geschwindigkeit %3 und %4
+        tooltip: bewegt zwei Motoren solange bis sie explizit gestoppt werden
+      hedgehog_forward:
         msg: bewege Motor %1 und %2 %3 für %4 Sekunden
         tooltip: Bewegt zwei Motoren in eine bestimmte Richtung
       hedgehog_turn:
@@ -50,6 +56,12 @@ modules:
         msg: move motor %1 %2
         tooltip: move motor until stopped explicitly
       hedgehog_move2:
+        msg: move motor %1 and %2 with speeds %3 and %4 for %5 seconds
+        tooltip: move two motors for a certain duration
+      hedgehog_move2_unlimited:
+        msg: move motor %1 and %2 with speeds %3 and %4
+        tooltip: move two motors until stopped explicitly
+      hedgehog_forward:
         msg: move motor %1 and %2 %3 for %4 seconds
         tooltip: move two motors for a certain duration
       hedgehog_turn:
@@ -88,6 +100,7 @@ modules:
       hedgehog_move_unlimited:
         msg: 移动电机 %1 %2
         tooltip: 移动电机直到停止命令
+      # TODO new messages
       hedgehog_move2:
         msg: 移动电机 %1 和 %2 %3 %4 秒
         tooltip: 将两台电机移动一段时间

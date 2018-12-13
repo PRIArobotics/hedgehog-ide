@@ -64,6 +64,38 @@ Blockly.Python['hedgehog_move2'] = function(block) {
     let port1 = block.getFieldValue('PORT1');
     let port2 = block.getFieldValue('PORT2');
     // <GSL customizable: hedgehog_move2-body>
+    let speed1 = Blockly.Python.valueToCode(block, 'SPEED1', Blockly.Python.ORDER_NONE);
+    let speed2 = Blockly.Python.valueToCode(block, 'SPEED2', Blockly.Python.ORDER_NONE);
+    let time = Blockly.Python.valueToCode(block, 'TIME', Blockly.Python.ORDER_NONE);
+
+    importSleep();
+
+    let code = 'hedgehog.move(' + port1 + ', ' + speed1 + ')\n';
+    code += 'hedgehog.move(' + port2 + ', ' + speed2 + ')\n';
+    code += 'sleep(' + time + ')\n';
+    code += 'hedgehog.move(' + port1 + ', 0)\n';
+    code += 'hedgehog.move(' + port2 + ', 0)\n\n';
+    return code;
+    // </GSL customizable: hedgehog_move2-body>
+};
+
+Blockly.Python['hedgehog_move2_unlimited'] = function(block) {
+    let port1 = block.getFieldValue('PORT1');
+    let port2 = block.getFieldValue('PORT2');
+    // <GSL customizable: hedgehog_move2_unlimited-body>
+    let speed1 = Blockly.Python.valueToCode(block, 'SPEED1', Blockly.Python.ORDER_NONE);
+    let speed2 = Blockly.Python.valueToCode(block, 'SPEED2', Blockly.Python.ORDER_NONE);
+
+    let code = 'hedgehog.move(' + port1 + ', ' + speed1 + ')\n';
+    code += 'hedgehog.move(' + port2 + ', ' + speed2 + ')\n';
+    return code;
+    // </GSL customizable: hedgehog_move2_unlimited-body>
+};
+
+Blockly.Python['hedgehog_forward'] = function(block) {
+    let port1 = block.getFieldValue('PORT1');
+    let port2 = block.getFieldValue('PORT2');
+    // <GSL customizable: hedgehog_forward-body>
     let speed = Blockly.Python.valueToCode(block, 'SPEED', Blockly.Python.ORDER_NONE);
     let time = Blockly.Python.valueToCode(block, 'TIME', Blockly.Python.ORDER_NONE);
 
@@ -75,7 +107,7 @@ Blockly.Python['hedgehog_move2'] = function(block) {
     code += 'hedgehog.move(' + port1 + ', 0)\n';
     code += 'hedgehog.move(' + port2 + ', 0)\n\n';
     return code;
-    // </GSL customizable: hedgehog_move2-body>
+    // </GSL customizable: hedgehog_forward-body>
 };
 
 Blockly.Python['hedgehog_turn'] = function(block) {
