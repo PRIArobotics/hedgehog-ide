@@ -136,7 +136,7 @@ Blockly.Python['hedgehog_servo'] = function(block) {
 
     importSleep();
 
-    let code = 'hedgehog.set_servo(' + port + ', True, int(' + angle + ' * 2000 / 180))\n';
+    let code = 'hedgehog.set_servo(' + port + ', True, int(' + angle + ' * 1000 / 180))\n';
     code += 'sleep(0.1)\n\n';
     return code;
     // </GSL customizable: hedgehog_servo-body>
