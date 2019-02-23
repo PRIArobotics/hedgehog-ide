@@ -87,7 +87,7 @@ Blockly.Python['hedgehog_move2_unlimited'] = function(block) {
     let speed2 = Blockly.Python.valueToCode(block, 'SPEED2', Blockly.Python.ORDER_NONE);
 
     let code = 'hedgehog.move(' + port1 + ', ' + speed1 + ')\n';
-    code += 'hedgehog.move(' + port2 + ', ' + speed2 + ')\n';
+    code += 'hedgehog.move(' + port2 + ', ' + speed2 + ')\n\n';
     return code;
     // </GSL customizable: hedgehog_move2_unlimited-body>
 };
@@ -277,7 +277,7 @@ Blockly.Python['hedgehog_lego_move2_unlimited'] = function(block) {
     let speed2 = Blockly.Python.valueToCode(block, 'SPEED2', Blockly.Python.ORDER_NONE);
 
     let code = 'hedgehog.move(' + port1 + ', ' + speed1 + ', motor.VELOCITY)\n';
-    code += 'hedgehog.move(' + port2 + ', ' + speed2 + ', motor.VELOCITY)\n';
+    code += 'hedgehog.move(' + port2 + ', ' + speed2 + ', motor.VELOCITY)\n\n';
     return code;
     // </GSL customizable: hedgehog_lego_move2_unlimited-body>
 };
