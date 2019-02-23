@@ -53,6 +53,12 @@ Blockly.Msg.HEDGEHOG_CREATE2_SCOPE = "iRobot Create2 scope %1 %2";
 Blockly.Msg.HEDGEHOG_CREATE_DRIVE_DIRECT = "drive the Create for %1 seconds with velocities %2 & %3";
 Blockly.Msg.HEDGEHOG_CREATE_DRIVE_DIRECT_TOOLTIP = "Drives the Create for a certain amount of time";
 
+Blockly.Msg.HEDGEHOG_LEGO_MOTOR_CONFIG = "configure motor %1 as Lego motor";
+Blockly.Msg.HEDGEHOG_LEGO_MOTOR_CONFIG_TOOLTIP = "configures a motor as a Lego motor";
+
+Blockly.Msg.HEDGEHOG_LEGO_SENSOR_CONFIG = "configure sensor %1 as Lego sensor";
+Blockly.Msg.HEDGEHOG_LEGO_SENSOR_CONFIG_TOOLTIP = "configures a sensor as a Lego sensor";
+
 Blockly.Msg.HEDGEHOG_LEGO_MOVE = "move motor %1 %2 for %3 seconds";
 Blockly.Msg.HEDGEHOG_LEGO_MOVE_TOOLTIP = "move one motor for a certain duration";
 

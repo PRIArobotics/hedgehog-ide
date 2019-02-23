@@ -539,6 +539,56 @@ Blockly.Blocks['hedgehog_create_drive_direct'] = {
     onchange: requiresScope('create')
 };
 
+Blockly.Blocks['hedgehog_lego_motor_config'] = {
+    init: function() {
+        this.jsonInit({
+            "message0": Blockly.Msg.HEDGEHOG_LEGO_MOTOR_CONFIG,
+            "args0": [
+                {
+                    "type": "field_number",
+                    "name": "PORT",
+                    "value": 0,
+                    "min": 0,
+                    "max": 3,
+                    "precision": 1
+                }
+            ],
+            "inputsInline": true,
+            "previousStatement": null,
+            "nextStatement": null,
+            "tooltip": Blockly.Msg.HEDGEHOG_LEGO_MOTOR_CONFIG_TOOLTIP,
+            "colour": Blockly.Blocks.hedgehog.HUE,
+            "helpUrl": Blockly.Blocks.hedgehog.HELPURL
+        });
+    },
+    onchange: requiresScope('hedgehog')
+};
+
+Blockly.Blocks['hedgehog_lego_sensor_config'] = {
+    init: function() {
+        this.jsonInit({
+            "message0": Blockly.Msg.HEDGEHOG_LEGO_SENSOR_CONFIG,
+            "args0": [
+                {
+                    "type": "field_number",
+                    "name": "PORT",
+                    "value": 8,
+                    "min": 8,
+                    "max": 11,
+                    "precision": 1
+                }
+            ],
+            "inputsInline": true,
+            "previousStatement": null,
+            "nextStatement": null,
+            "tooltip": Blockly.Msg.HEDGEHOG_LEGO_SENSOR_CONFIG_TOOLTIP,
+            "colour": Blockly.Blocks.hedgehog.HUE,
+            "helpUrl": Blockly.Blocks.hedgehog.HELPURL
+        });
+    },
+    onchange: requiresScope('hedgehog')
+};
+
 Blockly.Blocks['hedgehog_lego_move'] = {
     init: function() {
         this.jsonInit({

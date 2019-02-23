@@ -203,6 +203,24 @@ modules:
       - type: input_value
         name: RSPEED
         check: Number
+    hedgehog_lego_motor_config:
+      requiresScope: hedgehog
+      args:
+      - type: field_number
+        name: PORT
+        value: 0
+        min: 0
+        max: 3
+        precision: 1
+    hedgehog_lego_sensor_config:
+      requiresScope: hedgehog
+      args:
+      - type: field_number
+        name: PORT
+        value: 8
+        min: 8
+        max: 11
+        precision: 1
     hedgehog_lego_move:
       requiresScope: hedgehog
       args:

@@ -48,6 +48,12 @@ modules:
       hedgehog_create_drive_direct:
         msg: fahre mit dem Create %1 Sekunden lang mit Geschwindigkeiten %2 & %3
         tooltip: Fährt den Create für eine bestimmte Zeit
+      hedgehog_lego_motor_config:
+        msg: konfiguriere Motor %1 als Lego-Motor
+        tooltip: konfiguriert einen Motor als Lego-Motor
+      hedgehog_lego_sensor_config:
+        msg: konfiguriere Sensor %1 als Lego-Sensor
+        tooltip: konfiguriert einen Sensor als Lego-Sensor
       hedgehog_lego_move:
         msg: bewege Motor %1 %2 für %3 Sekunden
         tooltip: Bewegt einen Motor in eine bestimmte Richtung
@@ -114,6 +120,12 @@ modules:
       hedgehog_create_drive_direct:
         msg: drive the Create for %1 seconds with velocities %2 & %3
         tooltip: Drives the Create for a certain amount of time
+      hedgehog_lego_motor_config:
+        msg: configure motor %1 as Lego motor
+        tooltip: configures a motor as a Lego motor
+      hedgehog_lego_sensor_config:
+        msg: configure sensor %1 as Lego sensor
+        tooltip: configures a sensor as a Lego sensor
       hedgehog_lego_move:
         msg: move motor %1 %2 for %3 seconds
         tooltip: move one motor for a certain duration

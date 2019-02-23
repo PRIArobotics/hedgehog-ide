@@ -225,6 +225,22 @@ Blockly.Python['hedgehog_create_drive_direct'] = function(block) {
     // </GSL customizable: hedgehog_create_drive_direct-body>
 };
 
+Blockly.Python['hedgehog_lego_motor_config'] = function(block) {
+    let port = block.getFieldValue('PORT');
+    // <GSL customizable: hedgehog_lego_motor_config-body>
+    let code = 'hedgehog.configure_lego_motor(' + port + ')\n\n';
+    return code;
+    // </GSL customizable: hedgehog_lego_motor_config-body>
+};
+
+Blockly.Python['hedgehog_lego_sensor_config'] = function(block) {
+    let port = block.getFieldValue('PORT');
+    // <GSL customizable: hedgehog_lego_sensor_config-body>
+    let code = 'hedgehog.configure_lego_sensor(' + port + ')\n\n';
+    return code;
+    // </GSL customizable: hedgehog_lego_sensor_config-body>
+};
+
 Blockly.Python['hedgehog_lego_move'] = function(block) {
     let port = block.getFieldValue('PORT');
     // <GSL customizable: hedgehog_lego_move-body>
