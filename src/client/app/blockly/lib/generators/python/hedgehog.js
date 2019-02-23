@@ -136,10 +136,18 @@ Blockly.Python['hedgehog_servo'] = function(block) {
 
     importSleep();
 
-    let code = 'hedgehog.set_servo(' + port + ', True, int(' + angle + ' * 1000 / 180))\n';
+    let code = 'hedgehog.set_servo(' + port + ', int(' + angle + ' * 1000 / 180))\n';
     code += 'sleep(0.1)\n\n';
     return code;
     // </GSL customizable: hedgehog_servo-body>
+};
+
+Blockly.Python['hedgehog_servo_off'] = function(block) {
+    let port = block.getFieldValue('PORT');
+    // <GSL customizable: hedgehog_servo_off-body>
+    let code = 'hedgehog.set_servo(' + port + ', None)\n\n';
+    return code;
+    // </GSL customizable: hedgehog_servo_off-body>
 };
 
 Blockly.Python['hedgehog_pullup'] = function(block) {

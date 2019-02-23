@@ -30,6 +30,9 @@ Blockly.Msg.HEDGEHOG_TURN_TOOLTIP = "turn the Hedgehog for a certain duration";
 Blockly.Msg.HEDGEHOG_SERVO = "set servo %1 to %2 degrees";
 Blockly.Msg.HEDGEHOG_SERVO_TOOLTIP = "move a servo to a specified position";
 
+Blockly.Msg.HEDGEHOG_SERVO_OFF = "turn servo %1 off";
+Blockly.Msg.HEDGEHOG_SERVO_OFF_TOOLTIP = "turn a servo off";
+
 Blockly.Msg.HEDGEHOG_PULLUP = "port %1 pullup %2";
 Blockly.Msg.HEDGEHOG_PULLUP_TOOLTIP = "set the pullup state for a specified IO port";
 

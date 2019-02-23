@@ -25,6 +25,9 @@ modules:
       hedgehog_servo:
         msg: setze Servo %1 auf %2 Grad
         tooltip: verändert die position eines Servos
+      hedgehog_servo_off:
+        msg: schalte Servo %1 aus
+        tooltip: deaktiviert einen Servo
       hedgehog_pullup:
         msg: Port %1 pullup %2
         tooltip: Setze einen Pullup Widerstand für einen bestimmten IO Port
@@ -70,6 +73,9 @@ modules:
       hedgehog_servo:
         msg: set servo %1 to %2 degrees
         tooltip: move a servo to a specified position
+      hedgehog_servo_off:
+        msg: turn servo %1 off
+        tooltip: turn a servo off
       hedgehog_pullup:
         msg: port %1 pullup %2
         tooltip: set the pullup state for a specified IO port

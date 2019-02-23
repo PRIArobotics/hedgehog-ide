@@ -30,6 +30,9 @@ Blockly.Msg.HEDGEHOG_TURN_TOOLTIP = "wendet den Hedgehog indem zwei Motoren in e
 Blockly.Msg.HEDGEHOG_SERVO = "setze Servo %1 auf %2 Grad";
 Blockly.Msg.HEDGEHOG_SERVO_TOOLTIP = "verändert die position eines Servos";
 
+Blockly.Msg.HEDGEHOG_SERVO_OFF = "schalte Servo %1 aus";
+Blockly.Msg.HEDGEHOG_SERVO_OFF_TOOLTIP = "deaktiviert einen Servo";
+
 Blockly.Msg.HEDGEHOG_PULLUP = "Port %1 pullup %2";
 Blockly.Msg.HEDGEHOG_PULLUP_TOOLTIP = "Setze einen Pullup Widerstand für einen bestimmten IO Port";
 
