@@ -549,8 +549,18 @@ Blockly.Blocks['hedgehog_degrees'] = {
         Blockly.FieldAngle.ROUND = 5;
         Blockly.FieldAngle.CLOCKWISE = true;
         Blockly.FieldAngle.OFFSET = 90;
-        this.appendDummyInput()
-            .appendField(new Blockly.FieldAngle(45), "ANGLE");
+        Blockly.FieldAngle.WRAP = 270;
+        let field_angle = new Blockly.FieldAngle(45, (value) => {
+            let angle = Number(value);
+            if(angle < 0) {
+                return "0";
+            } else if(angle > 180) {
+                return "180";
+            } else {
+                return value;
+            }
+        });
+        this.appendDummyInput().appendField(field_angle, "ANGLE");
         this.setOutput(true, "Number");
         this.setTooltip('');
     }

@@ -232,11 +232,6 @@ Blockly.Python['hedgehog_dir'] = function(block) {
 
 Blockly.Python['hedgehog_degrees'] = function(block) {
     let angle = block.getFieldValue('ANGLE');
-
-    if(parseInt(angle) > 180) {
-        angle = "180";
-    }
-
-    return [angle, angle >= 0 ? Blockly.Python.ORDER_ATOMIC : Blockly.Python.ORDER_UNARY_SIGN];
+    return [angle, Blockly.Python.ORDER_ATOMIC];
 };
 // </GSL customizable: extra-blocks>
