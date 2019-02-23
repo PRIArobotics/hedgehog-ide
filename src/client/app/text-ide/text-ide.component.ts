@@ -185,7 +185,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, AfterContentInit
         {
             name: 'Python Hello World',
             value: 'from time import sleep\n' +
-            'from hedgehog.client import connect\n\n' +
+            'from hedgehog.client import connect, motor\n\n' +
             'with connect(emergency=15) as hedgehog:\n' +
             '    print("Hello World")\n'
         },
