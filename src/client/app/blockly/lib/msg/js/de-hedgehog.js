@@ -53,6 +53,24 @@ Blockly.Msg.HEDGEHOG_CREATE2_SCOPE = "iRobot Create2 scope %1 %2";
 Blockly.Msg.HEDGEHOG_CREATE_DRIVE_DIRECT = "fahre mit dem Create %1 Sekunden lang mit Geschwindigkeiten %2 & %3";
 Blockly.Msg.HEDGEHOG_CREATE_DRIVE_DIRECT_TOOLTIP = "Fährt den Create für eine bestimmte Zeit";
 
+Blockly.Msg.HEDGEHOG_LEGO_MOVE = "bewege Motor %1 %2 für %3 Sekunden";
+Blockly.Msg.HEDGEHOG_LEGO_MOVE_TOOLTIP = "Bewegt einen Motor in eine bestimmte Richtung";
+
+Blockly.Msg.HEDGEHOG_LEGO_MOVE_UNLIMITED = "bewege Motor %1 %2";
+Blockly.Msg.HEDGEHOG_LEGO_MOVE_UNLIMITED_TOOLTIP = "bewegt einen Motor solange bis er explizit gestoppt wird";
+
+Blockly.Msg.HEDGEHOG_LEGO_MOVE2 = "bewege Motor %1 und %2 mit Geschwindigkeit %3 und %4 für %5 Sekunden";
+Blockly.Msg.HEDGEHOG_LEGO_MOVE2_TOOLTIP = "Bewegt zwei Motor in eine bestimmte Richtung";
+
+Blockly.Msg.HEDGEHOG_LEGO_MOVE2_UNLIMITED = "bewege Motor %1 und %2 mit Geschwindigkeit %3 und %4";
+Blockly.Msg.HEDGEHOG_LEGO_MOVE2_UNLIMITED_TOOLTIP = "bewegt zwei Motoren solange bis sie explizit gestoppt werden";
+
+Blockly.Msg.HEDGEHOG_LEGO_FORWARD = "bewege Motor %1 und %2 %3 für %4 Sekunden";
+Blockly.Msg.HEDGEHOG_LEGO_FORWARD_TOOLTIP = "Bewegt zwei Motoren in eine bestimmte Richtung";
+
+Blockly.Msg.HEDGEHOG_LEGO_TURN = "wende mit Motor %1 und %2 %3 für %4 Sekunden";
+Blockly.Msg.HEDGEHOG_LEGO_TURN_TOOLTIP = "wendet den Hedgehog indem zwei Motoren in entgegengesetzter Richtung laufen gelassen werden";
+
 // <GSL customizable: extra-msgs>
 Blockly.Msg.HEDGEHOG_WARN = "Dieser Block muss sich innerhalb eines Hedgehog Scope Blocks befinden!";
 Blockly.Msg.HEDGEHOG_CREATE_WARN = "Dieser Block muss sich innerhalb eines iRobot Create oder Create2 Scope Blocks befinden!";

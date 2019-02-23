@@ -48,6 +48,24 @@ modules:
       hedgehog_create_drive_direct:
         msg: fahre mit dem Create %1 Sekunden lang mit Geschwindigkeiten %2 & %3
         tooltip: Fährt den Create für eine bestimmte Zeit
+      hedgehog_lego_move:
+        msg: bewege Motor %1 %2 für %3 Sekunden
+        tooltip: Bewegt einen Motor in eine bestimmte Richtung
+      hedgehog_lego_move_unlimited:
+        msg: bewege Motor %1 %2
+        tooltip: bewegt einen Motor solange bis er explizit gestoppt wird
+      hedgehog_lego_move2:
+        msg: bewege Motor %1 und %2 mit Geschwindigkeit %3 und %4 für %5 Sekunden
+        tooltip: Bewegt zwei Motor in eine bestimmte Richtung
+      hedgehog_lego_move2_unlimited:
+        msg: bewege Motor %1 und %2 mit Geschwindigkeit %3 und %4
+        tooltip: bewegt zwei Motoren solange bis sie explizit gestoppt werden
+      hedgehog_lego_forward:
+        msg: bewege Motor %1 und %2 %3 für %4 Sekunden
+        tooltip: Bewegt zwei Motoren in eine bestimmte Richtung
+      hedgehog_lego_turn:
+        msg: wende mit Motor %1 und %2 %3 für %4 Sekunden
+        tooltip: wendet den Hedgehog indem zwei Motoren in entgegengesetzter Richtung laufen gelassen werden
     en:
       hedgehog_scope:
         msg: Hedgehog scope %1 %2
@@ -96,6 +114,24 @@ modules:
       hedgehog_create_drive_direct:
         msg: drive the Create for %1 seconds with velocities %2 & %3
         tooltip: Drives the Create for a certain amount of time
+      hedgehog_lego_move:
+        msg: move motor %1 %2 for %3 seconds
+        tooltip: move one motor for a certain duration
+      hedgehog_lego_move_unlimited:
+        msg: move motor %1 %2
+        tooltip: move motor until stopped explicitly
+      hedgehog_lego_move2:
+        msg: move motor %1 and %2 with speeds %3 and %4 for %5 seconds
+        tooltip: move two motors for a certain duration
+      hedgehog_lego_move2_unlimited:
+        msg: move motor %1 and %2 with speeds %3 and %4
+        tooltip: move two motors until stopped explicitly
+      hedgehog_lego_forward:
+        msg: move motor %1 and %2 %3 for %4 seconds
+        tooltip: move two motors for a certain duration
+      hedgehog_lego_turn:
+        msg: turn motors %1 and %2 %3 for %4 seconds
+        tooltip: turn the Hedgehog for a certain duration
     cn:
       hedgehog_scope:
         msg: Hedgehog范围 %1 %2

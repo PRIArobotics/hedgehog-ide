@@ -53,6 +53,24 @@ Blockly.Msg.HEDGEHOG_CREATE2_SCOPE = "iRobot Create2 scope %1 %2";
 Blockly.Msg.HEDGEHOG_CREATE_DRIVE_DIRECT = "drive the Create for %1 seconds with velocities %2 & %3";
 Blockly.Msg.HEDGEHOG_CREATE_DRIVE_DIRECT_TOOLTIP = "Drives the Create for a certain amount of time";
 
+Blockly.Msg.HEDGEHOG_LEGO_MOVE = "move motor %1 %2 for %3 seconds";
+Blockly.Msg.HEDGEHOG_LEGO_MOVE_TOOLTIP = "move one motor for a certain duration";
+
+Blockly.Msg.HEDGEHOG_LEGO_MOVE_UNLIMITED = "move motor %1 %2";
+Blockly.Msg.HEDGEHOG_LEGO_MOVE_UNLIMITED_TOOLTIP = "move motor until stopped explicitly";
+
+Blockly.Msg.HEDGEHOG_LEGO_MOVE2 = "move motor %1 and %2 with speeds %3 and %4 for %5 seconds";
+Blockly.Msg.HEDGEHOG_LEGO_MOVE2_TOOLTIP = "move two motors for a certain duration";
+
+Blockly.Msg.HEDGEHOG_LEGO_MOVE2_UNLIMITED = "move motor %1 and %2 with speeds %3 and %4";
+Blockly.Msg.HEDGEHOG_LEGO_MOVE2_UNLIMITED_TOOLTIP = "move two motors until stopped explicitly";
+
+Blockly.Msg.HEDGEHOG_LEGO_FORWARD = "move motor %1 and %2 %3 for %4 seconds";
+Blockly.Msg.HEDGEHOG_LEGO_FORWARD_TOOLTIP = "move two motors for a certain duration";
+
+Blockly.Msg.HEDGEHOG_LEGO_TURN = "turn motors %1 and %2 %3 for %4 seconds";
+Blockly.Msg.HEDGEHOG_LEGO_TURN_TOOLTIP = "turn the Hedgehog for a certain duration";
+
 // <GSL customizable: extra-msgs>
 Blockly.Msg.HEDGEHOG_WARN = "This block needs to be inside a Hedgehog Scope block!";
 Blockly.Msg.HEDGEHOG_CREATE_WARN = "This block needs to be inside an iRobot Create Scope block!";

@@ -539,6 +539,248 @@ Blockly.Blocks['hedgehog_create_drive_direct'] = {
     onchange: requiresScope('create')
 };
 
+Blockly.Blocks['hedgehog_lego_move'] = {
+    init: function() {
+        this.jsonInit({
+            "message0": Blockly.Msg.HEDGEHOG_LEGO_MOVE,
+            "args0": [
+                {
+                    "type": "field_number",
+                    "name": "PORT",
+                    "value": 0,
+                    "min": 0,
+                    "max": 3,
+                    "precision": 1
+                },
+                {
+                    "type": "input_value",
+                    "name": "SPEED",
+                    "check": "Number"
+                },
+                {
+                    "type": "input_value",
+                    "name": "TIME",
+                    "check": "Number"
+                }
+            ],
+            "inputsInline": true,
+            "previousStatement": null,
+            "nextStatement": null,
+            "tooltip": Blockly.Msg.HEDGEHOG_LEGO_MOVE_TOOLTIP,
+            "colour": Blockly.Blocks.hedgehog.HUE,
+            "helpUrl": Blockly.Blocks.hedgehog.HELPURL
+        });
+    },
+    onchange: requiresScope('hedgehog')
+};
+
+Blockly.Blocks['hedgehog_lego_move_unlimited'] = {
+    init: function() {
+        this.jsonInit({
+            "message0": Blockly.Msg.HEDGEHOG_LEGO_MOVE_UNLIMITED,
+            "args0": [
+                {
+                    "type": "field_number",
+                    "name": "PORT",
+                    "value": 0,
+                    "min": 0,
+                    "max": 3,
+                    "precision": 1
+                },
+                {
+                    "type": "input_value",
+                    "name": "SPEED",
+                    "check": "Number"
+                }
+            ],
+            "inputsInline": true,
+            "previousStatement": null,
+            "nextStatement": null,
+            "tooltip": Blockly.Msg.HEDGEHOG_LEGO_MOVE_UNLIMITED_TOOLTIP,
+            "colour": Blockly.Blocks.hedgehog.HUE,
+            "helpUrl": Blockly.Blocks.hedgehog.HELPURL
+        });
+    },
+    onchange: requiresScope('hedgehog')
+};
+
+Blockly.Blocks['hedgehog_lego_move2'] = {
+    init: function() {
+        this.jsonInit({
+            "message0": Blockly.Msg.HEDGEHOG_LEGO_MOVE2,
+            "args0": [
+                {
+                    "type": "field_number",
+                    "name": "PORT1",
+                    "value": 0,
+                    "min": 0,
+                    "max": 3,
+                    "precision": 1
+                },
+                {
+                    "type": "field_number",
+                    "name": "PORT2",
+                    "value": 1,
+                    "min": 0,
+                    "max": 3,
+                    "precision": 1
+                },
+                {
+                    "type": "input_value",
+                    "name": "SPEED1",
+                    "check": "Number"
+                },
+                {
+                    "type": "input_value",
+                    "name": "SPEED2",
+                    "check": "Number"
+                },
+                {
+                    "type": "input_value",
+                    "name": "TIME",
+                    "check": "Number"
+                }
+            ],
+            "inputsInline": true,
+            "previousStatement": null,
+            "nextStatement": null,
+            "tooltip": Blockly.Msg.HEDGEHOG_LEGO_MOVE2_TOOLTIP,
+            "colour": Blockly.Blocks.hedgehog.HUE,
+            "helpUrl": Blockly.Blocks.hedgehog.HELPURL
+        });
+    },
+    onchange: requiresScope('hedgehog')
+};
+
+Blockly.Blocks['hedgehog_lego_move2_unlimited'] = {
+    init: function() {
+        this.jsonInit({
+            "message0": Blockly.Msg.HEDGEHOG_LEGO_MOVE2_UNLIMITED,
+            "args0": [
+                {
+                    "type": "field_number",
+                    "name": "PORT1",
+                    "value": 0,
+                    "min": 0,
+                    "max": 3,
+                    "precision": 1
+                },
+                {
+                    "type": "field_number",
+                    "name": "PORT2",
+                    "value": 1,
+                    "min": 0,
+                    "max": 3,
+                    "precision": 1
+                },
+                {
+                    "type": "input_value",
+                    "name": "SPEED1",
+                    "check": "Number"
+                },
+                {
+                    "type": "input_value",
+                    "name": "SPEED2",
+                    "check": "Number"
+                }
+            ],
+            "inputsInline": true,
+            "previousStatement": null,
+            "nextStatement": null,
+            "tooltip": Blockly.Msg.HEDGEHOG_LEGO_MOVE2_UNLIMITED_TOOLTIP,
+            "colour": Blockly.Blocks.hedgehog.HUE,
+            "helpUrl": Blockly.Blocks.hedgehog.HELPURL
+        });
+    },
+    onchange: requiresScope('hedgehog')
+};
+
+Blockly.Blocks['hedgehog_lego_forward'] = {
+    init: function() {
+        this.jsonInit({
+            "message0": Blockly.Msg.HEDGEHOG_LEGO_FORWARD,
+            "args0": [
+                {
+                    "type": "field_number",
+                    "name": "PORT1",
+                    "value": 0,
+                    "min": 0,
+                    "max": 3,
+                    "precision": 1
+                },
+                {
+                    "type": "field_number",
+                    "name": "PORT2",
+                    "value": 1,
+                    "min": 0,
+                    "max": 3,
+                    "precision": 1
+                },
+                {
+                    "type": "input_value",
+                    "name": "SPEED",
+                    "check": "Number"
+                },
+                {
+                    "type": "input_value",
+                    "name": "TIME",
+                    "check": "Number"
+                }
+            ],
+            "inputsInline": true,
+            "previousStatement": null,
+            "nextStatement": null,
+            "tooltip": Blockly.Msg.HEDGEHOG_LEGO_FORWARD_TOOLTIP,
+            "colour": Blockly.Blocks.hedgehog.HUE,
+            "helpUrl": Blockly.Blocks.hedgehog.HELPURL
+        });
+    },
+    onchange: requiresScope('hedgehog')
+};
+
+Blockly.Blocks['hedgehog_lego_turn'] = {
+    init: function() {
+        this.jsonInit({
+            "message0": Blockly.Msg.HEDGEHOG_LEGO_TURN,
+            "args0": [
+                {
+                    "type": "field_number",
+                    "name": "PORT1",
+                    "value": 0,
+                    "min": 0,
+                    "max": 3,
+                    "precision": 1
+                },
+                {
+                    "type": "field_number",
+                    "name": "PORT2",
+                    "value": 1,
+                    "min": 0,
+                    "max": 3,
+                    "precision": 1
+                },
+                {
+                    "type": "input_value",
+                    "name": "DIR",
+                    "check": "Number"
+                },
+                {
+                    "type": "input_value",
+                    "name": "TIME",
+                    "check": "Number"
+                }
+            ],
+            "inputsInline": true,
+            "previousStatement": null,
+            "nextStatement": null,
+            "tooltip": Blockly.Msg.HEDGEHOG_LEGO_TURN_TOOLTIP,
+            "colour": Blockly.Blocks.hedgehog.HUE,
+            "helpUrl": Blockly.Blocks.hedgehog.HELPURL
+        });
+    },
+    onchange: requiresScope('hedgehog')
+};
+
 // <GSL customizable: extra-blocks>
 
 // Default parameter blocks

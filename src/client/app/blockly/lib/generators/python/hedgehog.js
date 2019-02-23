@@ -9,7 +9,7 @@ Blockly.Python.INDENT = '    ';
 
 // <GSL customizable: module-extras>
 function importHedgehog() {
-    Blockly.Python.definitions_['import_hedgehog'] = 'from hedgehog.client import connect';
+    Blockly.Python.definitions_['import_hedgehog'] = 'from hedgehog.client import connect, motor';
 }
 
 function importSleep() {
@@ -223,6 +223,100 @@ Blockly.Python['hedgehog_create_drive_direct'] = function(block) {
     code += 'create.drive_direct(0, 0)\n\n';
     return code;
     // </GSL customizable: hedgehog_create_drive_direct-body>
+};
+
+Blockly.Python['hedgehog_lego_move'] = function(block) {
+    let port = block.getFieldValue('PORT');
+    // <GSL customizable: hedgehog_lego_move-body>
+    let speed = Blockly.Python.valueToCode(block, 'SPEED', Blockly.Python.ORDER_NONE);
+    let time = Blockly.Python.valueToCode(block, 'TIME', Blockly.Python.ORDER_NONE);
+
+    importSleep();
+
+    let code = 'hedgehog.move(' + port + ', ' + speed + ', motor.VELOCITY)\n';
+    code += 'sleep(' + time + ')\n';
+    code += 'hedgehog.move(' + port + ', 0, motor.VELOCITY)\n\n';
+    return code;
+    // </GSL customizable: hedgehog_lego_move-body>
+};
+
+Blockly.Python['hedgehog_lego_move_unlimited'] = function(block) {
+    let port = block.getFieldValue('PORT');
+    // <GSL customizable: hedgehog_lego_move_unlimited-body>
+    let speed = Blockly.Python.valueToCode(block, 'SPEED', Blockly.Python.ORDER_NONE);
+
+    let code = 'hedgehog.move(' + port + ', ' + speed + ', motor.VELOCITY)\n\n';
+    return code;
+    // </GSL customizable: hedgehog_lego_move_unlimited-body>
+};
+
+Blockly.Python['hedgehog_lego_move2'] = function(block) {
+    let port1 = block.getFieldValue('PORT1');
+    let port2 = block.getFieldValue('PORT2');
+    // <GSL customizable: hedgehog_lego_move2-body>
+    let speed1 = Blockly.Python.valueToCode(block, 'SPEED1', Blockly.Python.ORDER_NONE);
+    let speed2 = Blockly.Python.valueToCode(block, 'SPEED2', Blockly.Python.ORDER_NONE);
+    let time = Blockly.Python.valueToCode(block, 'TIME', Blockly.Python.ORDER_NONE);
+
+    importSleep();
+
+    let code = 'hedgehog.move(' + port1 + ', ' + speed1 + ', motor.VELOCITY)\n';
+    code += 'hedgehog.move(' + port2 + ', ' + speed2 + ', motor.VELOCITY)\n';
+    code += 'sleep(' + time + ')\n';
+    code += 'hedgehog.move(' + port1 + ', 0, motor.VELOCITY)\n';
+    code += 'hedgehog.move(' + port2 + ', 0, motor.VELOCITY)\n\n';
+    return code;
+    // </GSL customizable: hedgehog_lego_move2-body>
+};
+
+Blockly.Python['hedgehog_lego_move2_unlimited'] = function(block) {
+    let port1 = block.getFieldValue('PORT1');
+    let port2 = block.getFieldValue('PORT2');
+    // <GSL customizable: hedgehog_lego_move2_unlimited-body>
+    let speed1 = Blockly.Python.valueToCode(block, 'SPEED1', Blockly.Python.ORDER_NONE);
+    let speed2 = Blockly.Python.valueToCode(block, 'SPEED2', Blockly.Python.ORDER_NONE);
+
+    let code = 'hedgehog.move(' + port1 + ', ' + speed1 + ', motor.VELOCITY)\n';
+    code += 'hedgehog.move(' + port2 + ', ' + speed2 + ', motor.VELOCITY)\n';
+    return code;
+    // </GSL customizable: hedgehog_lego_move2_unlimited-body>
+};
+
+Blockly.Python['hedgehog_lego_forward'] = function(block) {
+    let port1 = block.getFieldValue('PORT1');
+    let port2 = block.getFieldValue('PORT2');
+    // <GSL customizable: hedgehog_lego_forward-body>
+    let speed = Blockly.Python.valueToCode(block, 'SPEED', Blockly.Python.ORDER_NONE);
+    let time = Blockly.Python.valueToCode(block, 'TIME', Blockly.Python.ORDER_NONE);
+
+    importSleep();
+
+    let code = 'hedgehog.move(' + port1 + ', ' + speed + ', motor.VELOCITY)\n';
+    code += 'hedgehog.move(' + port2 + ', ' + speed + ', motor.VELOCITY)\n';
+    code += 'sleep(' + time + ')\n';
+    code += 'hedgehog.move(' + port1 + ', 0, motor.VELOCITY)\n';
+    code += 'hedgehog.move(' + port2 + ', 0, motor.VELOCITY)\n\n';
+    return code;
+    // </GSL customizable: hedgehog_lego_forward-body>
+};
+
+Blockly.Python['hedgehog_lego_turn'] = function(block) {
+    let port1 = block.getFieldValue('PORT1');
+    let port2 = block.getFieldValue('PORT2');
+    // <GSL customizable: hedgehog_lego_turn-body>
+    let dir = Blockly.Python.valueToCode(block, 'DIR', Blockly.Python.ORDER_NONE);
+    let negDir = Blockly.Python.valueToCode(block, 'DIR', Blockly.Python.ORDER_UNARY_SIGN);
+    let time = Blockly.Python.valueToCode(block, 'TIME', Blockly.Python.ORDER_NONE);
+
+    importSleep();
+
+    let code = 'hedgehog.move(' + port1 + ', ' + dir + ', motor.VELOCITY)\n';
+    code += 'hedgehog.move(' + port2 + ', ' + '-' + negDir + ', motor.VELOCITY)\n';
+    code += 'sleep(' + time + ')\n';
+    code += 'hedgehog.move(' + port1 + ', 0, motor.VELOCITY)\n';
+    code += 'hedgehog.move(' + port2 + ', 0, motor.VELOCITY)\n\n';
+    return code;
+    // </GSL customizable: hedgehog_lego_turn-body>
 };
 
 // <GSL customizable: extra-blocks>
