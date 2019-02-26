@@ -60,6 +60,22 @@ Blockly.Python['hedgehog_move_unlimited'] = function(block) {
     // </GSL customizable: hedgehog_move_unlimited-body>
 };
 
+Blockly.Python['hedgehog_motor_off'] = function(block) {
+    let port = block.getFieldValue('PORT');
+    // <GSL customizable: hedgehog_motor_off-body>
+    let code = 'hedgehog.motor_off(' + port + ')\n\n';
+    return code;
+    // </GSL customizable: hedgehog_motor_off-body>
+};
+
+Blockly.Python['hedgehog_brake'] = function(block) {
+    let port = block.getFieldValue('PORT');
+    // <GSL customizable: hedgehog_brake-body>
+    let code = 'hedgehog.brake(' + port + ')\n\n';
+    return code;
+    // </GSL customizable: hedgehog_brake-body>
+};
+
 Blockly.Python['hedgehog_move2'] = function(block) {
     let port1 = block.getFieldValue('PORT1');
     let port2 = block.getFieldValue('PORT2');
@@ -145,6 +161,32 @@ Blockly.Python['hedgehog_turn'] = function(block) {
     code += ')\n\n';
     return code;
     // </GSL customizable: hedgehog_turn-body>
+};
+
+Blockly.Python['hedgehog_motor_off2'] = function(block) {
+    let port1 = block.getFieldValue('PORT1');
+    let port2 = block.getFieldValue('PORT2');
+    // <GSL customizable: hedgehog_motor_off2-body>
+    let code = '';
+    code += 'hedgehog.commands(\n';
+    code += '    hedgehog.motor_off(' + port1 + '),\n';
+    code += '    hedgehog.motor_off(' + port2 + '),\n';
+    code += ')\n\n';
+    return code;
+    // </GSL customizable: hedgehog_motor_off2-body>
+};
+
+Blockly.Python['hedgehog_brake2'] = function(block) {
+    let port1 = block.getFieldValue('PORT1');
+    let port2 = block.getFieldValue('PORT2');
+    // <GSL customizable: hedgehog_brake2-body>
+    let code = '';
+    code += 'hedgehog.commands(\n';
+    code += '    hedgehog.brake_cmd(' + port1 + '),\n';
+    code += '    hedgehog.brake_cmd(' + port2 + '),\n';
+    code += ')\n\n';
+    return code;
+    // </GSL customizable: hedgehog_brake2-body>
 };
 
 Blockly.Python['hedgehog_servo'] = function(block) {

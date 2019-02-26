@@ -133,6 +133,56 @@ Blockly.Blocks['hedgehog_move_unlimited'] = {
     onchange: requiresScope('hedgehog')
 };
 
+Blockly.Blocks['hedgehog_motor_off'] = {
+    init: function() {
+        this.jsonInit({
+            "message0": Blockly.Msg.HEDGEHOG_MOTOR_OFF,
+            "args0": [
+                {
+                    "type": "field_number",
+                    "name": "PORT",
+                    "value": 0,
+                    "min": 0,
+                    "max": 3,
+                    "precision": 1
+                }
+            ],
+            "inputsInline": true,
+            "previousStatement": null,
+            "nextStatement": null,
+            "tooltip": Blockly.Msg.HEDGEHOG_MOTOR_OFF_TOOLTIP,
+            "colour": Blockly.Blocks.hedgehog.HUE,
+            "helpUrl": Blockly.Blocks.hedgehog.HELPURL
+        });
+    },
+    onchange: requiresScope('hedgehog')
+};
+
+Blockly.Blocks['hedgehog_brake'] = {
+    init: function() {
+        this.jsonInit({
+            "message0": Blockly.Msg.HEDGEHOG_BRAKE,
+            "args0": [
+                {
+                    "type": "field_number",
+                    "name": "PORT",
+                    "value": 0,
+                    "min": 0,
+                    "max": 3,
+                    "precision": 1
+                }
+            ],
+            "inputsInline": true,
+            "previousStatement": null,
+            "nextStatement": null,
+            "tooltip": Blockly.Msg.HEDGEHOG_BRAKE_TOOLTIP,
+            "colour": Blockly.Blocks.hedgehog.HUE,
+            "helpUrl": Blockly.Blocks.hedgehog.HELPURL
+        });
+    },
+    onchange: requiresScope('hedgehog')
+};
+
 Blockly.Blocks['hedgehog_move2'] = {
     init: function() {
         this.jsonInit({
@@ -303,6 +353,72 @@ Blockly.Blocks['hedgehog_turn'] = {
             "previousStatement": null,
             "nextStatement": null,
             "tooltip": Blockly.Msg.HEDGEHOG_TURN_TOOLTIP,
+            "colour": Blockly.Blocks.hedgehog.HUE,
+            "helpUrl": Blockly.Blocks.hedgehog.HELPURL
+        });
+    },
+    onchange: requiresScope('hedgehog')
+};
+
+Blockly.Blocks['hedgehog_motor_off2'] = {
+    init: function() {
+        this.jsonInit({
+            "message0": Blockly.Msg.HEDGEHOG_MOTOR_OFF2,
+            "args0": [
+                {
+                    "type": "field_number",
+                    "name": "PORT1",
+                    "value": 0,
+                    "min": 0,
+                    "max": 3,
+                    "precision": 1
+                },
+                {
+                    "type": "field_number",
+                    "name": "PORT2",
+                    "value": 1,
+                    "min": 0,
+                    "max": 3,
+                    "precision": 1
+                }
+            ],
+            "inputsInline": true,
+            "previousStatement": null,
+            "nextStatement": null,
+            "tooltip": Blockly.Msg.HEDGEHOG_MOTOR_OFF2_TOOLTIP,
+            "colour": Blockly.Blocks.hedgehog.HUE,
+            "helpUrl": Blockly.Blocks.hedgehog.HELPURL
+        });
+    },
+    onchange: requiresScope('hedgehog')
+};
+
+Blockly.Blocks['hedgehog_brake2'] = {
+    init: function() {
+        this.jsonInit({
+            "message0": Blockly.Msg.HEDGEHOG_BRAKE2,
+            "args0": [
+                {
+                    "type": "field_number",
+                    "name": "PORT1",
+                    "value": 0,
+                    "min": 0,
+                    "max": 3,
+                    "precision": 1
+                },
+                {
+                    "type": "field_number",
+                    "name": "PORT2",
+                    "value": 1,
+                    "min": 0,
+                    "max": 3,
+                    "precision": 1
+                }
+            ],
+            "inputsInline": true,
+            "previousStatement": null,
+            "nextStatement": null,
+            "tooltip": Blockly.Msg.HEDGEHOG_BRAKE2_TOOLTIP,
             "colour": Blockly.Blocks.hedgehog.HUE,
             "helpUrl": Blockly.Blocks.hedgehog.HELPURL
         });

@@ -15,6 +15,12 @@ Blockly.Msg.HEDGEHOG_MOVE_TOOLTIP = "Bewegt einen Motor in eine bestimmte Richtu
 Blockly.Msg.HEDGEHOG_MOVE_UNLIMITED = "bewege Motor %1 %2";
 Blockly.Msg.HEDGEHOG_MOVE_UNLIMITED_TOOLTIP = "bewegt einen Motor solange bis er explizit gestoppt wird";
 
+Blockly.Msg.HEDGEHOG_MOTOR_OFF = "schalte Motor %1 aus";
+Blockly.Msg.HEDGEHOG_MOTOR_OFF_TOOLTIP = "schaltet einen Motor aus";
+
+Blockly.Msg.HEDGEHOG_BRAKE = "bremse Motor %1";
+Blockly.Msg.HEDGEHOG_BRAKE_TOOLTIP = "bremst einen Motor sofort";
+
 Blockly.Msg.HEDGEHOG_MOVE2 = "bewege Motor %1 und %2 mit Geschwindigkeit %3 und %4 für %5 Sekunden";
 Blockly.Msg.HEDGEHOG_MOVE2_TOOLTIP = "Bewegt zwei Motor in eine bestimmte Richtung";
 
@@ -26,6 +32,12 @@ Blockly.Msg.HEDGEHOG_FORWARD_TOOLTIP = "Bewegt zwei Motoren in eine bestimmte Ri
 
 Blockly.Msg.HEDGEHOG_TURN = "wende mit Motor %1 und %2 %3 für %4 Sekunden";
 Blockly.Msg.HEDGEHOG_TURN_TOOLTIP = "wendet den Hedgehog indem zwei Motoren in entgegengesetzter Richtung laufen gelassen werden";
+
+Blockly.Msg.HEDGEHOG_MOTOR_OFF2 = "schalte Motoren %1 und %2 aus";
+Blockly.Msg.HEDGEHOG_MOTOR_OFF2_TOOLTIP = "schaltet zwei Motoren gleichzeitig aus";
+
+Blockly.Msg.HEDGEHOG_BRAKE2 = "bremse Motoren %1 und %2";
+Blockly.Msg.HEDGEHOG_BRAKE2_TOOLTIP = "bremst zwei Motoren gleichzeitig";
 
 Blockly.Msg.HEDGEHOG_SERVO = "setze Servo %1 auf %2 Grad";
 Blockly.Msg.HEDGEHOG_SERVO_TOOLTIP = "verändert die position eines Servos";

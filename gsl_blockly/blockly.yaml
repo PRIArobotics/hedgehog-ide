@@ -33,6 +33,24 @@ modules:
       - type: input_value
         name: SPEED
         check: Number
+    hedgehog_motor_off:
+      requiresScope: hedgehog
+      args:
+      - type: field_number
+        name: PORT
+        value: 0
+        min: 0
+        max: 3
+        precision: 1
+    hedgehog_brake:
+      requiresScope: hedgehog
+      args:
+      - type: field_number
+        name: PORT
+        value: 0
+        min: 0
+        max: 3
+        precision: 1
     hedgehog_move2:
       requiresScope: hedgehog
       args:
@@ -120,6 +138,36 @@ modules:
       - type: input_value
         name: TIME
         check: Number
+    hedgehog_motor_off2:
+      requiresScope: hedgehog
+      args:
+      - type: field_number
+        name: PORT1
+        value: 0
+        min: 0
+        max: 3
+        precision: 1
+      - type: field_number
+        name: PORT2
+        value: 1
+        min: 0
+        max: 3
+        precision: 1
+    hedgehog_brake2:
+      requiresScope: hedgehog
+      args:
+      - type: field_number
+        name: PORT1
+        value: 0
+        min: 0
+        max: 3
+        precision: 1
+      - type: field_number
+        name: PORT2
+        value: 1
+        min: 0
+        max: 3
+        precision: 1
     hedgehog_servo:
       requiresScope: hedgehog
       args:

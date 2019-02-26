@@ -10,6 +10,12 @@ modules:
       hedgehog_move_unlimited:
         msg: bewege Motor %1 %2
         tooltip: bewegt einen Motor solange bis er explizit gestoppt wird
+      hedgehog_motor_off:
+        msg: schalte Motor %1 aus
+        tooltip: schaltet einen Motor aus
+      hedgehog_brake:
+        msg: bremse Motor %1
+        tooltip: bremst einen Motor sofort
       hedgehog_move2:
         msg: bewege Motor %1 und %2 mit Geschwindigkeit %3 und %4 für %5 Sekunden
         tooltip: Bewegt zwei Motor in eine bestimmte Richtung
@@ -22,6 +28,12 @@ modules:
       hedgehog_turn:
         msg: wende mit Motor %1 und %2 %3 für %4 Sekunden
         tooltip: wendet den Hedgehog indem zwei Motoren in entgegengesetzter Richtung laufen gelassen werden
+      hedgehog_motor_off2:
+        msg: schalte Motoren %1 und %2 aus
+        tooltip: schaltet zwei Motoren gleichzeitig aus
+      hedgehog_brake2:
+        msg: bremse Motoren %1 und %2
+        tooltip: bremst zwei Motoren gleichzeitig
       hedgehog_servo:
         msg: setze Servo %1 auf %2 Grad
         tooltip: verändert die position eines Servos
@@ -82,6 +94,12 @@ modules:
       hedgehog_move_unlimited:
         msg: move motor %1 %2
         tooltip: move motor until stopped explicitly
+      hedgehog_motor_off2:
+        msg: turn motors %1 and %2 off
+        tooltip: turns two motors off simultaneously
+      hedgehog_brake2:
+        msg: brake motors %1 and %2
+        tooltip: brakes two motors simultaneously
       hedgehog_move2:
         msg: move motor %1 and %2 with speeds %3 and %4 for %5 seconds
         tooltip: move two motors for a certain duration
@@ -94,6 +112,12 @@ modules:
       hedgehog_turn:
         msg: turn motors %1 and %2 %3 for %4 seconds
         tooltip: turn the Hedgehog for a certain duration
+      hedgehog_motor_off:
+        msg: turn motor %1 off
+        tooltip: turns one motor off
+      hedgehog_brake:
+        msg: brake motor %1
+        tooltip: brakes a motor immediately
       hedgehog_servo:
         msg: set servo %1 to %2 degrees
         tooltip: move a servo to a specified position
