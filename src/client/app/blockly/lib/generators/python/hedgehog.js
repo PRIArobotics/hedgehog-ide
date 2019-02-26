@@ -43,9 +43,9 @@ Blockly.Python['hedgehog_move'] = function(block) {
 
     importSleep();
 
-    let code = 'hedgehog.move(' + port + ', ' + speed + ')\n';
+    let code = 'hedgehog.move_motor(' + port + ', ' + speed + ')\n';
     code += 'sleep(' + time + ')\n';
-    code += 'hedgehog.move(' + port + ', 0)\n\n';
+    code += 'hedgehog.brake(' + port + ')\n\n';
     return code;
     // </GSL customizable: hedgehog_move-body>
 };
@@ -55,7 +55,7 @@ Blockly.Python['hedgehog_move_unlimited'] = function(block) {
     // <GSL customizable: hedgehog_move_unlimited-body>
     let speed = Blockly.Python.valueToCode(block, 'SPEED', Blockly.Python.ORDER_NONE);
 
-    let code = 'hedgehog.move(' + port + ', ' + speed + ')\n\n';
+    let code = 'hedgehog.move_motor(' + port + ', ' + speed + ')\n\n';
     return code;
     // </GSL customizable: hedgehog_move_unlimited-body>
 };
@@ -70,11 +70,16 @@ Blockly.Python['hedgehog_move2'] = function(block) {
 
     importSleep();
 
-    let code = 'hedgehog.move(' + port1 + ', ' + speed1 + ')\n';
-    code += 'hedgehog.move(' + port2 + ', ' + speed2 + ')\n';
+    let code = '';
+    code += 'hedgehog.commands(\n';
+    code += '    hedgehog.move_motor_cmd(' + port1 + ', ' + speed1 + '),\n';
+    code += '    hedgehog.move_motor_cmd(' + port2 + ', ' + speed2 + '),\n';
+    code += ')\n';
     code += 'sleep(' + time + ')\n';
-    code += 'hedgehog.move(' + port1 + ', 0)\n';
-    code += 'hedgehog.move(' + port2 + ', 0)\n\n';
+    code += 'hedgehog.commands(\n';
+    code += '    hedgehog.brake_cmd(' + port1 + '),\n';
+    code += '    hedgehog.brake_cmd(' + port2 + '),\n';
+    code += ')\n\n';
     return code;
     // </GSL customizable: hedgehog_move2-body>
 };
@@ -86,8 +91,11 @@ Blockly.Python['hedgehog_move2_unlimited'] = function(block) {
     let speed1 = Blockly.Python.valueToCode(block, 'SPEED1', Blockly.Python.ORDER_NONE);
     let speed2 = Blockly.Python.valueToCode(block, 'SPEED2', Blockly.Python.ORDER_NONE);
 
-    let code = 'hedgehog.move(' + port1 + ', ' + speed1 + ')\n';
-    code += 'hedgehog.move(' + port2 + ', ' + speed2 + ')\n\n';
+    let code = '';
+    code += 'hedgehog.commands(\n';
+    code += '    hedgehog.move_motor_cmd(' + port1 + ', ' + speed1 + '),\n';
+    code += '    hedgehog.move_motor_cmd(' + port2 + ', ' + speed2 + '),\n';
+    code += ')\n\n';
     return code;
     // </GSL customizable: hedgehog_move2_unlimited-body>
 };
@@ -101,11 +109,16 @@ Blockly.Python['hedgehog_forward'] = function(block) {
 
     importSleep();
 
-    let code = 'hedgehog.move(' + port1 + ', ' + speed + ')\n';
-    code += 'hedgehog.move(' + port2 + ', ' + speed + ')\n';
+    let code = '';
+    code += 'hedgehog.commands(\n';
+    code += '    hedgehog.move_motor_cmd(' + port1 + ', ' + speed + '),\n';
+    code += '    hedgehog.move_motor_cmd(' + port2 + ', ' + speed + '),\n';
+    code += ')\n';
     code += 'sleep(' + time + ')\n';
-    code += 'hedgehog.move(' + port1 + ', 0)\n';
-    code += 'hedgehog.move(' + port2 + ', 0)\n\n';
+    code += 'hedgehog.commands(\n';
+    code += '    hedgehog.brake_cmd(' + port1 + '),\n';
+    code += '    hedgehog.brake_cmd(' + port2 + '),\n';
+    code += ')\n\n';
     return code;
     // </GSL customizable: hedgehog_forward-body>
 };
@@ -120,11 +133,16 @@ Blockly.Python['hedgehog_turn'] = function(block) {
 
     importSleep();
 
-    let code = 'hedgehog.move(' + port1 + ', ' + dir + ')\n';
-    code += 'hedgehog.move(' + port2 + ', ' + '-' + negDir + ')\n';
+    let code = '';
+    code += 'hedgehog.commands(\n';
+    code += '    hedgehog.move_motor_cmd(' + port1 + ', ' + dir + '),\n';
+    code += '    hedgehog.move_motor_cmd(' + port2 + ', ' + '-' + negDir + '),\n';
+    code += ')\n';
     code += 'sleep(' + time + ')\n';
-    code += 'hedgehog.move(' + port1 + ', 0)\n';
-    code += 'hedgehog.move(' + port2 + ', 0)\n\n';
+    code += 'hedgehog.commands(\n';
+    code += '    hedgehog.brake_cmd(' + port1 + '),\n';
+    code += '    hedgehog.brake_cmd(' + port2 + '),\n';
+    code += ')\n\n';
     return code;
     // </GSL customizable: hedgehog_turn-body>
 };
@@ -249,9 +267,9 @@ Blockly.Python['hedgehog_lego_move'] = function(block) {
 
     importSleep();
 
-    let code = 'hedgehog.move(' + port + ', ' + speed + ', motor.VELOCITY)\n';
+    let code = 'hedgehog.move_motor(' + port + ', ' + speed + ', motor.VELOCITY)\n';
     code += 'sleep(' + time + ')\n';
-    code += 'hedgehog.move(' + port + ', 0, motor.VELOCITY)\n\n';
+    code += 'hedgehog.brake(' + port + ')\n\n';
     return code;
     // </GSL customizable: hedgehog_lego_move-body>
 };
@@ -261,7 +279,7 @@ Blockly.Python['hedgehog_lego_move_unlimited'] = function(block) {
     // <GSL customizable: hedgehog_lego_move_unlimited-body>
     let speed = Blockly.Python.valueToCode(block, 'SPEED', Blockly.Python.ORDER_NONE);
 
-    let code = 'hedgehog.move(' + port + ', ' + speed + ', motor.VELOCITY)\n\n';
+    let code = 'hedgehog.move_motor(' + port + ', ' + speed + ', motor.VELOCITY)\n\n';
     return code;
     // </GSL customizable: hedgehog_lego_move_unlimited-body>
 };
@@ -276,11 +294,16 @@ Blockly.Python['hedgehog_lego_move2'] = function(block) {
 
     importSleep();
 
-    let code = 'hedgehog.move(' + port1 + ', ' + speed1 + ', motor.VELOCITY)\n';
-    code += 'hedgehog.move(' + port2 + ', ' + speed2 + ', motor.VELOCITY)\n';
+    let code = '';
+    code += 'hedgehog.commands(\n';
+    code += '    hedgehog.move_motor_cmd(' + port1 + ', ' + speed1 + ', motor.VELOCITY),\n';
+    code += '    hedgehog.move_motor_cmd(' + port2 + ', ' + speed2 + ', motor.VELOCITY),\n';
+    code += ')\n';
     code += 'sleep(' + time + ')\n';
-    code += 'hedgehog.move(' + port1 + ', 0, motor.VELOCITY)\n';
-    code += 'hedgehog.move(' + port2 + ', 0, motor.VELOCITY)\n\n';
+    code += 'hedgehog.commands(\n';
+    code += '    hedgehog.brake_cmd(' + port1 + '),\n';
+    code += '    hedgehog.brake_cmd(' + port2 + '),\n';
+    code += ')\n\n';
     return code;
     // </GSL customizable: hedgehog_lego_move2-body>
 };
@@ -292,8 +315,11 @@ Blockly.Python['hedgehog_lego_move2_unlimited'] = function(block) {
     let speed1 = Blockly.Python.valueToCode(block, 'SPEED1', Blockly.Python.ORDER_NONE);
     let speed2 = Blockly.Python.valueToCode(block, 'SPEED2', Blockly.Python.ORDER_NONE);
 
-    let code = 'hedgehog.move(' + port1 + ', ' + speed1 + ', motor.VELOCITY)\n';
-    code += 'hedgehog.move(' + port2 + ', ' + speed2 + ', motor.VELOCITY)\n\n';
+    let code = '';
+    code += 'hedgehog.commands(\n';
+    code += '    hedgehog.move_motor_cmd(' + port1 + ', ' + speed1 + ', motor.VELOCITY),\n';
+    code += '    hedgehog.move_motor_cmd(' + port2 + ', ' + speed2 + ', motor.VELOCITY),\n';
+    code += ')\n\n';
     return code;
     // </GSL customizable: hedgehog_lego_move2_unlimited-body>
 };
@@ -307,11 +333,16 @@ Blockly.Python['hedgehog_lego_forward'] = function(block) {
 
     importSleep();
 
-    let code = 'hedgehog.move(' + port1 + ', ' + speed + ', motor.VELOCITY)\n';
-    code += 'hedgehog.move(' + port2 + ', ' + speed + ', motor.VELOCITY)\n';
+    let code = '';
+    code += 'hedgehog.commands(\n';
+    code += '    hedgehog.move_motor_cmd(' + port1 + ', ' + speed + ', motor.VELOCITY),\n';
+    code += '    hedgehog.move_motor_cmd(' + port2 + ', ' + speed + ', motor.VELOCITY),\n';
+    code += ')\n';
     code += 'sleep(' + time + ')\n';
-    code += 'hedgehog.move(' + port1 + ', 0, motor.VELOCITY)\n';
-    code += 'hedgehog.move(' + port2 + ', 0, motor.VELOCITY)\n\n';
+    code += 'hedgehog.commands(\n';
+    code += '    hedgehog.brake_cmd(' + port1 + '),\n';
+    code += '    hedgehog.brake_cmd(' + port2 + '),\n';
+    code += ')\n\n';
     return code;
     // </GSL customizable: hedgehog_lego_forward-body>
 };
@@ -326,11 +357,16 @@ Blockly.Python['hedgehog_lego_turn'] = function(block) {
 
     importSleep();
 
-    let code = 'hedgehog.move(' + port1 + ', ' + dir + ', motor.VELOCITY)\n';
-    code += 'hedgehog.move(' + port2 + ', ' + '-' + negDir + ', motor.VELOCITY)\n';
+    let code = '';
+    code += 'hedgehog.commands(\n';
+    code += '    hedgehog.move_motor_cmd(' + port1 + ', ' + dir + ', motor.VELOCITY),\n';
+    code += '    hedgehog.move_motor_cmd(' + port2 + ', ' + '-' + negDir + ', motor.VELOCITY),\n';
+    code += ')\n';
     code += 'sleep(' + time + ')\n';
-    code += 'hedgehog.move(' + port1 + ', 0, motor.VELOCITY)\n';
-    code += 'hedgehog.move(' + port2 + ', 0, motor.VELOCITY)\n\n';
+    code += 'hedgehog.commands(\n';
+    code += '    hedgehog.brake_cmd(' + port1 + '),\n';
+    code += '    hedgehog.brake_cmd(' + port2 + '),\n';
+    code += ')\n\n';
     return code;
     // </GSL customizable: hedgehog_lego_turn-body>
 };
