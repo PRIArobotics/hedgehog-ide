@@ -34,7 +34,7 @@
         </a>
         <ul>
             <li>
-                <a materialize="tooltip" (click)="openCreateModal('textual')" class="btn-floating blue tooltipped" data-position="left" data-delay="50" [attr.data-tooltip]="lang_textural_project">
+                <a materialize="tooltip" (click)="openCreateModal('textual')" class="btn-floating blue tooltipped" data-position="left" data-delay="50" [attr.data-tooltip]="lang_textual_project">
                     <i class="material-icons">code</i>
                 </a>
             </li>
@@ -71,7 +71,7 @@
                            class="material-icons tooltipped circle blue program-icon"
                            data-position="left"
                            data-delay="50"
-                           [attr.data-tooltip]="lang_textural_program">code</i>
+                           [attr.data-tooltip]="lang_textual_program">code</i>
                     </ng-template>
                     <ng-template [ngSwitchCase]="'.template'">
                         <i materialize="tooltip"
@@ -85,7 +85,7 @@
 
                 <div class="secondary-content">
                     <button materialize="tooltip" class="waves-effect waves-teal btn-flat tooltipped" *ngIf="getExtension(program) !== '.blockly'" [routerLink]="['/versions', program]" data-position="bottom" data-delay="50" [attr.data-tooltip]="lang_show_versions"><i class="material-icons">history</i></button>
-                    <button materialize="tooltip" class="waves-effect waves-teal btn-flat tooltipped" *ngIf="getExtension(program) === '.blockly'" (click)="convertFromVisual(program)" data-position="bottom" data-delay="50" [attr.data-tooltip]="lang_convert_to_textural"><i class="material-icons">file_upload</i></button>
+                    <button materialize="tooltip" class="waves-effect waves-teal btn-flat tooltipped" *ngIf="getExtension(program) === '.blockly'" (click)="convertFromVisual(program)" data-position="bottom" data-delay="50" [attr.data-tooltip]="lang_convert_to_textual"><i class="material-icons">file_upload</i></button>
                     <button materialize="tooltip" class="waves-effect waves-teal btn-flat tooltipped" *ngIf="getExtension(program) !== '.blockly'" (click)="openRenameModal(program)" data-position="bottom" data-delay="50" [attr.data-tooltip]="lang_rename_project"><i class="material-icons">mode_edit</i></button>
                     <button materialize="tooltip" class="waves-effect waves-teal btn-flat tooltipped" *ngIf="getExtension(program) === '.blockly'" (click)="openRenameModal(program)" data-position="bottom" data-delay="50" [attr.data-tooltip]="lang_rename_project"><i class="material-icons">mode_edit</i></button>
                     <button materialize="tooltip" class="waves-effect waves-teal btn-flat tooltipped" (click)="openDeleteModal(program)" data-position="bottom" data-delay="50" [attr.data-tooltip]="lang_delete_project"><i class="material-icons">delete</i></button>
@@ -102,7 +102,7 @@
                         {{lang_new_visual_program}}
                     </ng-template>
                     <ng-template [ngSwitchCase]="'textual'">
-                        {{lang_new_textural_program}}
+                        {{lang_new_textual_program}}
                     </ng-template>
                     <ng-template [ngSwitchCase]="'template'">
                         {{lang_new_template}}
@@ -131,7 +131,7 @@
         <form (submit)="deleteProgram()">
             <div class="modal-content">
                 <h4>{{lang_delete_program}}</h4>
-                {{ deleteProgramName.endsWith('.blockly') ? lang_delete_visual_sentence : lang_delete_textural_sentence}} <p><strong>{{ deleteProgramName.replace(".blockly","") }}</strong></p><br />
+                {{ deleteProgramName.endsWith('.blockly') ? lang_delete_visual_sentence : lang_delete_textual_sentence}} <p><strong>{{ deleteProgramName.replace(".blockly","") }}</strong></p><br />
                 {{lang_cannot_undo_sentence}}
             </div>
             <div class="modal-footer">

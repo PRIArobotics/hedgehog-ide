@@ -43,20 +43,20 @@ export class ProgramListComponent implements OnInit {
     private lang_rename_program: string;
     private lang_none: string;
     private lang_template: string;
-    private lang_textural_project: string;
+    private lang_textual_project: string;
     private lang_visual_project: string;
     private lang_show_versions: string;
-    private lang_convert_to_textural: string;
+    private lang_convert_to_textual: string;
     private lang_rename_project: string;
     private lang_delete_project: string;
     private lang_new_visual_program: string;
-    private lang_new_textural_program: string;
+    private lang_new_textual_program: string;
     private lang_new_template: string;
     private lang_template_name: string;
     private lang_delete_visual_sentence: string;
-    private lang_delete_textural_sentence: string;
+    private lang_delete_textual_sentence: string;
     private lang_cannot_undo_sentence: string;
-    private lang_textural_program: string;
+    private lang_textual_program: string;
     private lang_visual_program: string;
     // tslint:enable:variable-name
 
@@ -88,20 +88,20 @@ export class ProgramListComponent implements OnInit {
         this.lang_rename_program = "Rename Program";
         this.lang_none = "None";
         this.lang_template = "Template";
-        this.lang_textural_project = "Textural Project";
+        this.lang_textual_project = "Textual Project";
         this.lang_visual_project = "Visual Project";
         this.lang_show_versions = "Show Versions";
-        this.lang_convert_to_textural = "Convert to Textural";
+        this.lang_convert_to_textual = "Convert to Textual";
         this.lang_rename_project = "Rename Project";
         this.lang_delete_project = "Delete Project";
-        this.lang_new_textural_program = "New Textural Program";
+        this.lang_new_textual_program = "New Textual Program";
         this.lang_new_visual_program = "New Visual Program";
         this.lang_new_template = "New Template";
         this.lang_template_name = "Template Name";
         this.lang_delete_visual_sentence = "Are you sure you want to delete this visual program:";
-        this.lang_delete_textural_sentence = "Are you sure you want to delete this program:";
+        this.lang_delete_textual_sentence = "Are you sure you want to delete this program:";
         this.lang_cannot_undo_sentence = "This operation cannot be undone!";
-        this.lang_textural_program = "Textural Program";
+        this.lang_textual_program = "Textual Program";
         this.lang_visual_program = "Visual Program";
     }
 
@@ -252,20 +252,20 @@ export class ProgramListComponent implements OnInit {
         this.lang_rename_program = "Rename Program";
         this.lang_none = "None";
         this.lang_template = "Template";
-        this.lang_textural_project = "Textural Project";
+        this.lang_textual_project = "Textual Project";
         this.lang_visual_project = "Visual Project";
         this.lang_show_versions = "Show Versions";
-        this.lang_convert_to_textural = "Convert to Textural";
+        this.lang_convert_to_textual = "Convert to Textual";
         this.lang_rename_project = "Rename Project";
         this.lang_delete_project = "Delete Project";
-        this.lang_new_textural_program = "New Textural Program";
+        this.lang_new_textual_program = "New Textual Program";
         this.lang_new_visual_program = "New Visual Program";
         this.lang_new_template = "New Template";
         this.lang_template_name = "Template Name";
         this.lang_delete_visual_sentence = "Are you sure you want to delete this visual program:";
-        this.lang_delete_textural_sentence = "Are you sure you want to delete this program:";
+        this.lang_delete_textual_sentence = "Are you sure you want to delete this program:";
         this.lang_cannot_undo_sentence = "This operation cannot be undone!";
-        this.lang_textural_program = "Textural Program";
+        this.lang_textual_program = "Textual Program";
         this.lang_visual_program = "Visual Program";
     }
 
@@ -282,20 +282,20 @@ export class ProgramListComponent implements OnInit {
         this.lang_rename_program = "Programm umbenennen";
         this.lang_none = "Keine";
         this.lang_template = "Vorlage";
-        this.lang_textural_project = "Textuelles Projekt";
+        this.lang_textual_project = "Textuelles Projekt";
         this.lang_visual_project = "Grafisches Projekt";
         this.lang_show_versions = "Version anzeigen";
-        this.lang_convert_to_textural = "Zu Textuell konvertieren";
+        this.lang_convert_to_textual = "Zu Textuell konvertieren";
         this.lang_rename_project = "Projekt umbennenen";
         this.lang_delete_project = "Projekt löschen";
-        this.lang_new_textural_program = "Neues Textuelles Programm";
+        this.lang_new_textual_program = "Neues Textuelles Programm";
         this.lang_new_visual_program = "Neues Grafische Programm";
         this.lang_new_template = "Neue Vorlage";
         this.lang_template_name = "Vorlagenname";
         this.lang_delete_visual_sentence = "Wollen Sie dieses Grafik-Programm wirklich löschen:";
-        this.lang_delete_textural_sentence = "Wollen Sie dieses Programm wirklich löschen:";
+        this.lang_delete_textual_sentence = "Wollen Sie dieses Programm wirklich löschen:";
         this.lang_cannot_undo_sentence = "Diese Operation kann nicht rückgängig gemacht werden!";
-        this.lang_textural_program = "Textuelles Programm";
+        this.lang_textual_program = "Textuelles Programm";
         this.lang_visual_program = "Grafisches Programm";
     }
 
@@ -312,20 +312,20 @@ export class ProgramListComponent implements OnInit {
         this.lang_rename_program = "改程序名称";
         this.lang_none = "没有";
         this.lang_template = "型板";
-        this.lang_textural_project = "文本程序";
+        this.lang_textual_project = "文本程序";
         this.lang_visual_project = "图形程序";
         this.lang_show_versions = "显示版本";
-        this.lang_convert_to_textural = "转换为文本";
+        this.lang_convert_to_textual = "转换为文本";
         this.lang_rename_project = "改名程序";
         this.lang_delete_project = "删除程序";
-        this.lang_new_textural_program = "新的文本程序";
+        this.lang_new_textual_program = "新的文本程序";
         this.lang_new_visual_program = "新的图形程序";
         this.lang_new_template = "新模板";
         this.lang_template_name = "模板名称";
         this.lang_delete_visual_sentence = "你真的想删除这个程序吗";
-        this.lang_delete_textural_sentence = "你真的想删除这个程序吗？";
+        this.lang_delete_textual_sentence = "你真的想删除这个程序吗？";
         this.lang_cannot_undo_sentence = "此操作无法撤消";
-        this.lang_textural_program = "文本程序";
+        this.lang_textual_program = "文本程序";
         this.lang_visual_program = "图形程序";
     }
 }
