@@ -5,7 +5,7 @@
 ## Automated installation with HedgehogBundle (recommended)
 
 HedgehogBundle allows a very simple installation of the Hedgehog platform, the IDE can be installed via a single command.
-After cloning or downloading the bundle to the controller, simple enter the following two commands in the `HedgehogBundle` directory:
+After cloning or downloading the bundle to the controller, simply enter the following two commands in the `HedgehogBundle` directory:
 
 ```bash
 $ cd ide
@@ -18,25 +18,37 @@ Now you are all set! The IDE should be running on port 80 of your controller and
 ## Manual installation (only for advanced users)
 
 In order to install the Hedgehog IDE manually on the Hedgehog controller, you first need to install Node.JS.
-To do so, open a terminal connection to your Hedgehog's Raspberry Pi, and type the following.
+To do so, open a terminal connection to your Hedgehog's Raspberry Pi.
+We recommend NVM for installing a node version:
 
 ```bash
-$ wget https://nodejs.org/dist/v8.9.4/node-v8.9.4-linux-armv6l.tar.xz
-$ tar -xvf node-v8.9.4-linux-armv6l.tar.xz
-$ sudo cp -R node-v8.9.4-linux-armv6l/* /usr/local/
+$ sudo aptitude -y install libssl-dev libzmq-dev libcurl4-gnutls-dev
+$ curl -L https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash
+
+$ export NVM_DIR="$HOME/.nvm"
+$ . "$NVM_DIR/nvm.sh"
+$ nvm install 8.14.0
+```
+
+Alternatively, download and install a distribution manually:
+
+```bash
 $ sudo apt install libssl-dev libzmq-dev libcurl4-gnutls-dev
+$ wget https://nodejs.org/dist/v8.14.0/node-v8.14.0-linux-armv6l.tar.xz
+$ tar -xvf node-v8.14.0-linux-armv6l.tar.xz
+$ sudo cp -R node-v8.14.0-linux-armv6l/* /usr/local/
 ```
 
 Now you have the following options:
 - install an official release of the Hedgehog IDE
-- build the IDE from source for development
-- build the IDE from source and make your own production version
+- run the IDE in development mode
+- build the IDE from source and prepare a release
 
 In each case, you will need to apply the correct configuration and set the `environment` option correctly.
 
 ### Installing a release
 
-Simply download the latest release to your controller:
+Simply download and unpack the latest release to your controller:
 
 ```bash
 $ wget https://github.com/PRIArobotics/hedgehog-ide/releases/download/v1.3.0/hedgehog-ide-1.3.0-linux-armv7l.tar.gz
@@ -58,7 +70,7 @@ $ npm install
 ### development mode
 
 If you plan to work on the IDE itself and test changes frequently, this is what you want.
-The command will start a server and apply updates to any files automatically
+The command will start a server and apply updates to any files automatically.
 
 ```bash
 $ npm run develop
