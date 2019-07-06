@@ -1,6 +1,6 @@
 {
   "name": "hedgehog-ide",
-  "version": "1.3.0",
+  "version": "1.4.0rc1",
   "description": "Hedgehog IDE and Deployment Protocol",
   "main": "src/server/server",
   "scripts": {
