@@ -15,88 +15,90 @@
         </div>
     </nav>
 
-    <split
-            class="ide-split"
-            direction="horizontal"
-            (dragProgress)="updateIndicator('#tab' + openId)">
-        <split-area
-                [size]="20">
-            <tree-root #tree
-                  id="file-tree"
-                  [nodes]="fileTree"
-                  [options]="fileTreeOptions"
-                  [focused]="true"
-                  (activate)="fileTreeEvent($event)"
-                  (moveNode)="onMoveNode($event)">
+    <div class="text-ide-content">
+        <split
+                class="ide-split"
+                direction="horizontal"
+                (dragProgress)="updateIndicator('#tab' + openId)">
+            <split-area
+                    [size]="20">
+                <tree-root #tree
+                      id="file-tree"
+                      [nodes]="fileTree"
+                      [options]="fileTreeOptions"
+                      [focused]="true"
+                      (activate)="fileTreeEvent($event)"
+                      (moveNode)="onMoveNode($event)">
 
-                <ng-template #treeNodeTemplate let-node let-index="index">
-                    <div [contextMenu]="fileTreeActions" [contextMenuSubject]="node">
-                        <span class="no-break">
-                            <i *ngIf="node.data.children && !node.isExpanded" class="material-icons"> folder </i>
-                            <i *ngIf="node.isExpanded" class="material-icons"> folder_open </i>
-                            <i *ngIf="!node.data.children" class="material-icons"> insert_drive_file </i>
-                            <span> {{ node.data.name }} </span>
-                        </span>
-                    </div>
-                </ng-template>
-
-            </tree-root>
-
-            <context-menu #treeContextMenu>
-                <ng-template contextMenuItem let-node (execute)="newData.file = true; openNewFileOrDirectoryModal($event)">
-                    <i class="material-icons"> insert_drive_file </i> New File
-                </ng-template>
-                <ng-template contextMenuItem let-node (execute)="newData.file = false; openNewFileOrDirectoryModal($event)">
-                    <i class="material-icons"> folder </i> New Directory
-                </ng-template>
-                <ng-template contextMenuItem let-node (execute)="openDeleteModal($event)">
-                    <i class="material-icons"> delete </i> Delete
-                </ng-template>
-                <ng-template contextMenuItem let-node (execute)="openRenameModal($event)">
-                    <i class="material-icons"> mode_edit </i> Rename
-                </ng-template>
-            </context-menu>
-        </split-area>
-        <split-area [size]="80">
-            <split direction="vertical"
-                   (dragEnd)="editor.getEditor().resize()">
-                <split-area [size]="70">
-                    <div class="editor-wrapper row">
-                        <div class="col s12 editor-tabs">
-                            <ul class="tabs" materialize="tabs" id="sortable-tabs">
-                                <li class="tab"><a></a></li>
-                                <ng-template ngFor let-fileId [ngForOf]="openFiles[programName]" >
-                                    <li *ngIf="files.get(fileId)" class="tab" id="tab{{ fileId }}" (click)="openFile(fileId)">
-                                        <a class="green-text lighten-3 waves-effect">
-                                            {{ files.get(fileId).name }}
-                                            <span *ngIf="files.get(fileId).changed">*</span>
-                                            <i class="material-icons" (click)="closeTab(fileId)">close</i>
-                                        </a>
-                                    </li>
-                                </ng-template>
-                            </ul>
+                    <ng-template #treeNodeTemplate let-node let-index="index">
+                        <div [contextMenu]="fileTreeActions" [contextMenuSubject]="node">
+                            <span class="no-break">
+                                <i *ngIf="node.data.children && !node.isExpanded" class="material-icons"> folder </i>
+                                <i *ngIf="node.isExpanded" class="material-icons"> folder_open </i>
+                                <i *ngIf="!node.data.children" class="material-icons"> insert_drive_file </i>
+                                <span> {{ node.data.name }} </span>
+                            </span>
                         </div>
+                    </ng-template>
 
-                        <div class="col s12 editor-content">
-                            <ace-editor
-                                    #editor
-                                    [hidden]="!openId"
-                                    id="ace-editor"
-                                    [text]="editorContent"
-                                    (textChanged)="onEditorContentChange($event)"
-                                    (changeDelta)="onEditorDelta($event)"
-                                    [mode]="'python'"
-                                    [theme]="'textmate'"
-                                    [readOnly]="false"></ace-editor>
+                </tree-root>
+
+                <context-menu #treeContextMenu>
+                    <ng-template contextMenuItem let-node (execute)="newData.file = true; openNewFileOrDirectoryModal($event)">
+                        <i class="material-icons"> insert_drive_file </i> New File
+                    </ng-template>
+                    <ng-template contextMenuItem let-node (execute)="newData.file = false; openNewFileOrDirectoryModal($event)">
+                        <i class="material-icons"> folder </i> New Directory
+                    </ng-template>
+                    <ng-template contextMenuItem let-node (execute)="openDeleteModal($event)">
+                        <i class="material-icons"> delete </i> Delete
+                    </ng-template>
+                    <ng-template contextMenuItem let-node (execute)="openRenameModal($event)">
+                        <i class="material-icons"> mode_edit </i> Rename
+                    </ng-template>
+                </context-menu>
+            </split-area>
+            <split-area [size]="80">
+                <split direction="vertical"
+                       (dragEnd)="editor.getEditor().resize()">
+                    <split-area [size]="70">
+                        <div class="editor-wrapper row">
+                            <div class="col s12 editor-tabs">
+                                <ul class="tabs" materialize="tabs" id="sortable-tabs">
+                                    <li class="tab"><a></a></li>
+                                    <ng-template ngFor let-fileId [ngForOf]="openFiles[programName]" >
+                                        <li *ngIf="files.get(fileId)" class="tab" id="tab{{ fileId }}" (click)="openFile(fileId)">
+                                            <a class="green-text lighten-3 waves-effect">
+                                                {{ files.get(fileId).name }}
+                                                <span *ngIf="files.get(fileId).changed">*</span>
+                                                <i class="material-icons" (click)="closeTab(fileId)">close</i>
+                                            </a>
+                                        </li>
+                                    </ng-template>
+                                </ul>
+                            </div>
+
+                            <div class="col s12 editor-content">
+                                <ace-editor
+                                        #editor
+                                        [hidden]="!openId"
+                                        id="ace-editor"
+                                        [text]="editorContent"
+                                        (textChanged)="onEditorContentChange($event)"
+                                        (changeDelta)="onEditorDelta($event)"
+                                        [mode]="'python'"
+                                        [theme]="'textmate'"
+                                        [readOnly]="false"></ace-editor>
+                            </div>
                         </div>
-                    </div>
-                </split-area>
-                <split-area [size]="30" [visible]="executionPanelVisible" class="execution-split-area">
-                    <program-execution (onVisibleChange)="executionPanelVisibleChanged($event)" id="split-execute"></program-execution>
-                </split-area>
-            </split>
-        </split-area>
-    </split>
+                    </split-area>
+                    <split-area [size]="30" [visible]="executionPanelVisible" class="execution-split-area">
+                        <program-execution (onVisibleChange)="executionPanelVisibleChanged($event)" id="split-execute"></program-execution>
+                    </split-area>
+                </split>
+            </split-area>
+        </split>
+    </div>
 </div>
 
 <!-- Modals -->

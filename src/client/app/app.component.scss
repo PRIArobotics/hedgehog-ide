@@ -119,11 +119,12 @@ my-app {
 .wrapper {
     display: flex;
     flex-grow: 1;
+    height: 100vh;
 }
 
 .side-bar {
     width: 64px;
-    height: 100%;
+    height: 100vh;
 }
 
 .side-bar .side-bar-item {
@@ -177,12 +178,9 @@ my-app {
     transform: translateX(3px);
 }
 
-.ide-split {;
+.ide-split {
     position: absolute;
-    top: 64px;
-    bottom: 0;
-    height: initial !important;
-    margin-top: 2px;
+    height: 100%;
 }
 
 /* indicator color */

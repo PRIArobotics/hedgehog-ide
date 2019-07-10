@@ -2,6 +2,24 @@
   flex: 1;
 }
 
+.app-content {
+  height: 100%;
+  margin-bottom: 0;
+
+  display: flex;
+  flex-flow: column nowrap;
+
+  > nav {
+    flex: 0;
+  }
+
+  > .text-ide-content {
+    flex: 1;
+    position: relative;
+    margin-top: 2px;
+  }
+}
+
 #create-modal {
   width: 400px;
 }

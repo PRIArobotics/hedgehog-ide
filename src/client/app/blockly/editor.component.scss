@@ -1,3 +1,17 @@
 :host {
   flex: 1;
+  margin-bottom: 0;
+
+  display: flex;
+  flex-flow: column nowrap;
+
+  > nav {
+    flex: 0;
+  }
+
+  > .blockly-ide-content {
+    flex: 1;
+    position: relative;
+    margin-top: 2px;
+  }
 }

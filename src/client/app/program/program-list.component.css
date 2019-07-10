@@ -1,12 +1,18 @@
 :host {
     flex: 1;
+    display: flex;
+    flex-flow: column nowrap;
+}
+
+:host > nav {
+    flex: 0;
 }
 
 .program-list {
     padding-top: 30px;
     padding-bottom: 30px;
     flex: 1;
-    overflow-y: scroll;
+    overflow: auto;
 }
 
 .program-item {

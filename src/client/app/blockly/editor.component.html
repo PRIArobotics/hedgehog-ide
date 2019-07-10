@@ -28,21 +28,23 @@
     <li><a (click)="setLanguage('cn')">中文</a></li>
 </ul>
 
-<split direction="vertical" (dragProgress)="resizeWindow()" class="ide-split">
-    <split-area [size]="70">
-        <split direction="horizontal" (dragProgress)="resizeWindow()">
-            <split-area [size]="70">
-                <div id="blocklyDiv"></div>
-            </split-area>
-            <split-area [size]="30" [visible]="showCode" >
-                <pre>{{ pyCode }}</pre>
-            </split-area>
-        </split>
-    </split-area>
-    <split-area [size]="30" [visible]="executionPanelVisible">
-        <program-execution (onVisibleChange)="executionPanelVisible = $event" id="split-execute"></program-execution>
-    </split-area>
-</split>
+<div class="blockly-ide-content">
+    <split direction="vertical" (dragProgress)="resizeWindow()" class="ide-split">
+        <split-area [size]="70">
+            <split direction="horizontal" (dragProgress)="resizeWindow()">
+                <split-area [size]="70">
+                    <div id="blocklyDiv"></div>
+                </split-area>
+                <split-area [size]="30" [visible]="showCode" >
+                    <pre>{{ pyCode }}</pre>
+                </split-area>
+            </split>
+        </split-area>
+        <split-area [size]="30" [visible]="executionPanelVisible">
+            <program-execution (onVisibleChange)="executionPanelVisible = $event" id="split-execute"></program-execution>
+        </split-area>
+    </split>
+</div>
 
 <!-- blockly toolbox -->
 <xml id="toolbox" style="display: none">
