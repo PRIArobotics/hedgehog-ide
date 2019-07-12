@@ -29,8 +29,8 @@
             <output-control
                     *ngFor="let servo of servoControls; let i = index;"
                     [name]="'Servo ' + i"
-                    [value]="1000"
-                    [maxValue]="2000"
+                    [maxValue]="1000"
+                    [value]="500"
                     (valueChanged)="updateServoValue(i, $event)"
                     (stateChanged)="updateServoState(i, $event)">
             </output-control>
