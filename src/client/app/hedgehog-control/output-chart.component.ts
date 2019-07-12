@@ -20,9 +20,7 @@ export default class OutputChartComponent implements DoCheck, OnInit {
         animation: false,
         scales: {
             yAxes: [{
-                ticks: {
-                    beginAtZero:true
-                }
+                // ticks filled dynamically
             }],
             xAxes: [{
                 display: false
@@ -58,7 +56,17 @@ export default class OutputChartComponent implements DoCheck, OnInit {
 
     public ngOnInit (): void {
         if (this.type === "digital") {
-            this.lineOptions.scales.yAxes[0].ticks.stepSize = 1;
+            this.lineOptions.scales.yAxes[0].ticks = {
+                stepSize: 1,
+                min: 0,
+                max: 1,
+            };
+        } else {
+            this.lineOptions.scales.yAxes[0].ticks = {
+                stepSize: 512,
+                min: 0,
+                max: 4096,
+            };
         }
     }
 
