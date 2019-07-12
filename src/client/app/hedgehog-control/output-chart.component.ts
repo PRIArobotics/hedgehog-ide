@@ -49,7 +49,7 @@ export default class OutputChartComponent implements DoCheck, OnInit {
     }
 
     public ngDoCheck () {
-        if (this.differ.diff(this.lineData))
+        if (this.differ.diff(this.lineData) && this.chart.chart)
             this.chart.chart.update();
     }
 
