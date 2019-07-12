@@ -34,12 +34,12 @@ export default class HedgehogControlComponent implements AfterViewInit, OnDestro
 
         for (let i = 0; i < 16; i++) {
             this.analogSensors.push({
-                dataset: [],
-                labels: []
+                dataset: Array(50).fill(NaN),
+                labels: Array(50).fill('')
             });
             this.digitalSensors.push({
-                dataset: [],
-                labels: []
+                dataset: Array(50).fill(NaN),
+                labels: Array(50).fill('')
             });
         }
 
@@ -47,26 +47,18 @@ export default class HedgehogControlComponent implements AfterViewInit, OnDestro
             .subscribe(async sensorData => {
                 for (let sensor of sensorData) {
                     let dataset: any[];
-                    let labels: string[];
 
                     let value = sensor.value;
 
                     if (sensor.type === "analog") {
                         dataset = this.analogSensors[sensor.id].dataset;
-                        labels = this.analogSensors[sensor.id].labels;
                     } else if (sensor.type === "digital") {
                         dataset = this.digitalSensors[sensor.id].dataset;
-                        labels = this.digitalSensors[sensor.id].labels;
                         value = value ? 1 : 0;
                     }
 
                     dataset.push(value);
-                    labels.push('');
-
-                    if (dataset.length > 50) {
-                        dataset.shift();
-                        labels.shift();
-                    }
+                    dataset.shift();
                 }
                 ref.markForCheck();
             });
