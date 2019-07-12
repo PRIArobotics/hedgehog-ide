@@ -57,7 +57,7 @@ export default class MotorResource extends ApiResource {
             velocity = requestData.attributes.velocity;
         }
 
-        this.hedgehog.move(motorPort, velocity, velocity !== 0? MotorState.POWER : MotorState.BRAKE);
+        this.hedgehog.moveMotor(motorPort, velocity, velocity !== 0? MotorState.POWER : MotorState.BRAKE);
         return '';
     }
 }
