@@ -159,6 +159,19 @@ my-app {
     .names, .names .col {
         padding: 0;
     }
+
+    .version-information {
+        dt:before {
+            content: "";
+            display: block;
+        }
+        dt, dd {
+            display: inline;
+        }
+        dd {
+            margin-left: 10px;
+        }
+    }
 }
 
 /* Animation */

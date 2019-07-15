@@ -12,6 +12,15 @@ export class HttpHedgehogClientService {
 
     public constructor (private http: Http, private authProvider: AuthProvider) { }
 
+    public async getVersion () {
+        return this.http
+            .get(`/api/version`)
+            .toPromise()
+            .then(response => {
+                return response.json().data.attributes;
+            });
+    }
+
     public async getSensorValue (port: number) {
         // send get request for specific sensor value
         return this.http

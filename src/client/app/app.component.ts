@@ -1,7 +1,6 @@
 import {AfterViewInit, Component, EventEmitter, ViewEncapsulation} from '@angular/core';
+import {HttpHedgehogClientService} from "./hedgehog-control/http-hedgehog-client.service";
 import {MaterializeAction} from "angular2-materialize";
-
-declare const VERSION: string;
 
 @Component({
     selector: 'my-app',
@@ -24,14 +23,28 @@ export class AppComponent implements AfterViewInit {
         }, 40);
     }
 
+    private ucId: string = "...";
+    private hardwareVersion: string = "...";
+    private firmwareVersion: string = "...";
+    private serverVersion: string = "...";
+    private ideVersion: string = "...";
     private aboutModalActions = new EventEmitter<string|MaterializeAction>();
+
+    constructor (private hedgehogClient: HttpHedgehogClientService) {}
 
     public ngAfterViewInit(): void {
         // initialize all selects of the application here
         ($('select') as any).material_select();
     }
 
-    get version () {
-        return VERSION;
+    public ngAfterContentInit(): void {
+        this.hedgehogClient.getVersion().then(version => {
+            let {ucId, hardwareVersion, firmwareVersion, serverVersion, ideVersion} = version;
+            this.ucId = ucId;
+            this.hardwareVersion = hardwareVersion;
+            this.firmwareVersion = firmwareVersion;
+            this.serverVersion = serverVersion;
+            this.ideVersion = ideVersion;
+        });
     }
 }
