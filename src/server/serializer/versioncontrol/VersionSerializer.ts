@@ -1,10 +1,10 @@
 import {Request} from "hapi";
 
-import Version from "../../common/versioncontrol/Version";
-import {default as JsonApiDocumentBuilder, JsonApiResourceBuilder} from "../jsonapi/JsonApiBuilder";
-import {JsonApiResource} from "../jsonapi/JsonApiObjects";
-import {genericToBase64} from "../../common/utils";
-import {getLinkUrl} from "../utils";
+import Version from "../../../common/versioncontrol/Version";
+import {default as JsonApiDocumentBuilder, JsonApiResourceBuilder} from "../../jsonapi/JsonApiBuilder";
+import {JsonApiResource} from "../../jsonapi/JsonApiObjects";
+import {genericToBase64} from "../../../common/utils";
+import {getLinkUrl} from "../../utils";
 
 function serializeVersion (version: Version,
                            request: Request,

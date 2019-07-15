@@ -1,9 +1,9 @@
 import {Request} from "hapi";
 
-import {JsonApiResource} from "../jsonapi/JsonApiObjects";
-import {getLinkUrl} from "../utils";
-import {default as JsonApiDocumentBuilder, JsonApiResourceBuilder} from "../jsonapi/JsonApiBuilder";
-import {genericToBase64} from "../../common/utils";
+import {JsonApiResource} from "../../jsonapi/JsonApiObjects";
+import {getLinkUrl} from "../../utils";
+import {default as JsonApiDocumentBuilder, JsonApiResourceBuilder} from "../../jsonapi/JsonApiBuilder";
+import {genericToBase64} from "../../../common/utils";
 
 async function serializeProgram (program: any,
                                  request: Request,

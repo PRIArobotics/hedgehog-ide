@@ -1,11 +1,11 @@
 import {Request} from "hapi";
 
-import {JsonApiResource} from "../jsonapi/JsonApiObjects";
-import {genericToBase64} from "../../common/utils";
-import {getLinkUrl} from "../utils";
-import WorkingTreeFile from "../../common/versioncontrol/WorkingTreeFile";
-import {JsonApiResourceBuilder, default as JsonApiDocumentBuilder} from "../jsonapi/JsonApiBuilder";
-import SerializerRegistry from "./SerializerRegistry";
+import {JsonApiResource} from "../../jsonapi/JsonApiObjects";
+import {genericToBase64} from "../../../common/utils";
+import {getLinkUrl} from "../../utils";
+import WorkingTreeFile from "../../../common/versioncontrol/WorkingTreeFile";
+import {JsonApiResourceBuilder, default as JsonApiDocumentBuilder} from "../../jsonapi/JsonApiBuilder";
+import SerializerRegistry from "../SerializerRegistry";
 
 async function serializeWorkingTreeFile (file: WorkingTreeFile,
                                          request: Request,

@@ -1,8 +1,8 @@
 import {Request} from "hapi";
 
-import {JsonApiResource} from "../jsonapi/JsonApiObjects";
-import Blob from "../../common/versioncontrol/Blob";
-import {default as JsonApiDocumentBuilder, JsonApiResourceBuilder} from "../jsonapi/JsonApiBuilder";
+import {JsonApiResource} from "../../jsonapi/JsonApiObjects";
+import Blob from "../../../common/versioncontrol/Blob";
+import {default as JsonApiDocumentBuilder, JsonApiResourceBuilder} from "../../jsonapi/JsonApiBuilder";
 
 async function serializeBlob (blob: Blob,
                               request: Request,
