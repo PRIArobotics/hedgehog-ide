@@ -10,24 +10,12 @@ import {Server, Request, ResponseToolkit} from "hapi";
 import {HedgehogClient} from 'hedgehog-client';
 
 import Api from "./api/Api";
-import ProgramResource from "./api/resource/versioncontrol/ProgramResource";
 import GitProgramStorage from "./versioncontrol/GitProgramStorage";
-import modelRegistry from "./jsonapi/ModelSerializerRegistry";
-import WorkingTreeFileResource from "./api/resource/versioncontrol/WorkingTreeFileResource";
-import WorkingTreeDirectoryResource from "./api/resource/versioncontrol/WorkingTreeDirectoryResource";
-import ProcessResource from "./api/resource/ProcessResource";
+import registerResources from "./api/resource";
 import SocketIoProcessAdapter from "./process/SocketIoProcessAdapter";
 import NodeProcessManager from "./process/NodeProcessManager";
-import BlobResource from "./api/resource/versioncontrol/BlobResource";
-import TreeResource from "./api/resource/versioncontrol/TreeResource";
-import VersionResource from "./api/resource/versioncontrol/VersionResource";
-import MotorResource from "./api/resource/hedgehog-io/MotorResource";
-import SensorResource from "./api/resource/hedgehog-io/SensorResource";
-import ServoResource from "./api/resource/hedgehog-io/ServoResource";
 import SocketIoSensorAdapter from "./hedgehog-io/SocketIoSensorAdapter";
 import ShareDbService from "./realtime-sync/ShareDbService";
-import AuthenticationResource from "./api/resource/authentication/AuthenticationResource";
-import ConfigurationResource from "./api/resource/ConfigurationResource";
 
 
 (async () => {
@@ -96,18 +84,7 @@ import ConfigurationResource from "./api/resource/ConfigurationResource";
     }
 
     let hedgehogApi = new Api(server, '/api');
-    hedgehogApi.registerResource(new ConfigurationResource(serverConfig), false);
-    hedgehogApi.registerResource(new AuthenticationResource(serverConfig.auth.jwtSecret), false);
-    hedgehogApi.registerResource(new ProgramResource(programStorage, modelRegistry));
-    hedgehogApi.registerResource(new WorkingTreeFileResource(programStorage, modelRegistry));
-    hedgehogApi.registerResource(new WorkingTreeDirectoryResource(programStorage, modelRegistry));
-    hedgehogApi.registerResource(new BlobResource(programStorage, modelRegistry));
-    hedgehogApi.registerResource(new TreeResource(programStorage, modelRegistry));
-    hedgehogApi.registerResource(new VersionResource(programStorage, modelRegistry));
-    hedgehogApi.registerResource(new ProcessResource(processManager, modelRegistry));
-    hedgehogApi.registerResource(new MotorResource(hedgehog, modelRegistry));
-    hedgehogApi.registerResource(new ServoResource(hedgehog, modelRegistry));
-    hedgehogApi.registerResource(new SensorResource(hedgehog, modelRegistry));
+    registerResources(hedgehogApi, {serverConfig, hedgehog, processManager, programStorage});
 
     /**
      * Socket.io setup
