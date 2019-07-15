@@ -14,7 +14,8 @@ async function serializeSensor (version: Version,
         ucId: version.ucId,
         hardwareVersion: version.hardwareVersion,
         firmwareVersion: version.firmwareVersion,
-        serverVersion: version.serverVersion
+        serverVersion: version.serverVersion,
+        ideVersion: version.ideVersion
     };
 
     return resourceBuilder.getProduct();
