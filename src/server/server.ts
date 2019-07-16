@@ -15,6 +15,7 @@ import registerResources from "./api/resource";
 import SocketIoProcessAdapter from "./process/SocketIoProcessAdapter";
 import NodeProcessManager from "./process/NodeProcessManager";
 import SocketIoSensorAdapter from "./hedgehog-io/SocketIoSensorAdapter";
+import SocketIoEmergencyAdapter from "./hedgehog-io/SocketIoEmergencyAdapter";
 import ShareDbService from "./realtime-sync/ShareDbService";
 
 
@@ -118,6 +119,7 @@ import ShareDbService from "./realtime-sync/ShareDbService";
     // tslint:disable
     new SocketIoProcessAdapter(processManager, io);
     new SocketIoSensorAdapter(hedgehog, io);
+    new SocketIoEmergencyAdapter(hedgehog, io);
 
     /**
      * ShareDB backend
