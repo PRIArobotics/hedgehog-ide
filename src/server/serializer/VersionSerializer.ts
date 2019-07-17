@@ -5,8 +5,8 @@ import {JsonApiResourceBuilder, default as JsonApiDocumentBuilder} from "../json
 import Version from "../../common/Version";
 
 async function serializeVersion (version: Version,
-                                request: Request,
-                                documentBuilder: JsonApiDocumentBuilder): Promise<JsonApiResource> {
+                                 request: Request,
+                                 documentBuilder: JsonApiDocumentBuilder): Promise<JsonApiResource> {
     let resourceBuilder = new JsonApiResourceBuilder(documentBuilder);
     resourceBuilder.resource.type = 'hedgehog-version';
     resourceBuilder.resource.id = '0';

@@ -5,8 +5,8 @@ import {JsonApiResourceBuilder, default as JsonApiDocumentBuilder} from "../json
 import Emergency from "../../common/Emergency";
 
 async function serializeEmergency (emergency: Emergency,
-                                request: Request,
-                                documentBuilder: JsonApiDocumentBuilder): Promise<JsonApiResource> {
+                                   request: Request,
+                                   documentBuilder: JsonApiDocumentBuilder): Promise<JsonApiResource> {
     let resourceBuilder = new JsonApiResourceBuilder(documentBuilder);
     resourceBuilder.resource.type = 'emergency';
     resourceBuilder.resource.id = '0';
