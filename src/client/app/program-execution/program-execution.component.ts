@@ -51,7 +51,7 @@ export class ProgramExecutionComponent implements OnDestroy, OnInit {
             }
         });
 
-        this.emergencySubscription = hedgehogClient.onEmergencyStop().subscribe(async active => {
+        this.emergencySubscription = hedgehogClient.onEmergencyStop().subscribe(async ({active}) => {
         });
     }
 

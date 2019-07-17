@@ -130,7 +130,7 @@ export class HttpHedgehogClientService {
         );
     }
 
-    public onEmergencyStop (): Observable<boolean> {
+    public onEmergencyStop (): Observable<{active: boolean}> {
         const host = `${document.location.protocol}//${document.location.hostname}:${document.location.port}`;
         let socket = io(host + '/emergency', {query: {jwtToken: this.authProvider.token}});
 
