@@ -4,7 +4,7 @@ import {JsonApiResource} from "../jsonapi/JsonApiObjects";
 import {JsonApiResourceBuilder, default as JsonApiDocumentBuilder} from "../jsonapi/JsonApiBuilder";
 import Version from "../../common/Version";
 
-async function serializeSensor (version: Version,
+async function serializeVersion (version: Version,
                                 request: Request,
                                 documentBuilder: JsonApiDocumentBuilder): Promise<JsonApiResource> {
     let resourceBuilder = new JsonApiResourceBuilder(documentBuilder);
@@ -20,4 +20,4 @@ async function serializeSensor (version: Version,
 
     return resourceBuilder.getProduct();
 }
-export default serializeSensor;
+export default serializeVersion;
