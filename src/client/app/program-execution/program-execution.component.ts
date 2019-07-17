@@ -32,7 +32,8 @@ export class ProgramExecutionComponent implements OnDestroy, OnInit {
 
     private emergencySubscription: Subscription;
 
-    public constructor (private processManager: HttpProcessManagerService, private hedgehogClient: HttpHedgehogClientService) {
+    public constructor (private processManager: HttpProcessManagerService,
+                        private hedgehogClient: HttpHedgehogClientService) {
         processManager.on('stdout', (pid: number, data: string) => {
             if (pid === this.processPid || (!this.processPid && this.isRunning))
                 this.writeToConsole('stdout', data);
@@ -52,6 +53,7 @@ export class ProgramExecutionComponent implements OnDestroy, OnInit {
         });
 
         this.emergencySubscription = hedgehogClient.onEmergencyStop().subscribe(async ({active}) => {
+            // TODO
         });
     }
 
