@@ -73,8 +73,8 @@ export default class SensorResource extends ApiResource {
                 name: 'attributes',
                 required: RequirementType.Required,
                 handler: new ObjectParser(() => ({}), {
-                        name: 'pullup',
-                        required: RequirementType.Required
+                    name: 'pullup',
+                    required: RequirementType.Required
                 })
             })
         });
@@ -84,7 +84,7 @@ export default class SensorResource extends ApiResource {
             pullup = (parser.parse(req.payload).data as JsonApiResource).attributes.pullup;
         } catch (err) {
             winston.error(err);
-            h.response({
+            return h.response({
                 error: 'Error while parsing the request. Argument might be missing.'
             }).code(400);
         }

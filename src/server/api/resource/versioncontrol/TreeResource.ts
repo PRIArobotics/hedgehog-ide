@@ -25,7 +25,7 @@ export default class TreeResource extends ApiResource {
             tree = await this.programStorage.getTree(programName, treeId);
         } catch (err) {
             winston.error(err);
-            h.response({
+            return h.response({
                 error: 'Failed to load tree'
             }).code(500);
         }
