@@ -1,5 +1,7 @@
 import {Component, Output, EventEmitter, OnDestroy, OnInit} from "@angular/core";
 import {HttpProcessManagerService} from "./http-process-manager.service";
+import {HttpHedgehogClientService} from "../hedgehog-control/http-hedgehog-client.service";
+import {Subscription} from "rxjs";
 
 @Component({
     selector: 'program-execution',
@@ -28,7 +30,9 @@ export class ProgramExecutionComponent implements OnDestroy, OnInit {
     @Output() private onExit = new EventEmitter();
     @Output() private onVisibleChange = new EventEmitter();
 
-    public constructor (private processManager: HttpProcessManagerService) {
+    private emergencySubscription: Subscription;
+
+    public constructor (private processManager: HttpProcessManagerService, private hedgehogClient: HttpHedgehogClientService) {
         processManager.on('stdout', (pid: number, data: string) => {
             if (pid === this.processPid || (!this.processPid && this.isRunning))
                 this.writeToConsole('stdout', data);
@@ -45,6 +49,9 @@ export class ProgramExecutionComponent implements OnDestroy, OnInit {
             } else if (!this.processPid && this.isRunning) {
                 this.killedPidBuffer.push(pid);
             }
+        });
+
+        this.emergencySubscription = hedgehogClient.onEmergencyStop().subscribe(async active => {
         });
     }
 
@@ -106,6 +113,7 @@ export class ProgramExecutionComponent implements OnDestroy, OnInit {
     }
 
     public async stop () {
+        this.emergencySubscription.unsubscribe();
         if (this.isRunning) {
             this.commandInProgress = true;
 
