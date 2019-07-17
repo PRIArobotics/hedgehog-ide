@@ -1,15 +1,12 @@
-import winston = require("winston");
-import {Request, ResponseToolkit} from "hapi";
+import {Request} from "hapi";
 import {HedgehogClient} from 'hedgehog-client';
 
 import ApiResource from "../../ApiResource";
 import SerializerRegistry from "../../../serializer/SerializerRegistry";
 import ApiEndpoint from "../../ApiEndpoint";
-import {getLinkUrl, getRequestUrl} from "../../../utils";
+import {getLinkUrl} from "../../../utils";
 import Version from "../../../../common/Version";
-import {default as JsonApiDocumentBuilder , DataType} from "../../../jsonapi/JsonApiBuilder";
-import {JsonApiDocument, JsonApiResource} from "../../../jsonapi/JsonApiObjects";
-import {RequirementType, ObjectParser} from "../../../jsonapi/Parser";
+import JsonApiDocumentBuilder from "../../../jsonapi/JsonApiBuilder";
 
 export default class VersionResource extends ApiResource {
 
