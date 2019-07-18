@@ -4,11 +4,11 @@
             <a class="brand-logo"> {{ programName }} </a>
             <ul class="right">
                 <li>
-                    <a (click)="run()" [ngClass]="{ 'disabled': !openId || programExecution.commandInProgress }" *ngIf="!programExecution.isRunning"
+                    <a (click)="run()" *ngIf="!programExecution.isRunning" [ngClass]="{ 'disabled': !openId || programExecution.commandInProgress }"
                        materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="execute open file">
                         <i class="material-icons">play_arrow</i>
                     </a>
-                    <a (click)="programExecution.stop()" [ngClass]="{ 'disabled': programExecution.commandInProgress }" *ngIf="programExecution.isRunning"
+                    <a (click)="programExecution.stop()" *ngIf="programExecution.isRunning" [ngClass]="{ 'disabled': programExecution.commandInProgress }"
                        materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="stop program">
                         <i class="material-icons">stop</i>
                     </a>
