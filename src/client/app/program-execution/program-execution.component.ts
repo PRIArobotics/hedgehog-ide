@@ -31,6 +31,7 @@ export class ProgramExecutionComponent implements OnDestroy, OnInit {
     @Output() private onVisibleChange = new EventEmitter();
 
     private emergencySubscription: Subscription;
+    private emergencyStopActive: boolean = false;
 
     public constructor (private processManager: HttpProcessManagerService,
                         private hedgehogClient: HttpHedgehogClientService) {
@@ -53,7 +54,7 @@ export class ProgramExecutionComponent implements OnDestroy, OnInit {
         });
 
         this.emergencySubscription = hedgehogClient.onEmergencyStop().subscribe(async ({active}) => {
-            // TODO
+            this.emergencyStopActive = active;
         });
     }
 
@@ -131,6 +132,10 @@ export class ProgramExecutionComponent implements OnDestroy, OnInit {
             this.commandInProgress = false;
             this.isRunning = false;
         }
+    }
+
+    public async releaseEmergency () {
+        await this.hedgehogClient.setEmergencyStop(false);
     }
 
     public async hide () {

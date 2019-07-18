@@ -21,6 +21,36 @@ export class HttpHedgehogClientService {
             });
     }
 
+    public async getEmergencyStop () {
+        return this.http
+            .get(`/api/emergency`)
+            .toPromise()
+            .then(response => {
+                return response.json().data.attributes.active;
+            });
+    }
+
+    public async setEmergencyStop (activate: boolean) {
+        // create emergency data object using the given parameters
+        let emergencyData = {
+            data: {
+                id: 0,
+                type: 'emergency',
+                attributes: {
+                    activate
+                }
+            }
+        };
+
+        // send post request with headers (json) and the stringifyed data object
+        return this.http
+            .patch(`/api/emergency`,
+                JSON.stringify(emergencyData),
+                {headers: this.headers})
+            .toPromise()
+            .then(() => Promise.resolve());
+    }
+
     public async getSensorValue (port: number) {
         // send get request for specific sensor value
         return this.http

@@ -11,7 +11,7 @@
             <i class="material-icons">stop</i>
         </a>
 
-        <a [ngClass]="{ 'disabled': true }">
+        <a (click)="releaseEmergency()" [ngClass]="{ 'disabled': !emergencyStopActive }">
             <i class="material-icons">warning</i>
         </a>
     </div>
