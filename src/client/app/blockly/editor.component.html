@@ -2,21 +2,35 @@
     <div class="nav-wrapper">
         <a class="brand-logo"> {{ programName.replace(".blockly","") }} </a>
         <ul id="nav-mobile" class="right">
-            <li materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="change language"><a materialize="dropdown" class="dropdown-button" data-activates="dropdownLang" >
+            <li materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="change language">
+                <a materialize="dropdown" class="dropdown-button" data-activates="dropdownLang" >
                     <i class="material-icons">language</i>
-            </a></li>
+                </a>
+            </li>
             <!-- <li (click)="saveWorkspace()"><a materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="save changes"> -->
             <!--         <i class="material-icons">save</i> -->
             <!-- </a></li> -->
-            <li (click)="clearWorkspace()"><a materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="clear workspace">
-                    <i class="material-icons">delete</i>
-            </a></li>
-            <li (click)="toggleShowCode();"><a materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="show code">
-                    <i class="material-icons">code</i>
-            </a></li>
             <li>
-                <a (click)="run()" materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="run program"  *ngIf="!programExecution.isRunning" [ngClass]="{ 'disabled': programExecution.commandInProgress }"><i class="material-icons">play_arrow</i></a>
-                <a (click)="programExecution.stop()" materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="stop program" *ngIf="programExecution.isRunning" [ngClass]="{ 'disabled': programExecution.commandInProgress }"><i class="material-icons">stop</i></a>
+                <a (click)="clearWorkspace()"
+                   materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="clear workspace">
+                    <i class="material-icons">delete</i>
+                </a>
+            </li>
+            <li>
+                <a (click)="toggleShowCode();"
+                   materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="show code">
+                    <i class="material-icons">code</i>
+                </a>
+            </li>
+            <li>
+                <a (click)="run()" *ngIf="!programExecution.isRunning" [ngClass]="{ 'disabled': programExecution.commandInProgress }"
+                   materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="run program">
+                    <i class="material-icons">play_arrow</i>
+                </a>
+                <a (click)="programExecution.stop()" *ngIf="programExecution.isRunning" [ngClass]="{ 'disabled': programExecution.commandInProgress }"
+                   materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="stop program">
+                    <i class="material-icons">stop</i>
+                </a>
             </li>
         </ul>
     </div>

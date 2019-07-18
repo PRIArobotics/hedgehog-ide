@@ -4,12 +4,33 @@
             <a class="brand-logo"> {{ programName }} </a>
             <ul class="right">
                 <li>
-                    <a (click)="run()" [ngClass]="{ 'disabled': !openId || programExecution.commandInProgress }" *ngIf="!programExecution.isRunning" materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="execute open file"><i class="material-icons">play_arrow</i></a>
-                    <a (click)="programExecution.stop()" [ngClass]="{ 'disabled': programExecution.commandInProgress }" *ngIf="programExecution.isRunning" materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="stop program"><i class="material-icons">stop</i></a>
+                    <a (click)="run()" [ngClass]="{ 'disabled': !openId || programExecution.commandInProgress }" *ngIf="!programExecution.isRunning"
+                       materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="execute open file">
+                        <i class="material-icons">play_arrow</i>
+                    </a>
+                    <a (click)="programExecution.stop()" [ngClass]="{ 'disabled': programExecution.commandInProgress }" *ngIf="programExecution.isRunning"
+                       materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="stop program">
+                        <i class="material-icons">stop</i>
+                    </a>
                 </li>
-                <li><a (click)="saveAllFiles(true)"><i materialize="tooltip" class="material-icons tooltipped" data-position="bottom" data-delay="50" data-tooltip="save files">save</i></a></li>
-                <li><a (click)="openSaveVersionModal()"><i materialize="tooltip" class="material-icons tooltipped" data-position="bottom" data-delay="50" data-tooltip="save as version">note_add</i></a></li>
-                <li><a (click)="openSettingsModal()"><i materialize="tooltip" class="material-icons tooltipped" data-position="bottom" data-delay="50" data-tooltip="settings">settings</i></a></li>
+                <li>
+                    <a (click)="saveAllFiles(true)"
+                       materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="save files">
+                        <i class="material-icons">save</i>
+                    </a>
+                </li>
+                <li>
+                    <a (click)="openSaveVersionModal()"
+                       materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="save as version">
+                        <i class="material-icons">note_add</i>
+                    </a>
+                </li>
+                <li>
+                    <a (click)="openSettingsModal()"
+                       materialize="tooltip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="settings">
+                        <i class="material-icons">settings</i>
+                    </a>
+                </li>
             </ul>
 
         </div>

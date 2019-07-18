@@ -11,6 +11,14 @@
     padding: 1vh;
 }
 
+#program-execution-sidebar > a {
+    display: block;
+    padding: 3px 0;
+
+    color: inherit;
+    cursor: pointer;
+}
+
 #program-execution-terminal {
     width: 100vw;
     height: 100%;

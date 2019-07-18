@@ -1,12 +1,15 @@
 <div id="program-execution" style="z-index: 100000" class="toggle-theme">
     <div id="program-execution-sidebar">
-        <i class="small material-icons" (click)="hide()">close</i>
+        <a (click)="hide()">
+            <i class="material-icons">close</i>
+        </a>
 
-        <br/>
-        <br/>
-
-        <i class="material-icons" *ngIf="!isRunning" (click)="run(replay.programName, replay.filePath, replay.args)">replay</i>
-        <i class="material-icons" *ngIf="isRunning" (click)="stop()">stop</i>
+        <a *ngIf="!isRunning" (click)="run(replay.programName, replay.filePath, replay.args)">
+            <i class="material-icons">play_arrow</i>
+        </a>
+        <a *ngIf="isRunning" (click)="stop()">
+            <i class="material-icons">stop</i>
+        </a>
     </div>
 
     <div id="program-execution-terminal">
