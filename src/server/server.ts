@@ -18,6 +18,8 @@ import SocketIoSensorAdapter from "./hedgehog-io/SocketIoSensorAdapter";
 import SocketIoEmergencyAdapter from "./hedgehog-io/SocketIoEmergencyAdapter";
 import ShareDbService from "./realtime-sync/ShareDbService";
 
+import { shim as util_promisify_shim } from "util.promisify";
+util_promisify_shim();
 
 (async () => {
     // Return external module as the file is outside of the
