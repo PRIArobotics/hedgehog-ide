@@ -6,8 +6,8 @@
   "scripts": {
     "test": "nyc mocha --require ts-node/register --reporter spec --check-leaks test/**/*.spec.ts",
     "coveralls": "nyc report --reporter=text-lcov | ./node_modules/.bin/coveralls",
-    "develop": "./node_modules/grunt/bin/grunt",
-    "release": "./node_modules/grunt/bin/grunt release",
+    "develop": "./node_modules/.bin/grunt",
+    "release": "./node_modules/.bin/grunt release",
     "gsl-blockly": "python -m gsl_blockly",
     "start": "node build/src/server/server.js"
   },
