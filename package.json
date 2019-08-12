@@ -7,6 +7,7 @@
     "test": "nyc mocha --require ts-node/register --reporter spec --check-leaks test/**/*.spec.ts",
     "coveralls": "nyc report --reporter=text-lcov | ./node_modules/.bin/coveralls",
     "develop": "./node_modules/.bin/grunt",
+    "genversion": "./node_modules/.bin/genversion --es6 --semi src/server/version.ts",
     "release": "./node_modules/.bin/grunt release",
     "gsl-blockly": "python -m gsl_blockly",
     "start": "node build/src/server/server.js"
@@ -87,6 +88,7 @@
     "coveralls": "^3.0.2",
     "css-loader": "^0.28.10",
     "extract-text-webpack-plugin": "^3.0.2",
+    "genversion": "^2.2.0",
     "grunt": "^1.0.4",
     "grunt-concurrent": "^2.3.1",
     "grunt-contrib-clean": "^1.1.0",

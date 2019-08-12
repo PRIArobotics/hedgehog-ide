@@ -5,6 +5,7 @@ import ApiResource from "../../ApiResource";
 import SerializerRegistry from "../../../serializer/SerializerRegistry";
 import ApiEndpoint from "../../ApiEndpoint";
 import {getLinkUrl} from "../../../utils";
+import {version as ideVersion} from "../../../version";
 import Version from "../../../../common/Version";
 import JsonApiDocumentBuilder from "../../../jsonapi/JsonApiBuilder";
 
@@ -25,7 +26,7 @@ export default class VersionResource extends ApiResource {
         version.hardwareVersion = versionInput.hardwareVersion;
         version.firmwareVersion = versionInput.firmwareVersion;
         version.serverVersion = versionInput.serverVersion;
-        version.ideVersion = "develop";
+        version.ideVersion = ideVersion;
 
         let documentBuilder = new JsonApiDocumentBuilder();
         documentBuilder.setLinks(getLinkUrl(req, `/api/version`), null);
