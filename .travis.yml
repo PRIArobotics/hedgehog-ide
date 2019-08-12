@@ -27,4 +27,6 @@ script:
   - grunt swagger-validate
   - grunt build
   - npm test
+
+after_success:
   - npm run coveralls
