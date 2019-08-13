@@ -48,7 +48,7 @@ export default class ServoResource extends ApiResource {
         }
 
 
-        this.hedgehog.setServo(servoPort, requestData.attributes.enabled, Number(requestData.attributes.position));
+        this.hedgehog.setServo(servoPort, requestData.attributes.enabled ? Number(requestData.attributes.position) : null);
         return '';
     }
 }
