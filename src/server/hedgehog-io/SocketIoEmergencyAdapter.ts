@@ -5,7 +5,7 @@ export default class SocketIoEmergencyAdapter {
 
     public constructor (private hedgehog: HedgehogClient, io: SocketIO.Server) {
         this.ns = io.of('/emergency');
-        setInterval(async () => this.sendEmergencyUpdate(), 200);
+        setInterval(() => this.sendEmergencyUpdate(), 200);
     }
 
     private async sendEmergencyUpdate () {
