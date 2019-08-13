@@ -9,7 +9,7 @@ export default class SocketIoSensorAdapter {
         for (let port = 0; port < 16; port++) {
             this.requests.push(new analog.Request(port), new digital.Request(port));
         }
-        setInterval(async () => this.sendSensorUpdate(), 200);
+        setInterval(async () => this.sendSensorUpdate(), 500);
     }
 
     private async sendSensorUpdate () {
