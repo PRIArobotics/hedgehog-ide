@@ -410,10 +410,10 @@ export class TextIdeComponent implements OnInit, AfterViewInit, AfterContentInit
                     'configure_lego_motor(port)',
                     'configure_lego_sensor(port)',
                 ];
-                callback(null, autocompletionList.map(addition => {
+                callback(null, autocompletionList.map(completion => {
                     return {
-                        caption: addition,
-                        value: 'hedgehog.' + addition,
+                        caption: completion,
+                        value: completion,
                         meta: 'hedgehog'
                     };
                 }));
