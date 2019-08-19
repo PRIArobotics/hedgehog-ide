@@ -27,7 +27,7 @@ export default class HedgehogControlComponent implements AfterViewInit, OnDestro
 
         [0, 1, 2, 3, 4, 5].forEach(() => {
             this.servoControls.push({
-                value: 0,
+                value: 500,
                 state: false
             });
         });
