@@ -121,7 +121,7 @@ util_promisify_shim();
     // tslint:disable
     new SocketIoProcessAdapter(processManager, io);
     new SocketIoSensorAdapter(hedgehog, io);
-    // new SocketIoEmergencyAdapter(hedgehog, io);
+    new SocketIoEmergencyAdapter(hedgehog, io);
 
     /**
      * ShareDB backend
