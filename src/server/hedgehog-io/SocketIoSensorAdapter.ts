@@ -3,16 +3,41 @@ import { HedgehogClient, Message, analog, digital } from 'hedgehog-client';
 export default class SocketIoSensorAdapter {
     private ns: SocketIO.Namespace;
     private requests: Message[] = [];
+    private connectionCount: number = 0;
+    private timer?: any = null;
 
-    public constructor (private hedgehog: HedgehogClient, io: SocketIO.Server) {
+    public constructor(private hedgehog: HedgehogClient, io: SocketIO.Server) {
         this.ns = io.of('/sensors');
         for (let port = 0; port < 16; port++) {
             this.requests.push(new analog.Request(port), new digital.Request(port));
         }
-        setInterval(() => this.sendSensorUpdate(), 500);
+
+        this.ns.on('connection', socket => {
+            if (this.connectionCount === 0) {
+                this.startUpdates();
+            }
+            this.connectionCount += 1;
+
+            socket.on('disconnect', () => {
+                this.connectionCount -= 1;
+                if (this.connectionCount === 0) {
+                    this.stopUpdates();
+                }
+            });
+        });
+
     }
 
-    private async sendSensorUpdate () {
+    private startUpdates() {
+        this.timer = setInterval(() => this.sendSensorUpdate(), 500);
+    }
+
+    private stopUpdates() {
+        clearInterval(this.timer);
+        this.timer = null;
+    }
+
+    private async sendSensorUpdate() {
         let sensorData: Array<{id: number, value: number, type: string}> = [];
         for (let reply of await this.hedgehog.sendMultipart(...this.requests)) {
             let id: number;
