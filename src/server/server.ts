@@ -15,6 +15,7 @@ import registerResources from "./api/resource";
 import SocketIoProcessAdapter from "./process/SocketIoProcessAdapter";
 import NodeProcessManager from "./process/NodeProcessManager";
 import SocketIoSensorAdapter from "./hedgehog-io/SocketIoSensorAdapter";
+import SocketIoVisionAdapter from "./hedgehog-io/SocketIoVisionAdapter";
 import SocketIoEmergencyAdapter from "./hedgehog-io/SocketIoEmergencyAdapter";
 import ShareDbService from "./realtime-sync/ShareDbService";
 
@@ -121,6 +122,7 @@ util_promisify_shim();
     // tslint:disable
     new SocketIoProcessAdapter(processManager, io);
     new SocketIoSensorAdapter(hedgehog, io);
+    new SocketIoVisionAdapter(hedgehog, io);
     new SocketIoEmergencyAdapter(hedgehog, io);
 
     /**

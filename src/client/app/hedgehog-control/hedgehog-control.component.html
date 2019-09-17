@@ -7,6 +7,7 @@
             <li class="tab col s3"><a href="#motors" class="active">Motors</a></li>
             <li class="tab col s3"><a href="#servos">Servos</a></li>
             <li class="tab col s3"><a href="#sensors">Sensors</a></li>
+            <li class="tab col s3"><a href="#vision">Vision</a></li>
         </ul>
     </div>
 </nav>
@@ -60,6 +61,10 @@
                     [type]="'digital'"
                     (pullupChanged)="updateSensorPullup(i, $event)">
             </output-chart>
+        </div>
+
+        <div id="vision" class="col s12">
+            <img [src]="frameUrl" />
         </div>
     </div>
 </div>

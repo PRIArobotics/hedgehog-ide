@@ -1,4 +1,5 @@
 import {Component, ChangeDetectorRef, AfterViewInit, OnDestroy} from '@angular/core';
+import {DomSanitizer, SafeUrl} from "@angular/platform-browser";
 import {HttpHedgehogClientService} from "./http-hedgehog-client.service";
 import {Subscription} from "rxjs";
 
@@ -15,9 +16,13 @@ export default class HedgehogControlComponent implements AfterViewInit, OnDestro
     public analogSensors: Array<{dataset: number[], labels: string[]}> = [];
     public digitalSensors: Array<{dataset: number[], labels: string[]}> = [];
 
-    private sensorSubscription: Subscription;
+    private blobUrl: string = null;
+    public frameUrl: SafeUrl = null;
 
-    constructor (private hedgehogClient: HttpHedgehogClientService, ref: ChangeDetectorRef) {
+    private sensorSubscription: Subscription;
+    private visionSubscription: Subscription;
+
+    constructor (private hedgehogClient: HttpHedgehogClientService, private ref: ChangeDetectorRef, private sanitizer: DomSanitizer) {
         [0, 1, 2, 3].forEach(() => {
             this.motorControls.push({
                 value: 0,
@@ -62,10 +67,25 @@ export default class HedgehogControlComponent implements AfterViewInit, OnDestro
                 }
                 ref.markForCheck();
             });
+        this.visionSubscription = this.hedgehogClient.onVisionFrames()
+            .subscribe(async frame => {
+                if (this.blobUrl !== null) {
+                    URL.revokeObjectURL(this.blobUrl);
+                }
+
+                let blob = new Blob([frame], {type: "image/jpg"});
+                this.blobUrl = URL.createObjectURL(blob);
+                this.frameUrl = this.sanitizer.bypassSecurityTrustUrl(this.blobUrl);
+            });
     }
 
     public ngOnDestroy(): void {
         this.sensorSubscription.unsubscribe();
+        this.visionSubscription.unsubscribe();
+        if (this.blobUrl !== null) {
+            URL.revokeObjectURL(this.blobUrl);
+            this.blobUrl = null;
+        }
     }
 
     public ngAfterViewInit(): void {

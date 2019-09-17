@@ -160,6 +160,21 @@ export class HttpHedgehogClientService {
         );
     }
 
+    public onVisionFrames (): Observable<Uint8Array> {
+        const host = `${document.location.protocol}//${document.location.hostname}:${document.location.port}`;
+        let socket = io(host + '/vision', {query: {jwtToken: this.authProvider.token}});
+
+        return Observable.fromEventPattern(
+            cb => {
+                socket.on('data', cb);
+            },
+            cb => {
+                socket.close();
+                cb();
+            }
+        );
+    }
+
     public onEmergencyStop (): Observable<{active: boolean}> {
         const host = `${document.location.protocol}//${document.location.hostname}:${document.location.port}`;
         let socket = io(host + '/emergency', {query: {jwtToken: this.authProvider.token}});
