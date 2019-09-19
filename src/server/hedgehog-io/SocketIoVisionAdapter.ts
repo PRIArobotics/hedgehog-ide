@@ -32,7 +32,7 @@ export default class SocketIoSensorAdapter {
 
     private async startUpdates() {
         console.log("subscribe to vision");
-        await this.hedgehog.openCamera([]);
+        await this.hedgehog.openCamera();
         this.timer = setInterval(() => this.sendVisionUpdate(), 500);
     }
 
