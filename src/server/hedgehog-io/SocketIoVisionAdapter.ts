@@ -1,6 +1,6 @@
 import { HedgehogClient, Message, ack, vision } from 'hedgehog-client';
 
-export default class SocketIoSensorAdapter {
+export default class SocketIoVisionAdapter {
     private ns: SocketIO.Namespace;
     private requests: Message[];
     private connectionCount: number = 0;
@@ -44,7 +44,6 @@ export default class SocketIoSensorAdapter {
     }
 
     private async sendVisionUpdate() {
-        let sensorData: Array<{id: number, value: number, type: string}> = [];
         let [captureReply, frameReply] = await this.hedgehog.sendMultipart(...this.requests);
         if (captureReply.code !== ack.AcknowledgementCode.OK)
             return;
