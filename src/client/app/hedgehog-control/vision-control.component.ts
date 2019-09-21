@@ -3,7 +3,8 @@ import {SafeUrl} from "@angular/platform-browser";
 
 @Component({
     selector: 'vision-control',
-    template: require('./vision-control.component.html')
+    template: require('./vision-control.component.html'),
+    styles: [require('./vision-control.component.css')]
 })
 export default class VisionControlComponent {
     @Input() public name: string;

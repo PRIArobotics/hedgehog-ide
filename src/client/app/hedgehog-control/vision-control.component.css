@@ -1,0 +1,14 @@
+.vision-main {
+    display: flex;
+    flex-flow: row nowrap;
+}
+
+.vision-frame {
+    flex: 0 0 auto;
+    padding: 0 0.75rem;
+}
+
+.vision-control {
+    flex: 1 1 auto;
+    padding: 0 0.75rem;
+}
