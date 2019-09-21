@@ -8,6 +8,7 @@ import HedgehogControlComponent from "./hedgehog-control.component";
 import OutputControlComponent from "./output-control.component";
 import {HttpHedgehogClientService} from "./http-hedgehog-client.service";
 import OutputChartComponent from "./output-chart.component";
+import VisionControlComponent from "./vision-control.component";
 import "chart.js";
 
 @NgModule({
@@ -19,7 +20,8 @@ import "chart.js";
     declarations: [
         HedgehogControlComponent,
         OutputControlComponent,
-        OutputChartComponent
+        OutputChartComponent,
+        VisionControlComponent
     ],
     providers: [
         HttpHedgehogClientService

@@ -64,7 +64,10 @@
         </div>
 
         <div id="vision" class="col s12">
-            <img [src]="frameUrl" />
+            <vision-control
+                    [name]="'Vision'"
+                    [frameUrl]="frameUrl">
+            </vision-control>
         </div>
     </div>
 </div>
