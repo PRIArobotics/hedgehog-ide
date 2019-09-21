@@ -82,6 +82,6 @@ export default class SocketIoVisionAdapter {
         await this.hedgehog.captureFrame();
         await this.vision.sendUpdate(this.hedgehog);
         await this.faces.sendUpdate(this.hedgehog, 'ide.faces');
-        await this.blobs.sendUpdate(this.hedgehog, 'ide.faces');
+        await this.blobs.sendUpdate(this.hedgehog, 'ide.blobs');
     }
 }
