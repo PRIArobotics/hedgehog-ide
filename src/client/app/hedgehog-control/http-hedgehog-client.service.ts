@@ -5,6 +5,12 @@ import {Injectable} from "@angular/core";
 import {Observable} from "rxjs";
 import {AuthProvider} from "../auth-provider.service";
 
+export enum VisionChannelKind {
+    RAW,
+    FACES,
+    BLOBS,
+}
+
 @Injectable()
 export class HttpHedgehogClientService {
 
@@ -160,9 +166,22 @@ export class HttpHedgehogClientService {
         );
     }
 
-    public onVisionFrames (): Observable<Uint8Array> {
+    public onVisionFrames (channel: VisionChannelKind): Observable<Uint8Array> {
         const host = `${document.location.protocol}//${document.location.hostname}:${document.location.port}`;
-        let socket = io(host + '/vision', {query: {jwtToken: this.authProvider.token}});
+
+        let ns;
+        switch (channel) {
+            case VisionChannelKind.FACES:
+                ns = 'vision-faces';
+                break;
+            case VisionChannelKind.BLOBS:
+                ns = 'vision-blobs';
+                break;
+            default:
+                ns = 'vision';
+        }
+
+        let socket = io(`${host}/${ns}`, {query: {jwtToken: this.authProvider.token}});
 
         return Observable.fromEventPattern(
             cb => {

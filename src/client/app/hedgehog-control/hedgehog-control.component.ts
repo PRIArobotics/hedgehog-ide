@@ -1,6 +1,6 @@
 import {Component, ChangeDetectorRef, AfterViewInit, OnDestroy} from '@angular/core';
 import {DomSanitizer, SafeUrl} from "@angular/platform-browser";
-import {HttpHedgehogClientService} from "./http-hedgehog-client.service";
+import {HttpHedgehogClientService, VisionChannelKind} from "./http-hedgehog-client.service";
 import {Subscription} from "rxjs";
 
 @Component({
@@ -67,16 +67,8 @@ export default class HedgehogControlComponent implements AfterViewInit, OnDestro
                 }
                 ref.markForCheck();
             });
-        this.visionSubscription = this.hedgehogClient.onVisionFrames()
-            .subscribe(async frame => {
-                if (this.blobUrl !== null) {
-                    URL.revokeObjectURL(this.blobUrl);
-                }
-
-                let blob = new Blob([frame], {type: "image/jpg"});
-                this.blobUrl = URL.createObjectURL(blob);
-                this.frameUrl = this.sanitizer.bypassSecurityTrustUrl(this.blobUrl);
-            });
+        this.visionSubscription = this.hedgehogClient.onVisionFrames(VisionChannelKind.RAW)
+            .subscribe(frame => this.onVisionFrame(frame));
     }
 
     public ngOnDestroy(): void {
@@ -121,5 +113,22 @@ export default class HedgehogControlComponent implements AfterViewInit, OnDestro
 
     private async updateSensorPullup(port: number, pullup) {
         await this.hedgehogClient.setInputState(port, pullup);
+    }
+
+    private onVisionFrame(frame): void {
+        if (this.blobUrl !== null) {
+            URL.revokeObjectURL(this.blobUrl);
+        }
+
+        let blob = new Blob([frame], {type: "image/jpg"});
+        this.blobUrl = URL.createObjectURL(blob);
+        this.frameUrl = this.sanitizer.bypassSecurityTrustUrl(this.blobUrl);
+    }
+
+    private setVisionChannel(channel: VisionChannelKind): void {
+        let newSubscription = this.hedgehogClient.onVisionFrames(channel)
+            .subscribe(frame => this.onVisionFrame(frame));
+        this.visionSubscription.unsubscribe();
+        this.visionSubscription = newSubscription;
     }
 }
