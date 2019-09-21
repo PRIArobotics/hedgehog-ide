@@ -10,7 +10,24 @@
                     <img [src]="frameUrl" width="160" height="120" />
                 </div>
                 <div class="vision-control">
-                    Hello
+                    <p>
+                        <input
+                                id="channel.raw" name="channel" type="radio" [value]="VisionChannelKind.RAW"
+                                [ngModel]="channel" (ngModelChange)="updateChannel($event)">
+                        <label for="channel.raw">Raw camera image</label>
+                    </p>
+                    <p>
+                        <input
+                                id="channel.faces" name="channel" type="radio" [value]="VisionChannelKind.FACES"
+                                [ngModel]="channel" (ngModelChange)="updateChannel($event)">
+                        <label for="channel.faces">Face detection</label>
+                    </p>
+                    <p>
+                        <input
+                                id="channel.blobs" name="channel" type="radio" [value]="VisionChannelKind.BLOBS"
+                                [ngModel]="channel" (ngModelChange)="updateChannel($event)">
+                        <label for="channel.blobs">Blob detection</label>
+                    </p>
                 </div>
             </div>
         </div>

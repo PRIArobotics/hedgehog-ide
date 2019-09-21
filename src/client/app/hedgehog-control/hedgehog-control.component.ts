@@ -1,4 +1,4 @@
-import {Component, ChangeDetectorRef, AfterViewInit, OnDestroy} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, OnDestroy} from '@angular/core';
 import {DomSanitizer, SafeUrl} from "@angular/platform-browser";
 import {HttpHedgehogClientService, VisionChannelKind} from "./http-hedgehog-client.service";
 import {Subscription} from "rxjs";
@@ -16,6 +16,7 @@ export default class HedgehogControlComponent implements AfterViewInit, OnDestro
     public analogSensors: Array<{dataset: number[], labels: string[]}> = [];
     public digitalSensors: Array<{dataset: number[], labels: string[]}> = [];
 
+    public channel: VisionChannelKind = VisionChannelKind.RAW;
     private blobUrl: string = null;
     public frameUrl: SafeUrl = null;
 
@@ -125,10 +126,11 @@ export default class HedgehogControlComponent implements AfterViewInit, OnDestro
         this.frameUrl = this.sanitizer.bypassSecurityTrustUrl(this.blobUrl);
     }
 
-    private setVisionChannel(channel: VisionChannelKind): void {
+    public updateVisionChannel(channel: VisionChannelKind): void {
         let newSubscription = this.hedgehogClient.onVisionFrames(channel)
             .subscribe(frame => this.onVisionFrame(frame));
         this.visionSubscription.unsubscribe();
         this.visionSubscription = newSubscription;
+        this.channel = channel;
     }
 }

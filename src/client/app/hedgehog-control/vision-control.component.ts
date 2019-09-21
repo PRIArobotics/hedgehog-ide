@@ -1,5 +1,7 @@
-import {Component, Input, EventEmitter, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {SafeUrl} from "@angular/platform-browser";
+
+import {VisionChannelKind} from "./http-hedgehog-client.service";
 
 @Component({
     selector: 'vision-control',
@@ -9,8 +11,16 @@ import {SafeUrl} from "@angular/platform-browser";
 export default class VisionControlComponent {
     @Input() public name: string;
     @Input() public frameUrl: SafeUrl;
+    @Input() public channel: VisionChannelKind;
 
-    // @Output() private pullupChanged = new EventEmitter();
+    @Output() private channelChanged = new EventEmitter();
+
+    private VisionChannelKind = VisionChannelKind;
 
     public constructor () {}
+
+    private updateChannel (channel) {
+        this.channel = channel;
+        this.channelChanged.emit(channel);
+    }
 }
