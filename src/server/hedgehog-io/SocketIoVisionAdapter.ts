@@ -24,7 +24,7 @@ class VisionNamespace {
             return;
 
         let frame = await hedgehog.getFrame(highlight);
-        this.ns.emit('data', Buffer.from(frame.buffer, frame.byteOffset, frame.byteLength));
+        (this.ns as any).volatile.emit('data', Buffer.from(frame.buffer, frame.byteOffset, frame.byteLength));
     }
 }
 
@@ -59,7 +59,7 @@ export default class SocketIoVisionAdapter {
                 hsvMin: 0x461414,
                 hsvMax: 0x5AFFEA,
             });
-            this.timer = setInterval(() => this.sendVisionUpdate(), 500);
+            this.timer = setInterval(() => this.sendVisionUpdate(), 100);
         }
     }
 
