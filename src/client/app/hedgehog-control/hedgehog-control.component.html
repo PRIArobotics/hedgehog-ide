@@ -68,7 +68,9 @@
                     [name]="'Vision'"
                     [frameUrl]="frameUrl"
                     [channel]="channel"
-                    (channelChanged)="updateVisionChannel($event)">
+                    [blobsRange]="blobsRange"
+                    (channelChanged)="updateVisionChannel($event)"
+                    (blobsRangeChanged)="updateVisionBlobsRange($event)">
             </vision-control>
         </div>
     </div>

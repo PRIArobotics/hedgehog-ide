@@ -17,6 +17,7 @@ export default class HedgehogControlComponent implements AfterViewInit, OnDestro
     public digitalSensors: Array<{dataset: number[], labels: string[]}> = [];
 
     public channel: VisionChannelKind = VisionChannelKind.RAW;
+    public blobsRange: [[number, number, number], [number, number, number]] = [[70, 20, 20], [90, 255, 234]];
     private blobUrl: string = null;
     public frameUrl: SafeUrl = null;
 
@@ -132,5 +133,9 @@ export default class HedgehogControlComponent implements AfterViewInit, OnDestro
         this.visionSubscription.unsubscribe();
         this.visionSubscription = newSubscription;
         this.channel = channel;
+    }
+
+    public updateVisionBlobsRange(blobsRange: [[number, number, number], [number, number, number]]): void {
+        this.blobsRange = blobsRange;
     }
 }

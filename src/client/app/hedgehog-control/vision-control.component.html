@@ -7,7 +7,7 @@
 
             <div class="row vision-main">
                 <div class="vision-frame">
-                    <img [src]="frameUrl" width="160" height="120" />
+                    <img [src]="frameUrl" width="160" height="120" (click)="clickImage($event)" />
                 </div>
                 <div class="vision-control">
                     <p>
@@ -27,6 +27,11 @@
                                 id="channel.blobs" name="channel" type="radio" [value]="VisionChannelKind.BLOBS"
                                 [ngModel]="channel" (ngModelChange)="updateChannel($event)">
                         <label for="channel.blobs">Blob detection</label>
+                    </p>
+                    <p>
+                        {{blobsRange[0][0]}}-{{blobsRange[1][0]}};
+                        {{blobsRange[0][1]}}-{{blobsRange[1][1]}};
+                        {{blobsRange[0][2]}}-{{blobsRange[1][2]}}
                     </p>
                 </div>
             </div>
