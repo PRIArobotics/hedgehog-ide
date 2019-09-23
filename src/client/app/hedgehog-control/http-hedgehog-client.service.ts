@@ -166,6 +166,20 @@ export class HttpHedgehogClientService {
         );
     }
 
+    public setVisionBlobsRange (hsvMin: number, hsvMax: number): Promise<void> {
+        return new Promise(resolve => {
+            const host = `${document.location.protocol}//${document.location.hostname}:${document.location.port}`;
+
+            let socket = io(`${host}/vision-blobs-range`, {query: {jwtToken: this.authProvider.token}});
+
+            socket.on('connect', function () {
+                socket.emit('data', hsvMin, hsvMax);
+                socket.disconnect();
+                resolve();
+            });
+        });
+    }
+
     public onVisionFrames (channel: VisionChannelKind): Observable<Uint8Array> {
         const host = `${document.location.protocol}//${document.location.hostname}:${document.location.port}`;
 

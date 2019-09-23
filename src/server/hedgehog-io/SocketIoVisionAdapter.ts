@@ -32,6 +32,8 @@ export default class SocketIoVisionAdapter {
     private vision: VisionNamespace;
     private faces: VisionNamespace;
     private blobs: VisionNamespace;
+
+    private blobsRange: SocketIO.Namespace;
     private timer?: any = null;
 
     public constructor(private hedgehog: HedgehogClient, io: SocketIO.Server) {
@@ -41,6 +43,18 @@ export default class SocketIoVisionAdapter {
         this.vision = new VisionNamespace(io.of('/vision'), onConnect, onDisconnect);
         this.faces = new VisionNamespace(io.of('/vision-faces'), onConnect, onDisconnect);
         this.blobs = new VisionNamespace(io.of('/vision-blobs'), onConnect, onDisconnect);
+
+        this.blobsRange = io.of('/vision-blobs-range');
+        this.blobsRange.on('connection', socket => {
+            socket.on('data', (hsvMin, hsvMax) => {
+                console.log(hsvMin, hsvMax);
+                this.hedgehog.updateChannel('ide.blobs', {
+                    kind: vision.ChannelKind.BLOBS,
+                    hsvMin,
+                    hsvMax,
+                });
+            });
+        });
     }
 
     private async startUpdates() {

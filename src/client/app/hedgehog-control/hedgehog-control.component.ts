@@ -137,5 +137,10 @@ export default class HedgehogControlComponent implements AfterViewInit, OnDestro
 
     public updateVisionBlobsRange(blobsRange: [[number, number, number], [number, number, number]]): void {
         this.blobsRange = blobsRange;
+        let [hsvMin, hsvMax] = blobsRange;
+
+        const pack = ([h, s, v]) => (h << 16) | (s << 8) | (v << 0);
+
+        this.hedgehogClient.setVisionBlobsRange(pack(hsvMin), pack(hsvMax));
     }
 }
