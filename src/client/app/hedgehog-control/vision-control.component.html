@@ -30,7 +30,9 @@
                     </p>
                     <p>
                         <canvas
-                                #canvas width="360" height="200"
+                                #canvas
+                                [width]="chooser.width + 2*chooser.border"
+                                [height]="chooser.height + 2*chooser.border"
                                 (mousedown)="canvasMouseDown($event)"
                                 (mousemove)="canvasMouseMove($event)"
                                 (mouseup)="canvasMouseUp($event)">

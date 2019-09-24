@@ -35,16 +35,25 @@ export default class VisionControlComponent {
         range: HSVRange;
     } | null = null;
 
+    chooser = {
+        width: 360,
+        height: 200,
+        border: 3,
+    };
+
     private VisionChannelKind = VisionChannelKind;
 
     public constructor () {}
 
     ngAfterViewInit() {
         let canvas = this.canvas.nativeElement;
+
+        let { width, height } = this.chooser;
         canvas.offscreenCanvas = document.createElement('canvas');
-        canvas.offscreenCanvas.width = canvas.width * 2;
-        canvas.offscreenCanvas.height = canvas.height;
+        canvas.offscreenCanvas.width = 2*width;
+        canvas.offscreenCanvas.height = height;
         this.paintBackground();
+
         this.paintCanvas();
     }
 
@@ -156,13 +165,16 @@ export default class VisionControlComponent {
     }
 
     private paintBackground() {
-        let ctx = this.canvas.nativeElement.offscreenCanvas.getContext('2d');
+        let canvas = this.canvas.nativeElement.offscreenCanvas;
+        let ctx = canvas.getContext('2d');
 
-        const x2h = x => (x/360 + 1/2) % 1;
-        const y2sv = y => y < 100 ? [y / 100, 1] : [1, (199 - y) / 100];
+        let { width, height } = this.chooser;
 
-		for(let x = 0; x < 720; x++) {
-			for(let y = 0; y < 200; y++) {
+        const x2h = x => (x/width + 1/2) % 1;
+        const y2sv = y => y < height/2 ? [y / (height/2), 1] : [1, (height-1 - y) / (height/2)];
+
+		for(let x = 0; x < 2*width; x++) {
+			for(let y = 0; y < height; y++) {
 			    let hsv = [x2h(x), ...y2sv(y)] as HSV;
 				let [r, g, b] = VisionControlComponent.hsv2rgb(hsv);
 				ctx.fillStyle = `rgb(${this.float2byte(r)}, ${this.float2byte(g)}, ${this.float2byte(b)})`;
@@ -172,7 +184,9 @@ export default class VisionControlComponent {
     }
 
     private paintCanvas() {
-        let ctx = this.canvas.nativeElement.getContext('2d');
+        let canvas = this.canvas.nativeElement;
+        let ctx = canvas.getContext('2d');
+        let { width, height, border } = this.chooser;
 
         let hMin, sMin, vMin, hMax, sMax, vMax, hBias;
         if (this.canvasDragInfo !== null) {
@@ -183,13 +197,23 @@ export default class VisionControlComponent {
             hBias = hMin < hMax? (hMin+hMax)/2 : (hMin+hMax+1)/2;
         }
 
-        const h2x = h => ((h - hBias + 3/2) % 1)*360;
-        const s2y = s => s * 100;
-        const v2y = v => 199 - v * 100;
+        const h2x = h => ((h - hBias + 3/2) % 1)*width + border;
+        const s2y = s => s * (height/2) + border;
+        const v2y = v => height - 1 - v * (height/2) + border;
 
-        let xBias = h2x(0) - 180;
-        if (xBias > 0) xBias -= 360;
-        ctx.drawImage(this.canvas.nativeElement.offscreenCanvas, xBias, 0);
+        // draw a background for additional drag area
+		ctx.fillStyle = 'grey';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // draw the palette, clipped into the border
+        ctx.save();
+        ctx.rect(border, border, width, height);
+        ctx.clip();
+
+        let xBias = h2x(0) - width/2;
+        if (xBias > 0) xBias -= width;
+        ctx.drawImage(this.canvas.nativeElement.offscreenCanvas, xBias + border, border);
+        ctx.restore();
 
 		ctx.lineWidth = 2;
 		const r = 8;
@@ -217,6 +241,8 @@ export default class VisionControlComponent {
     private canvasMouseDown(event) {
         const canvas = event.target;
         const rect = canvas.getBoundingClientRect();
+        let { width, height, border } = this.chooser;
+
         const x = event.clientX - rect.left, y = event.clientY - rect.top;
 
         let [[hMin, sMin, vMin], [hMax, sMax, vMax]] = this.blobsRange;
@@ -224,9 +250,9 @@ export default class VisionControlComponent {
         if (hMax < hMin) hMax += 1;
         let hBias = (hMin+hMax)/2;
 
-        const h2x = h => ((h - hBias + 3/2) % 1)*360;
-        const s2y = s => s * 100;
-        const v2y = v => 199 - v * 100;
+        const h2x = h => ((h - hBias + 3/2) % 1)*width + border;
+        const s2y = s => s * (height/2) + border;
+        const v2y = v => height-1 - v * (height/2) + border;
 
         const r = 8;
         const inRange = (x, target) => target - r <= x && x <= target + r;
@@ -268,12 +294,14 @@ export default class VisionControlComponent {
     }
 
     private setDragRange(x: number, y: number) {
+        let { width, height, border } = this.chooser;
+
         let { dragPoint, hBias, range } = this.canvasDragInfo;
 
         // don't wrap to preserve the direction of the selection
-        const x2h = x => (x/360 + hBias - 1/2);
+        const x2h = x => ((x-border)/width + hBias - 1/2);
 
-        const y2sv = y => y < 100 ? [y / 100, 1] : [1, (199 - y) / 100];
+        const y2sv = y => (y-border) < height/2 ? [(y-border) / (height/2), 1] : [1, (height-1 - (y-border)) / (height/2)];
         let h = x2h(x), [s, v] = y2sv(y);
 
         const limit = (x, min, max) => Math.max(min, Math.min(max, x));
