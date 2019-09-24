@@ -32,7 +32,7 @@ export default class VisionControlComponent {
     private canvasDragInfo: {
         dragPoint: DragPoint;
         hBias: number;
-        dragRange: HSVRange;
+        range: HSVRange;
     } | null = null;
 
     private VisionChannelKind = VisionChannelKind;
@@ -176,7 +176,7 @@ export default class VisionControlComponent {
 
         let hMin, sMin, vMin, hMax, sMax, vMax, hBias;
         if (this.canvasDragInfo !== null) {
-            [[hMin, sMin, vMin], [hMax, sMax, vMax]] = this.canvasDragInfo.dragRange;
+            [[hMin, sMin, vMin], [hMax, sMax, vMax]] = this.canvasDragInfo.range;
             hBias = this.canvasDragInfo.hBias;
         } else {
             [[hMin, sMin, vMin], [hMax, sMax, vMax]] = this.blobsRange;
@@ -250,10 +250,10 @@ export default class VisionControlComponent {
         this.canvasDragInfo = {
             dragPoint,
             hBias,
-            dragRange: [[hMin, sMin, vMin], [hMax, sMax, vMax]],
+            range: [[hMin, sMin, vMin], [hMax, sMax, vMax]],
         };
 
-        this.setBlobRangeFromDrag(x, y);
+        this.setDragRange(x, y);
     }
 
     private canvasMouseMove(event) {
@@ -264,11 +264,11 @@ export default class VisionControlComponent {
         const rect = canvas.getBoundingClientRect();
         const x = event.clientX - rect.left, y = event.clientY - rect.top;
 
-        this.setBlobRangeFromDrag(x, y);
+        this.setDragRange(x, y);
     }
 
-    private setBlobRangeFromDrag(x: number, y: number) {
-        let { dragPoint, hBias, dragRange } = this.canvasDragInfo;
+    private setDragRange(x: number, y: number) {
+        let { dragPoint, hBias, range } = this.canvasDragInfo;
 
         // don't wrap to preserve the direction of the selection
         const x2h = x => (x/360 + hBias - 1/2);
@@ -276,14 +276,14 @@ export default class VisionControlComponent {
         const y2sv = y => y < 100 ? [y / 100, 1] : [1, (199 - y) / 100];
         let h = x2h(x), [s, v] = y2sv(y);
 
-        let [[hMin, sMin, vMin], [hMax, sMax, vMax]] = dragRange;
+        let [[hMin, sMin, vMin], [hMax, sMax, vMax]] = range;
         switch (dragPoint) {
             case DragPoint.HS_TL: hMin = h; sMin = s; break;
             case DragPoint.HV_TL: hMin = h; vMax = v; break;
             case DragPoint.HS_BR: hMax = h; sMax = s; break;
             case DragPoint.HV_BR: hMax = h; vMin = v; break;
         }
-        this.canvasDragInfo.dragRange = [[hMin, sMin, vMin], [hMax, sMax, vMax]];
+        this.canvasDragInfo.range = [[hMin, sMin, vMin], [hMax, sMax, vMax]];
         this.paintCanvas();
     }
 
@@ -291,7 +291,7 @@ export default class VisionControlComponent {
         if (this.canvasDragInfo === null)
             return;
 
-        let [[hMin, sMin, vMin], [hMax, sMax, vMax]] = this.canvasDragInfo.dragRange;
+        let [[hMin, sMin, vMin], [hMax, sMax, vMax]] = this.canvasDragInfo.range;
         if (hMin > hMax) [hMin, hMax] = [hMax, hMin];
         // normalize hue value
         hMin %= 1;
