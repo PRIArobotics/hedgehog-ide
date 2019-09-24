@@ -29,7 +29,11 @@
                         <label for="channel.blobs">Blob detection</label>
                     </p>
                     <p>
-                        <canvas #canvas width="360" height="200">
+                        <canvas
+                                #canvas width="360" height="200"
+                                (mousedown)="canvasMouseDown($event)"
+                                (mousemove)="canvasMouseMove($event)"
+                                (mouseup)="canvasMouseUp($event)">
                         </canvas>
                         {{float2byte(blobsRange[0][0])}}-{{float2byte(blobsRange[1][0])}};
                         {{float2byte(blobsRange[0][1])}}-{{float2byte(blobsRange[1][1])}};

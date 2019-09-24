@@ -7,6 +7,13 @@ export type HSV = [number, number, number];
 export type HSVRange = [HSV, HSV];
 export type RGB = [number, number, number];
 
+enum DragPoint {
+    HS_TL,
+    HS_BR,
+    HV_TL,
+    HV_BR,
+}
+
 @Component({
     selector: 'vision-control',
     template: require('./vision-control.component.html'),
@@ -22,12 +29,21 @@ export default class VisionControlComponent {
     @Output() private blobsRangeChanged = new EventEmitter();
 
     @ViewChild('canvas') private canvas;
+    private canvasDragInfo: {
+        dragPoint: DragPoint;
+        hBias: number;
+        dragRange: HSVRange;
+    } | null = null;
 
     private VisionChannelKind = VisionChannelKind;
 
     public constructor () {}
 
     ngAfterViewInit() {
+        let canvas = this.canvas.nativeElement;
+        canvas.offscreenCanvas = document.createElement('canvas');
+        canvas.offscreenCanvas.width = canvas.width;
+        canvas.offscreenCanvas.height = canvas.height;
         this.paintCanvas();
     }
 
@@ -138,15 +154,8 @@ export default class VisionControlComponent {
         this.setBlobsRangeFromRgb(rgb);
     }
 
-    private paintCanvas() {
-        let ctx = this.canvas.nativeElement.getContext('2d');
-
-        let [[hMin, sMin, vMin], [hMax, sMax, vMax]] = this.blobsRange;
-		let hBias = hMin < hMax? (hMin+hMax)/2 : (hMin+hMax+1)/2;
-
-        const h2x = h => ((h - hBias + 3/2) % 1)*360;
-        const s2y = s => s * 100;
-        const v2y = v => 199 - v * 100;
+    private paintBackground(hBias: number) {
+        let ctx = this.canvas.nativeElement.offscreenCanvas.getContext('2d');
 
         const x2h = x => (x/360 + hBias + 1/2) % 1;
         const y2sv = y => y < 100 ? [y / 100, 1] : [1, (199 - y) / 100];
@@ -159,6 +168,26 @@ export default class VisionControlComponent {
 				ctx.fillRect(x, y, 1, 1);
 			}
 		}
+    }
+
+    private paintCanvas() {
+        let ctx = this.canvas.nativeElement.getContext('2d');
+
+        let hMin, sMin, vMin, hMax, sMax, vMax, hBias;
+        if (this.canvasDragInfo !== null) {
+            [[hMin, sMin, vMin], [hMax, sMax, vMax]] = this.canvasDragInfo.dragRange;
+            hBias = this.canvasDragInfo.hBias;
+        } else {
+            [[hMin, sMin, vMin], [hMax, sMax, vMax]] = this.blobsRange;
+            hBias = hMin < hMax? (hMin+hMax)/2 : (hMin+hMax+1)/2;
+            this.paintBackground(hBias);
+        }
+
+        const h2x = h => ((h - hBias + 3/2) % 1)*360;
+        const s2y = s => s * 100;
+        const v2y = v => 199 - v * 100;
+
+        ctx.drawImage(this.canvas.nativeElement.offscreenCanvas, 0, 0);
 
 		ctx.lineWidth = 2;
 		const r = 8;
@@ -181,5 +210,84 @@ export default class VisionControlComponent {
 		ctx.strokeRect(x1, y1, x2-x1, y2-y1);
 		ctx.strokeRect(x2-r, y1-r, 2*r, 2*r);
 		ctx.strokeRect(x1-r, y2-r, 2*r, 2*r);
+    }
+
+    private canvasMouseDown(event) {
+        const canvas = event.target;
+        const rect = canvas.getBoundingClientRect();
+        const x = event.clientX - rect.left, y = event.clientY - rect.top;
+
+        let [[hMin, sMin, vMin], [hMax, sMax, vMax]] = this.blobsRange;
+        let hBias = hMin < hMax? (hMin+hMax)/2 : (hMin+hMax+1)/2;
+
+        const h2x = h => ((h - hBias + 3/2) % 1)*360;
+        const s2y = s => s * 100;
+        const v2y = v => 199 - v * 100;
+
+        const r = 8;
+        const inRange = (x, target) => target - r <= x && x <= target + r;
+
+        let dragPoint: DragPoint;
+        if (inRange(x, h2x(hMin))) {
+            if (inRange(y, s2y(sMin))) {
+                dragPoint = DragPoint.HS_TL;
+            } else if (inRange(y, v2y(vMax))) {
+                dragPoint = DragPoint.HV_TL;
+            } else return;
+        } else if (inRange(x, h2x(hMax))) {
+            if (inRange(y, s2y(sMax))) {
+                dragPoint = DragPoint.HS_BR;
+            } else if (inRange(y, v2y(vMin))) {
+                dragPoint = DragPoint.HV_BR;
+            } else return;
+        } else return;
+
+
+        this.canvasDragInfo = {
+            dragPoint,
+            hBias,
+            dragRange: [[hMin, sMin, vMin], [hMax, sMax, vMax]],
+        };
+
+        this.setBlobRangeFromDrag(x, y);
+    }
+
+    private canvasMouseMove(event) {
+        if (this.canvasDragInfo === null)
+            return;
+
+        const canvas = event.target;
+        const rect = canvas.getBoundingClientRect();
+        const x = event.clientX - rect.left, y = event.clientY - rect.top;
+
+        this.setBlobRangeFromDrag(x, y);
+    }
+
+    private setBlobRangeFromDrag(x: number, y: number) {
+        let { dragPoint, hBias, dragRange } = this.canvasDragInfo;
+
+        const x2h = x => (x/360 + hBias + 1/2) % 1;
+
+        const y2sv = y => y < 100 ? [y / 100, 1] : [1, (199 - y) / 100];
+        let h = x2h(x), [s, v] = y2sv(y);
+
+        let [[hMin, sMin, vMin], [hMax, sMax, vMax]] = dragRange;
+        switch (dragPoint) {
+            case DragPoint.HS_TL: hMin = h; sMin = s; break;
+            case DragPoint.HV_TL: hMin = h; vMax = v; break;
+            case DragPoint.HS_BR: hMax = h; sMax = s; break;
+            case DragPoint.HV_BR: hMax = h; vMin = v; break;
+        }
+        this.canvasDragInfo.dragRange = [[hMin, sMin, vMin], [hMax, sMax, vMax]];
+        this.paintCanvas();
+    }
+
+    private canvasMouseUp(event) {
+        if (this.canvasDragInfo === null)
+            return;
+
+        let { dragRange } = this.canvasDragInfo;
+        this.canvasDragInfo = null;
+        this.setBlobsRange(dragRange);
     }
 }
