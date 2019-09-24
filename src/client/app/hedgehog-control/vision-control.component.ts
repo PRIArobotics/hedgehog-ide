@@ -3,6 +3,10 @@ import {SafeUrl} from "@angular/platform-browser";
 
 import {VisionChannelKind} from "./http-hedgehog-client.service";
 
+export type HSV = [number, number, number];
+export type HSVRange = [HSV, HSV];
+export type RGB = [number, number, number];
+
 @Component({
     selector: 'vision-control',
     template: require('./vision-control.component.html'),
@@ -12,7 +16,7 @@ export default class VisionControlComponent {
     @Input() public name: string;
     @Input() public frameUrl: SafeUrl;
     @Input() public channel: VisionChannelKind;
-    @Input() public blobsRange: [[number, number, number], [number, number, number]];
+    @Input() public blobsRange: HSVRange;
 
     @Output() private channelChanged = new EventEmitter();
     @Output() private blobsRangeChanged = new EventEmitter();
@@ -29,17 +33,12 @@ export default class VisionControlComponent {
     /**
      * Converts an RGB color value to HSV. Conversion formula
      * adapted from http://en.wikipedia.org/wiki/HSV_color_space.
-     * Assumes r, g, and b are contained in the set [0, 255] and
-     * returns h, s, and v in the OpenCV color space:
-     * h is in [0-179], s and v are in [0-255].
+     * All values are in [0, 1].
      *
      * @see https://gist.github.com/mjackson/5311256
      */
-    static rgb2hsv(rgb: [number, number, number]): [number, number, number] {
+    static rgb2hsv(rgb: RGB): HSV {
         let [r, g, b] = rgb;
-        r /= 255;
-        g /= 255;
-        b /= 255;
 
         let max = Math.max(r, g, b), min = Math.min(r, g, b);
         let d = max - min;
@@ -59,22 +58,18 @@ export default class VisionControlComponent {
             h /= 6;
         }
 
-        return [Math.round(h*179), Math.round(s*255), Math.round(v*255)];
+        return [h, s, v];
     }
 
     /**
      * Converts an HSV color value to RGB. Conversion formula
      * adapted from http://en.wikipedia.org/wiki/HSV_color_space.
-     * Assumes h, s, and v are contained in the set [0, 1] and
-     * returns r, g, and b in the set [0, 255].
+     * All values are in [0, 1].
      *
      * @see https://gist.github.com/mjackson/5311256
      */
-    static hsv2rgb(hsv: [number, number, number]): [number, number, number] {
+    static hsv2rgb(hsv: HSV): RGB {
         let [h, s, v] = hsv;
-        h /= 179;
-        s /= 255;
-        v /= 255;
 
         let i = Math.floor(h * 6);
         let f = h * 6 - i;
@@ -92,22 +87,24 @@ export default class VisionControlComponent {
             case 5: r = v; g = p; b = q; break;
         }
 
-        return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+        return [r, g, b];
     }
 
-    private setBlobChannelRangeFromRgb(rgb: [number, number, number]) {
+    public displayNumber(x: number): number {
+        return Math.round(x*255);
+    }
+
+    private setBlobChannelRangeFromRgb(rgb: RGB) {
         let [h, s, v] = VisionControlComponent.rgb2hsv(rgb);
 
         const range = (value, min, max, down, up) => [Math.max(min, value + down), Math.min(max, value + up)];
 
-        let [hMin, hMax] = range(h, 0-20, 255+20, -20, +20);
-        let [sMin, sMax] = range(s, 20, 255, -30, +30);
-        let [vMin, vMax] = range(v, 20, 255, -30, +30);
+        let [hMin, hMax] = range(h, 0-20/255, 1+20/255, -20/255, +20/255);
+        let [sMin, sMax] = range(s, 20/255, 255/255, -30/255, +30/255);
+        let [vMin, vMax] = range(v, 20/255, 255/255, -30/255, +30/255);
 
-        if (hMin < 0) hMin += 256;
-        if (hMax >= 256) hMax -= 256;
-
-        const packColor = (h, s, v) => h << 16 | s << 8 | v << 0;
+        if (hMin < 0) hMin += 1;
+        if (hMax >= 1) hMax -= 1;
 
         this.blobsRange = [[hMin, sMin, vMin], [hMax, sMax, vMax]];
         this.blobsRangeChanged.emit(this.blobsRange);
@@ -125,7 +122,7 @@ export default class VisionControlComponent {
         canvas.height = img.height;
         canvas.getContext('2d').drawImage(img, 0, 0, img.width, img.height);
         let rgba = canvas.getContext('2d').getImageData(x, y, 1, 1).data;
-        let rgb = [...rgba.slice(0, 3)] as any;
+        let rgb: RGB = [rgba[0]/255, rgba[1]/255, rgba[2]/255];
 
         console.log(x, y, rgb, VisionControlComponent.rgb2hsv(rgb));
         this.setBlobChannelRangeFromRgb(rgb);

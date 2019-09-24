@@ -2,6 +2,7 @@ import {AfterViewInit, ChangeDetectorRef, Component, OnDestroy} from '@angular/c
 import {DomSanitizer, SafeUrl} from "@angular/platform-browser";
 import {HttpHedgehogClientService, VisionChannelKind} from "./http-hedgehog-client.service";
 import {Subscription} from "rxjs";
+import {RGB, HSV, HSVRange} from './vision-control.component';
 
 @Component({
     selector: 'hedgehog-control',
@@ -17,7 +18,7 @@ export default class HedgehogControlComponent implements AfterViewInit, OnDestro
     public digitalSensors: Array<{dataset: number[], labels: string[]}> = [];
 
     public channel: VisionChannelKind = VisionChannelKind.RAW;
-    public blobsRange: [[number, number, number], [number, number, number]] = [[70, 20, 20], [90, 255, 234]];
+    public blobsRange: HSVRange = [[70/255, 20/255, 20/255], [90/255, 255/255, 234/255]];
     private blobUrl: string = null;
     public frameUrl: SafeUrl = null;
 
@@ -135,11 +136,12 @@ export default class HedgehogControlComponent implements AfterViewInit, OnDestro
         this.channel = channel;
     }
 
-    public updateVisionBlobsRange(blobsRange: [[number, number, number], [number, number, number]]): void {
+    public updateVisionBlobsRange(blobsRange: HSVRange): void {
         this.blobsRange = blobsRange;
         let [hsvMin, hsvMax] = blobsRange;
 
-        const pack = ([h, s, v]) => (h << 16) | (s << 8) | (v << 0);
+        const bits = (x, shift) => Math.round(x*255) << shift;
+        const pack = ([h, s, v]) => bits(h, 16) | bits(s, 8) | bits(v, 0);
 
         this.hedgehogClient.setVisionBlobsRange(pack(hsvMin), pack(hsvMax));
     }
