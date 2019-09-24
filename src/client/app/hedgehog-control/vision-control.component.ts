@@ -276,6 +276,10 @@ export default class VisionControlComponent {
         const y2sv = y => y < 100 ? [y / 100, 1] : [1, (199 - y) / 100];
         let h = x2h(x), [s, v] = y2sv(y);
 
+        const limit = (x, min, max) => Math.max(min, Math.min(max, x));
+        s = limit(s, 0, 1);
+        v = limit(v, 0, 1);
+
         let [[hMin, sMin, vMin], [hMax, sMax, vMax]] = range;
         switch (dragPoint) {
             case DragPoint.HS_TL: hMin = h; sMin = s; break;
@@ -294,8 +298,8 @@ export default class VisionControlComponent {
         let [[hMin, sMin, vMin], [hMax, sMax, vMax]] = this.canvasDragInfo.range;
         if (hMin > hMax) [hMin, hMax] = [hMax, hMin];
         // normalize hue value
-        hMin %= 1;
-        hMax %= 1;
+        hMin -= Math.floor(hMin);
+        hMax -= Math.floor(hMax);
         if (sMin > sMax) [sMin, sMax] = [sMax, sMin];
         if (vMin > vMax) [vMin, vMax] = [vMax, vMin];
         this.canvasDragInfo = null;
