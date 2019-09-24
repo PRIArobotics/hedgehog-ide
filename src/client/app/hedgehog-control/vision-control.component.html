@@ -29,9 +29,11 @@
                         <label for="channel.blobs">Blob detection</label>
                     </p>
                     <p>
-                        {{displayNumber(blobsRange[0][0])}}-{{displayNumber(blobsRange[1][0])}};
-                        {{displayNumber(blobsRange[0][1])}}-{{displayNumber(blobsRange[1][1])}};
-                        {{displayNumber(blobsRange[0][2])}}-{{displayNumber(blobsRange[1][2])}}
+                        <canvas #canvas width="360" height="200">
+                        </canvas>
+                        {{float2byte(blobsRange[0][0])}}-{{float2byte(blobsRange[1][0])}};
+                        {{float2byte(blobsRange[0][1])}}-{{float2byte(blobsRange[1][1])}};
+                        {{float2byte(blobsRange[0][2])}}-{{float2byte(blobsRange[1][2])}}
                     </p>
                 </div>
             </div>
