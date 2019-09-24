@@ -220,7 +220,9 @@ export default class VisionControlComponent {
         const x = event.clientX - rect.left, y = event.clientY - rect.top;
 
         let [[hMin, sMin, vMin], [hMax, sMax, vMax]] = this.blobsRange;
-        let hBias = hMin < hMax? (hMin+hMax)/2 : (hMin+hMax+1)/2;
+        // denormalize hue value to preserve the direction of the selection
+        if (hMax < hMin) hMax += 1;
+        let hBias = (hMin+hMax)/2;
 
         const h2x = h => ((h - hBias + 3/2) % 1)*360;
         const s2y = s => s * 100;
@@ -268,7 +270,8 @@ export default class VisionControlComponent {
     private setBlobRangeFromDrag(x: number, y: number) {
         let { dragPoint, hBias, dragRange } = this.canvasDragInfo;
 
-        const x2h = x => (x/360 + hBias + 1/2) % 1;
+        // don't wrap to preserve the direction of the selection
+        const x2h = x => (x/360 + hBias - 1/2);
 
         const y2sv = y => y < 100 ? [y / 100, 1] : [1, (199 - y) / 100];
         let h = x2h(x), [s, v] = y2sv(y);
@@ -288,8 +291,14 @@ export default class VisionControlComponent {
         if (this.canvasDragInfo === null)
             return;
 
-        let { dragRange } = this.canvasDragInfo;
+        let [[hMin, sMin, vMin], [hMax, sMax, vMax]] = this.canvasDragInfo.dragRange;
+        if (hMin > hMax) [hMin, hMax] = [hMax, hMin];
+        // normalize hue value
+        hMin %= 1;
+        hMax %= 1;
+        if (sMin > sMax) [sMin, sMax] = [sMax, sMin];
+        if (vMin > vMax) [vMin, vMax] = [vMax, vMin];
         this.canvasDragInfo = null;
-        this.setBlobsRange(dragRange);
+        this.setBlobsRange([[hMin, sMin, vMin], [hMax, sMax, vMax]]);
     }
 }
