@@ -35,7 +35,7 @@ export default class VisionControlComponent {
      *
      * @see https://gist.github.com/mjackson/5311256
      */
-    static rgbToHsv(rgb: [number, number, number]): [number, number, number] {
+    static rgb2hsv(rgb: [number, number, number]): [number, number, number] {
         let [r, g, b] = rgb;
         r /= 255;
         g /= 255;
@@ -70,7 +70,7 @@ export default class VisionControlComponent {
      *
      * @see https://gist.github.com/mjackson/5311256
      */
-    static hsvToRgb(hsv: [number, number, number]): [number, number, number] {
+    static hsv2rgb(hsv: [number, number, number]): [number, number, number] {
         let [h, s, v] = hsv;
         h /= 179;
         s /= 255;
@@ -96,7 +96,7 @@ export default class VisionControlComponent {
     }
 
     private setBlobChannelRangeFromRgb(rgb: [number, number, number]) {
-        let [h, s, v] = VisionControlComponent.rgbToHsv(rgb);
+        let [h, s, v] = VisionControlComponent.rgb2hsv(rgb);
 
         const range = (value, min, max, down, up) => [Math.max(min, value + down), Math.min(max, value + up)];
 
@@ -127,7 +127,7 @@ export default class VisionControlComponent {
         let rgba = canvas.getContext('2d').getImageData(x, y, 1, 1).data;
         let rgb = [...rgba.slice(0, 3)] as any;
 
-        console.log(x, y, rgb, VisionControlComponent.rgbToHsv(rgb));
+        console.log(x, y, rgb, VisionControlComponent.rgb2hsv(rgb));
         this.setBlobChannelRangeFromRgb(rgb);
     }
 }
