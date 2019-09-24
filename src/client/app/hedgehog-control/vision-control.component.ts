@@ -42,8 +42,9 @@ export default class VisionControlComponent {
     ngAfterViewInit() {
         let canvas = this.canvas.nativeElement;
         canvas.offscreenCanvas = document.createElement('canvas');
-        canvas.offscreenCanvas.width = canvas.width;
+        canvas.offscreenCanvas.width = canvas.width * 2;
         canvas.offscreenCanvas.height = canvas.height;
+        this.paintBackground();
         this.paintCanvas();
     }
 
@@ -154,13 +155,13 @@ export default class VisionControlComponent {
         this.setBlobsRangeFromRgb(rgb);
     }
 
-    private paintBackground(hBias: number) {
+    private paintBackground() {
         let ctx = this.canvas.nativeElement.offscreenCanvas.getContext('2d');
 
-        const x2h = x => (x/360 + hBias + 1/2) % 1;
+        const x2h = x => (x/360 + 1/2) % 1;
         const y2sv = y => y < 100 ? [y / 100, 1] : [1, (199 - y) / 100];
 
-		for(let x = 0; x < 360; x++) {
+		for(let x = 0; x < 720; x++) {
 			for(let y = 0; y < 200; y++) {
 			    let hsv = [x2h(x), ...y2sv(y)] as HSV;
 				let [r, g, b] = VisionControlComponent.hsv2rgb(hsv);
@@ -180,14 +181,15 @@ export default class VisionControlComponent {
         } else {
             [[hMin, sMin, vMin], [hMax, sMax, vMax]] = this.blobsRange;
             hBias = hMin < hMax? (hMin+hMax)/2 : (hMin+hMax+1)/2;
-            this.paintBackground(hBias);
         }
 
         const h2x = h => ((h - hBias + 3/2) % 1)*360;
         const s2y = s => s * 100;
         const v2y = v => 199 - v * 100;
 
-        ctx.drawImage(this.canvas.nativeElement.offscreenCanvas, 0, 0);
+        let xBias = h2x(0) - 180;
+        if (xBias > 0) xBias -= 360;
+        ctx.drawImage(this.canvas.nativeElement.offscreenCanvas, xBias, 0);
 
 		ctx.lineWidth = 2;
 		const r = 8;
