@@ -37,7 +37,6 @@ export default class SocketIoVisionAdapter {
     private timer?: any = null;
 
     public constructor(private hedgehog: HedgehogClient, io: SocketIO.Server) {
-        console.log("setup vision");
         let onConnect = () => this.startUpdates();
         let onDisconnect = () => this.stopUpdates();
         this.vision = new VisionNamespace(io.of('/vision'), onConnect, onDisconnect);
@@ -47,7 +46,6 @@ export default class SocketIoVisionAdapter {
         this.blobsRange = io.of('/vision-blobs-range');
         this.blobsRange.on('connection', socket => {
             socket.on('data', (hsvMin, hsvMax) => {
-                console.log(hsvMin, hsvMax);
                 this.hedgehog.updateChannel('ide.blobs', {
                     kind: vision.ChannelKind.BLOBS,
                     hsvMin,
@@ -63,7 +61,6 @@ export default class SocketIoVisionAdapter {
             this.faces.connectionCount === 0 &&
             this.blobs.connectionCount === 0
         ) {
-            console.log("subscribe to vision");
             await this.hedgehog.openCamera();
             await this.hedgehog.createChannel('ide.faces', {
                 kind: vision.ChannelKind.FACES,
@@ -88,7 +85,6 @@ export default class SocketIoVisionAdapter {
             await this.hedgehog.deleteChannel('ide.faces');
             await this.hedgehog.deleteChannel('ide.blobs');
             await this.hedgehog.closeCamera();
-            console.log("unsubscribe from vision");
         }
     }
 
