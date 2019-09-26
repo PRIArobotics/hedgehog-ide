@@ -124,6 +124,14 @@
             </value>
         </block>
         <block type="hedgehog_servo_off"></block>
+        <block type="hedgehog_speaker">
+            <value name="FREQUENCY">
+                <shadow type="math_number">
+                    <field name="NUM">440</field>
+                </shadow>
+            </value>
+        </block>
+        <block type="hedgehog_speaker_off"></block>
         <block type="hedgehog_sleep">
             <value name="TIME">
                 <shadow type="math_number">
@@ -136,6 +144,7 @@
         <block type="hedgehog_pullup"></block>
         <block type="hedgehog_read_analog"></block>
         <block type="hedgehog_read_digital"></block>
+        <block type="hedgehog_read_imu"></block>
     </category>
     <category name="Hedgehog: Create" colour="120">
         <block type="hedgehog_create_scope"></block>

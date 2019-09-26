@@ -30,7 +30,9 @@ Blockly.Blocks['{block.name}'] = {{
     init: function() {{
         this.jsonInit({{
             "message0": Blockly.Msg.{block.name.upper()},""")
-            yield from lines(textwrap.indent(f"""\
+
+            if 'args' in block:
+                yield from lines(textwrap.indent(f"""\
 "args0": {json.dumps(block.args, indent=4)},""", 12 * " "))
 
             if 'output' in block:
@@ -125,24 +127,26 @@ def generate_generator_module_code(model, mod, root):
             yield from lines(f"""\
 
 Blockly.Python['{block.name}'] = function(block) {{""")
-            for arg in block.args:
-                if arg.type == 'input_dummy':
-                    continue
-                elif arg.type == 'input_statement':
-                    yield from lines(f"""\
+            if 'args' in block:
+                for arg in block.args:
+                    if arg.type == 'input_dummy':
+                        continue
+                    elif arg.type == 'input_statement':
+                        yield from lines(f"""\
     let statements = Blockly.Python.statementToCode(block, {repr(arg.name)});""")
-                elif arg.type == 'field_checkbox':
-                    yield from lines(f"""\
+                    elif arg.type == 'field_checkbox':
+                        yield from lines(f"""\
     let {arg.name.lower()} = block.getFieldValue({repr(arg.name)}) === 'TRUE';""")
-                elif arg.type.startswith('field_'):
-                    yield from lines(f"""\
+                    elif arg.type.startswith('field_'):
+                        yield from lines(f"""\
     let {arg.name.lower()} = block.getFieldValue({repr(arg.name)});""")
 
             yield from lines(f"""\
     // <default GSL customizable: {block.name}-body>""")
-            for arg in block.args:
-                if arg.type not in {'input_dummy', 'input_statement'} and arg.type.startswith('input_'):
-                    yield from lines(f"""\
+            if 'args' in block:
+                for arg in block.args:
+                    if arg.type not in {'input_dummy', 'input_statement'} and arg.type.startswith('input_'):
+                        yield from lines(f"""\
     let {arg.name.lower()} = Blockly.Python.valueToCode(block, {repr(arg.name)}, Blockly.Python.ORDER_ATOMIC);""")
             yield from lines(f"""\
 

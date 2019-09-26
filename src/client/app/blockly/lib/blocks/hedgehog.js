@@ -481,6 +481,47 @@ Blockly.Blocks['hedgehog_servo_off'] = {
     onchange: requiresScope('hedgehog')
 };
 
+Blockly.Blocks['hedgehog_speaker'] = {
+    init: function() {
+        this.jsonInit({
+            "message0": Blockly.Msg.HEDGEHOG_SPEAKER,
+            "args0": [
+                {
+                    "type": "input_value",
+                    "name": "FREQUENCY",
+                    "check": "Number",
+                    "value": 440,
+                    "min": 50,
+                    "max": 15000,
+                    "precision": 1
+                }
+            ],
+            "inputsInline": true,
+            "previousStatement": null,
+            "nextStatement": null,
+            "tooltip": Blockly.Msg.HEDGEHOG_SPEAKER_TOOLTIP,
+            "colour": Blockly.Blocks.hedgehog.HUE,
+            "helpUrl": Blockly.Blocks.hedgehog.HELPURL
+        });
+    },
+    onchange: requiresScope('hedgehog')
+};
+
+Blockly.Blocks['hedgehog_speaker_off'] = {
+    init: function() {
+        this.jsonInit({
+            "message0": Blockly.Msg.HEDGEHOG_SPEAKER_OFF,
+            "inputsInline": true,
+            "previousStatement": null,
+            "nextStatement": null,
+            "tooltip": Blockly.Msg.HEDGEHOG_SPEAKER_OFF_TOOLTIP,
+            "colour": Blockly.Blocks.hedgehog.HUE,
+            "helpUrl": Blockly.Blocks.hedgehog.HELPURL
+        });
+    },
+    onchange: requiresScope('hedgehog')
+};
+
 Blockly.Blocks['hedgehog_pullup'] = {
     init: function() {
         this.jsonInit({
@@ -550,6 +591,57 @@ Blockly.Blocks['hedgehog_read_digital'] = {
             ],
             "output": "Boolean",
             "tooltip": Blockly.Msg.HEDGEHOG_READ_DIGITAL_TOOLTIP,
+            "colour": Blockly.Blocks.hedgehog.HUE,
+            "helpUrl": Blockly.Blocks.hedgehog.HELPURL
+        });
+    },
+    onchange: requiresScope('hedgehog')
+};
+
+Blockly.Blocks['hedgehog_read_imu'] = {
+    init: function() {
+        this.jsonInit({
+            "message0": Blockly.Msg.HEDGEHOG_READ_IMU,
+            "args0": [
+                {
+                    "type": "field_dropdown",
+                    "name": "TYPE",
+                    "options": [
+                        [
+                            Blockly.Msg.HEDGEHOG_READ_IMU_POSE,
+                            "POSE"
+                        ],
+                        [
+                            Blockly.Msg.HEDGEHOG_READ_IMU_ACCELERATION,
+                            "ACCELERATION"
+                        ],
+                        [
+                            Blockly.Msg.HEDGEHOG_READ_IMU_RATE,
+                            "RATE"
+                        ]
+                    ]
+                },
+                {
+                    "type": "field_dropdown",
+                    "name": "AXIS",
+                    "options": [
+                        [
+                            "x",
+                            "X"
+                        ],
+                        [
+                            "y",
+                            "Y"
+                        ],
+                        [
+                            "z",
+                            "Z"
+                        ]
+                    ]
+                }
+            ],
+            "output": "Number",
+            "tooltip": Blockly.Msg.HEDGEHOG_READ_IMU_TOOLTIP,
             "colour": Blockly.Blocks.hedgehog.HUE,
             "helpUrl": Blockly.Blocks.hedgehog.HELPURL
         });

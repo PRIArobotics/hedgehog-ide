@@ -45,6 +45,12 @@ Blockly.Msg.HEDGEHOG_SERVO_TOOLTIP = "move a servo to a specified position";
 Blockly.Msg.HEDGEHOG_SERVO_OFF = "turn servo %1 off";
 Blockly.Msg.HEDGEHOG_SERVO_OFF_TOOLTIP = "turn a servo off";
 
+Blockly.Msg.HEDGEHOG_SPEAKER = "turn speaker to %1 Hz";
+Blockly.Msg.HEDGEHOG_SPEAKER_TOOLTIP = "turns speaker to a certain frequency";
+
+Blockly.Msg.HEDGEHOG_SPEAKER_OFF = "turn speaker off";
+Blockly.Msg.HEDGEHOG_SPEAKER_OFF_TOOLTIP = "deaktivates the speaker";
+
 Blockly.Msg.HEDGEHOG_PULLUP = "port %1 pullup %2";
 Blockly.Msg.HEDGEHOG_PULLUP_TOOLTIP = "set the pullup state for a specified IO port";
 
@@ -53,6 +59,15 @@ Blockly.Msg.HEDGEHOG_READ_ANALOG_TOOLTIP = "get the value of an analog port";
 
 Blockly.Msg.HEDGEHOG_READ_DIGITAL = "digital port %1";
 Blockly.Msg.HEDGEHOG_READ_DIGITAL_TOOLTIP = "get the value of a digital port";
+
+Blockly.Msg.HEDGEHOG_READ_IMU = "%2 axis of the pose sensor's %1";
+Blockly.Msg.HEDGEHOG_READ_IMU_TOOLTIP = "gibt einen Wert des Lagesensors zurück";
+
+Blockly.Msg.HEDGEHOG_READ_IMU_POSE = "pose";
+
+Blockly.Msg.HEDGEHOG_READ_IMU_ACCELERATION = "acceleration";
+
+Blockly.Msg.HEDGEHOG_READ_IMU_RATE = "angular velocity";
 
 Blockly.Msg.HEDGEHOG_SLEEP = "sleep for %1 seconds";
 Blockly.Msg.HEDGEHOG_SLEEP_TOOLTIP = "pause the program for a certain amount of time";

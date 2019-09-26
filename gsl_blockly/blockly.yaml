@@ -189,6 +189,18 @@ modules:
         min: 0
         max: 5
         precision: 1
+    hedgehog_speaker:
+      requiresScope: hedgehog
+      args:
+      - type: input_value
+        name: FREQUENCY
+        check: Number
+        value: 440
+        min: 50
+        max: 15000
+        precision: 1
+    hedgehog_speaker_off:
+      requiresScope: hedgehog
     hedgehog_pullup:
       requiresScope: hedgehog
       args:
@@ -221,6 +233,22 @@ modules:
         min: 0
         max: 15
         precision: 1
+    hedgehog_read_imu:
+      requiresScope: hedgehog
+      output: Number
+      args:
+      - type: field_dropdown
+        name: TYPE
+        options:
+        - ["Blockly.Msg.HEDGEHOG_READ_IMU_POSE", "POSE"]
+        - ["Blockly.Msg.HEDGEHOG_READ_IMU_ACCELERATION", "ACCELERATION"]
+        - ["Blockly.Msg.HEDGEHOG_READ_IMU_RATE", "RATE"]
+      - type: field_dropdown
+        name: AXIS
+        options:
+        - ["x", "X"]
+        - ["y", "Y"]
+        - ["z", "Z"]
     hedgehog_sleep:
       requiresScope: hedgehog
       args:

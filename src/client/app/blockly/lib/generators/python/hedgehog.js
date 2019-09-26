@@ -210,6 +210,23 @@ Blockly.Python['hedgehog_servo_off'] = function(block) {
     // </GSL customizable: hedgehog_servo_off-body>
 };
 
+Blockly.Python['hedgehog_speaker'] = function(block) {
+    // <GSL customizable: hedgehog_speaker-body>
+    let frequency = Blockly.Python.valueToCode(block, 'FREQUENCY', Blockly.Python.ORDER_NONE);
+
+    let code = 'hedgehog.set_speaker(' + frequency + ')\n\n';
+    return code;
+    // </GSL customizable: hedgehog_speaker-body>
+};
+
+Blockly.Python['hedgehog_speaker_off'] = function(block) {
+    // <GSL customizable: hedgehog_speaker_off-body>
+
+    let code = 'hedgehog.set_speaker(None)\n\n';
+    return code;
+    // </GSL customizable: hedgehog_speaker_off-body>
+};
+
 Blockly.Python['hedgehog_pullup'] = function(block) {
     let port = block.getFieldValue('PORT');
     let state = block.getFieldValue('STATE') === 'TRUE';
@@ -233,6 +250,23 @@ Blockly.Python['hedgehog_read_digital'] = function(block) {
     let code = 'hedgehog.get_digital(' + port + ')';
     return [code, Blockly.Python.ORDER_MEMBER];
     // </GSL customizable: hedgehog_read_digital-body>
+};
+
+Blockly.Python['hedgehog_read_imu'] = function(block) {
+    let type = block.getFieldValue('TYPE');
+    let axis = block.getFieldValue('AXIS');
+    // <GSL customizable: hedgehog_read_imu-body>
+
+    type = type.toLowerCase();
+    switch (axis) {
+        case 'X': axis = 0; break;
+        case 'Y': axis = 1; break;
+        case 'Z': axis = 2; break;
+    }
+
+    let code = 'hedgehog.get_imu_' + type +'()[' + axis + ']';
+    return [code, Blockly.Python.ORDER_MEMBER];
+    // </GSL customizable: hedgehog_read_imu-body>
 };
 
 Blockly.Python['hedgehog_sleep'] = function(block) {
