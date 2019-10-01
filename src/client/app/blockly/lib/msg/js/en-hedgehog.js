@@ -61,7 +61,7 @@ Blockly.Msg.HEDGEHOG_READ_DIGITAL = "digital port %1";
 Blockly.Msg.HEDGEHOG_READ_DIGITAL_TOOLTIP = "get the value of a digital port";
 
 Blockly.Msg.HEDGEHOG_READ_IMU = "%2 axis of the pose sensor's %1";
-Blockly.Msg.HEDGEHOG_READ_IMU_TOOLTIP = "gibt einen Wert des Lagesensors zurück";
+Blockly.Msg.HEDGEHOG_READ_IMU_TOOLTIP = "get one or all axes of the pose sensor";
 
 Blockly.Msg.HEDGEHOG_READ_IMU_POSE = "pose";
 

@@ -57,7 +57,7 @@ modules:
         tooltip: gibt den Wert eines analogen Ports zurück
       hedgehog_read_imu:
         msg: Achse %2 der %1 des Lagesensors
-        tooltip: gibt einen Wert des Lagesensors zurück
+        tooltip: gibt einen oder alle Werte des Lagesensors zurück
       hedgehog_read_imu_pose:
         msg: Pose
       hedgehog_read_imu_acceleration:
@@ -156,7 +156,7 @@ modules:
         tooltip: get the value of a digital port
       hedgehog_read_imu:
         msg: "%2 axis of the pose sensor's %1"
-        tooltip: gibt einen Wert des Lagesensors zurück
+        tooltip: get one or all axes of the pose sensor
       hedgehog_read_imu_pose:
         msg: pose
       hedgehog_read_imu_acceleration:
