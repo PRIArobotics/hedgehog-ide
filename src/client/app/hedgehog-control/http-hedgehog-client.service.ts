@@ -172,7 +172,7 @@ export class HttpHedgehogClientService {
 
             let socket = io(`${host}/vision-blobs-range`, {query: {jwtToken: this.authProvider.token}});
 
-            socket.on('connect', function () {
+            socket.on('connect', () => {
                 socket.emit('data', hsvMin, hsvMax);
                 socket.disconnect();
                 resolve();

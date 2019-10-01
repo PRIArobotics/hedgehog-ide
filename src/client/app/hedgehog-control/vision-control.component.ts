@@ -20,48 +20,6 @@ enum DragPoint {
     styles: [require('./vision-control.component.css')]
 })
 export default class VisionControlComponent {
-    @Input() public name: string;
-    @Input() public frameUrl: SafeUrl;
-    @Input() public channel: VisionChannelKind;
-    @Input() public blobsRange: HSVRange;
-
-    @Output() private channelChanged = new EventEmitter();
-    @Output() private blobsRangeChanged = new EventEmitter();
-
-    @ViewChild('canvas') private canvas;
-    private canvasDragInfo: {
-        dragPoint: DragPoint;
-        hBias: number;
-        range: HSVRange;
-    } | null = null;
-
-    chooser = {
-        width: 360,
-        height: 200,
-        border: 3,
-    };
-
-    private VisionChannelKind = VisionChannelKind;
-
-    public constructor () {}
-
-    ngAfterViewInit() {
-        let canvas = this.canvas.nativeElement;
-
-        let { width, height } = this.chooser;
-        canvas.offscreenCanvas = document.createElement('canvas');
-        canvas.offscreenCanvas.width = 2*width;
-        canvas.offscreenCanvas.height = height;
-        this.paintBackground();
-
-        this.paintCanvas();
-    }
-
-    private updateChannel (channel) {
-        this.channel = channel;
-        this.channelChanged.emit(channel);
-    }
-
     /**
      * Converts an RGB color value to HSV. Conversion formula
      * adapted from http://en.wikipedia.org/wiki/HSV_color_space.
@@ -69,16 +27,18 @@ export default class VisionControlComponent {
      *
      * @see https://gist.github.com/mjackson/5311256
      */
-    static rgb2hsv(rgb: RGB): HSV {
+    public static rgb2hsv(rgb: RGB): HSV {
         let [r, g, b] = rgb;
 
-        let max = Math.max(r, g, b), min = Math.min(r, g, b);
+        let max = Math.max(r, g, b);
+        let min = Math.min(r, g, b);
         let d = max - min;
 
-        let h, s, v = max;
-        s = max == 0 ? 0 : d / max;
+        let h;
+        let s = max === 0 ? 0 : d / max;
+        let v = max;
 
-        if (max == min) {
+        if (max === min) {
             h = 0; // achromatic
         } else {
             switch (max) {
@@ -100,7 +60,7 @@ export default class VisionControlComponent {
      *
      * @see https://gist.github.com/mjackson/5311256
      */
-    static hsv2rgb(hsv: HSV): RGB {
+    public static hsv2rgb(hsv: HSV): RGB {
         let [h, s, v] = hsv;
 
         let i = Math.floor(h * 6);
@@ -109,6 +69,7 @@ export default class VisionControlComponent {
         let q = v * (1 - f * s);
         let t = v * (1 - (1 - f) * s);
 
+        // tslint:disable-next-line one-variable-per-declaration
         let r, g, b;
         switch (i % 6) {
             case 0: r = v; g = t; b = p; break;
@@ -122,8 +83,48 @@ export default class VisionControlComponent {
         return [r, g, b];
     }
 
+    @Input() public name: string;
+    @Input() public frameUrl: SafeUrl;
+    @Input() public channel: VisionChannelKind;
+    @Input() public blobsRange: HSVRange;
+
+    @Output() public channelChanged = new EventEmitter();
+    @Output() public blobsRangeChanged = new EventEmitter();
+
+    @ViewChild('canvas') public canvas;
+    public canvasDragInfo: {
+        dragPoint: DragPoint;
+        hBias: number;
+        range: HSVRange;
+    } | null = null;
+
+    public chooser = {
+        width: 360,
+        height: 200,
+        border: 3,
+    };
+
+    public VisionChannelKind = VisionChannelKind;
+
     public float2byte(x: number): number {
         return Math.round(x*255);
+    }
+
+    public ngAfterViewInit() {
+        let canvas = this.canvas.nativeElement;
+
+        let { width, height } = this.chooser;
+        canvas.offscreenCanvas = document.createElement('canvas');
+        canvas.offscreenCanvas.width = 2*width;
+        canvas.offscreenCanvas.height = height;
+        this.paintBackground();
+
+        this.paintCanvas();
+    }
+
+    private updateChannel (channel) {
+        this.channel = channel;
+        this.channelChanged.emit(channel);
     }
 
     private setBlobsRange(range: HSVRange) {
@@ -170,17 +171,17 @@ export default class VisionControlComponent {
 
         let { width, height } = this.chooser;
 
-        const x2h = x => (x/width + 1/2) % 1;
-        const y2sv = y => y < height/2 ? [y / (height/2), 1] : [1, (height-1 - y) / (height/2)];
+        const x2h = x => (x / width + 1 / 2) % 1;
+        const y2sv = y => y < height / 2 ? [y / (height / 2), 1] : [1, (height - 1 - y) / (height / 2)];
 
-		for(let x = 0; x < 2*width; x++) {
-			for(let y = 0; y < height; y++) {
-			    let hsv = [x2h(x), ...y2sv(y)] as HSV;
-				let [r, g, b] = VisionControlComponent.hsv2rgb(hsv);
-				ctx.fillStyle = `rgb(${this.float2byte(r)}, ${this.float2byte(g)}, ${this.float2byte(b)})`;
-				ctx.fillRect(x, y, 1, 1);
-			}
-		}
+        for (let x = 0; x < 2 * width; x++) {
+            for (let y = 0; y < height; y++) {
+                let hsv = [x2h(x), ...y2sv(y)] as HSV;
+                let [r, g, b] = VisionControlComponent.hsv2rgb(hsv);
+                ctx.fillStyle = `rgb(${this.float2byte(r)}, ${this.float2byte(g)}, ${this.float2byte(b)})`;
+                ctx.fillRect(x, y, 1, 1);
+            }
+        }
     }
 
     private paintCanvas() {
@@ -188,21 +189,22 @@ export default class VisionControlComponent {
         let ctx = canvas.getContext('2d');
         let { width, height, border } = this.chooser;
 
+        // tslint:disable-next-line one-variable-per-declaration
         let hMin, sMin, vMin, hMax, sMax, vMax, hBias;
         if (this.canvasDragInfo !== null) {
             [[hMin, sMin, vMin], [hMax, sMax, vMax]] = this.canvasDragInfo.range;
             hBias = this.canvasDragInfo.hBias;
         } else {
             [[hMin, sMin, vMin], [hMax, sMax, vMax]] = this.blobsRange;
-            hBias = hMin < hMax? (hMin+hMax)/2 : (hMin+hMax+1)/2;
+            hBias = hMin < hMax ? (hMin + hMax) / 2 : (hMin + hMax + 1) / 2;
         }
 
-        const h2x = h => ((h - hBias + 3/2) % 1)*width + border;
-        const s2y = s => s * (height/2) + border;
-        const v2y = v => height - 1 - v * (height/2) + border;
+        const h2x = h => ((h - hBias + 3 / 2) % 1) * width + border;
+        const s2y = s => s * (height / 2) + border;
+        const v2y = v => height - 1 - v * (height / 2) + border;
 
         // draw a background for additional drag area
-		ctx.fillStyle = 'grey';
+        ctx.fillStyle = 'grey';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
         // draw the palette, clipped into the border
@@ -210,32 +212,33 @@ export default class VisionControlComponent {
         ctx.rect(border, border, width, height);
         ctx.clip();
 
-        let xBias = h2x(0) - width/2;
+        let xBias = h2x(0) - width / 2;
         if (xBias > 0) xBias -= width;
         ctx.drawImage(this.canvas.nativeElement.offscreenCanvas, xBias + border, border);
         ctx.restore();
 
-		ctx.lineWidth = 2;
-		const r = 8;
+        ctx.lineWidth = 2;
+        const r = 8;
 
-		let x1, x2, y1, y2;
-		x1 = h2x(hMin);
-		x2 = h2x(hMax);
+        // tslint:disable-next-line one-variable-per-declaration
+        let x1, x2, y1, y2;
+        x1 = h2x(hMin);
+        x2 = h2x(hMax);
 
-		y1 = s2y(sMin);
-		y2 = s2y(sMax);
+        y1 = s2y(sMin);
+        y2 = s2y(sMax);
 
-		ctx.strokeStyle = 'gray';
-		ctx.strokeRect(x1, y1, x2-x1, y2-y1);
-		ctx.strokeRect(x1-r, y1-r, 2*r, 2*r);
-		ctx.strokeRect(x2-r, y2-r, 2*r, 2*r);
+        ctx.strokeStyle = 'gray';
+        ctx.strokeRect(x1, y1, x2 - x1, y2 - y1);
+        ctx.strokeRect(x1 - r, y1 - r, 2 * r, 2 * r);
+        ctx.strokeRect(x2 - r, y2 - r, 2 * r, 2 * r);
 
-		y1 = v2y(vMin);
-		y2 = v2y(vMax);
-		ctx.strokeStyle = 'lightgray';
-		ctx.strokeRect(x1, y1, x2-x1, y2-y1);
-		ctx.strokeRect(x2-r, y1-r, 2*r, 2*r);
-		ctx.strokeRect(x1-r, y2-r, 2*r, 2*r);
+        y1 = v2y(vMin);
+        y2 = v2y(vMax);
+        ctx.strokeStyle = 'lightgray';
+        ctx.strokeRect(x1, y1, x2 - x1, y2 - y1);
+        ctx.strokeRect(x2 - r, y1 - r, 2 * r, 2 * r);
+        ctx.strokeRect(x1 - r, y2 - r, 2 * r, 2 * r);
     }
 
     private canvasMouseDown(event) {
@@ -243,6 +246,7 @@ export default class VisionControlComponent {
         const rect = canvas.getBoundingClientRect();
         let { width, height, border } = this.chooser;
 
+        // tslint:disable-next-line one-variable-per-declaration
         const x = event.clientX - rect.left, y = event.clientY - rect.top;
 
         let [[hMin, sMin, vMin], [hMax, sMax, vMax]] = this.blobsRange;
@@ -255,7 +259,7 @@ export default class VisionControlComponent {
         const v2y = v => height-1 - v * (height/2) + border;
 
         const r = 8;
-        const inRange = (x, target) => target - r <= x && x <= target + r;
+        const inRange = (val, target) => target - r <= val && val <= target + r;
 
         let dragPoint: DragPoint;
         if (inRange(x, h2x(hMin))) {
@@ -288,6 +292,7 @@ export default class VisionControlComponent {
 
         const canvas = event.target;
         const rect = canvas.getBoundingClientRect();
+        // tslint:disable-next-line one-variable-per-declaration
         const x = event.clientX - rect.left, y = event.clientY - rect.top;
 
         this.setDragRange(x, y);
@@ -299,12 +304,18 @@ export default class VisionControlComponent {
         let { dragPoint, hBias, range } = this.canvasDragInfo;
 
         // don't wrap to preserve the direction of the selection
+        // tslint:disable-next-line no-shadowed-variable
         const x2h = x => ((x-border)/width + hBias - 1/2);
 
-        const y2sv = y => (y-border) < height/2 ? [(y-border) / (height/2), 1] : [1, (height-1 - (y-border)) / (height/2)];
+        // tslint:disable-next-line no-shadowed-variable
+        const y2sv = y => (y-border) < height/2 ?
+            [(y-border) / (height/2), 1] :
+            [1, (height-1 - (y-border)) / (height/2)];
+
+        // tslint:disable-next-line one-variable-per-declaration
         let h = x2h(x), [s, v] = y2sv(y);
 
-        const limit = (x, min, max) => Math.max(min, Math.min(max, x));
+        const limit = (val, min, max) => Math.max(min, Math.min(max, val));
         s = limit(s, 0, 1);
         v = limit(v, 0, 1);
 
