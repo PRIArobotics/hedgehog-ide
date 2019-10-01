@@ -185,7 +185,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, AfterContentInit
         {
             name: 'Python Hello World',
             value: 'from time import sleep\n' +
-            'from hedgehog.client import connect, motor\n\n' +
+            'from hedgehog.client import connect, motor, vision\n\n' +
             'with connect(emergency=15) as hedgehog:\n' +
             '    print("Hello World")\n'
         },
@@ -378,12 +378,13 @@ export class TextIdeComponent implements OnInit, AfterViewInit, AfterContentInit
                     'get_digital(port)',
                     'set_digital_output(port, level)',
                     'get_io_config(port)',
+
                     // 'configure_motor(port, config)',
                     'configure_motor_dc(port)',
                     'configure_motor_encoder(port, encoder_a_port, encoder_b_port)',
                     'configure_motor_stepper(port)',
                     'move_motor(port, power)',
-                    'move_motor(port, amount, mode=0)',
+                    'move_motor(port, amount, mode=motor.POWER)',
                     'motor_off(port)',
                     'brake(port)',
                     // 'move_relative_position(port, amount, relative)',
@@ -395,17 +396,40 @@ export class TextIdeComponent implements OnInit, AfterViewInit, AfterContentInit
                     'get_motor_velocity(port)',
                     'get_motor_position(port)',
                     'set_motor_position(port, position)',
+                    'POWER',
+                    'BRAKE',
+                    'VELOCITY',
+
                     'set_servo(port, position)',
                     'set_servo_raw(port, position)',
                     'get_servo_position(port)',
                     'get_servo_position_raw(port)',
+
                     'get_imu_rate()',
                     'get_imu_acceleration()',
                     'get_imu_pose()',
+
                     // 'execute_process(*args, working_dir=None, on_stdout=None, on_stderr=None, on_exit=None)',
                     // 'signal_process(pid, signal=2)',
                     // 'send_process_data(pid, chunk=b'')',
+
                     'set_speaker(frequency)',
+
+                    'open_camera()',
+                    'close_camera()',
+                    'create_channel(key, vision.FacesChannel())',
+                    'create_channel(key, vision.BlobsChannel((h, s, v), (h, s, v)))',
+                    'update_channel(key, vision.FacesChannel())',
+                    'update_channel(key, vision.BlobsChannel((h, s, v), (h, s, v)))',
+                    'delete_channel(key)',
+                    'get_channel(key)',
+                    'get_channels()',
+                    'capture_frame()',
+                    'get_frame()',
+                    'get_frame(highlight)',
+                    'get_feature(channel)',
+                    'FacesChannel()',
+                    'BlobsChannel((h, s, v), (h, s, v))',
 
                     'configure_lego_motor(port)',
                     'configure_lego_sensor(port)',
