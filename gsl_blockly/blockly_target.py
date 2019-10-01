@@ -81,9 +81,10 @@ Blockly.Blocks.hedgehog.HELPURL = "https://hedgehog.pria.at/";
         yield from lines("""\
 
 function requiresScope(kind) {
-    let scopeTypes = kind === 'hedgehog'? ['hedgehog_scope'] : ['hedgehog_create_scope', 'hedgehog_create2_scope'];
-    scopeTypes.push('procedures_defreturn', 'procedures_defnoreturn');
-    let warning = kind === 'hedgehog'? Blockly.Msg.HEDGEHOG_WARN : Blockly.Msg.HEDGEHOG_CREATE_WARN;
+    let scopeTypes, warning;
+    // <default GSL customizable: requiresScope-scopes>
+    // TODO initialize scopeTypes, warning according to kind
+    // </GSL customizable: requiresScope-scopes>
     return function onchange(e) {
         if (this.workspace.isDragging()) {
             return;  // Don't change state at the start of a drag.

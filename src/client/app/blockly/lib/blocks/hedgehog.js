@@ -17,9 +17,20 @@ Blockly.Blocks.hedgehog.HELPURL = "https://hedgehog.pria.at/";
 // <default GSL customizable: module-extras />
 
 function requiresScope(kind) {
-    let scopeTypes = kind === 'hedgehog'? ['hedgehog_scope'] : ['hedgehog_create_scope', 'hedgehog_create2_scope'];
+    let scopeTypes, warning;
+    // <GSL customizable: requiresScope-scopes>
+    switch (kind) {
+        case 'hedgehog':
+            scopeTypes = ['hedgehog_scope'];
+            warning = Blockly.Msg.HEDGEHOG_WARN;
+            break;
+        case 'create':
+            scopeTypes = ['hedgehog_create_scope', 'hedgehog_create2_scope'];
+            warning = Blockly.Msg.HEDGEHOG_CREATE_WARN;
+            break;
+    }
     scopeTypes.push('procedures_defreturn', 'procedures_defnoreturn');
-    let warning = kind === 'hedgehog'? Blockly.Msg.HEDGEHOG_WARN : Blockly.Msg.HEDGEHOG_CREATE_WARN;
+    // </GSL customizable: requiresScope-scopes>
     return function onchange(e) {
         if (this.workspace.isDragging()) {
             return;  // Don't change state at the start of a drag.
