@@ -1,37 +1,37 @@
 <div class="col s12 l12">
     <div class="card">
         <div class="card-content">
-            <div class="card-title">
-                <span>{{ name }}</span>
-            </div>
-
-            <div class="row vision-main">
-                <div class="vision-frame">
-                    <img [src]="frameUrl" width="160" height="120" (click)="clickImage($event)" />
-                </div>
-                <div class="vision-control">
-                    <p>
-                        <input
-                                id="channel.raw" name="channel" type="radio" [value]="VisionChannelKind.RAW"
-                                [ngModel]="channel" (ngModelChange)="updateChannel($event)">
-                        <label for="channel.raw">Raw camera image</label>
-                    </p>
-                    <p>
-                        <input
-                                id="channel.faces" name="channel" type="radio" [value]="VisionChannelKind.FACES"
-                                [ngModel]="channel" (ngModelChange)="updateChannel($event)">
-                        <label for="channel.faces">Face detection</label>
-                    </p>
-                    <p>
-                        <input
-                                id="channel.blobs" name="channel" type="radio" [value]="VisionChannelKind.BLOBS"
-                                [ngModel]="channel" (ngModelChange)="updateChannel($event)">
-                        <label for="channel.blobs">Blob detection</label>
-                    </p>
-                </div>
-            </div>
             <div class="row">
-                <div class="col s12">
+            <div class="col l12 xl5">
+                <div class="card-title">
+                    <span>{{ name }}</span>
+                </div>
+                <div class="vision-main">
+                    <div class="vision-frame">
+                        <img [src]="frameUrl" width="160" height="120" (click)="clickImage($event)" />
+                    </div>
+                    <div class="vision-control">
+                        <p>
+                            <input
+                                    id="channel.raw" name="channel" type="radio" [value]="VisionChannelKind.RAW"
+                                    [ngModel]="channel" (ngModelChange)="updateChannel($event)">
+                            <label for="channel.raw">Raw camera image</label>
+                        </p>
+                        <p>
+                            <input
+                                    id="channel.faces" name="channel" type="radio" [value]="VisionChannelKind.FACES"
+                                    [ngModel]="channel" (ngModelChange)="updateChannel($event)">
+                            <label for="channel.faces">Face detection</label>
+                        </p>
+                        <p>
+                            <input
+                                    id="channel.blobs" name="channel" type="radio" [value]="VisionChannelKind.BLOBS"
+                                    [ngModel]="channel" (ngModelChange)="updateChannel($event)">
+                            <label for="channel.blobs">Blob detection</label>
+                        </p>
+                    </div>
+                </div>
+                <div>
                     <div class="card-title">
                         <span>Blob configuration</span>
                     </div>
@@ -44,50 +44,46 @@
                                 (mousemove)="canvasMouseMove($event)"
                                 (mouseup)="canvasMouseUp($event)">
                         </canvas>
-                        {{float2byte(blobsRange[0][0])}}-{{float2byte(blobsRange[1][0])}};
-                        {{float2byte(blobsRange[0][1])}}-{{float2byte(blobsRange[1][1])}};
-                        {{float2byte(blobsRange[0][2])}}-{{float2byte(blobsRange[1][2])}}
                     </p>
                 </div>
             </div>
-            <div class="row">
-                <div class="col s12">
-                    <div class="card-title">
-                        <span>Python code</span>
-                    </div>
-                    <p>You can add this code to your Python program to set up and access the camera:</p>
-
-<pre class="code-example context">
+            <div class="col l12 xl7">
+                <div class="card-title">
+                    <span>Python code</span>
+                </div>
+                <p>You can add this code to your Python program to set up and access the camera:</p>
+                <div class="code-example">
+<pre class="context">
 from time import sleep
 from hedgehog.client import connect, motor, vision
 
 with connect() as hedgehog:</pre>
 
-<pre class="code-example" *ngIf="channel === VisionChannelKind.RAW">
+<pre *ngIf="channel === VisionChannelKind.RAW">
     with hedgehog.camera():</pre>
-<pre class="code-example" *ngIf="channel === VisionChannelKind.FACES">
+<pre *ngIf="channel === VisionChannelKind.FACES">
     with hedgehog.camera():
         hedgehog.create_channel('faces', vision.FacesChannel())</pre>
-<pre class="code-example" *ngIf="channel === VisionChannelKind.BLOBS">
+<pre *ngIf="channel === VisionChannelKind.BLOBS">
     with hedgehog.camera():
         hedgehog.create_channel('blobs', vision.FacesChannel(({{ float2byte(blobsRange[0][0]) }}, {{ float2byte(blobsRange[0][1]) }}, {{ float2byte(blobsRange[0][2]) }}), ({{ float2byte(blobsRange[1][0]) }}, {{ float2byte(blobsRange[1][1]) }}, {{ float2byte(blobsRange[1][2]) }})))</pre>
 
-<pre class="code-example context">
+<pre class="context">
         while True:</pre>
 
-<pre class="code-example" *ngIf="channel === VisionChannelKind.RAW">
+<pre *ngIf="channel === VisionChannelKind.RAW">
             hedgehog.capture_frame()
             # a channel is necessary to read from the camera</pre>
-<pre class="code-example" *ngIf="channel === VisionChannelKind.FACES">
+<pre *ngIf="channel === VisionChannelKind.FACES">
             hedgehog.capture_frame()
             faces = hedgehog.get_feature('faces')</pre>
-<pre class="code-example" *ngIf="channel === VisionChannelKind.BLOBS">
+<pre *ngIf="channel === VisionChannelKind.BLOBS">
             hedgehog.capture_frame()
             blobs = hedgehog.get_feature('blobs')</pre>
 
-<pre class="code-example context" *ngIf="channel === VisionChannelKind.FACES">
+<pre class="context" *ngIf="channel === VisionChannelKind.FACES">
             print(faces)</pre>
-<pre class="code-example context" *ngIf="channel === VisionChannelKind.BLOBS">
+<pre class="context" *ngIf="channel === VisionChannelKind.BLOBS">
             print(blobs)</pre>
                 </div>
             </div>

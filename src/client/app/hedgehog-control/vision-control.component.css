@@ -13,10 +13,15 @@
     padding: 0 0.75rem;
 }
 
-pre.code-example {
-    margin: 5px 0;
+.code-example {
+    overflow: auto;
 }
 
-pre.code-example.context {
+.code-example pre {
+    margin: 5px 0;
+    overflow: visible;
+}
+
+.code-example pre.context {
     color: darkgray;
 }
