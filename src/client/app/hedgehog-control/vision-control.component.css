@@ -12,3 +12,11 @@
     flex: 1 1 auto;
     padding: 0 0.75rem;
 }
+
+pre.code-example {
+    margin: 5px 0;
+}
+
+pre.code-example.context {
+    color: darkgray;
+}

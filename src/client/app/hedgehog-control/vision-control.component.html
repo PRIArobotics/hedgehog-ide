@@ -28,6 +28,13 @@
                                 [ngModel]="channel" (ngModelChange)="updateChannel($event)">
                         <label for="channel.blobs">Blob detection</label>
                     </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12">
+                    <div class="card-title">
+                        <span>Blob configuration</span>
+                    </div>
                     <p>
                         <canvas
                                 #canvas
@@ -41,6 +48,47 @@
                         {{float2byte(blobsRange[0][1])}}-{{float2byte(blobsRange[1][1])}};
                         {{float2byte(blobsRange[0][2])}}-{{float2byte(blobsRange[1][2])}}
                     </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12">
+                    <div class="card-title">
+                        <span>Python code</span>
+                    </div>
+                    <p>You can add this code to your Python program to set up and access the camera:</p>
+
+<pre class="code-example context">
+from time import sleep
+from hedgehog.client import connect, motor, vision
+
+with connect() as hedgehog:</pre>
+
+<pre class="code-example" *ngIf="channel === VisionChannelKind.RAW">
+    with hedgehog.camera():</pre>
+<pre class="code-example" *ngIf="channel === VisionChannelKind.FACES">
+    with hedgehog.camera():
+        hedgehog.create_channel('faces', vision.FacesChannel())</pre>
+<pre class="code-example" *ngIf="channel === VisionChannelKind.BLOBS">
+    with hedgehog.camera():
+        hedgehog.create_channel('blobs', vision.FacesChannel(({{ float2byte(blobsRange[0][0]) }}, {{ float2byte(blobsRange[0][1]) }}, {{ float2byte(blobsRange[0][2]) }}), ({{ float2byte(blobsRange[1][0]) }}, {{ float2byte(blobsRange[1][1]) }}, {{ float2byte(blobsRange[1][2]) }})))</pre>
+
+<pre class="code-example context">
+        while True:</pre>
+
+<pre class="code-example" *ngIf="channel === VisionChannelKind.RAW">
+            hedgehog.capture_frame()
+            # a channel is necessary to read from the camera</pre>
+<pre class="code-example" *ngIf="channel === VisionChannelKind.FACES">
+            hedgehog.capture_frame()
+            faces = hedgehog.get_feature('faces')</pre>
+<pre class="code-example" *ngIf="channel === VisionChannelKind.BLOBS">
+            hedgehog.capture_frame()
+            blobs = hedgehog.get_feature('blobs')</pre>
+
+<pre class="code-example context" *ngIf="channel === VisionChannelKind.FACES">
+            print(faces)</pre>
+<pre class="code-example context" *ngIf="channel === VisionChannelKind.BLOBS">
+            print(blobs)</pre>
                 </div>
             </div>
         </div>
