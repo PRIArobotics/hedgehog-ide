@@ -415,6 +415,7 @@ export class TextIdeComponent implements OnInit, AfterViewInit, AfterContentInit
 
                     'set_speaker(frequency)',
 
+                    'camera()',
                     'open_camera()',
                     'close_camera()',
                     'create_channel(key, vision.FacesChannel())',
