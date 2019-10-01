@@ -76,10 +76,10 @@ with connect() as hedgehog:</pre>
             # a channel is necessary to read from the camera</pre>
 <pre *ngIf="channel === VisionChannelKind.FACES">
             hedgehog.capture_frame()
-            faces = hedgehog.get_feature('faces')</pre>
+            faces = hedgehog.get_feature('faces').faces</pre>
 <pre *ngIf="channel === VisionChannelKind.BLOBS">
             hedgehog.capture_frame()
-            blobs = hedgehog.get_feature('blobs')</pre>
+            blobs = hedgehog.get_feature('blobs').blobs</pre>
 
 <pre class="context" *ngIf="channel === VisionChannelKind.FACES">
             print(faces)</pre>
