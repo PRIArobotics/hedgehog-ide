@@ -259,12 +259,13 @@ Blockly.Python['hedgehog_read_imu'] = function(block) {
 
     type = type.toLowerCase();
     switch (axis) {
-        case 'X': axis = 0; break;
-        case 'Y': axis = 1; break;
-        case 'Z': axis = 2; break;
+        case 'X': axis = '[0]'; break;
+        case 'Y': axis = '[1]'; break;
+        case 'Z': axis = '[2]'; break;
+        case 'XYZ': axis = ''; break;
     }
 
-    let code = 'hedgehog.get_imu_' + type +'()[' + axis + ']';
+    let code = 'hedgehog.get_imu_' + type +'()' + axis;
     return [code, Blockly.Python.ORDER_MEMBER];
     // </GSL customizable: hedgehog_read_imu-body>
 };

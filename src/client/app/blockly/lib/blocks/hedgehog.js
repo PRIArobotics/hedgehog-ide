@@ -636,6 +636,10 @@ Blockly.Blocks['hedgehog_read_imu'] = {
                         [
                             "z",
                             "Z"
+                        ],
+                        [
+                            "x, y, z",
+                            "XYZ"
                         ]
                     ]
                 }

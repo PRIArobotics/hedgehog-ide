@@ -249,6 +249,7 @@ modules:
         - ["x", "X"]
         - ["y", "Y"]
         - ["z", "Z"]
+        - ["x, y, z", "XYZ"]
     hedgehog_sleep:
       requiresScope: hedgehog
       args:
