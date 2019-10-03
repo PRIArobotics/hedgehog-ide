@@ -66,7 +66,7 @@ with connect() as hedgehog:</pre>
         hedgehog.create_channel('faces', vision.FacesChannel())</pre>
 <pre *ngIf="channel === VisionChannelKind.BLOBS">
     with hedgehog.camera():
-        hedgehog.create_channel('blobs', vision.FacesChannel(({{ float2byte(blobsRange[0][0]) }}, {{ float2byte(blobsRange[0][1]) }}, {{ float2byte(blobsRange[0][2]) }}), ({{ float2byte(blobsRange[1][0]) }}, {{ float2byte(blobsRange[1][1]) }}, {{ float2byte(blobsRange[1][2]) }})))</pre>
+        hedgehog.create_channel('blobs', vision.BlobsChannel(({{ float2byte(blobsRange[0][0]) }}, {{ float2byte(blobsRange[0][1]) }}, {{ float2byte(blobsRange[0][2]) }}), ({{ float2byte(blobsRange[1][0]) }}, {{ float2byte(blobsRange[1][1]) }}, {{ float2byte(blobsRange[1][2]) }})))</pre>
 
 <pre class="context">
         while True:</pre>
