@@ -1,4 +1,5 @@
 import { HedgehogClient, Message, ack, vision } from 'hedgehog-client';
+import Poller from './Poller';
 
 class VisionNamespace {
     public connectionCount: number = 0;
@@ -34,7 +35,7 @@ export default class SocketIoVisionAdapter {
     private blobs: VisionNamespace;
 
     private blobsRange: SocketIO.Namespace;
-    private timer?: any = null;
+    private poller: Poller | null = null;
 
     public constructor(private hedgehog: HedgehogClient, io: SocketIO.Server) {
         let onConnect = () => this.startUpdates();
@@ -70,7 +71,7 @@ export default class SocketIoVisionAdapter {
                 hsvMin: 0x461414,
                 hsvMax: 0x5AFFEA,
             });
-            this.timer = setInterval(() => this.sendVisionUpdate(), 100);
+        this.poller = new Poller(() => this.sendVisionUpdate(), 200);
         }
     }
 
@@ -80,8 +81,8 @@ export default class SocketIoVisionAdapter {
             this.faces.connectionCount === 0 &&
             this.blobs.connectionCount === 0
         ) {
-            clearInterval(this.timer);
-            this.timer = null;
+            this.poller.cancel();
+            this.poller = null;
             await this.hedgehog.deleteChannel('ide.faces');
             await this.hedgehog.deleteChannel('ide.blobs');
             await this.hedgehog.closeCamera();

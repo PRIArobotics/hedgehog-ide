@@ -1,9 +1,10 @@
 import { HedgehogClient, Message, emergency } from 'hedgehog-client';
+import Poller from './Poller';
 
 export default class SocketIoEmergencyAdapter {
     private ns: SocketIO.Namespace;
     private connectionCount: number = 0;
-    private timer?: any = null;
+    private poller: Poller | null = null;
 
     public constructor (private hedgehog: HedgehogClient, io: SocketIO.Server) {
         this.ns = io.of('/emergency');
@@ -25,12 +26,12 @@ export default class SocketIoEmergencyAdapter {
     }
 
     private startUpdates() {
-        this.timer = setInterval(() => this.sendEmergencyUpdate(), 200);
+        this.poller = new Poller(() => this.sendEmergencyUpdate(), 200);
     }
 
     private stopUpdates() {
-        clearInterval(this.timer);
-        this.timer = null;
+        this.poller.cancel();
+        this.poller = null;
     }
 
     private async sendEmergencyUpdate () {
