@@ -149,15 +149,32 @@ my-app {
     max-height: 90% !important;
 
     .logo {
-        padding: 30px 40px 20px;
+        padding: 0;
     }
 
     li, span {
         font-size: 1.1rem;
     }
 
-    .names, .names .col {
+    h3, h4 {
+        text-align: center;
+    }
+
+    .row.small-row {
         padding: 0;
+
+        .col {
+            padding: 0;
+        }
+
+        &.center .cl {
+            text-align: center;
+        }
+    }
+
+    .row.sponsors .col {
+        font-size: 180%;
+        font-weight: bold;
     }
 
     .version-information {
@@ -171,6 +188,12 @@ my-app {
         dd {
             margin-left: 10px;
         }
+    }
+
+    .thank-you {
+        font-size: 120%;
+        font-weight: bold;
+        font-style: italic;
     }
 }
 

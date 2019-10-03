@@ -17,83 +17,104 @@
     <form (submit)="closeSettingsModal()">
         <div class="modal-content">
             <div class="row">
-                <div class="col m10 offset-m1">
+                <div class="col m8 offset-m2">
                     <img class="responsive-img logo" src="/assets/img/logo-text.svg">
-                    <dl class="version-information">
-                        <dt>Controller ID:</dt>
-                        <dd>{{ ucId }}</dd>
-                        <dt>Hardware Version:</dt>
-                        <dd>{{ hardwareVersion }}</dd>
-                        <dt>Firmware Version:</dt>
-                        <dd>{{ firmwareVersion }}</dd>
-                        <dt>Server Version:</dt>
-                        <dd>{{ serverVersion }}</dd>
-                        <dt>IDE Version:</dt>
-                        <dd>{{ ideVersion }}</dd>
-                    </dl>
                 </div>
+            </div>
+            <div class="row">
+                <dl class="col m5 offset-m1 version-information">
+                    <dt>Controller ID:</dt>
+                    <dd>{{ ucId }}</dd>
+                    <dt>Hardware Version:</dt>
+                    <dd>{{ hardwareVersion }}</dd>
+                    <dt>Firmware Version:</dt>
+                    <dd>{{ firmwareVersion }}</dd>
+                </dl>
+                <dl class="col m5 offset-m1 version-information">
+                    <dt>Server Version:</dt>
+                    <dd>{{ serverVersion }}</dd>
+                    <dt>IDE Version:</dt>
+                    <dd>{{ ideVersion }}</dd>
+                </dl>
             </div>
             <div class="row">
                 <div class="col m10 offset-m1">
                     <div class="divider"></div>
                     <div class="section">
-                        <h3>About Hedgehog</h3>
-                        <h4>Team</h4>
-                        <div class="row names">
-                            <span class="col m6">Gottfried Koppensteiner</span>
-                            <span class="col m6">Clemens Koza</span>
-                            <span class="col m6">Martin Wolff</span>
-                            <span class="col m6">Daniel Frank</span>
-                            <span class="col m6">Markus Klein</span>
-                            <span class="col m6">Lisamarie Schuster</span>
-                            <span class="col m6">Nicole Weinert</span>
-                            <span class="col m6">Lisa Vittori</span>
-                            <span class="col m6">Karl-Heinz Gräbner</span>
-                            <span class="col m6">Martin Krammer</span>
-                        </div>
-
-                        <h4>Kickstarter Sponsors</h4>
-
-                        <h4>Kickstarter Supporters</h4>
-
-                        <h4>Links</h4>
-                        <ul>
-                            <li><a href="https://hedgehog.pria.at">Hedgehog Website</a></li>
-                            <li><a href="https://hedgehog.readthedocs.io">Hedgehog Documentation</a></li>
-                            <li><a href="https://github.com/PRIArobotics/hedgehog-ide">GitHub Repository</a></li>
-                            <li><a href="https://pria.at">Practical Robotics Institute Austria</a></li>
+                        <h4>Thank You to our amazing Kickstarter Sponsors!</h4>
+                        <ul class="row small-row center sponsors">
+                            <li class="col m12">Peter Lieber</li>
+                            <li class="col m12">www.skin46.com</li>
+                            <li class="col m12">Gottfried Koppensteiner, TGM</li>
+                            <li class="col m12">Wilfried Lepuschitz</li>
+                        </ul>
+                        <h4>Thank You to our amazing Kickstarter Backers!</h4>
+                        <ul class="row small-row center">
+                            <li class="col m4">Dominik Weber</li>
+                            <li class="col m4">David Mutchler</li>
+                            <li class="col m4">Christian Koza</li>
+                            <li class="col m4">Pablo</li>
+                            <li class="col m4">Raen</li>
+                            <li class="col m4">Kim Tresohlavy</li>
+                            <li class="col m4">drumherum</li>
+                            <li class="col m4">Lukas Putz</li>
+                            <li class="col m4">Salt Shaker</li>
+                            <li class="col m4">Ruediger Linhart</li>
+                            <li class="col m4">Piotr Siupka</li>
+                            <li class="col m4">Raphael Fikar</li>
+                            <li class="col m4">kazz</li>
+                            <li class="col m4">Angela DeHart</li>
+                            <li class="col m4">C. Wegscheid</li>
+                            <li class="col m4">Clay Owsley</li>
+                            <li class="col m4">Jason Forbes</li>
+                            <li class="col m4">Helipilot50</li>
+                            <li class="col m4">robo-w</li>
+                            <li class="col m4">Peter Klein</li>
+                            <li class="col m4">Laurenz N.</li>
+                            <li class="col m4 offset-m4">Stefan</li>
                         </ul>
                     </div>
-
                     <div class="divider"></div>
                     <div class="section">
-                        <h3>About Hedgehog IDE</h3>
+                        <h3>About Hedgehog</h3>
                         <h4>Team</h4>
-                        <ul>
-                            <li><a href="https://mklein.co.at">Markus Klein</a></li>
-                            <li><a href="https://github.com/tfellner-tgm">Thomas Fellner</a></li>
-                            <li><a href="https://github.com/hmohamad">Hassan Mohamad</a></li>
+                        <ul class="row small-row center">
+                            <li class="col m4">Gottfried Koppensteiner</li>
+                            <li class="col m4">Clemens Koza</li>
+                            <li class="col m4">Martin Wolff</li>
+                            <li class="col m4">Daniel Frank</li>
+                            <li class="col m4">Markus Klein</li>
+                            <li class="col m4">Lisa Vittori</li>
+                            <li class="col m4">Karl-Heinz Gräbner</li>
+                            <li class="col m4">Martin Krammer</li>
+                            <li class="col m4">Lisamarie Schuster</li>
+                            <li class="col m4 offset-m4">Nicole Weinert</li>
                         </ul>
 
-                        <h4>Acknowledgement</h4>
-                        <ul>
-                            <li>Clemens Koza</li>
-                            <li>Reinhard Grabler</li>
-                            <li>Martin Krammer</li>
-                            <li>Daniel Frank</li>
-                            <li>Martin Wolff</li>
-                            <li>Gottfried Koppensteiner</li>
-                            <li>and all other PRIA staff</li>
+                        <h4>Hedgehog IDE Team</h4>
+                        <ul class="row small-row center">
+                            <li class="col m4">Markus Klein</li>
+                            <li class="col m4">Thomas Fellner</li>
+                            <li class="col m4">Hassan Mohamad</li>
+                            <li class="col m4 offset-m4">Clemens Koza</li>
+                        </ul>
+
+                        <h4>Links</h4>
+                        <ul class="row small-row center">
+                            <li class="col m6"><a href="https://hedgehog.pria.at">Hedgehog Website</a></li>
+                            <li class="col m6"><a href="https://pria.at">Practical Robotics Institute Austria</a></li>
+                            <li class="col m6"><a href="https://hedgehog.readthedocs.io">Hedgehog Documentation</a></li>
+                            <li class="col m6"><a href="https://github.com/PRIArobotics">PRIA GitHub</a></li>
                         </ul>
 
                         <h4>Legal</h4>
-                        <ul>
+                        <ul class="row small-row">
                             <li>Licensed under <a href="https://github.com/PRIArobotics/hedgehog-ide/blob/master/LICENSE">AGPLv3+</a></li>
-                            <li>Copyright &copy; 2017, Practical Robotics Institute Austria</li>
-                            <li>Copyright &copy; 2017, Markus Klein</li>
-                            <li>Copyright &copy; 2017, Thomas Fellner</li>
-                            <li>Copyright &copy; 2017, Hassan Mohamad</li>
+                            <li class="col m12">Hedgehog & Hedgehog IDE Copyright &copy; 2017-2019, Practical Robotics Institute Austria</li>
+                            <li class="col m12">Hedgehog IDE Copyright &copy; 2017, Markus Klein, Thomas Fellner, Hassan Mohamad</li>
                         </ul>
+
+                        <p class="thank-you">Thank you for using Hedgehog</p>
                     </div>
                 </div>
             </div>
