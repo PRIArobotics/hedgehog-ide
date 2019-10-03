@@ -133,10 +133,15 @@ export default class HedgehogControlComponent implements AfterViewInit, OnDestro
     }
 
     public updateVisionChannel(channel: VisionChannelKind): void {
-        let newSubscription = this.hedgehogClient.onVisionFrames(channel)
+        let oldSubscription = this.visionSubscription;
+
+        setTimeout(() => {
+            oldSubscription.unsubscribe();
+        }, 1000);
+
+        this.visionSubscription = this.hedgehogClient.onVisionFrames(channel)
             .subscribe(frame => this.onVisionFrame(frame));
-        this.visionSubscription.unsubscribe();
-        this.visionSubscription = newSubscription;
+
         this.channel = channel;
     }
 
