@@ -71,7 +71,7 @@ export default class SocketIoVisionAdapter {
                 hsvMin: 0x461414,
                 hsvMax: 0x5AFFEA,
             });
-        this.poller = new Poller(() => this.sendVisionUpdate(), 200);
+            this.poller = new Poller(() => this.sendVisionUpdate(), 200);
         }
     }
 
