@@ -27,16 +27,16 @@ $ curl -L https://raw.githubusercontent.com/creationix/nvm/master/install.sh | b
 
 $ export NVM_DIR="$HOME/.nvm"
 $ . "$NVM_DIR/nvm.sh"
-$ nvm install 8.14.0
+$ nvm install 7.9.0
 ```
 
 Alternatively, download and install a distribution manually:
 
 ```bash
 $ sudo apt install libssl-dev libzmq-dev libcurl4-gnutls-dev
-$ wget https://nodejs.org/dist/v8.14.0/node-v8.14.0-linux-armv6l.tar.xz
-$ tar -xvf node-v8.14.0-linux-armv6l.tar.xz
-$ sudo cp -R node-v8.14.0-linux-armv6l/* /usr/local/
+$ wget https://nodejs.org/dist/v7.9.0/node-v7.9.0-linux-armv6l.tar.xz
+$ tar -xvf node-v7.9.0-linux-armv6l.tar.xz
+$ sudo cp -R node-v7.9.0-linux-armv6l/* /usr/local/
 ```
 
 Now you have the following options:
@@ -62,7 +62,7 @@ Your configuration needs to use `environment: 'production',`.
 If you want the latest version development version of the IDE you can also clone the repository and install dependencies like this:
 
 ```bash
-$ git clone https://github.com/PRIArobotics/hedgehog-ide.git 
+$ git clone https://github.com/PRIArobotics/hedgehog-ide.git
 $ cd hedgehog-ide
 $ npm install
 ```
