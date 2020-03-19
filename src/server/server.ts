@@ -68,6 +68,9 @@ util_promisify_shim();
             },
             host: serverConfig.connection.host,
             port: serverConfig.connection.port,
+            debug: {
+                request: ['error'],
+            },
         });
 
         /**
