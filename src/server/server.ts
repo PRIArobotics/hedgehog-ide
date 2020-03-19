@@ -82,9 +82,9 @@ util_promisify_shim();
 
             server.auth.strategy('jwt', 'jwt', {
                 key: serverConfig.auth.jwtSecret,
-                validate: (decoded, req, cb) => {
-                    cb(null, decoded.exp >= Math.round(Date.now() / 1000));
-                },
+                validate: async (decoded, request, h) => ({
+                    isValid: decoded.exp >= Math.round(Date.now() / 1000),
+                }),
                 verifyOptions: { algorithms: [ 'HS256' ] }
             });
 
