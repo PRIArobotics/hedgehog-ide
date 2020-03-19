@@ -7,7 +7,6 @@ import {genericFromBase64, genericToBase64} from "../../../common/utils";
 import EventEmitter from "./EventEmitter";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {AuthProvider} from "../auth-provider.service";
-import {RequestOptions} from "@angular/http";
 
 @Injectable()
 export class HttpProcessManagerService implements IProcessManager {

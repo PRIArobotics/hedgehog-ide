@@ -1,6 +1,6 @@
 import io = require('socket.io-client');
 
-import {Http, Headers} from "@angular/http";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Injectable} from "@angular/core";
 import {Observable} from "rxjs";
 import {AuthProvider} from "../auth-provider.service";
@@ -14,25 +14,25 @@ export enum VisionChannelKind {
 @Injectable()
 export class HttpHedgehogClientService {
 
-    private headers = new Headers({'Content-Type': 'application/vnd.api+json'});
+    private headers = new HttpHeaders({'Content-Type': 'application/vnd.api+json'});
 
-    public constructor (private http: Http, private authProvider: AuthProvider) { }
+    public constructor (private httpClient: HttpClient, private authProvider: AuthProvider) { }
 
     public async getVersion () {
-        return this.http
+        return this.httpClient
             .get(`/api/version`)
             .toPromise()
-            .then(response => {
-                return response.json().data.attributes;
+            .then((json: any) => {
+                return json.data.attributes;
             });
     }
 
     public async getEmergencyStop () {
-        return this.http
+        return this.httpClient
             .get(`/api/emergency`)
             .toPromise()
-            .then(response => {
-                return response.json().data.attributes.active;
+            .then((json: any) => {
+                return json.data.attributes.active;
             });
     }
 
@@ -49,7 +49,7 @@ export class HttpHedgehogClientService {
         };
 
         // send post request with headers (json) and the stringifyed data object
-        return this.http
+        return this.httpClient
             .patch(`/api/emergency`,
                 JSON.stringify(emergencyData),
                 {headers: this.headers})
@@ -59,21 +59,21 @@ export class HttpHedgehogClientService {
 
     public async getSensorValue (port: number) {
         // send get request for specific sensor value
-        return this.http
+        return this.httpClient
             .get(`/api/sensors/${port}`)
             .toPromise()
-            .then(response => {
-                return response.json().data.attributes.value;
+            .then((json: any) => {
+                return json.data.attributes.value;
             });
     }
 
     public async getSensorList () {
         // send get request for a list of all sensors containing their values
-        return this.http
+        return this.httpClient
             .get(`/api/sensors`)
             .toPromise()
-            .then(response => {
-                return response.json();
+            .then((json: any) => {
+                return json;
             });
     }
 
@@ -90,7 +90,7 @@ export class HttpHedgehogClientService {
         };
 
         // send post request with headers (json) and the stringifyed data object
-        return this.http
+        return this.httpClient
             .patch(`/api/sensors/${port}`,
                 JSON.stringify(sensorData),
                 {headers: this.headers})
@@ -121,7 +121,7 @@ export class HttpHedgehogClientService {
         };
 
         // send post request with headers (json) and the stringifyed data object
-        return this.http
+        return this.httpClient
             .patch(`/api/motors/${port}`,
                 JSON.stringify(motorData),
                 {headers: this.headers})
@@ -143,7 +143,7 @@ export class HttpHedgehogClientService {
         };
 
         // send post request with headers (json) and the stringifyed data object
-        return this.http
+        return this.httpClient
             .patch(`/api/servos/${port}`,
                 JSON.stringify(servoData),
                 {headers: this.headers})

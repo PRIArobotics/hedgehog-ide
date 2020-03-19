@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
 import JsonApiDocumentBuilder from "../../server/jsonapi/JsonApiBuilder";
-import {Http, Headers} from "@angular/http";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 
 @Injectable()
 export class AuthProvider {
@@ -10,7 +10,7 @@ export class AuthProvider {
         return this._token;
     }
 
-    constructor (private http: Http) { }
+    constructor (private httpClient: HttpClient) { }
 
     public login (username: string, password: string) {
         const requestData = new JsonApiDocumentBuilder();
@@ -22,13 +22,13 @@ export class AuthProvider {
         };
         requestData.addResource(requestResource.getProduct());
 
-        return this.http
+        return this.httpClient
             .post('/api/auth/login',
                 JSON.stringify(requestData.getProduct()),
-                {headers: new Headers({'Content-Type': 'application/vnd.api+json'})})
+                {headers: new HttpHeaders({'Content-Type': 'application/vnd.api+json'})})
             .toPromise()
-            .then(response => {
-                this._token = response.json().data.attributes.token;
+            .then((json: any) => {
+                this._token = json.data.attributes.token;
                 sessionStorage.setItem('auth-token', this._token);
             });
     }

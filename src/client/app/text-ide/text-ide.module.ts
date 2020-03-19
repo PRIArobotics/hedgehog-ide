@@ -6,7 +6,7 @@ import {TreeModule} from 'angular-tree-component';
 
 import {MaterializeModule} from 'angular2-materialize';
 import {AceEditorComponent} from './ace-editor.component';
-import {HttpModule} from '@angular/http';
+import {HttpClientModule} from '@angular/common/http';
 import {ProgramExecutionModule} from '../program-execution/program-execution.module';
 
 import {TextIdeComponent} from './text-ide.component';
@@ -20,7 +20,7 @@ import {ContextMenuModule} from "ngx-contextmenu";
         TreeModule,
         ContextMenuModule,
         FormsModule,
-        HttpModule,
+        HttpClientModule,
         ProgramExecutionModule,
         AngularSplitModule,
     ],
